@@ -64,11 +64,42 @@ class Document_Generator extends Base_Service {
 	 * @var array
 	 */
 	const DOCUMENT_TYPES = array(
-		'privacy-policy'     => 'Privacy Policy',
-		'terms-of-service'   => 'Terms of Service',
-		'cookie-policy'      => 'Cookie Policy',
-		'disclaimer'         => 'Disclaimer',
-		'refund-policy'      => 'Refund & Return Policy',
+		// Core Legal Documents
+		'privacy-policy'           => 'Privacy Policy',
+		'terms-of-service'         => 'Terms of Service',
+		'cookie-policy'            => 'Cookie Policy',
+		'disclaimer'               => 'Disclaimer',
+		'acceptable-use-policy'    => 'Acceptable Use Policy',
+		'copyright-dmca-policy'    => 'Copyright & DMCA Policy',
+		'accessibility-statement'  => 'Accessibility Statement',
+		
+		// Business Operations
+		'contact-imprint'          => 'Contact Information / Imprint',
+		'data-processing-agreement' => 'Data Processing Agreement',
+		'security-policy'          => 'Security Policy',
+		'anti-spam-policy'         => 'Anti-Spam Policy',
+		
+		// User Conduct
+		'terms-of-use'             => 'Terms of Use',
+		'community-guidelines'     => 'Community Guidelines',
+		'age-verification-policy'  => 'Age Verification Policy',
+		
+		// E-Commerce
+		'refund-policy'            => 'Refund & Return Policy',
+		'shipping-policy'          => 'Shipping Policy',
+		'warranty-policy'          => 'Warranty Policy',
+		'cancellation-policy'      => 'Cancellation Policy',
+		'subscription-agreement'   => 'Subscription Agreement',
+		'affiliate-terms'          => 'Affiliate Program Terms',
+		
+		// Software & API
+		'eula'                     => 'End User License Agreement',
+		'api-terms'                => 'API Terms of Service',
+		'content-licensing'        => 'Content Licensing Agreement',
+		
+		// Specialized
+		'nda'                      => 'Non-Disclosure Agreement',
+		'mobile-app-terms'         => 'Mobile App Terms',
 	);
 
 	/**

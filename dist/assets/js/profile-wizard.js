@@ -32,7 +32,7 @@
 
 		state: {
 			currentStep: 1,
-			totalSteps: 8,
+			totalSteps: 11,
 			isDirty: false,
 			isSaving: false,
 			autoSaveTimer: null,
@@ -216,6 +216,23 @@
 				this.elements.nextBtn?.show();
 				this.elements.finishBtn?.hide();
 			}
+
+			// Update step-based progress bar
+			this.updateStepProgress( stepNum );
+		},
+
+		/**
+		 * Update step-based progress (steps completed / total steps)
+		 *
+		 * @param {number} stepNum Current step number
+		 */
+		updateStepProgress( stepNum ) {
+			// Calculate progress based on completed steps (step - 1 completed + current in progress)
+			const completedSteps = this.elements.stepItems.filter( '.slos-step-complete' ).length;
+			const percentage = Math.round( ( completedSteps / this.state.totalSteps ) * 100 );
+			
+			this.elements.progressFill.css( 'width', percentage + '%' );
+			this.elements.progressPercent.text( percentage + '%' );
 		},
 
 		/**
@@ -481,6 +498,9 @@
 				$item.removeClass( 'slos-step-complete' );
 				$item.find( '.slos-step-number' ).text( stepNum );
 			}
+
+			// Update progress bar after step completion change
+			this.updateStepProgress( this.state.currentStep );
 		},
 
 		/**
@@ -529,6 +549,7 @@
 			}
 
 			// Save final step
+			this.showSaveStatus( 'saving' );
 			await this.saveCurrentStep( true );
 
 			// Validate entire profile
@@ -543,13 +564,25 @@
 				} );
 
 				if ( response.success && response.data?.is_valid ) {
-					this.showCompletionModal();
+					// Profile is complete - redirect to Document Hub
+					this.showNotice( this.config.i18n.profileComplete || 'Profile saved successfully! Redirecting...', 'success' );
+					setTimeout( () => {
+						window.location.href = slosProfileWizard?.documentHubUrl || '/wp-admin/admin.php?page=slos-documents';
+					}, 1000 );
 				} else {
+					// Profile incomplete but still save and redirect
 					const missingCount = response.data?.missing_fields?.length || 0;
-					this.showNotice( 
-						sprintf( this.config.i18n.incompleteProfile, missingCount ),
-						'warning' 
-					);
+					if ( missingCount > 0 ) {
+						this.showNotice( 
+							( this.config.i18n.incompleteProfileSaved || 'Profile saved with {count} optional fields remaining. Redirecting...' ).replace( '{count}', missingCount ),
+							'warning' 
+						);
+					} else {
+						this.showNotice( this.config.i18n.profileComplete || 'Profile saved successfully! Redirecting...', 'success' );
+					}
+					setTimeout( () => {
+						window.location.href = slosProfileWizard?.documentHubUrl || '/wp-admin/admin.php?page=slos-documents';
+					}, 1500 );
 				}
 			} catch ( error ) {
 				console.error( '[Profile Wizard] Validation error:', error );

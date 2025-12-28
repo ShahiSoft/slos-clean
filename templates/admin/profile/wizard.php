@@ -116,7 +116,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 								<span class="dashicons dashicons-<?php echo esc_attr( $step['icon'] ); ?>"></span>
 							</div>
 							<div class="slos-step-meta">
-								<span class="slos-step-badge"><?php printf( esc_html__( 'Step %d of 8', 'shahi-legalflowsuite' ), $step_num ); ?></span>
+								<span class="slos-step-badge"><?php printf( esc_html__( 'Step %d of 11', 'shahi-legalflowsuite' ), $step_num ); ?></span>
 								<h2 class="slos-step-heading"><?php echo esc_html( $step['title'] ); ?></h2>
 								<p class="slos-step-description"><?php echo esc_html( $step['description'] ); ?></p>
 							</div>
@@ -143,7 +143,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 								<?php esc_html_e( 'Save Progress', 'shahi-legalflowsuite' ); ?>
 							</button>
 
-							<?php if ( $current_step < 8 ) : ?>
+							<?php if ( $current_step < 11 ) : ?>
 							<button type="button" class="slos-btn slos-btn-primary slos-btn-next" id="slos-next-btn">
 								<?php esc_html_e( 'Continue', 'shahi-legalflowsuite' ); ?>
 								<span class="dashicons dashicons-arrow-right-alt"></span>
@@ -151,7 +151,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<?php else : ?>
 							<button type="button" class="slos-btn slos-btn-success" id="slos-finish-btn">
 								<span class="dashicons dashicons-yes"></span>
-								<?php esc_html_e( 'Finish Setup', 'shahi-legalflowsuite' ); ?>
+								<?php esc_html_e( 'Finish Wizard', 'shahi-legalflowsuite' ); ?>
 							</button>
 							<?php endif; ?>
 						</div>

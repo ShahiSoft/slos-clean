@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Terms of Service - {{company_legal_name}}</title>
+</head>
+<body>
+<article class="slos-legal-document slos-api-terms">
+
+<header class="slos-doc-header">
+    <h1>API Terms of Service</h1>
+    <p class="slos-effective-date"><strong>Effective Date:</strong> {{today}}</p>
+    <p class="slos-last-updated"><strong>Last Updated:</strong> {{today}}</p>
+</header>
+
+<section id="introduction">
+    <h2>1. Introduction</h2>
+    <p>These API Terms of Service ("API Terms") govern your access to and use of the <strong>{{company_legal_name}}</strong> Application Programming Interface (the "API"). By accessing or using our API, you agree to these API Terms.</p>
+    
+    <p>These API Terms are in addition to our general Terms of Service at {{site_url}}/terms.</p>
+</section>
+
+<section id="definitions">
+    <h2>2. Definitions</h2>
+    <ul>
+        <li><strong>"API"</strong> means the {{company_legal_name}} application programming interface, including all endpoints, documentation, and SDKs.</li>
+        <li><strong>"API Key"</strong> or <strong>"Credentials"</strong> means the unique authentication tokens provided to access the API.</li>
+        <li><strong>"Developer"</strong> or <strong>"You"</strong> means the individual or entity accessing or using the API.</li>
+        <li><strong>"Application"</strong> means software you create using our API.</li>
+        <li><strong>"Rate Limit"</strong> means the maximum number of API calls permitted within a time period.</li>
+        <li><strong>"Endpoint"</strong> means a specific API URL used to perform operations.</li>
+    </ul>
+</section>
+
+<section id="api-access">
+    <h2>3. API Access</h2>
+    <h3>3.1 Registration</h3>
+    <p>To use the API, you must:</p>
+    <ol>
+        <li>Create an account at {{site_url}}</li>
+        <li>Apply for API access</li>
+        <li>Agree to these API Terms</li>
+        <li>Receive your API credentials</li>
+    </ol>
+    
+    <h3>3.2 API Keys</h3>
+    <p>You are responsible for:</p>
+    <ul>
+        <li>Keeping your API keys confidential</li>
+        <li>All activity that occurs under your API keys</li>
+        <li>Not sharing keys with unauthorized parties</li>
+        <li>Rotating keys if you suspect compromise</li>
+        <li>Notifying us immediately of any unauthorized use</li>
+    </ul>
+    
+    <h3>3.3 Approval</h3>
+    <p>We may review and approve API access at our discretion. We may request additional information about your intended use.</p>
+</section>
+
+<section id="license">
+    <h2>4. License Grant</h2>
+    <h3>4.1 API License</h3>
+    <p>Subject to these API Terms, we grant you a limited, non-exclusive, non-transferable, revocable license to:</p>
+    <ul>
+        <li>Access and use the API for your internal business purposes</li>
+        <li>Integrate the API into your Applications</li>
+        <li>Display data obtained from the API in your Applications</li>
+    </ul>
+    
+    <h3>4.2 SDK & Sample Code</h3>
+    <p>We may provide SDKs, libraries, or sample code. These are licensed under {{sdk_license|default:"MIT License"}} unless otherwise stated.</p>
+</section>
+
+<section id="rate-limits">
+    <h2>5. Rate Limits & Quotas</h2>
+    <h3>5.1 Rate Limits by Plan</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Plan</th>
+                <th>Requests/Minute</th>
+                <th>Requests/Day</th>
+                <th>Requests/Month</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Free</td>
+                <td>{{free_rpm|default:"60"}}</td>
+                <td>{{free_daily|default:"1,000"}}</td>
+                <td>{{free_monthly|default:"10,000"}}</td>
+            </tr>
+            <tr>
+                <td>Basic</td>
+                <td>{{basic_rpm|default:"300"}}</td>
+                <td>{{basic_daily|default:"10,000"}}</td>
+                <td>{{basic_monthly|default:"100,000"}}</td>
+            </tr>
+            <tr>
+                <td>Pro</td>
+                <td>{{pro_rpm|default:"1,000"}}</td>
+                <td>{{pro_daily|default:"100,000"}}</td>
+                <td>{{pro_monthly|default:"1,000,000"}}</td>
+            </tr>
+            <tr>
+                <td>Enterprise</td>
+                <td>Custom</td>
+                <td>Custom</td>
+                <td>Custom</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h3>5.2 Rate Limit Headers</h3>
+    <p>API responses include headers indicating your rate limit status:</p>
+    <ul>
+        <li><code>X-RateLimit-Limit</code>: Your rate limit</li>
+        <li><code>X-RateLimit-Remaining</code>: Requests remaining</li>
+        <li><code>X-RateLimit-Reset</code>: Time when limit resets</li>
+    </ul>
+    
+    <h3>5.3 Exceeding Limits</h3>
+    <p>If you exceed rate limits:</p>
+    <ul>
+        <li>Requests will receive HTTP 429 (Too Many Requests)</li>
+        <li>Implement exponential backoff in your retry logic</li>
+        <li>Persistent abuse may result in suspension</li>
+    </ul>
+</section>
+
+<section id="acceptable-use">
+    <h2>6. Acceptable Use</h2>
+    <h3>6.1 Permitted Uses</h3>
+    <p>You may use the API to:</p>
+    <ul>
+        <li>Build applications that integrate with our services</li>
+        <li>Access and display your own data</li>
+        <li>Automate workflows with our platform</li>
+        <li>Provide value-added services to your users</li>
+    </ul>
+    
+    <h3>6.2 Prohibited Uses</h3>
+    <p>You may NOT:</p>
+    <ul>
+        <li><strong>Abuse:</strong> Overload, disrupt, or abuse the API infrastructure</li>
+        <li><strong>Scrape:</strong> Use the API to scrape or bulk download data</li>
+        <li><strong>Circumvent:</strong> Bypass rate limits, authentication, or security measures</li>
+        <li><strong>Resell:</strong> Resell API access without authorization</li>
+        <li><strong>Compete:</strong> Use the API to build a substantially similar competing service</li>
+        <li><strong>Violate Privacy:</strong> Collect, store, or share user data in violation of privacy laws</li>
+        <li><strong>Illegal Activity:</strong> Use the API for illegal purposes</li>
+        <li><strong>Spam:</strong> Use the API for sending spam or unwanted communications</li>
+        <li><strong>Malware:</strong> Integrate the API with malware or harmful software</li>
+        <li><strong>Misrepresent:</strong> Falsely imply endorsement by {{company_legal_name}}</li>
+    </ul>
+</section>
+
+<section id="data-handling">
+    <h2>7. Data Handling</h2>
+    <h3>7.1 Data Ownership</h3>
+    <ul>
+        <li>You retain ownership of data you send to the API</li>
+        <li>{{company_legal_name}} retains ownership of API response data structure</li>
+        <li>User data accessed via API remains subject to user consent</li>
+    </ul>
+    
+    <h3>7.2 Data Protection</h3>
+    <p>You must:</p>
+    <ul>
+        <li>Handle data in compliance with applicable privacy laws (GDPR, CCPA, etc.)</li>
+        <li>Implement appropriate security measures for data in transit and at rest</li>
+        <li>Delete data when requested by users or when no longer needed</li>
+        <li>Not use data for purposes beyond what users consented to</li>
+    </ul>
+    
+    <h3>7.3 Caching</h3>
+    <p>You may cache API responses for {{cache_duration|default:"up to 24 hours"}} unless otherwise specified in the API documentation. Respect <code>Cache-Control</code> headers.</p>
+</section>
+
+<section id="authentication">
+    <h2>8. Authentication & Security</h2>
+    <h3>8.1 Authentication Methods</h3>
+    <p>The API supports the following authentication methods:</p>
+    <ul>
+        <li><strong>API Key:</strong> Include in header as <code>Authorization: Bearer YOUR_API_KEY</code></li>{{if supports_oauth}}<li><strong>OAuth 2.0:</strong> For user-authorized access</li>{{/if}}
+    </ul>
+    
+    <h3>8.2 Security Requirements</h3>
+    <p>You must:</p>
+    <ul>
+        <li>Use HTTPS for all API requests</li>
+        <li>Never expose API keys in client-side code</li>
+        <li>Store credentials securely (not in source code)</li>
+        <li>Implement proper error handling to avoid leaking sensitive info</li>
+    </ul>
+</section>
+
+<section id="sla">
+    <h2>9. Service Level Agreement</h2>
+    {{if has_api_sla}}
+    <h3>9.1 Uptime Commitment</h3>
+    <p>We commit to {{api_uptime|default:"99.9%"}} monthly uptime for paid API plans.</p>
+    
+    <h3>9.2 Exclusions</h3>
+    <p>SLA excludes:</p>
+    <ul>
+        <li>Scheduled maintenance (with {{maintenance_notice|default:"24-hour"}} notice)</li>
+        <li>Force majeure events</li>
+        <li>Your network or systems issues</li>
+        <li>Abuse of the API</li>
+    </ul>
+    
+    <h3>9.3 Credits</h3>
+    <p>If uptime falls below our commitment, you may request service credits by contacting {{support_email}}.</p>
+    {{else}}
+    <p>The API is provided on an "as available" basis. We do not guarantee specific uptime or availability.</p>
+    {{/if}}
+</section>
+
+<section id="pricing">
+    <h2>10. Pricing & Billing</h2>
+    {{if has_paid_api}}
+    <h3>10.1 Pricing</h3>
+    <p>API pricing is based on:</p>
+    <ul>
+        <li>Number of API requests</li>
+        <li>Features and endpoints accessed</li>
+        <li>Support level required</li>
+    </ul>
+    <p>Current pricing is available at {{site_url}}/api/pricing.</p>
+    
+    <h3>10.2 Billing</h3>
+    <ul>
+        <li>Billed {{api_billing_cycle|default:"monthly"}} in arrears</li>
+        <li>Overages billed at the per-request rate for your plan</li>
+        <li>Payment due within {{payment_terms|default:"30 days"}}</li>
+    </ul>
+    {{else}}
+    <p>The API is currently provided free of charge within rate limits. We reserve the right to introduce paid tiers in the future.</p>
+    {{/if}}
+</section>
+
+<section id="changes">
+    <h2>11. API Changes</h2>
+    <h3>11.1 Versioning</h3>
+    <p>We version the API using URL path versioning (e.g., <code>/v1/</code>, <code>/v2/</code>). When possible, we will maintain backward compatibility within major versions.</p>
+    
+    <h3>11.2 Deprecation Policy</h3>
+    <p>When deprecating API versions or features:</p>
+    <ul>
+        <li>We will provide at least {{deprecation_notice|default:"6 months"}} notice</li>
+        <li>Deprecated features will be marked in documentation</li>
+        <li>Deprecation headers will be included in API responses</li>
+        <li>Migration guides will be provided</li>
+    </ul>
+    
+    <h3>11.3 Breaking Changes</h3>
+    <p>Breaking changes will only occur in new major versions, except for:</p>
+    <ul>
+        <li>Security vulnerabilities</li>
+        <li>Legal requirements</li>
+        <li>Emergency situations</li>
+    </ul>
+</section>
+
+<section id="intellectual-property">
+    <h2>12. Intellectual Property</h2>
+    <h3>12.1 Our IP</h3>
+    <p>The API, documentation, and related materials are owned by {{company_legal_name}}. You may not copy, modify, or reverse engineer the API.</p>
+    
+    <h3>12.2 Your Application</h3>
+    <p>You retain all rights to your Application and code. However, you may not claim ownership of the API or represent that {{company_legal_name}} endorses your Application without permission.</p>
+    
+    <h3>12.3 Trademark Use</h3>
+    <p>You may state that your Application uses {{company_legal_name}} API, but must follow our brand guidelines. You may not use our trademarks in a way that suggests endorsement.</p>
+</section>
+
+<section id="warranties">
+    <h2>13. Warranties & Disclaimers</h2>
+    <p><strong>THE API IS PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND.</strong></p>
+    
+    <p>WE DISCLAIM ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING:</p>
+    <ul>
+        <li>MERCHANTABILITY</li>
+        <li>FITNESS FOR A PARTICULAR PURPOSE</li>
+        <li>NON-INFRINGEMENT</li>
+        <li>ACCURACY OR RELIABILITY OF DATA</li>
+        <li>UNINTERRUPTED OR ERROR-FREE OPERATION</li>
+    </ul>
+</section>
+
+<section id="limitation-liability">
+    <h2>14. Limitation of Liability</h2>
+    <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW:</p>
+    <ul>
+        <li>{{company_legal_name}} IS NOT LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES</li>
+        <li>OUR TOTAL LIABILITY SHALL NOT EXCEED THE GREATER OF: (A) AMOUNTS PAID BY YOU FOR API ACCESS IN THE 12 MONTHS PRECEDING THE CLAIM, OR (B) {{liability_cap|default:"$100"}}</li>
+    </ul>
+</section>
+
+<section id="indemnification">
+    <h2>15. Indemnification</h2>
+    <p>You agree to indemnify {{company_legal_name}} against any claims arising from:</p>
+    <ul>
+        <li>Your use of the API</li>
+        <li>Your Applications</li>
+        <li>Violation of these API Terms</li>
+        <li>Violation of any third-party rights</li>
+        <li>Your end users' actions</li>
+    </ul>
+</section>
+
+<section id="termination">
+    <h2>16. Termination</h2>
+    <h3>16.1 Termination by You</h3>
+    <p>You may stop using the API at any time and request deletion of your API credentials.</p>
+    
+    <h3>16.2 Termination by Us</h3>
+    <p>We may suspend or terminate your API access immediately for:</p>
+    <ul>
+        <li>Violation of these API Terms</li>
+        <li>Excessive or abusive usage</li>
+        <li>Fraudulent activity</li>
+        <li>Non-payment (for paid plans)</li>
+        <li>Security concerns</li>
+    </ul>
+    
+    <h3>16.3 Effect of Termination</h3>
+    <ul>
+        <li>Your API credentials will be revoked</li>
+        <li>You must stop using the API immediately</li>
+        <li>Cached data should be deleted per our data policies</li>
+    </ul>
+</section>
+
+<section id="support">
+    <h2>17. Support & Documentation</h2>
+    <h3>17.1 Documentation</h3>
+    <p>API documentation is available at {{api_docs_url|default:site_url + "/docs/api"}}.</p>
+    
+    <h3>17.2 Support Channels</h3>
+    <ul>
+        <li>Documentation and FAQs: {{api_docs_url|default:site_url + "/docs/api"}}</li>
+        <li>Developer Forum: {{developer_forum_url|default:"Available on our website"}}</li>
+        <li>Email Support: <a href="mailto:{{api_support_email|default:support_email}}">{{api_support_email|default:support_email}}</a></li>
+    </ul>
+</section>
+
+<section id="governing-law">
+    <h2>18. Governing Law</h2>
+    <p>These API Terms are governed by the laws of {{jurisdiction|default:"the applicable jurisdiction"}}.</p>
+</section>
+
+<section id="contact">
+    <h2>19. Contact</h2>
+    <p>For API-related questions:</p>
+    <address class="slos-contact-info">
+        <strong>{{company_legal_name}} - API Support</strong><br>
+        Email: <a href="mailto:{{api_support_email|default:support_email}}">{{api_support_email|default:support_email}}</a><br>
+        Documentation: {{api_docs_url|default:site_url + "/docs/api"}}
+    </address>
+</section>
+
+</article>
+</body>
+</html>

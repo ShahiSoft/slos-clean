@@ -179,33 +179,36 @@ class Profile_Wizard {
 			'slos-profile-wizard',
 			'slosProfileWizard',
 			array(
-				'ajaxUrl'     => admin_url( 'admin-ajax.php' ),
-				'nonce'       => wp_create_nonce( 'slos_profile_wizard' ),
-				'steps'       => $step_data,
-				'totalSteps'  => count( $steps ),
-				'currentStep' => $this->get_current_step(),
-				'hubUrl'      => admin_url( 'admin.php?page=slos-documents' ),
-				'i18n'        => array(
-					'saving'          => __( 'Saving...', 'shahi-legalflowsuite' ),
-					'saved'           => __( 'Saved', 'shahi-legalflowsuite' ),
-					'saveError'       => __( 'Error saving. Please try again.', 'shahi-legalflowsuite' ),
-					'validating'      => __( 'Validating...', 'shahi-legalflowsuite' ),
-					'requiredField'   => __( 'This field is required', 'shahi-legalflowsuite' ),
-					'invalidEmail'    => __( 'Please enter a valid email address', 'shahi-legalflowsuite' ),
-					'invalidUrl'      => __( 'Please enter a valid URL', 'shahi-legalflowsuite' ),
-					'unsavedChanges'  => __( 'You have unsaved changes. Are you sure you want to leave?', 'shahi-legalflowsuite' ),
-					'stepComplete'    => __( 'Step complete!', 'shahi-legalflowsuite' ),
-					'profileComplete' => __( 'Profile complete! You can now generate legal documents.', 'shahi-legalflowsuite' ),
-					'generateDocs'    => __( 'Generate Documents', 'shahi-legalflowsuite' ),
-					'nextStep'        => __( 'Next Step', 'shahi-legalflowsuite' ),
-					'previousStep'    => __( 'Previous', 'shahi-legalflowsuite' ),
-					'finish'          => __( 'Finish Setup', 'shahi-legalflowsuite' ),
-					'confirmReset'    => __( 'Are you sure you want to reset the profile? This cannot be undone.', 'shahi-legalflowsuite' ),
-					'addCookie'       => __( 'Add Cookie', 'shahi-legalflowsuite' ),
-					'removeCookie'    => __( 'Remove', 'shahi-legalflowsuite' ),
-					'cookieName'      => __( 'Cookie Name', 'shahi-legalflowsuite' ),
-					'cookiePurpose'   => __( 'Purpose', 'shahi-legalflowsuite' ),
-					'cookieDuration'  => __( 'Duration', 'shahi-legalflowsuite' ),
+				'ajaxUrl'        => admin_url( 'admin-ajax.php' ),
+				'nonce'          => wp_create_nonce( 'slos_profile_wizard' ),
+				'steps'          => $step_data,
+				'totalSteps'     => count( $steps ),
+				'currentStep'    => $this->get_current_step(),
+				'hubUrl'         => admin_url( 'admin.php?page=slos-documents' ),
+				'documentHubUrl' => admin_url( 'admin.php?page=slos-documents' ),
+				'i18n'           => array(
+					'saving'               => __( 'Saving...', 'shahi-legalflowsuite' ),
+					'saved'                => __( 'Saved', 'shahi-legalflowsuite' ),
+					'saveError'            => __( 'Error saving. Please try again.', 'shahi-legalflowsuite' ),
+					'validating'           => __( 'Validating...', 'shahi-legalflowsuite' ),
+					'requiredField'        => __( 'This field is required', 'shahi-legalflowsuite' ),
+					'invalidEmail'         => __( 'Please enter a valid email address', 'shahi-legalflowsuite' ),
+					'invalidUrl'           => __( 'Please enter a valid URL', 'shahi-legalflowsuite' ),
+					'unsavedChanges'       => __( 'You have unsaved changes. Are you sure you want to leave?', 'shahi-legalflowsuite' ),
+					'stepComplete'         => __( 'Step complete!', 'shahi-legalflowsuite' ),
+					'profileComplete'      => __( 'Profile saved successfully! Redirecting to Document Hub...', 'shahi-legalflowsuite' ),
+					'incompleteProfileSaved' => __( 'Profile saved with {count} optional fields remaining. Redirecting...', 'shahi-legalflowsuite' ),
+					'complete'             => __( 'Complete', 'shahi-legalflowsuite' ),
+					'generateDocs'         => __( 'Generate Documents', 'shahi-legalflowsuite' ),
+					'nextStep'             => __( 'Next Step', 'shahi-legalflowsuite' ),
+					'previousStep'         => __( 'Previous', 'shahi-legalflowsuite' ),
+					'finish'               => __( 'Finish Wizard', 'shahi-legalflowsuite' ),
+					'confirmReset'         => __( 'Are you sure you want to reset the profile? This cannot be undone.', 'shahi-legalflowsuite' ),
+					'addCookie'            => __( 'Add Cookie', 'shahi-legalflowsuite' ),
+					'removeCookie'         => __( 'Remove', 'shahi-legalflowsuite' ),
+					'cookieName'           => __( 'Cookie Name', 'shahi-legalflowsuite' ),
+					'cookiePurpose'        => __( 'Purpose', 'shahi-legalflowsuite' ),
+					'cookieDuration'       => __( 'Duration', 'shahi-legalflowsuite' ),
 				),
 			)
 		);
@@ -543,7 +546,7 @@ class Profile_Wizard {
 		if ( isset( $_GET['step'] ) ) {
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$step = absint( $_GET['step'] );
-			if ( $step >= 1 && $step <= 8 ) {
+			if ( $step >= 1 && $step <= 11 ) {
 				return $step;
 			}
 		}
@@ -602,7 +605,7 @@ class Profile_Wizard {
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		$step_data = isset( $_POST['data'] ) ? $this->sanitize_step_data( wp_unslash( $_POST['data'] ) ) : array();
 
-		if ( $step_number < 1 || $step_number > 8 ) {
+		if ( $step_number < 1 || $step_number > 11 ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid step number.', 'shahi-legalflowsuite' ) ) );
 		}
 
@@ -657,7 +660,7 @@ class Profile_Wizard {
 				),
 				'step_valid' => $is_valid,
 				'errors'     => $errors,
-				'next_step'  => min( $step_number + 1, 8 ),
+				'next_step'  => min( $step_number + 1, 11 ),
 			)
 		);
 	}

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>End User License Agreement - {{company_legal_name}}</title>
+</head>
+<body>
+<article class="slos-legal-document slos-eula">
+
+<header class="slos-doc-header">
+    <h1>End User License Agreement (EULA)</h1>
+    <p class="slos-effective-date"><strong>Effective Date:</strong> {{today}}</p>
+    <p class="slos-last-updated"><strong>Last Updated:</strong> {{today}}</p>
+</header>
+
+<section id="introduction">
+    <h2>1. Introduction</h2>
+    <p>This End User License Agreement ("EULA" or "Agreement") is a legal agreement between you (either an individual or a single entity, "You" or "User") and <strong>{{company_legal_name}}</strong> ("Company," "Licensor," "we," "us," or "our") for the use of {{app_name|default:"our software"}} (the "Software"), including any associated media, printed materials, and electronic documentation.</p>
+    
+    <p>BY INSTALLING, COPYING, OR OTHERWISE USING THE SOFTWARE, YOU AGREE TO BE BOUND BY THE TERMS OF THIS EULA. IF YOU DO NOT AGREE, DO NOT INSTALL OR USE THE SOFTWARE.</p>
+</section>
+
+<section id="definitions">
+    <h2>2. Definitions</h2>
+    <ul>
+        <li><strong>"Software"</strong> means the {{app_name|default:"software application"}} and all related files, libraries, updates, and documentation.</li>
+        <li><strong>"License"</strong> means the right to use the Software under the terms of this Agreement.</li>
+        <li><strong>"User Data"</strong> means any data input, uploaded, or created by you using the Software.</li>
+        <li><strong>"Authorized User"</strong> means individuals authorized by you to use the Software under your license.</li>
+    </ul>
+</section>
+
+<section id="license-grant">
+    <h2>3. License Grant</h2>
+    <h3>3.1 Grant of License</h3>
+    <p>Subject to the terms of this EULA, {{company_legal_name}} grants you a limited, non-exclusive, non-transferable, revocable license to:</p>
+    <ul>
+        <li>Install and use the Software on {{device_limit|default:"up to three (3)"}} devices owned or controlled by you</li>
+        <li>Use the Software for {{license_purpose|default:"personal and internal business purposes"}}</li>
+        <li>Make one backup copy of the Software for archival purposes</li>
+    </ul>
+    
+    <h3>3.2 License Type</h3>
+    <p>Your license type determines your usage rights:</p>
+    <table>
+        <thead>
+            <tr>
+                <th>License Type</th>
+                <th>Users</th>
+                <th>Devices</th>
+                <th>Commercial Use</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Personal</td>
+                <td>1</td>
+                <td>{{personal_device_limit|default:"3"}}</td>
+                <td>No</td>
+            </tr>
+            <tr>
+                <td>Professional</td>
+                <td>1</td>
+                <td>{{pro_device_limit|default:"5"}}</td>
+                <td>Yes</td>
+            </tr>
+            {{if has_team_license}}
+            <tr>
+                <td>Team/Business</td>
+                <td>Per seat purchased</td>
+                <td>Unlimited</td>
+                <td>Yes</td>
+            </tr>
+            {{/if}}
+            {{if has_enterprise_license}}
+            <tr>
+                <td>Enterprise</td>
+                <td>Unlimited</td>
+                <td>Unlimited</td>
+                <td>Yes</td>
+            </tr>
+            {{/if}}
+        </tbody>
+    </table>
+</section>
+
+<section id="restrictions">
+    <h2>4. Restrictions</h2>
+    <p>You may NOT:</p>
+    <ul>
+        <li><strong>Copy:</strong> Make copies of the Software except as permitted in Section 3</li>
+        <li><strong>Modify:</strong> Alter, adapt, translate, or create derivative works of the Software</li>
+        <li><strong>Reverse Engineer:</strong> Decompile, disassemble, reverse engineer, or attempt to derive the source code</li>
+        <li><strong>Distribute:</strong> Rent, lease, lend, sell, sublicense, or distribute the Software to third parties</li>
+        <li><strong>Remove Notices:</strong> Remove, alter, or obscure any proprietary notices, labels, or marks</li>
+        <li><strong>Circumvent:</strong> Disable, circumvent, or bypass any security measures or license restrictions</li>
+        <li><strong>Transfer:</strong> Transfer your license to another party without our written consent</li>
+        <li><strong>Compete:</strong> Use the Software to develop a competing product</li>
+        <li><strong>Violate Law:</strong> Use the Software for any unlawful purpose or in violation of any laws</li>
+    </ul>
+</section>
+
+<section id="intellectual-property">
+    <h2>5. Intellectual Property</h2>
+    <h3>5.1 Ownership</h3>
+    <p>The Software is protected by copyright and other intellectual property laws. {{company_legal_name}} and its licensors retain all right, title, and interest in and to the Software, including all intellectual property rights therein.</p>
+    
+    <h3>5.2 Your Data</h3>
+    <p>You retain all ownership rights in your User Data. We do not claim ownership of content you create using the Software.</p>
+    
+    <h3>5.3 Feedback</h3>
+    <p>If you provide feedback, suggestions, or ideas about the Software, you grant us a perpetual, worldwide, royalty-free license to use such feedback without restriction.</p>
+</section>
+
+<section id="registration-activation">
+    <h2>6. Registration & Activation</h2>
+    {{if requires_activation}}
+    <h3>6.1 Product Activation</h3>
+    <p>The Software may require activation with a valid license key. You agree to:</p>
+    <ul>
+        <li>Provide accurate registration information</li>
+        <li>Keep your license key confidential</li>
+        <li>Not share, sell, or transfer your license key</li>
+    </ul>
+    
+    <h3>6.2 Online Verification</h3>
+    <p>The Software may periodically verify your license through an internet connection. If verification fails, functionality may be limited.</p>
+    {{/if}}
+    
+    <h3>6.3 Account Requirements</h3>
+    <p>Some features may require creating an account at {{site_url}}. Account creation is subject to our Terms of Service and Privacy Policy.</p>
+</section>
+
+<section id="updates">
+    <h2>7. Updates & Support</h2>
+    <h3>7.1 Updates</h3>
+    <p>We may release updates, patches, or new versions of the Software. Updates may be:</p>
+    <ul>
+        <li>Automatic (installed without notice)</li>
+        <li>Manual (requiring user action)</li>
+        <li>Required for continued use</li>
+    </ul>
+    
+    <p>Updates are subject to this EULA unless accompanied by new terms.</p>
+    
+    <h3>7.2 Support</h3>
+    <p>{{support_policy|default:"Support is provided according to your license type and our current support policies. See our website for current support terms."}}</p>
+    
+    <h3>7.3 Version Support</h3>
+    <p>We may discontinue support for older versions. We recommend always using the latest version.</p>
+</section>
+
+<section id="data-privacy">
+    <h2>8. Data Collection & Privacy</h2>
+    <h3>8.1 Data Collection</h3>
+    <p>The Software may collect:</p>
+    <ul>
+        <li>Usage statistics and analytics</li>
+        <li>Crash reports and error logs</li>
+        <li>Device and system information</li>
+        <li>Feature usage patterns</li>
+    </ul>
+    
+    <h3>8.2 Privacy Policy</h3>
+    <p>Collection and use of data is governed by our Privacy Policy available at {{site_url}}/privacy-policy.</p>
+    
+    <h3>8.3 Data Security</h3>
+    <p>We implement reasonable security measures to protect collected data. However, no system is completely secure.</p>
+</section>
+
+<section id="third-party">
+    <h2>9. Third-Party Components</h2>
+    <h3>9.1 Third-Party Software</h3>
+    <p>The Software may include third-party libraries, components, or open source software. These components are subject to their own license terms, which can be found in the Software documentation or about section.</p>
+    
+    <h3>9.2 Third-Party Services</h3>
+    <p>The Software may integrate with third-party services. Your use of such services is subject to their terms and privacy policies.</p>
+</section>
+
+<section id="warranty-disclaimer">
+    <h2>10. Warranty Disclaimer</h2>
+    <p><strong>THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.</strong></p>
+    
+    <p>WE DO NOT WARRANT THAT:</p>
+    <ul>
+        <li>The Software will meet your requirements</li>
+        <li>The Software will be uninterrupted, timely, secure, or error-free</li>
+        <li>The results obtained from use of the Software will be accurate</li>
+        <li>Any errors will be corrected</li>
+    </ul>
+</section>
+
+<section id="limitation-liability">
+    <h2>11. Limitation of Liability</h2>
+    <p><strong>TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW:</strong></p>
+    <ul>
+        <li>{{company_legal_name}} SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES</li>
+        <li>OUR TOTAL LIABILITY SHALL NOT EXCEED THE AMOUNT PAID BY YOU FOR THE SOFTWARE IN THE TWELVE (12) MONTHS PRECEDING THE CLAIM</li>
+        <li>WE ARE NOT LIABLE FOR LOSS OF DATA, PROFITS, REVENUE, OR BUSINESS INTERRUPTION</li>
+    </ul>
+    
+    <p>Some jurisdictions do not allow limitation of liability, so these limitations may not apply to you.</p>
+</section>
+
+<section id="indemnification">
+    <h2>12. Indemnification</h2>
+    <p>You agree to indemnify, defend, and hold harmless {{company_legal_name}} from any claims, damages, losses, costs, or expenses arising from:</p>
+    <ul>
+        <li>Your use or misuse of the Software</li>
+        <li>Your violation of this EULA</li>
+        <li>Your violation of any third-party rights</li>
+        <li>Your User Data</li>
+    </ul>
+</section>
+
+<section id="termination">
+    <h2>13. Termination</h2>
+    <h3>13.1 Termination by You</h3>
+    <p>You may terminate this Agreement at any time by uninstalling the Software and destroying all copies.</p>
+    
+    <h3>13.2 Termination by Us</h3>
+    <p>We may terminate this Agreement immediately if you:</p>
+    <ul>
+        <li>Breach any term of this EULA</li>
+        <li>Engage in piracy or unauthorized distribution</li>
+        <li>Use the Software for illegal purposes</li>
+    </ul>
+    
+    <h3>13.3 Effect of Termination</h3>
+    <p>Upon termination:</p>
+    <ul>
+        <li>Your license rights immediately terminate</li>
+        <li>You must uninstall and destroy all copies of the Software</li>
+        <li>Sections on IP, disclaimers, liability, and governing law survive</li>
+    </ul>
+</section>
+
+<section id="export-compliance">
+    <h2>14. Export Compliance</h2>
+    <p>You agree to comply with all applicable export laws and regulations. You may not export or re-export the Software to:</p>
+    <ul>
+        <li>Countries subject to U.S. trade embargoes</li>
+        <li>Persons or entities on restricted party lists</li>
+        <li>For prohibited end-uses</li>
+    </ul>
+</section>
+
+<section id="government-users">
+    <h2>15. U.S. Government Users</h2>
+    <p>The Software is "commercial computer software" as defined in FAR 2.101. Use by government users is subject to FAR 52.227-19 for civilian agencies and DFARS 252.227-7014 for defense agencies.</p>
+</section>
+
+<section id="governing-law">
+    <h2>16. Governing Law & Disputes</h2>
+    <h3>16.1 Governing Law</h3>
+    <p>This Agreement is governed by the laws of {{jurisdiction|default:"the applicable jurisdiction"}}, without regard to conflict of law principles.</p>
+    
+    <h3>16.2 Dispute Resolution</h3>
+    <p>Any disputes arising from this Agreement shall be resolved in the courts of {{jurisdiction|default:"the applicable jurisdiction"}}.</p>
+</section>
+
+<section id="general">
+    <h2>17. General Provisions</h2>
+    <h3>17.1 Entire Agreement</h3>
+    <p>This EULA constitutes the entire agreement between you and {{company_legal_name}} regarding the Software.</p>
+    
+    <h3>17.2 Severability</h3>
+    <p>If any provision is found unenforceable, the remaining provisions remain in effect.</p>
+    
+    <h3>17.3 Waiver</h3>
+    <p>Failure to enforce any provision does not constitute a waiver of that provision.</p>
+    
+    <h3>17.4 Assignment</h3>
+    <p>You may not assign this Agreement without our consent. We may assign our rights freely.</p>
+    
+    <h3>17.5 Amendments</h3>
+    <p>We may update this EULA with notice. Continued use after notice constitutes acceptance.</p>
+</section>
+
+<section id="contact">
+    <h2>18. Contact Information</h2>
+    <p>For questions about this EULA:</p>
+    <address class="slos-contact-info">
+        <strong>{{company_legal_name}}</strong><br>
+        {{company_address}}<br>
+        Email: <a href="mailto:{{legal_contact_email}}">{{legal_contact_email}}</a><br>
+        {{if contact_phone}}Phone: {{contact_phone}}{{/if}}<br>
+        Website: <a href="{{site_url}}">{{site_url}}</a>
+    </address>
+</section>
+
+<footer class="slos-doc-footer">
+    <p><strong>BY CLICKING "I AGREE" OR INSTALLING THE SOFTWARE, YOU ACKNOWLEDGE THAT YOU HAVE READ THIS EULA, UNDERSTAND IT, AND AGREE TO BE BOUND BY ITS TERMS.</strong></p>
+</footer>
+
+</article>
+</body>
+</html>

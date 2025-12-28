@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Licensing Terms - {{company_legal_name}}</title>
+</head>
+<body>
+<article class="slos-legal-document slos-content-licensing">
+
+<header class="slos-doc-header">
+    <h1>Content Licensing Terms</h1>
+    <p class="slos-effective-date"><strong>Effective Date:</strong> {{today}}</p>
+    <p class="slos-last-updated"><strong>Last Updated:</strong> {{today}}</p>
+</header>
+
+<section id="introduction">
+    <h2>1. Introduction</h2>
+    <p>These Content Licensing Terms ("Terms") govern the licensing of content available through <strong>{{company_legal_name}}</strong> at {{site_url}} (the "Platform"). By accessing, downloading, or using any content, you agree to these Terms.</p>
+    
+    <p>These Terms apply to all content including, but not limited to: images, graphics, videos, audio, text, templates, software, and other digital assets ("Content").</p>
+</section>
+
+<section id="definitions">
+    <h2>2. Definitions</h2>
+    <ul>
+        <li><strong>"Content"</strong> means any digital asset available for licensing on the Platform</li>
+        <li><strong>"License"</strong> means the rights granted to use Content under these Terms</li>
+        <li><strong>"Licensee"</strong> or <strong>"You"</strong> means the individual or entity acquiring the License</li>
+        <li><strong>"Licensor"</strong> or <strong>"We"</strong> means {{company_legal_name}}</li>
+        <li><strong>"End Product"</strong> means a final work incorporating the Content</li>
+        <li><strong>"Commercial Use"</strong> means use in connection with any business activity or for monetary compensation</li>
+    </ul>
+</section>
+
+<section id="license-types">
+    <h2>3. License Types</h2>
+    
+    <h3>3.1 Standard License</h3>
+    <p>The Standard License grants you the right to:</p>
+    <ul>
+        <li>Use Content in unlimited personal projects</li>
+        <li>Use Content in {{standard_commercial_projects|default:"up to 1"}} commercial project(s)</li>
+        <li>Create End Products for {{standard_end_users|default:"up to 500,000"}} end users</li>
+        <li>Modify and adapt Content for your projects</li>
+    </ul>
+    
+    <h3>3.2 Extended License</h3>
+    <p>The Extended License includes all Standard License rights plus:</p>
+    <ul>
+        <li>Use Content in unlimited commercial projects</li>
+        <li>Create End Products for unlimited end users</li>
+        <li>Use in products for sale or distribution</li>
+        <li>Use in merchandise and physical products</li>{{if extended_sublicense}}<li>Limited sublicense rights to clients</li>{{/if}}
+    </ul>
+    
+    <h3>3.3 Editorial License</h3>
+    <p>Some Content is marked "Editorial Use Only" and may only be used for:</p>
+    <ul>
+        <li>News reporting</li>
+        <li>Commentary and critique</li>
+        <li>Educational purposes</li>
+        <li>Documentary or journalistic contexts</li>
+    </ul>
+    <p><strong>Editorial Content may NOT be used</strong> for commercial purposes, advertising, or endorsements.</p>
+    
+    {{if has_subscription_license}}
+    <h3>3.4 Subscription License</h3>
+    <p>Subscription members receive:</p>
+    <ul>
+        <li>Standard License for all downloads during subscription</li>
+        <li>Licenses survive subscription termination</li>
+        <li>Monthly download limits per plan</li>
+    </ul>
+    {{/if}}
+</section>
+
+<section id="permitted-uses">
+    <h2>4. Permitted Uses</h2>
+    <h3>4.1 General Permitted Uses</h3>
+    <p>Subject to license type, you may use Content in:</p>
+    <ul>
+        <li><strong>Digital Media:</strong> Websites, apps, social media, presentations, videos</li>
+        <li><strong>Print Media:</strong> Brochures, flyers, magazines, books, packaging</li>
+        <li><strong>Advertising:</strong> Online ads, print ads, billboards, commercials</li>
+        <li><strong>Merchandise:</strong> Products for sale (Extended License required)</li>
+        <li><strong>Software:</strong> User interfaces, software applications</li>
+        <li><strong>Broadcast:</strong> Television, film, streaming platforms</li>
+    </ul>
+    
+    <h3>4.2 Modification Rights</h3>
+    <p>You may:</p>
+    <ul>
+        <li>Crop, resize, and reformat Content</li>
+        <li>Adjust colors, filters, and effects</li>
+        <li>Combine Content with other elements</li>
+        <li>Create derivative works incorporating the Content</li>
+    </ul>
+</section>
+
+<section id="prohibited-uses">
+    <h2>5. Prohibited Uses</h2>
+    <p>You may NOT:</p>
+    
+    <h3>5.1 Redistribution</h3>
+    <ul>
+        <li>Resell, sublicense, or redistribute Content as standalone files</li>
+        <li>Include Content in stock media or template products</li>
+        <li>Share Content with third parties for their use</li>
+        <li>Upload Content to other stock platforms</li>
+    </ul>
+    
+    <h3>5.2 Sensitive Uses</h3>
+    <ul>
+        <li>Use Content featuring people in connection with sensitive topics without model release</li>
+        <li>Imply endorsement by people in the Content</li>
+        <li>Use in adult content, pornography, or obscene materials</li>
+        <li>Use in ways that are defamatory, libelous, or fraudulent</li>
+        <li>Use to promote tobacco, alcohol, or controlled substances (without appropriate license)</li>
+    </ul>
+    
+    <h3>5.3 Intellectual Property</h3>
+    <ul>
+        <li>Register Content or derivatives as your trademark or copyright</li>
+        <li>Claim ownership of unmodified Content</li>
+        <li>Use Content in ways that violate third-party rights</li>
+    </ul>
+    
+    <h3>5.4 Other Prohibited Uses</h3>
+    <ul>
+        <li>Use Content for illegal purposes</li>
+        <li>Use Editorial Content for commercial purposes</li>
+        <li>Use Content in hate speech or discrimination</li>
+        <li>Use Content in political campaigns without appropriate rights</li>
+    </ul>
+</section>
+
+<section id="attribution">
+    <h2>6. Attribution</h2>
+    <h3>6.1 Attribution Requirements</h3>
+    <p>Attribution requirements depend on your license and content type:</p>
+    <table>
+        <thead>
+            <tr>
+                <th>License Type</th>
+                <th>Attribution Required?</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Standard License</td>
+                <td>{{standard_attribution|default:"Not required, but appreciated"}}</td>
+            </tr>
+            <tr>
+                <td>Extended License</td>
+                <td>Not required</td>
+            </tr>
+            <tr>
+                <td>Editorial License</td>
+                <td>{{editorial_attribution|default:"Required"}}</td>
+            </tr>
+            <tr>
+                <td>Free Content</td>
+                <td>{{free_attribution|default:"Required"}}</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h3>6.2 How to Attribute</h3>
+    <p>When attribution is required, include:</p>
+    <ul>
+        <li>Creator/artist name (if available)</li>
+        <li>{{company_legal_name}} as the source</li>
+        <li>Link to {{site_url}} where possible</li>
+    </ul>
+    <p>Example: "Photo by [Creator Name] from {{company_legal_name}}"</p>
+</section>
+
+<section id="model-property">
+    <h2>7. Model & Property Releases</h2>
+    <h3>7.1 Model Releases</h3>
+    <p>Content featuring recognizable people:</p>
+    <ul>
+        <li><strong>Commercial Use:</strong> Requires model release (we secure these where possible)</li>
+        <li><strong>Editorial Use:</strong> Model release typically not required</li>
+        <li><strong>Sensitive Topics:</strong> Additional releases may be needed</li>
+    </ul>
+    
+    <h3>7.2 Property Releases</h3>
+    <p>Content featuring recognizable property, trademarks, or artwork:</p>
+    <ul>
+        <li>Property releases may be required for commercial use</li>
+        <li>Check Content details for release availability</li>
+        <li>You are responsible for obtaining additional clearances if needed</li>
+    </ul>
+    
+    <h3>7.3 Your Responsibility</h3>
+    <p>While we strive to provide appropriate releases, you are ultimately responsible for ensuring your use is legally compliant.</p>
+</section>
+
+<section id="user-content">
+    <h2>8. User-Submitted Content</h2>
+    {{if accepts_user_content}}
+    <h3>8.1 Submission Terms</h3>
+    <p>If you submit Content to our Platform:</p>
+    <ul>
+        <li>You retain copyright ownership</li>
+        <li>You grant us a worldwide, royalty-free license to distribute, display, and sublicense the Content</li>
+        <li>You represent you have all necessary rights to submit the Content</li>
+        <li>You will receive compensation per our Contributor Agreement</li>
+    </ul>
+    
+    <h3>8.2 Content Standards</h3>
+    <p>Submitted Content must:</p>
+    <ul>
+        <li>Meet our technical quality standards</li>
+        <li>Be your original work</li>
+        <li>Include appropriate releases</li>
+        <li>Not violate any laws or third-party rights</li>
+    </ul>
+    {{/if}}
+</section>
+
+<section id="intellectual-property">
+    <h2>9. Intellectual Property</h2>
+    <h3>9.1 Ownership</h3>
+    <p>All Content is owned by {{company_legal_name}} or our contributors. Your license does not transfer ownership of the Content.</p>
+    
+    <h3>9.2 Copyright Protection</h3>
+    <p>All Content is protected by copyright and other intellectual property laws. Unauthorized use may result in legal action.</p>
+    
+    <h3>9.3 DMCA Compliance</h3>
+    <p>If you believe Content infringes your copyright, contact our DMCA agent at <a href="mailto:{{dmca_agent_email}}">{{dmca_agent_email}}</a>.</p>
+</section>
+
+<section id="warranty">
+    <h2>10. Warranties & Representations</h2>
+    <h3>10.1 Our Warranty</h3>
+    <p>We warrant that:</p>
+    <ul>
+        <li>We have the right to license the Content</li>
+        <li>Content is provided in good faith</li>
+        <li>To our knowledge, Content does not infringe third-party rights</li>
+    </ul>
+    
+    <h3>10.2 Disclaimer</h3>
+    <p>CONTENT IS PROVIDED "AS IS." WE DISCLAIM ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.</p>
+    
+    <p>We do not warrant that:</p>
+    <ul>
+        <li>Content is free of all encumbrances</li>
+        <li>All necessary releases have been obtained</li>
+        <li>Content is suitable for your specific use</li>
+    </ul>
+</section>
+
+<section id="indemnification">
+    <h2>11. Indemnification</h2>
+    <h3>11.1 Our Indemnification</h3>
+    <p>We will indemnify you against third-party claims that properly licensed Content infringes their intellectual property rights, subject to limitations and exclusions.</p>
+    
+    <h3>11.2 Your Indemnification</h3>
+    <p>You agree to indemnify us against claims arising from:</p>
+    <ul>
+        <li>Your use of Content beyond license scope</li>
+        <li>Your modifications to Content</li>
+        <li>Your violation of these Terms</li>
+        <li>Your End Products</li>
+    </ul>
+</section>
+
+<section id="limitation-liability">
+    <h2>12. Limitation of Liability</h2>
+    <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW:</p>
+    <ul>
+        <li>Our total liability shall not exceed the license fee paid for the specific Content at issue</li>
+        <li>We are not liable for indirect, incidental, special, or consequential damages</li>
+        <li>We are not liable for lost profits, revenue, or business opportunities</li>
+    </ul>
+</section>
+
+<section id="termination">
+    <h2>13. License Termination</h2>
+    <h3>13.1 Termination by Us</h3>
+    <p>We may terminate your license if you:</p>
+    <ul>
+        <li>Violate these Terms</li>
+        <li>Use Content in prohibited ways</li>
+        <li>Fail to pay license fees</li>
+        <li>Commit fraud</li>
+    </ul>
+    
+    <h3>13.2 Effect of Termination</h3>
+    <ul>
+        <li>You must cease all use of the Content</li>
+        <li>You must destroy all copies of the Content</li>
+        <li>End Products created before termination may continue to exist</li>
+    </ul>
+    
+    <h3>13.3 Survival</h3>
+    <p>Properly licensed Content in End Products created before termination may continue to be used.</p>
+</section>
+
+<section id="governing-law">
+    <h2>14. Governing Law</h2>
+    <p>These Terms are governed by the laws of {{jurisdiction|default:"the applicable jurisdiction"}}.</p>
+</section>
+
+<section id="contact">
+    <h2>15. Contact Us</h2>
+    <p>For licensing questions:</p>
+    <address class="slos-contact-info">
+        <strong>{{company_legal_name}}</strong><br>
+        {{company_address}}<br>
+        Email: <a href="mailto:{{licensing_email|default:support_email}}">{{licensing_email|default:support_email}}</a><br>
+        {{if contact_phone}}Phone: {{contact_phone}}{{/if}}
+    </address>
+</section>
+
+</article>
+</body>
+</html>

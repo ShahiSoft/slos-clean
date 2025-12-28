@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Agreement - {{company_legal_name}}</title>
+</head>
+<body>
+<article class="slos-legal-document slos-subscription-agreement">
+
+<header class="slos-doc-header">
+    <h1>Subscription Agreement</h1>
+    <p class="slos-effective-date"><strong>Effective Date:</strong> {{today}}</p>
+    <p class="slos-last-updated"><strong>Last Updated:</strong> {{today}}</p>
+</header>
+
+<section id="introduction">
+    <h2>1. Introduction</h2>
+    <p>This Subscription Agreement ("Agreement") is between you ("Subscriber," "you," or "your") and <strong>{{company_legal_name}}</strong> ("Company," "we," "us," or "our") and governs your subscription to our services through {{site_url}}{{if app_name}} and {{app_name}}{{/if}} (the "Service").</p>
+    
+    <p>By subscribing to our Service, you agree to be bound by this Agreement.</p>
+</section>
+
+<section id="subscription-plans">
+    <h2>2. Subscription Plans</h2>
+    <h3>2.1 Available Plans</h3>
+    <p>We offer the following subscription options:</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Plan</th>
+                <th>Billing Cycle</th>
+                <th>Features</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{if plan_monthly}}
+            <tr>
+                <td>Monthly</td>
+                <td>Billed monthly</td>
+                <td>Full access, cancel anytime</td>
+            </tr>
+            {{/if}}
+            {{if plan_annual}}
+            <tr>
+                <td>Annual</td>
+                <td>Billed yearly</td>
+                <td>Full access, {{annual_discount|default:"discount pricing"}}</td>
+            </tr>
+            {{/if}}
+            {{if plan_lifetime}}
+            <tr>
+                <td>Lifetime</td>
+                <td>One-time payment</td>
+                <td>Perpetual access</td>
+            </tr>
+            {{/if}}
+        </tbody>
+    </table>
+    
+    <h3>2.2 Plan Features</h3>
+    <p>Specific features and limitations for each plan are described on our pricing page. Features may include:</p>
+    <ul>
+        <li>Access to premium content</li>
+        <li>Advanced features and tools</li>
+        <li>Priority customer support</li>
+        <li>Storage limits</li>
+        <li>Number of users/seats</li>
+        <li>API access limits</li>
+    </ul>
+</section>
+
+<section id="subscription-term">
+    <h2>3. Subscription Term</h2>
+    <h3>3.1 Initial Term</h3>
+    <p>Your subscription begins on the date of your initial payment and continues for the billing period selected (monthly or annual).</p>
+    
+    <h3>3.2 Automatic Renewal</h3>
+    <p><strong>IMPORTANT:</strong> Your subscription will automatically renew at the end of each billing period unless cancelled. By subscribing, you authorize us to charge your payment method on file at the beginning of each new billing period.</p>
+    
+    <h3>3.3 Renewal Terms</h3>
+    <ul>
+        <li><strong>Monthly subscriptions:</strong> Renew every {{billing_cycle|default:"month"}} on the same calendar day</li>
+        <li><strong>Annual subscriptions:</strong> Renew on the anniversary of your start date</li>
+    </ul>
+    
+    <h3>3.4 Renewal Price</h3>
+    <p>Renewal will be at the then-current subscription price, which may differ from your original price. We will notify you of price changes at least {{price_change_notice|default:"30 days"}} before they take effect.</p>
+</section>
+
+<section id="free-trial">
+    <h2>4. Free Trial</h2>
+    {{if offers_free_trial}}
+    <h3>4.1 Trial Period</h3>
+    <p>New subscribers may be eligible for a free trial period of {{free_trial_period|default:"14 days"}}.</p>
+    
+    <h3>4.2 Trial Terms</h3>
+    <ul>
+        <li>One free trial per user/household</li>
+        <li>Payment information required to start trial</li>
+        <li>Full access to subscription features during trial</li>
+        <li>Cancel before trial ends to avoid charges</li>
+    </ul>
+    
+    <h3>4.3 After Trial</h3>
+    <p>Unless cancelled before the trial period ends, your subscription will automatically convert to a paid subscription, and your payment method will be charged.</p>
+    {{else}}
+    <p>Free trial offers may be available from time to time. Trial terms will be communicated at sign-up.</p>
+    {{/if}}
+</section>
+
+<section id="payment-billing">
+    <h2>5. Payment & Billing</h2>
+    <h3>5.1 Payment Methods</h3>
+    <p>We accept the following payment methods:</p>
+    <ul>
+        <li>Major credit cards (Visa, MasterCard, American Express)</li>
+        <li>Debit cards</li>
+        <li>PayPal</li>{{if accepts_crypto}}<li>Cryptocurrency (select options)</li>{{/if}}
+    </ul>
+    
+    <h3>5.2 Billing Authorization</h3>
+    <p>By providing payment information, you authorize us to:</p>
+    <ul>
+        <li>Charge your payment method for subscription fees</li>
+        <li>Charge for automatic renewals</li>
+        <li>Update payment information through card network services</li>
+        <li>Retry failed payments</li>
+    </ul>
+    
+    <h3>5.3 Billing Date</h3>
+    <p>You will be billed:</p>
+    <ul>
+        <li>Immediately upon subscribing</li>
+        <li>On each renewal date thereafter</li>
+    </ul>
+    
+    <h3>5.4 Failed Payments</h3>
+    <p>If a payment fails:</p>
+    <ul>
+        <li>We will retry the charge within {{retry_period|default:"7-10 days"}}</li>
+        <li>You will be notified of the failure</li>
+        <li>Your subscription may be suspended until payment is resolved</li>
+        <li>Continued failure may result in subscription cancellation</li>
+    </ul>
+    
+    <h3>5.5 Currency</h3>
+    <p>All prices are in {{currency|default:"USD"}} unless otherwise stated. Currency conversions are handled by your payment provider.</p>
+</section>
+
+<section id="price-changes">
+    <h2>6. Price Changes</h2>
+    <h3>6.1 Notice of Price Changes</h3>
+    <p>We may change subscription prices with at least {{price_change_notice|default:"30 days"}} advance notice via email to your registered email address.</p>
+    
+    <h3>6.2 Your Options</h3>
+    <p>If prices increase, you may:</p>
+    <ul>
+        <li>Accept the new price and continue your subscription</li>
+        <li>Cancel before the new price takes effect</li>
+    </ul>
+    
+    <h3>6.3 Price Guarantees</h3>
+    <p>{{price_guarantee|default:"Price changes will apply at your next renewal. Your current billing period will not be affected."}}</p>
+</section>
+
+<section id="cancellation">
+    <h2>7. Cancellation</h2>
+    <h3>7.1 How to Cancel</h3>
+    <p>You may cancel your subscription at any time by:</p>
+    <ul>
+        <li>Accessing your account settings at {{site_url}}</li>
+        <li>Emailing <a href="mailto:{{support_email}}">{{support_email}}</a></li>{{if contact_phone}}<li>Calling {{contact_phone}}</li>{{/if}}
+    </ul>
+    
+    <h3>7.2 Effect of Cancellation</h3>
+    <ul>
+        <li>Your subscription remains active until the end of the current billing period</li>
+        <li>No further charges will be made after cancellation</li>
+        <li>You retain access to subscription features until the period ends</li>
+        <li>No partial refunds for unused time (except as required by law)</li>
+    </ul>
+    
+    <h3>7.3 Data After Cancellation</h3>
+    <p>After your subscription ends:</p>
+    <ul>
+        <li>Your account may revert to a free tier (if available)</li>
+        <li>Premium features will be disabled</li>
+        <li>Your data will be retained for {{data_retention_after_cancel|default:"90 days"}}</li>
+        <li>You may export your data before or during this period</li>
+    </ul>
+</section>
+
+<section id="refunds">
+    <h2>8. Refunds</h2>
+    <h3>8.1 Refund Policy</h3>
+    <p>{{subscription_refund_policy|default:"Subscription fees are generally non-refundable. However, we may offer refunds in certain circumstances at our discretion."}}</p>
+    
+    <h3>8.2 Eligible Refund Situations</h3>
+    <p>We may offer refunds for:</p>
+    <ul>
+        <li>Service outages exceeding {{outage_threshold|default:"24 hours"}}</li>
+        <li>Billing errors on our part</li>
+        <li>Duplicate charges</li>
+        <li>Annual subscriptions cancelled within {{annual_refund_window|default:"30 days"}}</li>
+        <li>As required by applicable law</li>
+    </ul>
+    
+    <h3>8.3 Requesting a Refund</h3>
+    <p>To request a refund, contact <a href="mailto:{{billing_email|default:support_email}}">{{billing_email|default:support_email}}</a> with your order details and reason for the request.</p>
+</section>
+
+<section id="subscriber-responsibilities">
+    <h2>9. Subscriber Responsibilities</h2>
+    <p>As a subscriber, you agree to:</p>
+    <ul>
+        <li>Provide accurate account and payment information</li>
+        <li>Keep your account credentials secure</li>
+        <li>Not share your subscription with unauthorized users</li>
+        <li>Use the Service in compliance with our Terms of Service</li>
+        <li>Keep your payment method current</li>
+        <li>Notify us of any billing concerns within {{billing_dispute_window|default:"60 days"}}</li>
+    </ul>
+</section>
+
+<section id="account-sharing">
+    <h2>10. Account Sharing</h2>
+    <h3>10.1 Single User Subscriptions</h3>
+    <p>Unless otherwise specified, subscriptions are for individual use only and may not be shared.</p>
+    
+    {{if allows_team_accounts}}
+    <h3>10.2 Team/Business Subscriptions</h3>
+    <p>Team subscriptions allow the specified number of users. Additional users may be added at the applicable per-user rate.</p>
+    {{/if}}
+    
+    <h3>10.3 Violations</h3>
+    <p>Unauthorized account sharing may result in:</p>
+    <ul>
+        <li>Suspension of your account</li>
+        <li>Additional charges for extra users</li>
+        <li>Termination of your subscription</li>
+    </ul>
+</section>
+
+<section id="service-changes">
+    <h2>11. Service Changes</h2>
+    <h3>11.1 Updates and Modifications</h3>
+    <p>We may modify the Service features, functionality, or pricing at any time. Material changes will be communicated via email.</p>
+    
+    <h3>11.2 Feature Removal</h3>
+    <p>If we remove features that materially reduce the value of your subscription, you may be entitled to a prorated refund or credit.</p>
+    
+    <h3>11.3 Service Discontinuation</h3>
+    <p>If we discontinue the Service entirely, subscribers will receive at least {{discontinuation_notice|default:"30 days"}} notice and a prorated refund for the unused portion.</p>
+</section>
+
+<section id="termination">
+    <h2>12. Termination by Company</h2>
+    <p>We may terminate or suspend your subscription if you:</p>
+    <ul>
+        <li>Violate this Agreement or our Terms of Service</li>
+        <li>Engage in fraudulent activity</li>
+        <li>Fail to pay subscription fees</li>
+        <li>Abuse the Service or other users</li>
+        <li>Are required to be terminated by law</li>
+    </ul>
+    
+    <h3>12.1 Effect of Termination</h3>
+    <ul>
+        <li>Immediate loss of access to the Service</li>
+        <li>No refund for termination due to violation</li>
+        <li>Potential loss of data (export opportunity may be provided)</li>
+    </ul>
+</section>
+
+<section id="taxes">
+    <h2>13. Taxes</h2>
+    <p>Subscription fees {{tax_policy|default:"may not include applicable taxes"}}. You are responsible for paying any applicable:</p>
+    <ul>
+        <li>Sales tax</li>
+        <li>VAT (Value Added Tax)</li>
+        <li>GST (Goods and Services Tax)</li>
+        <li>Other local taxes</li>
+    </ul>
+    
+    <p>Taxes will be calculated and added at checkout based on your location.</p>
+</section>
+
+<section id="limitation-liability">
+    <h2>14. Limitation of Liability</h2>
+    <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW, {{company_legal_name}}'S TOTAL LIABILITY FOR ANY CLAIMS ARISING FROM YOUR SUBSCRIPTION SHALL NOT EXCEED THE AMOUNT YOU PAID FOR YOUR SUBSCRIPTION IN THE TWELVE (12) MONTHS PRIOR TO THE CLAIM.</p>
+</section>
+
+<section id="disputes">
+    <h2>15. Disputes</h2>
+    <h3>15.1 Billing Disputes</h3>
+    <p>Contact us at <a href="mailto:{{billing_email|default:support_email}}">{{billing_email|default:support_email}}</a> within {{billing_dispute_window|default:"60 days"}} of any billing issue.</p>
+    
+    <h3>15.2 Chargebacks</h3>
+    <p>Before disputing a charge with your bank or credit card company, please contact us first. Unauthorized chargebacks may result in account suspension and collection action.</p>
+</section>
+
+<section id="governing-law">
+    <h2>16. Governing Law</h2>
+    <p>This Agreement is governed by the laws of {{jurisdiction|default:"the applicable jurisdiction"}}.</p>
+</section>
+
+<section id="contact">
+    <h2>17. Contact Us</h2>
+    <p>For subscription-related questions:</p>
+    <address class="slos-contact-info">
+        <strong>{{company_legal_name}}</strong><br>
+        {{company_address}}<br>
+        Email: <a href="mailto:{{support_email}}">{{support_email}}</a><br>
+        {{if billing_email}}Billing: <a href="mailto:{{billing_email}}">{{billing_email}}</a><br>{{/if}}
+        {{if contact_phone}}Phone: {{contact_phone}}{{/if}}
+    </address>
+</section>
+
+</article>
+</body>
+</html>

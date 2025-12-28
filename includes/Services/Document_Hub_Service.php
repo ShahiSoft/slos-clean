@@ -93,6 +93,9 @@ class Document_Hub_Service
     public function get_document_types()
     {
         return array(
+            // ========================================
+            // CORE LEGAL DOCUMENTS
+            // ========================================
             'privacy-policy' => array(
                 'title' => __('Privacy Policy', 'shahi-legalflowsuite'),
                 'description' => __('Mandatory for websites collecting user data. Covers GDPR, CCPA, and other privacy laws.', 'shahi-legalflowsuite'),
@@ -100,14 +103,14 @@ class Document_Hub_Service
                 'category' => 'compliance',
             ),
             'terms-of-service' => array(
-                'title' => __('Terms & Conditions', 'shahi-legalflowsuite'),
-                'description' => __('Establishes the rules and regulations for using your website.', 'shahi-legalflowsuite'),
+                'title' => __('Terms of Service', 'shahi-legalflowsuite'),
+                'description' => __('Establishes the rules and regulations for using your website and services.', 'shahi-legalflowsuite'),
                 'icon' => 'dashicons-book',
                 'category' => 'legal',
             ),
             'cookie-policy' => array(
                 'title' => __('Cookie Policy', 'shahi-legalflowsuite'),
-                'description' => __('Explains how your website uses cookies and similar technologies.', 'shahi-legalflowsuite'),
+                'description' => __('Explains how your website uses cookies and similar tracking technologies.', 'shahi-legalflowsuite'),
                 'icon' => 'dashicons-visibility',
                 'category' => 'compliance',
             ),
@@ -117,11 +120,151 @@ class Document_Hub_Service
                 'icon' => 'dashicons-warning',
                 'category' => 'legal',
             ),
+            'acceptable-use-policy' => array(
+                'title' => __('Acceptable Use Policy', 'shahi-legalflowsuite'),
+                'description' => __('Defines acceptable behavior for users on your website, preventing misuse and illegal activities.', 'shahi-legalflowsuite'),
+                'icon' => 'dashicons-yes-alt',
+                'category' => 'legal',
+            ),
+            'copyright-dmca-policy' => array(
+                'title' => __('Copyright & DMCA Policy', 'shahi-legalflowsuite'),
+                'description' => __('Protects your content and outlines procedures for handling copyright infringement claims.', 'shahi-legalflowsuite'),
+                'icon' => 'dashicons-admin-page',
+                'category' => 'legal',
+            ),
+            'accessibility-statement' => array(
+                'title' => __('Accessibility Statement', 'shahi-legalflowsuite'),
+                'description' => __('Explains your website\'s commitment to accessibility (WCAG compliance) and how users can report issues.', 'shahi-legalflowsuite'),
+                'icon' => 'dashicons-universal-access',
+                'category' => 'compliance',
+            ),
+            
+            // ========================================
+            // BUSINESS OPERATIONS
+            // ========================================
+            'contact-imprint' => array(
+                'title' => __('Contact / Imprint', 'shahi-legalflowsuite'),
+                'description' => __('Legal contact details, business registration info, and responsible parties. Required in EU.', 'shahi-legalflowsuite'),
+                'icon' => 'dashicons-id-alt',
+                'category' => 'business',
+            ),
+            'data-processing-agreement' => array(
+                'title' => __('Data Processing Agreement', 'shahi-legalflowsuite'),
+                'description' => __('GDPR Article 28 compliant agreement for third-party data processors.', 'shahi-legalflowsuite'),
+                'icon' => 'dashicons-database',
+                'category' => 'compliance',
+            ),
+            'security-policy' => array(
+                'title' => __('Security Policy', 'shahi-legalflowsuite'),
+                'description' => __('Outlines data security measures and breach notification procedures.', 'shahi-legalflowsuite'),
+                'icon' => 'dashicons-lock',
+                'category' => 'business',
+            ),
+            'anti-spam-policy' => array(
+                'title' => __('Anti-Spam Policy', 'shahi-legalflowsuite'),
+                'description' => __('Prohibits spam and outlines consequences for violations.', 'shahi-legalflowsuite'),
+                'icon' => 'dashicons-email-alt2',
+                'category' => 'business',
+            ),
+            
+            // ========================================
+            // USER CONDUCT
+            // ========================================
+            'terms-of-use' => array(
+                'title' => __('Terms of Use', 'shahi-legalflowsuite'),
+                'description' => __('Simplified usage rules focusing on user conduct and site usage guidelines.', 'shahi-legalflowsuite'),
+                'icon' => 'dashicons-editor-ol',
+                'category' => 'legal',
+            ),
+            'community-guidelines' => array(
+                'title' => __('Community Guidelines', 'shahi-legalflowsuite'),
+                'description' => __('Behavioral standards for user interactions in forums, comments, and social features.', 'shahi-legalflowsuite'),
+                'icon' => 'dashicons-groups',
+                'category' => 'community',
+            ),
+            'age-verification-policy' => array(
+                'title' => __('Age Verification Policy', 'shahi-legalflowsuite'),
+                'description' => __('Ensures compliance with age restrictions for content or services.', 'shahi-legalflowsuite'),
+                'icon' => 'dashicons-id',
+                'category' => 'compliance',
+            ),
+            
+            // ========================================
+            // E-COMMERCE
+            // ========================================
             'refund-policy' => array(
                 'title' => __('Refund & Return Policy', 'shahi-legalflowsuite'),
-                'description' => __('Policy regarding refunds and returns for e-commerce stores.', 'shahi-legalflowsuite'),
-                'icon' => 'dashicons-cart',
+                'description' => __('Policy regarding refunds and returns for products and services.', 'shahi-legalflowsuite'),
+                'icon' => 'dashicons-money-alt',
                 'category' => 'ecommerce',
+            ),
+            'shipping-policy' => array(
+                'title' => __('Shipping Policy', 'shahi-legalflowsuite'),
+                'description' => __('Details delivery terms, costs, timelines, and shipping regions.', 'shahi-legalflowsuite'),
+                'icon' => 'dashicons-car',
+                'category' => 'ecommerce',
+            ),
+            'warranty-policy' => array(
+                'title' => __('Warranty Policy', 'shahi-legalflowsuite'),
+                'description' => __('Covers product warranties, guarantees, and warranty claim procedures.', 'shahi-legalflowsuite'),
+                'icon' => 'dashicons-awards',
+                'category' => 'ecommerce',
+            ),
+            'cancellation-policy' => array(
+                'title' => __('Cancellation Policy', 'shahi-legalflowsuite'),
+                'description' => __('Explains how users can cancel services or subscriptions.', 'shahi-legalflowsuite'),
+                'icon' => 'dashicons-dismiss',
+                'category' => 'ecommerce',
+            ),
+            'subscription-agreement' => array(
+                'title' => __('Subscription Agreement', 'shahi-legalflowsuite'),
+                'description' => __('Governs recurring payments, billing cycles, and subscription terms.', 'shahi-legalflowsuite'),
+                'icon' => 'dashicons-calendar-alt',
+                'category' => 'ecommerce',
+            ),
+            'affiliate-terms' => array(
+                'title' => __('Affiliate Program Terms', 'shahi-legalflowsuite'),
+                'description' => __('Defines rules for affiliate partnerships, commissions, and payouts.', 'shahi-legalflowsuite'),
+                'icon' => 'dashicons-networking',
+                'category' => 'ecommerce',
+            ),
+            
+            // ========================================
+            // SOFTWARE & API
+            // ========================================
+            'eula' => array(
+                'title' => __('End User License Agreement', 'shahi-legalflowsuite'),
+                'description' => __('Grants users permission to use software, apps, or digital products.', 'shahi-legalflowsuite'),
+                'icon' => 'dashicons-media-code',
+                'category' => 'software',
+            ),
+            'api-terms' => array(
+                'title' => __('API Terms of Service', 'shahi-legalflowsuite'),
+                'description' => __('Governs access to and use of your website\'s API for developers.', 'shahi-legalflowsuite'),
+                'icon' => 'dashicons-rest-api',
+                'category' => 'software',
+            ),
+            'content-licensing' => array(
+                'title' => __('Content Licensing Agreement', 'shahi-legalflowsuite'),
+                'description' => __('Grants permissions for using third-party content or licensing your content.', 'shahi-legalflowsuite'),
+                'icon' => 'dashicons-format-aside',
+                'category' => 'software',
+            ),
+            
+            // ========================================
+            // SPECIALIZED
+            // ========================================
+            'nda' => array(
+                'title' => __('Non-Disclosure Agreement', 'shahi-legalflowsuite'),
+                'description' => __('Protects confidential information shared between parties.', 'shahi-legalflowsuite'),
+                'icon' => 'dashicons-hidden',
+                'category' => 'business',
+            ),
+            'mobile-app-terms' => array(
+                'title' => __('Mobile App Terms', 'shahi-legalflowsuite'),
+                'description' => __('Specific terms for mobile applications, covering app store rules and device-specific issues.', 'shahi-legalflowsuite'),
+                'icon' => 'dashicons-smartphone',
+                'category' => 'software',
             ),
         );
     }
@@ -160,10 +303,13 @@ class Document_Hub_Service
     public function get_categories()
     {
         return array(
-            'all' => __('All Documents', 'shahi-legalflowsuite'),
+            'all'        => __('All Documents', 'shahi-legalflowsuite'),
             'compliance' => __('Compliance', 'shahi-legalflowsuite'),
-            'legal' => __('Legal Agreements', 'shahi-legalflowsuite'),
-            'ecommerce' => __('E-commerce', 'shahi-legalflowsuite'),
+            'legal'      => __('Legal Agreements', 'shahi-legalflowsuite'),
+            'business'   => __('Business Operations', 'shahi-legalflowsuite'),
+            'community'  => __('Community & Content', 'shahi-legalflowsuite'),
+            'ecommerce'  => __('E-Commerce', 'shahi-legalflowsuite'),
+            'software'   => __('Software & API', 'shahi-legalflowsuite'),
         );
     }
 

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Information / Imprint - {{company_legal_name}}</title>
+</head>
+<body>
+<article class="slos-legal-document slos-contact-imprint">
+
+<header class="slos-doc-header">
+    <h1>Contact Information / Imprint</h1>
+    <p class="slos-last-updated"><strong>Last Updated:</strong> {{today}}</p>
+</header>
+
+<section id="company-info">
+    <h2>1. Company Information</h2>
+    <address class="slos-company-details">
+        <strong>{{company_legal_name}}</strong><br>
+        {{if company_trading_name}}Trading as: {{company_trading_name}}<br>{{/if}}
+        <br>
+        <strong>Registered Address:</strong><br>
+        {{company_address}}<br>
+        <br>
+        {{if company_registration}}<strong>Registration Number:</strong> {{company_registration}}<br>{{/if}}
+        {{if company_vat_number}}<strong>VAT Number:</strong> {{company_vat_number}}<br>{{/if}}
+        <strong>Business Type:</strong> {{business_type}}<br>
+        {{if industry}}<strong>Industry:</strong> {{industry}}<br>{{/if}}
+    </address>
+</section>
+
+<section id="contact-details">
+    <h2>2. Contact Details</h2>
+    <h3>General Inquiries</h3>
+    <address class="slos-contact-info">
+        {{if support_email}}Email: <a href="mailto:{{support_email}}">{{support_email}}</a><br>{{/if}}
+        {{if contact_phone}}Phone: {{contact_phone}}<br>{{/if}}
+        Website: <a href="{{site_url}}">{{site_url}}</a>
+    </address>
+    
+    <h3>Legal Inquiries</h3>
+    <address class="slos-contact-info">
+        Email: <a href="mailto:{{legal_contact_email}}">{{legal_contact_email}}</a>
+    </address>
+    
+    {{if dpo_email}}
+    <h3>Data Protection Officer</h3>
+    <address class="slos-contact-info">
+        {{if dpo_name}}{{dpo_name}}<br>{{/if}}
+        Email: <a href="mailto:{{dpo_email}}">{{dpo_email}}</a><br>
+        {{if dpo_phone}}Phone: {{dpo_phone}}<br>{{/if}}
+        {{if dpo_address}}Address: {{dpo_address}}{{/if}}
+    </address>
+    {{/if}}
+</section>
+
+<section id="responsible-persons">
+    <h2>3. Responsible Persons</h2>
+    <p>The persons responsible for the content of this website in accordance with applicable media laws:</p>
+    <address class="slos-contact-info">
+        <strong>{{company_legal_name}}</strong><br>
+        {{company_address}}<br>
+        Email: <a href="mailto:{{legal_contact_email}}">{{legal_contact_email}}</a>
+    </address>
+</section>
+
+{{if gdpr_applies}}
+<section id="eu-representative">
+    <h2>4. EU Representative</h2>
+    {{if has_eu_rep}}
+    <p>In accordance with Article 27 of the GDPR, our representative in the European Union is:</p>
+    <address class="slos-contact-info">
+        <strong>{{eu_rep_name}}</strong><br>
+        {{eu_rep_address}}<br>
+        Email: <a href="mailto:{{eu_rep_email}}">{{eu_rep_email}}</a>
+    </address>
+    {{/if}}
+    
+    {{if has_uk_rep}}
+    <h3>UK Representative</h3>
+    <p>Our representative in the United Kingdom is:</p>
+    <address class="slos-contact-info">
+        <strong>{{uk_rep_name}}</strong><br>
+        {{uk_rep_address}}<br>
+        Email: <a href="mailto:{{uk_rep_email}}">{{uk_rep_email}}</a>
+    </address>
+    {{/if}}
+</section>
+{{/if}}
+
+<section id="regulatory-info">
+    <h2>5. Regulatory Information</h2>
+    <p><strong>Jurisdiction:</strong> {{jurisdiction}}</p>
+    
+    {{if supervisory_authority}}
+    <p><strong>Supervisory Authority:</strong> {{supervisory_authority}}</p>
+    {{/if}}
+    
+    {{if gdpr_applies}}
+    <p>We are subject to the General Data Protection Regulation (GDPR) for the processing of personal data of individuals in the European Economic Area.</p>
+    {{/if}}
+    
+    {{if ccpa_applies}}
+    <p>We comply with the California Consumer Privacy Act (CCPA) for the processing of personal information of California residents.</p>
+    {{/if}}
+</section>
+
+<section id="dispute-resolution">
+    <h2>6. Online Dispute Resolution</h2>
+    {{if gdpr_applies}}
+    <p>The European Commission provides a platform for online dispute resolution (ODR): <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener noreferrer">https://ec.europa.eu/consumers/odr/</a></p>
+    
+    <p>Our email address for consumer disputes: <a href="mailto:{{legal_contact_email}}">{{legal_contact_email}}</a></p>
+    
+    <p>We are not obligated or willing to participate in dispute resolution proceedings before a consumer arbitration board unless required by law.</p>
+    {{/if}}
+</section>
+
+<section id="copyright">
+    <h2>7. Copyright Notice</h2>
+    <p>© {{year}} {{company_legal_name}}. All rights reserved.</p>
+    
+    <p>All content on this website, including but not limited to text, graphics, logos, images, and software, is the property of {{company_legal_name}} or its content suppliers and is protected by international copyright laws.</p>
+</section>
+
+<section id="liability">
+    <h2>8. Disclaimer of Liability</h2>
+    <h3>Content</h3>
+    <p>The contents of our pages have been created with the utmost care. However, we cannot guarantee the accuracy, completeness, or timeliness of the content. As a service provider, we are responsible for our own content on these pages under general law. However, we are not obligated to monitor transmitted or stored third-party information or to investigate circumstances that indicate illegal activity.</p>
+    
+    <h3>Links</h3>
+    <p>Our website may contain links to external third-party websites over whose content we have no influence. We cannot accept any liability for this external content. The respective provider or operator of the linked pages is always responsible for their content. The linked pages were checked for possible legal violations at the time of linking. No illegal content was identified at the time of linking.</p>
+</section>
+
+</article>
+</body>
+</html>

@@ -73,7 +73,9 @@
     
     <h3>3.1 Personal Data We Collect</h3>
     <p>We may collect and process the following types of personal data:</p>
-    <ul class="slos-data-types-list">{{foreach data_types_array as dtype}}<li>{{dtype}}</li>{{/foreach}}</ul>
+    <ul class="slos-data-types-list">{{foreach data_types_array as dtype}}
+        <li>{{dtype}}</li>{{/foreach}}
+    </ul>
     
     {{if special_categories}}
     <h3>3.2 Special Categories of Data</h3>
@@ -89,14 +91,18 @@
 <section id="how-we-use">
     <h2>4. How We Use Your Information</h2>
     <p>We use the personal information we collect for the following purposes:</p>
-    <ul class="slos-purposes-list">{{foreach data_purposes_array as purpose}}<li>{{purpose}}</li>{{/foreach}}</ul>
+    <ul class="slos-purposes-list">{{foreach data_purposes_array as purpose}}
+        <li>{{purpose}}</li>{{/foreach}}
+    </ul>
 </section>
 
 <section id="legal-basis">
     <h2>5. Legal Basis for Processing</h2>
     {{if gdpr_applies}}
     <p>Under the General Data Protection Regulation (GDPR), we rely on the following legal bases to process your personal data:</p>
-    <ul class="slos-legal-bases">{{foreach lawful_bases_array as basis}}<li>{{basis}}</li>{{/foreach}}</ul>
+    <ul class="slos-legal-bases">{{foreach lawful_bases_array as basis}}
+        <li>{{basis}}</li>{{/foreach}}
+    </ul>
     {{/if}}
     
     {{if ccpa_applies}}
@@ -117,13 +123,17 @@
     {{if third_party_processors}}
     <h3>6.1 Service Providers (Data Processors)</h3>
     <p>We use the following service providers who process data on our behalf:</p>
-    <ul class="slos-processors-list">{{foreach third_party_processors as processor}}<li><strong>{{processor.name}}</strong> - {{processor.purpose}}{{if processor.country}} ({{processor.country}}){{/if}}</li>{{/foreach}}</ul>
+    <ul class="slos-processors-list">{{foreach third_party_processors as processor}}
+        <li><strong>{{processor.name}}</strong> - {{processor.purpose}}{{if processor.country}} ({{processor.country}}){{/if}}</li>{{/foreach}}
+    </ul>
     {{/if}}
     
     {{if third_party_partners}}
     <h3>6.2 Business Partners</h3>
     <p>We may share data with the following business partners:</p>
-    <ul class="slos-partners-list">{{foreach third_party_partners as partner}}<li><strong>{{partner.name}}</strong> - {{partner.purpose}}</li>{{/foreach}}</ul>
+    <ul class="slos-partners-list">{{foreach third_party_partners as partner}}
+        <li><strong>{{partner.name}}</strong> - {{partner.purpose}}</li>{{/foreach}}
+    </ul>
     {{/if}}
     {{/if}}
     
@@ -210,7 +220,9 @@
     
     {{if security_measures}}
     <p>Our security measures include:</p>
-    <ul class="slos-security-list">{{foreach security_measures_array as measure}}<li>{{measure}}</li>{{/foreach}}</ul>
+    <ul class="slos-security-list">{{foreach security_measures_array as measure}}
+        <li>{{measure}}</li>{{/foreach}}
+    </ul>
     {{/if}}
     
     {{if certifications}}

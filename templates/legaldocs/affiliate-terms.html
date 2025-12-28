@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Affiliate Program Terms - {{company_legal_name}}</title>
+</head>
+<body>
+<article class="slos-legal-document slos-affiliate-terms">
+
+<header class="slos-doc-header">
+    <h1>Affiliate Program Terms & Conditions</h1>
+    <p class="slos-effective-date"><strong>Effective Date:</strong> {{today}}</p>
+    <p class="slos-last-updated"><strong>Last Updated:</strong> {{today}}</p>
+</header>
+
+<section id="introduction">
+    <h2>1. Introduction</h2>
+    <p>These Affiliate Program Terms and Conditions ("Affiliate Terms") govern your participation in the <strong>{{company_legal_name}}</strong> Affiliate Program (the "Program"). By joining the Program, you agree to these terms.</p>
+    
+    <p>Our Program allows you to earn commissions by promoting our products and services available at {{site_url}}.</p>
+</section>
+
+<section id="eligibility">
+    <h2>2. Eligibility & Enrollment</h2>
+    <h3>2.1 Who May Apply</h3>
+    <p>To be eligible for the Program, you must:</p>
+    <ul>
+        <li>Be at least {{affiliate_minimum_age|default:"18"}} years old</li>
+        <li>Own or operate a website, blog, or social media presence</li>
+        <li>Not engage in activities that violate our terms or applicable law</li>
+        <li>Provide accurate and complete application information</li>
+    </ul>
+    
+    <h3>2.2 Application Process</h3>
+    <ol>
+        <li>Complete the affiliate application</li>
+        <li>Await review and approval (typically {{affiliate_review_time|default:"3-5 business days"}})</li>
+        <li>Receive your unique affiliate link and access credentials</li>
+        <li>Begin promoting our products</li>
+    </ol>
+    
+    <h3>2.3 Approval Rights</h3>
+    <p>We reserve the right to reject any application or terminate any affiliate relationship at our sole discretion without providing reasons.</p>
+    
+    <h3>2.4 Prohibited Affiliates</h3>
+    <p>We do not accept affiliates who:</p>
+    <ul>
+        <li>Operate sites with illegal, harmful, or objectionable content</li>
+        <li>Have previously been terminated from the Program</li>
+        <li>Primarily use spam or deceptive marketing practices</li>
+        <li>Target children under 13</li>
+        <li>Violate intellectual property rights</li>
+    </ul>
+</section>
+
+<section id="commission-structure">
+    <h2>3. Commission Structure</h2>
+    <h3>3.1 Commission Rates</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Product/Service</th>
+                <th>Commission Rate</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Standard Products</td>
+                <td>{{affiliate_commission_rate|default:"10%"}}</td>
+                <td>Per qualifying sale</td>
+            </tr>
+            {{if has_subscriptions}}
+            <tr>
+                <td>Subscriptions</td>
+                <td>{{affiliate_subscription_rate|default:"20%"}}</td>
+                <td>First payment{{if recurring_commission}} + {{recurring_commission}}% recurring{{/if}}</td>
+            </tr>
+            {{/if}}
+            {{if has_tiered_commission}}
+            <tr>
+                <td>Tier 2 (Volume)</td>
+                <td>{{tier2_commission|default:"15%"}}</td>
+                <td>After {{tier2_threshold|default:"$5,000"}} in sales</td>
+            </tr>
+            {{/if}}
+        </tbody>
+    </table>
+    
+    <h3>3.2 Commission Calculation</h3>
+    <ul>
+        <li>Commissions are calculated on the net sale price (excluding taxes, shipping, discounts)</li>
+        <li>Commissions are tracked via your unique affiliate link</li>
+        <li>Cookie duration: {{cookie_duration|default:"30 days"}}</li>
+    </ul>
+    
+    <h3>3.3 Non-Commissionable Items</h3>
+    <p>Commissions are NOT paid on:</p>
+    <ul>
+        <li>Your own purchases</li>
+        <li>Fraudulent or cancelled orders</li>
+        <li>Returns and refunded orders</li>
+        <li>Gift cards (commission may be earned when redeemed)</li>
+        <li>Shipping and taxes</li>
+        <li>Products specifically excluded from the Program</li>
+    </ul>
+</section>
+
+<section id="payment">
+    <h2>4. Payment Terms</h2>
+    <h3>4.1 Payment Schedule</h3>
+    <ul>
+        <li><strong>Payment Frequency:</strong> {{payment_frequency|default:"Monthly"}}</li>
+        <li><strong>Payment Date:</strong> {{payment_date|default:"15th of each month"}} for the previous period</li>
+        <li><strong>Minimum Payout:</strong> {{minimum_payout|default:"$50"}}</li>
+    </ul>
+    
+    <h3>4.2 Payment Methods</h3>
+    <p>We pay commissions via:</p>
+    <ul>
+        <li>PayPal</li>
+        <li>Bank transfer (ACH/Wire)</li>{{if pays_crypto}}<li>Cryptocurrency</li>{{/if}}
+    </ul>
+    
+    <h3>4.3 Payment Processing</h3>
+    <ul>
+        <li>Commissions become payable after a {{holdback_period|default:"30-day"}} holding period</li>
+        <li>This allows for returns and chargebacks</li>
+        <li>Commissions from refunded orders will be deducted</li>
+    </ul>
+    
+    <h3>4.4 Tax Reporting</h3>
+    <p>You are responsible for paying any applicable taxes on your commission income. U.S. affiliates earning over $600 annually will receive a 1099 form.</p>
+</section>
+
+<section id="promotional-guidelines">
+    <h2>5. Promotional Guidelines</h2>
+    <h3>5.1 Approved Methods</h3>
+    <p>You may promote our products through:</p>
+    <ul>
+        <li>Your website or blog content</li>
+        <li>Social media posts (organic)</li>
+        <li>Email newsletters (to your own subscribers)</li>
+        <li>Video content (YouTube, TikTok, etc.)</li>
+        <li>Podcasts</li>
+        <li>Product reviews and comparisons</li>
+    </ul>
+    
+    <h3>5.2 Prohibited Methods</h3>
+    <p>The following promotional methods are STRICTLY PROHIBITED:</p>
+    <ul>
+        <li><strong>Spam:</strong> Unsolicited emails, messages, or comments</li>
+        <li><strong>Paid Search on Brand Terms:</strong> Bidding on "{{company_name}}" or similar brand terms</li>
+        <li><strong>Trademark Violations:</strong> Using our trademarks in domain names or paid ads without permission</li>
+        <li><strong>Misleading Claims:</strong> False or exaggerated product claims</li>
+        <li><strong>Cookie Stuffing:</strong> Artificially setting cookies without user knowledge</li>
+        <li><strong>Adware/Spyware:</strong> Using any malicious software</li>
+        <li><strong>Coupon Violations:</strong> Creating or distributing unauthorized coupons</li>
+        <li><strong>Impersonation:</strong> Pretending to be an official representative of {{company_legal_name}}</li>
+        <li><strong>Adult or Illegal Content:</strong> Promoting on sites with illegal or adult content</li>
+    </ul>
+    
+    <h3>5.3 Disclosure Requirements</h3>
+    <p><strong>IMPORTANT:</strong> You MUST disclose your affiliate relationship in compliance with FTC guidelines and applicable laws:</p>
+    <ul>
+        <li>Disclosure must be clear and conspicuous</li>
+        <li>Must appear before or near affiliate links</li>
+        <li>Use language such as "affiliate link" or "I may earn a commission"</li>
+        <li>Social media posts must include #ad or #affiliate</li>
+    </ul>
+</section>
+
+<section id="intellectual-property">
+    <h2>6. Intellectual Property</h2>
+    <h3>6.1 Limited License</h3>
+    <p>We grant you a limited, non-exclusive, revocable license to use our:</p>
+    <ul>
+        <li>Approved logos and images</li>
+        <li>Product descriptions and marketing materials</li>
+        <li>Affiliate banners and creatives</li>
+    </ul>
+    
+    <h3>6.2 Restrictions</h3>
+    <p>You may NOT:</p>
+    <ul>
+        <li>Modify our logos or trademarks</li>
+        <li>Create derivative works from our materials</li>
+        <li>Use our intellectual property after termination</li>
+        <li>Register domain names containing our brand name</li>
+        <li>Imply endorsement or partnership beyond the affiliate relationship</li>
+    </ul>
+</section>
+
+<section id="tracking-reporting">
+    <h2>7. Tracking & Reporting</h2>
+    <h3>7.1 Affiliate Dashboard</h3>
+    <p>You will have access to an affiliate dashboard showing:</p>
+    <ul>
+        <li>Clicks and conversions</li>
+        <li>Commission earnings</li>
+        <li>Payment history</li>
+        <li>Promotional materials</li>
+    </ul>
+    
+    <h3>7.2 Tracking Accuracy</h3>
+    <p>While we strive for accurate tracking, technical issues may occur. Our tracking data is the official record for commission calculations.</p>
+    
+    <h3>7.3 Disputes</h3>
+    <p>Commission disputes must be raised within {{commission_dispute_window|default:"60 days"}} of the transaction date.</p>
+</section>
+
+<section id="program-changes">
+    <h2>8. Program Changes</h2>
+    <h3>8.1 Modifications</h3>
+    <p>We may modify Program terms, commission rates, or promotional guidelines at any time with {{program_change_notice|default:"30 days"}} notice via email.</p>
+    
+    <h3>8.2 Your Options</h3>
+    <p>If you disagree with changes, you may:</p>
+    <ul>
+        <li>Continue under the new terms</li>
+        <li>Terminate your participation (unpaid commissions will still be paid)</li>
+    </ul>
+</section>
+
+<section id="termination">
+    <h2>9. Termination</h2>
+    <h3>9.1 Termination by You</h3>
+    <p>You may terminate your participation at any time by notifying us at <a href="mailto:{{affiliate_email|default:support_email}}">{{affiliate_email|default:support_email}}</a>.</p>
+    
+    <h3>9.2 Termination by Us</h3>
+    <p>We may terminate your participation immediately if you:</p>
+    <ul>
+        <li>Violate these Affiliate Terms</li>
+        <li>Engage in fraudulent activity</li>
+        <li>Damage our brand reputation</li>
+        <li>Become inactive for {{inactive_termination_period|default:"6 months"}}</li>
+        <li>Provide false information</li>
+    </ul>
+    
+    <h3>9.3 Effect of Termination</h3>
+    <ul>
+        <li>Your affiliate links will be deactivated</li>
+        <li>You must remove all promotional materials</li>
+        <li>Earned commissions above the minimum will be paid out (less any deductions)</li>
+        <li>Commissions below the minimum threshold may be forfeited</li>
+        <li>License to use our intellectual property terminates</li>
+    </ul>
+</section>
+
+<section id="relationship">
+    <h2>10. Relationship of Parties</h2>
+    <p>You are an independent contractor, not an employee, agent, or partner of {{company_legal_name}}. You:</p>
+    <ul>
+        <li>Have no authority to bind us to any agreement</li>
+        <li>Are responsible for your own taxes and expenses</li>
+        <li>May not represent yourself as affiliated with us beyond the affiliate relationship</li>
+        <li>Operate at your own risk and expense</li>
+    </ul>
+</section>
+
+<section id="liability">
+    <h2>11. Limitation of Liability</h2>
+    <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW:</p>
+    <ul>
+        <li>Our liability is limited to unpaid commissions actually owed</li>
+        <li>We are not liable for indirect, incidental, or consequential damages</li>
+        <li>We make no guarantees about earnings or sales</li>
+    </ul>
+</section>
+
+<section id="indemnification">
+    <h2>12. Indemnification</h2>
+    <p>You agree to indemnify and hold harmless {{company_legal_name}} from any claims, damages, or expenses arising from:</p>
+    <ul>
+        <li>Your promotional activities</li>
+        <li>Violation of these terms</li>
+        <li>Violation of applicable laws</li>
+        <li>Claims related to your website or content</li>
+    </ul>
+</section>
+
+<section id="confidentiality">
+    <h2>13. Confidentiality</h2>
+    <p>You agree to keep confidential:</p>
+    <ul>
+        <li>Commission rates and structures</li>
+        <li>Non-public Program information</li>
+        <li>Promotional strategies shared with you</li>
+        <li>Any information marked as confidential</li>
+    </ul>
+</section>
+
+<section id="governing-law">
+    <h2>14. Governing Law</h2>
+    <p>These Affiliate Terms are governed by the laws of {{jurisdiction|default:"the applicable jurisdiction"}}. Disputes will be resolved in the courts of {{jurisdiction|default:"the applicable jurisdiction"}}.</p>
+</section>
+
+<section id="contact">
+    <h2>15. Contact Us</h2>
+    <p>For affiliate program questions:</p>
+    <address class="slos-contact-info">
+        <strong>{{company_legal_name}} Affiliate Program</strong><br>
+        {{company_address}}<br>
+        Email: <a href="mailto:{{affiliate_email|default:support_email}}">{{affiliate_email|default:support_email}}</a><br>
+        {{if contact_phone}}Phone: {{contact_phone}}{{/if}}
+    </address>
+</section>
+
+</article>
+</body>
+</html>

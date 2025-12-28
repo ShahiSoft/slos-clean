@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Non-Disclosure Agreement - {{company_legal_name}}</title>
+</head>
+<body>
+<article class="slos-legal-document slos-nda">
+
+<header class="slos-doc-header">
+    <h1>Non-Disclosure Agreement (NDA)</h1>
+    <p class="slos-effective-date"><strong>Effective Date:</strong> {{today}}</p>
+</header>
+
+<section id="parties">
+    <h2>Parties</h2>
+    <p>This Non-Disclosure Agreement ("Agreement" or "NDA") is entered into by and between:</p>
+    
+    <p><strong>Disclosing Party:</strong><br>
+    {{company_legal_name}}<br>
+    {{company_address}}<br>
+    ("Company" or "Disclosing Party")</p>
+    
+    <p>AND</p>
+    
+    <p><strong>Receiving Party:</strong><br>
+    [RECEIVING PARTY NAME]<br>
+    [RECEIVING PARTY ADDRESS]<br>
+    ("Recipient" or "Receiving Party")</p>
+    
+    <p>(collectively, the "Parties" and individually, a "Party")</p>
+</section>
+
+<section id="recitals">
+    <h2>Recitals</h2>
+    <p>WHEREAS, the Disclosing Party possesses certain confidential and proprietary information relating to its business, products, services, and operations;</p>
+    
+    <p>WHEREAS, the Receiving Party desires to receive certain Confidential Information from the Disclosing Party for the purpose of {{nda_purpose|default:"evaluating a potential business relationship, partnership, or transaction"}} (the "Purpose");</p>
+    
+    <p>WHEREAS, the Disclosing Party is willing to disclose such Confidential Information subject to the terms and conditions of this Agreement;</p>
+    
+    <p>NOW, THEREFORE, in consideration of the mutual covenants and agreements set forth herein, the Parties agree as follows:</p>
+</section>
+
+<section id="definitions">
+    <h2>1. Definitions</h2>
+    <h3>1.1 Confidential Information</h3>
+    <p>"Confidential Information" means any and all information disclosed by the Disclosing Party to the Receiving Party, whether orally, in writing, electronically, or by any other means, including but not limited to:</p>
+    <ul>
+        <li>Trade secrets, inventions, patents, and patent applications</li>
+        <li>Business plans, strategies, and financial information</li>
+        <li>Customer lists, pricing information, and sales data</li>
+        <li>Product designs, specifications, and development plans</li>
+        <li>Software, source code, algorithms, and technical data</li>
+        <li>Marketing plans and competitive analyses</li>
+        <li>Personnel information and organizational structure</li>
+        <li>Legal matters and contractual relationships</li>
+        <li>Any other information marked or identified as "Confidential" or that reasonably should be understood to be confidential</li>
+    </ul>
+    
+    <h3>1.2 Exclusions</h3>
+    <p>Confidential Information does NOT include information that:</p>
+    <ul>
+        <li>Is or becomes publicly available through no fault of the Receiving Party</li>
+        <li>Was rightfully in the Receiving Party's possession before disclosure</li>
+        <li>Is independently developed by the Receiving Party without use of Confidential Information</li>
+        <li>Is rightfully obtained from a third party without restriction</li>
+        <li>Is disclosed with prior written consent of the Disclosing Party</li>
+    </ul>
+</section>
+
+<section id="obligations">
+    <h2>2. Obligations of Receiving Party</h2>
+    <h3>2.1 Non-Disclosure</h3>
+    <p>The Receiving Party agrees to:</p>
+    <ul>
+        <li>Keep all Confidential Information strictly confidential</li>
+        <li>Not disclose Confidential Information to any third party without prior written consent</li>
+        <li>Use the same degree of care to protect Confidential Information as it uses for its own confidential information, but in no event less than reasonable care</li>
+    </ul>
+    
+    <h3>2.2 Limited Use</h3>
+    <p>The Receiving Party shall:</p>
+    <ul>
+        <li>Use Confidential Information solely for the Purpose stated herein</li>
+        <li>Not use Confidential Information for any other purpose, including competitive purposes</li>
+        <li>Not copy, reproduce, or distribute Confidential Information except as necessary for the Purpose</li>
+    </ul>
+    
+    <h3>2.3 Limited Disclosure</h3>
+    <p>The Receiving Party may disclose Confidential Information only to its:</p>
+    <ul>
+        <li>Employees, contractors, and agents who have a need to know</li>
+        <li>Professional advisors bound by confidentiality obligations</li>
+    </ul>
+    <p>Such recipients must be bound by confidentiality obligations at least as protective as this Agreement.</p>
+    
+    <h3>2.4 Security Measures</h3>
+    <p>The Receiving Party shall implement appropriate security measures to protect Confidential Information, including:</p>
+    <ul>
+        <li>Physical security for documents and storage media</li>
+        <li>Electronic security for digital information</li>
+        <li>Access controls limiting who can access Confidential Information</li>
+        <li>Training for personnel who handle Confidential Information</li>
+    </ul>
+</section>
+
+<section id="term">
+    <h2>3. Term and Termination</h2>
+    <h3>3.1 Term</h3>
+    <p>This Agreement shall remain in effect for {{nda_term|default:"two (2) years"}} from the Effective Date, unless terminated earlier by either Party.</p>
+    
+    <h3>3.2 Survival of Obligations</h3>
+    <p>The confidentiality obligations under this Agreement shall survive termination or expiration for a period of {{confidentiality_survival|default:"five (5) years"}}, or indefinitely for trade secrets.</p>
+    
+    <h3>3.3 Termination</h3>
+    <p>Either Party may terminate this Agreement by providing {{nda_termination_notice|default:"thirty (30) days"}} written notice to the other Party.</p>
+</section>
+
+<section id="return-destruction">
+    <h2>4. Return or Destruction of Information</h2>
+    <h3>4.1 Upon Request or Termination</h3>
+    <p>Upon the Disclosing Party's request or termination of this Agreement, the Receiving Party shall promptly:</p>
+    <ul>
+        <li>Return all Confidential Information and copies to the Disclosing Party; OR</li>
+        <li>Destroy all Confidential Information and copies and certify such destruction in writing</li>
+    </ul>
+    
+    <h3>4.2 Exceptions</h3>
+    <p>The Receiving Party may retain:</p>
+    <ul>
+        <li>One archival copy for legal compliance purposes</li>
+        <li>Copies required by law or regulation</li>
+        <li>Information in routine backup systems (subject to continued confidentiality)</li>
+    </ul>
+</section>
+
+<section id="compelled-disclosure">
+    <h2>5. Compelled Disclosure</h2>
+    <p>If the Receiving Party is compelled by law, court order, or government authority to disclose Confidential Information:</p>
+    <ul>
+        <li>Provide prompt written notice to the Disclosing Party (to the extent permitted by law)</li>
+        <li>Cooperate with the Disclosing Party's efforts to seek protective treatment</li>
+        <li>Disclose only the minimum information legally required</li>
+        <li>Use reasonable efforts to obtain confidential treatment of disclosed information</li>
+    </ul>
+</section>
+
+<section id="ownership">
+    <h2>6. Ownership and Rights</h2>
+    <h3>6.1 No Transfer of Rights</h3>
+    <p>This Agreement does not grant the Receiving Party any rights to:</p>
+    <ul>
+        <li>Intellectual property owned by the Disclosing Party</li>
+        <li>Patents, copyrights, or trademarks</li>
+        <li>Licenses to use Confidential Information beyond the Purpose</li>
+    </ul>
+    
+    <h3>6.2 Ownership</h3>
+    <p>All Confidential Information remains the sole property of the Disclosing Party. Nothing in this Agreement shall be construed as granting ownership rights to the Receiving Party.</p>
+</section>
+
+<section id="no-warranty">
+    <h2>7. No Warranty</h2>
+    <p>ALL CONFIDENTIAL INFORMATION IS PROVIDED "AS IS." THE DISCLOSING PARTY MAKES NO WARRANTIES, EXPRESS OR IMPLIED, REGARDING:</p>
+    <ul>
+        <li>Accuracy or completeness of Confidential Information</li>
+        <li>Non-infringement of third-party rights</li>
+        <li>Fitness for a particular purpose</li>
+        <li>Merchantability</li>
+    </ul>
+</section>
+
+<section id="no-obligation">
+    <h2>8. No Obligation</h2>
+    <p>This Agreement does not:</p>
+    <ul>
+        <li>Obligate either Party to enter into any business transaction</li>
+        <li>Create an agency, partnership, or joint venture</li>
+        <li>Require the Disclosing Party to disclose any particular information</li>
+        <li>Prevent either Party from entering similar agreements with third parties</li>
+    </ul>
+</section>
+
+<section id="remedies">
+    <h2>9. Remedies</h2>
+    <h3>9.1 Injunctive Relief</h3>
+    <p>The Parties acknowledge that a breach of this Agreement may cause irreparable harm for which monetary damages would be inadequate. Therefore, the Disclosing Party shall be entitled to seek injunctive relief without proving actual damages and without posting bond.</p>
+    
+    <h3>9.2 Other Remedies</h3>
+    <p>The Disclosing Party shall also be entitled to pursue any other remedies available at law or in equity, including monetary damages.</p>
+</section>
+
+<section id="indemnification">
+    <h2>10. Indemnification</h2>
+    <p>The Receiving Party agrees to indemnify and hold harmless the Disclosing Party from any damages, losses, costs, or expenses (including reasonable attorneys' fees) arising from:</p>
+    <ul>
+        <li>Breach of this Agreement by the Receiving Party</li>
+        <li>Unauthorized use or disclosure of Confidential Information</li>
+        <li>Actions of the Receiving Party's employees, contractors, or agents</li>
+    </ul>
+</section>
+
+<section id="general">
+    <h2>11. General Provisions</h2>
+    <h3>11.1 Governing Law</h3>
+    <p>This Agreement shall be governed by the laws of {{jurisdiction|default:"the applicable jurisdiction"}}, without regard to conflict of law principles.</p>
+    
+    <h3>11.2 Dispute Resolution</h3>
+    <p>Any disputes arising from this Agreement shall be resolved in the courts of {{jurisdiction|default:"the applicable jurisdiction"}}.</p>
+    
+    <h3>11.3 Entire Agreement</h3>
+    <p>This Agreement constitutes the entire agreement between the Parties regarding Confidential Information and supersedes all prior agreements or understandings.</p>
+    
+    <h3>11.4 Amendments</h3>
+    <p>This Agreement may only be amended by written instrument signed by both Parties.</p>
+    
+    <h3>11.5 Waiver</h3>
+    <p>Failure to enforce any provision shall not constitute a waiver of that provision or any other provision.</p>
+    
+    <h3>11.6 Severability</h3>
+    <p>If any provision is found unenforceable, the remaining provisions shall remain in full force and effect.</p>
+    
+    <h3>11.7 Assignment</h3>
+    <p>Neither Party may assign this Agreement without the prior written consent of the other Party, except in connection with a merger, acquisition, or sale of substantially all assets.</p>
+    
+    <h3>11.8 Notices</h3>
+    <p>All notices shall be in writing and delivered to the addresses set forth above or as otherwise provided in writing.</p>
+    
+    <h3>11.9 Counterparts</h3>
+    <p>This Agreement may be executed in counterparts, each of which shall be deemed an original.</p>
+</section>
+
+<section id="signatures">
+    <h2>Signatures</h2>
+    <p>IN WITNESS WHEREOF, the Parties have executed this Agreement as of the Effective Date.</p>
+    
+    <div class="slos-signature-block">
+        <h3>DISCLOSING PARTY:</h3>
+        <p><strong>{{company_legal_name}}</strong></p>
+        <p>Signature: _________________________________</p>
+        <p>Name: _________________________________</p>
+        <p>Title: _________________________________</p>
+        <p>Date: _________________________________</p>
+    </div>
+    
+    <div class="slos-signature-block">
+        <h3>RECEIVING PARTY:</h3>
+        <p><strong>[RECEIVING PARTY NAME]</strong></p>
+        <p>Signature: _________________________________</p>
+        <p>Name: _________________________________</p>
+        <p>Title: _________________________________</p>
+        <p>Date: _________________________________</p>
+    </div>
+</section>
+
+<section id="contact">
+    <h2>Contact Information</h2>
+    <p>For questions regarding this Agreement:</p>
+    <address class="slos-contact-info">
+        <strong>{{company_legal_name}}</strong><br>
+        {{company_address}}<br>
+        Email: <a href="mailto:{{legal_contact_email}}">{{legal_contact_email}}</a><br>
+        {{if contact_phone}}Phone: {{contact_phone}}{{/if}}
+    </address>
+</section>
+
+</article>
+</body>
+</html>

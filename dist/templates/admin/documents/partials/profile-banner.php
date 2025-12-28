@@ -67,7 +67,7 @@ $banner_class  = $is_complete ? 'slos-hub-banner--success' : ( $is_sufficient ? 
 				if ( $company_name ) {
 					printf(
 						/* translators: %s: company name */
-						esc_html__( '%s is ready to generate legal documents.', 'shahi-legalflowsuite' ),
+						esc_html__( 'Shahi LegalFlowSuite is ready to generate Legal Documents for %s.', 'shahi-legalflowsuite' ),
 						'<strong>' . esc_html( $company_name ) . '</strong>'
 					);
 				} else {

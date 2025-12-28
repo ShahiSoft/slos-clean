@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Application Terms of Service - {{company_legal_name}}</title>
+</head>
+<body>
+<article class="slos-legal-document slos-mobile-app-terms">
+
+<header class="slos-doc-header">
+    <h1>Mobile Application Terms of Service</h1>
+    <p class="slos-effective-date"><strong>Effective Date:</strong> {{today}}</p>
+    <p class="slos-last-updated"><strong>Last Updated:</strong> {{today}}</p>
+</header>
+
+<section id="introduction">
+    <h2>1. Introduction</h2>
+    <p>These Mobile Application Terms of Service ("App Terms") govern your use of the <strong>{{app_name|default:"mobile application"}}</strong> (the "App") provided by <strong>{{company_legal_name}}</strong> ("Company," "we," "us," or "our").</p>
+    
+    <p>By downloading, installing, or using the App, you agree to be bound by these App Terms. If you do not agree, do not download, install, or use the App.</p>
+    
+    <p>These App Terms supplement our general Terms of Service available at {{site_url}}/terms.</p>
+</section>
+
+<section id="eligibility">
+    <h2>2. Eligibility</h2>
+    <h3>2.1 Age Requirement</h3>
+    <p>You must be at least {{minimum_age|default:"13"}} years old to use this App. If you are under {{parental_consent_age|default:"18"}}, you must have parental or guardian consent.</p>
+    
+    <h3>2.2 Geographic Availability</h3>
+    <p>The App may not be available in all regions. You are responsible for compliance with local laws when using the App.</p>
+</section>
+
+<section id="license">
+    <h2>3. License Grant</h2>
+    <h3>3.1 Limited License</h3>
+    <p>Subject to these App Terms, we grant you a limited, non-exclusive, non-transferable, revocable license to:</p>
+    <ul>
+        <li>Download and install the App on mobile devices you own or control</li>
+        <li>Use the App for personal, non-commercial purposes</li>
+        <li>Access content and features available through the App</li>
+    </ul>
+    
+    <h3>3.2 Restrictions</h3>
+    <p>You may NOT:</p>
+    <ul>
+        <li>Copy, modify, or distribute the App</li>
+        <li>Reverse engineer, decompile, or disassemble the App</li>
+        <li>Rent, lease, lend, or sublicense the App</li>
+        <li>Remove or alter any proprietary notices</li>
+        <li>Use the App on unauthorized devices</li>
+        <li>Create derivative works based on the App</li>
+        <li>Use the App for any illegal purpose</li>
+    </ul>
+</section>
+
+<section id="account">
+    <h2>4. Account and Registration</h2>
+    {{if has_user_accounts}}
+    <h3>4.1 Account Creation</h3>
+    <p>Some features require account registration. When creating an account:</p>
+    <ul>
+        <li>Provide accurate and complete information</li>
+        <li>Keep your account credentials secure</li>
+        <li>Notify us immediately of unauthorized access</li>
+        <li>You are responsible for all activity under your account</li>
+    </ul>
+    
+    <h3>4.2 Account Security</h3>
+    <p>You are responsible for maintaining the confidentiality of your account credentials. We recommend:</p>
+    <ul>
+        <li>Using a strong, unique password</li>
+        <li>Enabling two-factor authentication if available</li>
+        <li>Logging out on shared devices</li>
+        <li>Not sharing your account with others</li>
+    </ul>
+    {{/if}}
+</section>
+
+<section id="in-app-purchases">
+    <h2>5. In-App Purchases</h2>
+    {{if has_in_app_purchases}}
+    <h3>5.1 Purchase Terms</h3>
+    <p>The App may offer products or services for purchase ("In-App Purchases"). By making In-App Purchases:</p>
+    <ul>
+        <li>You authorize us to charge your selected payment method</li>
+        <li>All purchases are final unless otherwise stated</li>
+        <li>Prices may change without notice</li>
+        <li>You are responsible for all applicable taxes</li>
+    </ul>
+    
+    <h3>5.2 Subscriptions</h3>
+    <p>Subscription purchases:</p>
+    <ul>
+        <li>Auto-renew unless cancelled before the renewal date</li>
+        <li>Can be managed through your device's app store settings</li>
+        <li>Unused portions are not refundable</li>
+    </ul>
+    
+    <h3>5.3 Virtual Items</h3>
+    <p>Virtual items, currency, or goods purchased in the App:</p>
+    <ul>
+        <li>Are licensed, not sold, to you</li>
+        <li>Have no real-world monetary value</li>
+        <li>Cannot be transferred or exchanged outside the App</li>
+        <li>May be modified or discontinued at our discretion</li>
+    </ul>
+    
+    <h3>5.4 Refunds</h3>
+    <p>Refund requests should be directed to the app store through which you made the purchase (Apple App Store, Google Play Store, etc.). We follow the refund policies of these platforms.</p>
+    {{else}}
+    <p>The App is free to use. Future versions may include premium features or in-app purchases.</p>
+    {{/if}}
+</section>
+
+<section id="device-permissions">
+    <h2>6. Device Permissions</h2>
+    <h3>6.1 Required Permissions</h3>
+    <p>The App may request access to certain device features and data:</p>
+    <ul>{{if requires_camera}}<li><strong>Camera:</strong> {{camera_purpose|default:"For photos, video, or QR code scanning"}}</li>{{/if}}{{if requires_location}}<li><strong>Location:</strong> {{location_purpose|default:"For location-based features and services"}}</li>{{/if}}{{if requires_contacts}}<li><strong>Contacts:</strong> {{contacts_purpose|default:"To find friends using the App"}}</li>{{/if}}{{if requires_storage}}<li><strong>Storage:</strong> {{storage_purpose|default:"To save files and content"}}</li>{{/if}}{{if requires_microphone}}<li><strong>Microphone:</strong> {{microphone_purpose|default:"For voice features or video recording"}}</li>{{/if}}{{if requires_notifications}}<li><strong>Notifications:</strong> {{notifications_purpose|default:"To send you important updates and alerts"}}</li>{{/if}}
+    </ul>
+    
+    <h3>6.2 Permission Management</h3>
+    <p>You can manage App permissions through your device settings. Note that denying certain permissions may limit App functionality.</p>
+</section>
+
+<section id="privacy-data">
+    <h2>7. Privacy and Data</h2>
+    <h3>7.1 Data Collection</h3>
+    <p>The App collects data as described in our Privacy Policy at {{site_url}}/privacy-policy. This may include:</p>
+    <ul>
+        <li>Account information</li>
+        <li>Usage data and analytics</li>
+        <li>Device information</li>
+        <li>Location data (if permitted)</li>
+        <li>Content you create or share</li>
+    </ul>
+    
+    <h3>7.2 Third-Party Services</h3>
+    <p>The App may integrate with third-party services that have their own privacy practices. We are not responsible for third-party data handling.</p>
+    
+    <h3>7.3 Data Security</h3>
+    <p>We implement reasonable security measures to protect your data. However, no method of transmission or storage is 100% secure.</p>
+</section>
+
+<section id="user-content">
+    <h2>8. User Content</h2>
+    {{if allows_user_content}}
+    <h3>8.1 Your Content</h3>
+    <p>You may be able to create, upload, or share content through the App ("User Content"). You:</p>
+    <ul>
+        <li>Retain ownership of your User Content</li>
+        <li>Grant us a license to use, display, and distribute your User Content in connection with the App</li>
+        <li>Are solely responsible for your User Content</li>
+    </ul>
+    
+    <h3>8.2 Content Guidelines</h3>
+    <p>User Content must not:</p>
+    <ul>
+        <li>Violate any laws or regulations</li>
+        <li>Infringe on intellectual property rights</li>
+        <li>Contain harmful, offensive, or inappropriate material</li>
+        <li>Harass, abuse, or threaten others</li>
+        <li>Contain malware or harmful code</li>
+    </ul>
+    
+    <h3>8.3 Content Removal</h3>
+    <p>We may remove any User Content that violates these terms or is otherwise objectionable, without prior notice.</p>
+    {{/if}}
+</section>
+
+<section id="updates">
+    <h2>9. Updates and Changes</h2>
+    <h3>9.1 App Updates</h3>
+    <p>We may release updates to the App that may:</p>
+    <ul>
+        <li>Add, change, or remove features</li>
+        <li>Fix bugs and security issues</li>
+        <li>Improve performance</li>
+        <li>Be required for continued use</li>
+    </ul>
+    
+    <h3>9.2 Automatic Updates</h3>
+    <p>Depending on your device settings, updates may be installed automatically. We recommend enabling automatic updates for security patches.</p>
+    
+    <h3>9.3 Terms Updates</h3>
+    <p>We may update these App Terms. Continued use of the App after changes constitutes acceptance. Material changes will be notified through the App or email.</p>
+</section>
+
+<section id="third-party-services">
+    <h2>10. Third-Party Services</h2>
+    <h3>10.1 Integrations</h3>
+    <p>The App may integrate with or link to third-party services. These services are governed by their own terms and privacy policies.</p>
+    
+    <h3>10.2 App Store Terms</h3>
+    <p>Your use of the App is also subject to the terms of the app store from which you downloaded it (Apple App Store, Google Play, etc.).</p>
+    
+    <h3>10.3 Third-Party Content</h3>
+    <p>We are not responsible for content provided by third parties through the App.</p>
+</section>
+
+<section id="intellectual-property">
+    <h2>11. Intellectual Property</h2>
+    <h3>11.1 Ownership</h3>
+    <p>The App and all related intellectual property (including code, graphics, trademarks, and content) are owned by {{company_legal_name}} or its licensors.</p>
+    
+    <h3>11.2 Feedback</h3>
+    <p>Any feedback or suggestions you provide about the App may be used by us without restriction or compensation.</p>
+</section>
+
+<section id="disclaimers">
+    <h2>12. Disclaimers</h2>
+    <p><strong>THE APP IS PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND.</strong></p>
+    
+    <p>WE DISCLAIM ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING:</p>
+    <ul>
+        <li>MERCHANTABILITY</li>
+        <li>FITNESS FOR A PARTICULAR PURPOSE</li>
+        <li>NON-INFRINGEMENT</li>
+        <li>UNINTERRUPTED OR ERROR-FREE OPERATION</li>
+        <li>ACCURACY OF CONTENT</li>
+    </ul>
+    
+    <p>We do not warrant that:</p>
+    <ul>
+        <li>The App will meet your specific requirements</li>
+        <li>The App will be compatible with all devices</li>
+        <li>All errors or bugs will be corrected</li>
+        <li>The App will be available at all times</li>
+    </ul>
+</section>
+
+<section id="limitation-liability">
+    <h2>13. Limitation of Liability</h2>
+    <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW:</p>
+    <ul>
+        <li>{{company_legal_name}} IS NOT LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES</li>
+        <li>OUR TOTAL LIABILITY SHALL NOT EXCEED THE AMOUNT YOU PAID FOR THE APP OR IN-APP PURCHASES IN THE TWELVE MONTHS PRIOR TO THE CLAIM, OR {{liability_minimum|default:"$100"}}, WHICHEVER IS GREATER</li>
+        <li>WE ARE NOT LIABLE FOR LOSS OF DATA, PROFITS, OR BUSINESS OPPORTUNITIES</li>
+    </ul>
+</section>
+
+<section id="indemnification">
+    <h2>14. Indemnification</h2>
+    <p>You agree to indemnify {{company_legal_name}} against any claims arising from:</p>
+    <ul>
+        <li>Your use or misuse of the App</li>
+        <li>Your violation of these App Terms</li>
+        <li>Your User Content</li>
+        <li>Your violation of third-party rights</li>
+    </ul>
+</section>
+
+<section id="termination">
+    <h2>15. Termination</h2>
+    <h3>15.1 Termination by You</h3>
+    <p>You may terminate your use of the App at any time by uninstalling it from your devices.</p>
+    
+    <h3>15.2 Termination by Us</h3>
+    <p>We may terminate or suspend your access to the App if you:</p>
+    <ul>
+        <li>Violate these App Terms</li>
+        <li>Engage in fraudulent or abusive behavior</li>
+        <li>Fail to pay for In-App Purchases</li>
+        <li>For any reason at our sole discretion</li>
+    </ul>
+    
+    <h3>15.3 Effect of Termination</h3>
+    <ul>
+        <li>Your license to use the App terminates immediately</li>
+        <li>You must delete all copies of the App</li>
+        <li>You may lose access to your data and purchases</li>
+        <li>Provisions on IP, disclaimers, and liability survive</li>
+    </ul>
+</section>
+
+<section id="app-store-terms">
+    <h2>16. App Store Additional Terms</h2>
+    <h3>16.1 Apple App Store</h3>
+    <p>If you downloaded the App from the Apple App Store:</p>
+    <ul>
+        <li>These terms are between you and {{company_legal_name}}, not Apple</li>
+        <li>Apple has no obligation to provide maintenance or support</li>
+        <li>Apple is not responsible for any claims related to the App</li>
+        <li>Apple is a third-party beneficiary of these terms</li>
+    </ul>
+    
+    <h3>16.2 Google Play Store</h3>
+    <p>If you downloaded the App from Google Play:</p>
+    <ul>
+        <li>These terms are between you and {{company_legal_name}}, not Google</li>
+        <li>Google's terms of service also apply</li>
+    </ul>
+</section>
+
+<section id="governing-law">
+    <h2>17. Governing Law</h2>
+    <p>These App Terms are governed by the laws of {{jurisdiction|default:"the applicable jurisdiction"}}, without regard to conflict of law principles.</p>
+</section>
+
+<section id="contact">
+    <h2>18. Contact Us</h2>
+    <p>For questions about these App Terms or the App:</p>
+    <address class="slos-contact-info">
+        <strong>{{company_legal_name}}</strong><br>
+        {{company_address}}<br>
+        Email: <a href="mailto:{{support_email}}">{{support_email}}</a><br>
+        {{if contact_phone}}Phone: {{contact_phone}}{{/if}}<br>
+        Website: <a href="{{site_url}}">{{site_url}}</a>
+    </address>
+</section>
+
+<footer class="slos-doc-footer">
+    <p><strong>By installing and using the App, you acknowledge that you have read, understood, and agree to these Mobile Application Terms of Service.</strong></p>
+</footer>
+
+</article>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shipping Policy - {{company_legal_name}}</title>
+</head>
+<body>
+<article class="slos-legal-document slos-shipping-policy">
+
+<header class="slos-doc-header">
+    <h1>Shipping Policy</h1>
+    <p class="slos-effective-date"><strong>Effective Date:</strong> {{today}}</p>
+    <p class="slos-last-updated"><strong>Last Updated:</strong> {{today}}</p>
+</header>
+
+<section id="introduction">
+    <h2>1. Introduction</h2>
+    <p>This Shipping Policy describes how <strong>{{company_legal_name}}</strong> handles the shipment and delivery of products purchased through {{site_url}} (the "Website").</p>
+    
+    <p>We are committed to delivering your orders in a timely and efficient manner.</p>
+</section>
+
+<section id="shipping-locations">
+    <h2>2. Shipping Locations</h2>
+    <h3>2.1 Domestic Shipping</h3>
+    <p>We ship to addresses within {{shipping_countries|default:"the contiguous United States"}}.</p>
+    
+    {{if ships_internationally}}
+    <h3>2.2 International Shipping</h3>
+    <p>We offer international shipping to select countries. International orders may be subject to:</p>
+    <ul>
+        <li>Import duties and taxes</li>
+        <li>Customs fees</li>
+        <li>Additional shipping charges</li>
+        <li>Longer delivery times</li>
+    </ul>
+    <p>The recipient is responsible for all customs duties, taxes, and fees.</p>
+    {{/if}}
+    
+    <h3>2.3 Shipping Restrictions</h3>
+    <p>We cannot ship to:</p>
+    <ul>
+        <li>PO Boxes (for certain items)</li>
+        <li>APO/FPO addresses (restrictions may apply)</li>
+        <li>Countries under trade restrictions</li>
+    </ul>
+</section>
+
+<section id="shipping-methods">
+    <h2>3. Shipping Methods & Timeframes</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Shipping Method</th>
+                <th>Estimated Delivery</th>
+                <th>Cost</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Standard Shipping</td>
+                <td>{{standard_shipping_time|default:"5-7 business days"}}</td>
+                <td>{{standard_shipping_cost|default:"Calculated at checkout"}}</td>
+            </tr>
+            <tr>
+                <td>Expedited Shipping</td>
+                <td>{{expedited_shipping_time|default:"2-3 business days"}}</td>
+                <td>{{expedited_shipping_cost|default:"Calculated at checkout"}}</td>
+            </tr>
+            <tr>
+                <td>Express/Overnight</td>
+                <td>{{express_shipping_time|default:"1-2 business days"}}</td>
+                <td>{{express_shipping_cost|default:"Calculated at checkout"}}</td>
+            </tr>
+            {{if ships_internationally}}
+            <tr>
+                <td>International Standard</td>
+                <td>{{international_shipping_time|default:"10-21 business days"}}</td>
+                <td>Calculated at checkout</td>
+            </tr>
+            {{/if}}
+        </tbody>
+    </table>
+    
+    <p><strong>Note:</strong> Delivery estimates are not guaranteed and may vary based on carrier performance, weather, holidays, and other factors.</p>
+</section>
+
+<section id="free-shipping">
+    <h2>4. Free Shipping</h2>
+    {{if free_shipping_threshold}}
+    <p>We offer <strong>FREE standard shipping</strong> on orders over <strong>{{free_shipping_threshold}}</strong> shipped within {{shipping_countries|default:"the domestic region"}}.</p>
+    {{else}}
+    <p>Free shipping promotions may be offered periodically. Check our website or subscribe to our newsletter for current offers.</p>
+    {{/if}}
+    
+    <p>Free shipping exclusions:</p>
+    <ul>
+        <li>Oversized or heavy items</li>
+        <li>Remote or difficult-to-reach areas</li>
+        <li>International orders</li>
+        <li>Expedited or express shipping</li>
+    </ul>
+</section>
+
+<section id="processing-time">
+    <h2>5. Order Processing</h2>
+    <h3>5.1 Processing Time</h3>
+    <p>Orders are processed within <strong>{{order_processing_time|default:"1-2 business days"}}</strong> after payment confirmation.</p>
+    
+    <h3>5.2 Business Days</h3>
+    <p>Business days are {{business_days|default:"Monday through Friday"}}, excluding public holidays.</p>
+    
+    <h3>5.3 Order Cut-Off Time</h3>
+    <p>Orders placed before {{order_cutoff_time|default:"2:00 PM"}} ({{timezone|default:"local time"}}) will typically be processed the same business day.</p>
+    
+    <h3>5.4 Factors Affecting Processing</h3>
+    <p>Processing may be delayed due to:</p>
+    <ul>
+        <li>Payment verification requirements</li>
+        <li>Address verification issues</li>
+        <li>High order volume during sales</li>
+        <li>Custom or made-to-order items</li>
+        <li>Inventory availability</li>
+    </ul>
+</section>
+
+<section id="shipping-costs">
+    <h2>6. Shipping Costs</h2>
+    <p>Shipping costs are calculated based on:</p>
+    <ul>
+        <li>Package weight and dimensions</li>
+        <li>Shipping destination</li>
+        <li>Selected shipping method</li>
+        <li>Special handling requirements</li>
+    </ul>
+    
+    <p>Final shipping costs are displayed at checkout before payment.</p>
+    
+    <h3>6.1 Additional Fees</h3>
+    <p>Additional charges may apply for:</p>
+    <ul>
+        <li>Oversized or overweight items</li>
+        <li>Remote area delivery surcharges</li>
+        <li>Signature required deliveries</li>
+        <li>Residential delivery fees</li>
+    </ul>
+</section>
+
+<section id="tracking">
+    <h2>7. Order Tracking</h2>
+    <p>Once your order ships, you will receive:</p>
+    <ul>
+        <li>Shipping confirmation email</li>
+        <li>Tracking number and carrier information</li>
+        <li>Link to track your package</li>
+    </ul>
+    
+    <p>You can also track your order by:</p>
+    <ul>
+        <li>Logging into your account on our Website</li>
+        <li>Contacting customer service with your order number</li>
+        <li>Using the carrier's tracking website directly</li>
+    </ul>
+    
+    <p><strong>Note:</strong> Tracking information may take 24-48 hours to update after shipment.</p>
+</section>
+
+<section id="delivery">
+    <h2>8. Delivery Information</h2>
+    <h3>8.1 Delivery Attempts</h3>
+    <p>Carriers typically make {{delivery_attempts|default:"2-3"}} delivery attempts. After failed attempts, packages may be:</p>
+    <ul>
+        <li>Left at a secure location (if authorized)</li>
+        <li>Held at a local carrier facility</li>
+        <li>Returned to sender</li>
+    </ul>
+    
+    <h3>8.2 Signature Requirements</h3>
+    <p>Signature may be required for:</p>
+    <ul>
+        <li>High-value orders over {{signature_threshold|default:"$100"}}</li>
+        <li>Age-restricted products</li>
+        <li>Customer-requested signature confirmation</li>
+    </ul>
+    
+    <h3>8.3 Delivery Instructions</h3>
+    <p>You may provide special delivery instructions during checkout. We will attempt to accommodate requests, but cannot guarantee carrier compliance.</p>
+</section>
+
+<section id="shipping-issues">
+    <h2>9. Shipping Issues</h2>
+    <h3>9.1 Lost Packages</h3>
+    <p>If your package appears lost:</p>
+    <ol>
+        <li>Check tracking information for updates</li>
+        <li>Verify the shipping address is correct</li>
+        <li>Check with neighbors or building management</li>
+        <li>Contact the carrier directly</li>
+        <li>Contact us at <a href="mailto:{{support_email}}">{{support_email}}</a></li>
+    </ol>
+    <p>We will investigate and, if confirmed lost, offer a replacement or refund.</p>
+    
+    <h3>9.2 Damaged Packages</h3>
+    <p>If you receive a damaged package:</p>
+    <ol>
+        <li>Document the damage with photos</li>
+        <li>Keep all original packaging</li>
+        <li>Contact us within {{damage_report_window|default:"48 hours"}} of delivery</li>
+        <li>We will arrange replacement or refund</li>
+    </ol>
+    
+    <h3>9.3 Wrong Items or Missing Items</h3>
+    <p>If you receive incorrect or incomplete orders:</p>
+    <ol>
+        <li>Contact us immediately at <a href="mailto:{{support_email}}">{{support_email}}</a></li>
+        <li>Provide your order number and details of the issue</li>
+        <li>We will ship correct items or issue appropriate credit</li>
+    </ol>
+</section>
+
+<section id="address-changes">
+    <h2>10. Address Changes</h2>
+    <p>To change your shipping address:</p>
+    <ul>
+        <li><strong>Before processing:</strong> Contact us immediately - changes may be possible</li>
+        <li><strong>After shipping:</strong> Contact the carrier directly to request redirect (fees may apply)</li>
+    </ul>
+    
+    <p>We are not responsible for packages delivered to incorrect addresses provided by the customer.</p>
+</section>
+
+<section id="special-circumstances">
+    <h2>11. Special Circumstances</h2>
+    <h3>11.1 Holiday Shipping</h3>
+    <p>During peak holiday seasons, please allow extra time for delivery. We recommend ordering early to ensure timely arrival.</p>
+    
+    <h3>11.2 Weather & Natural Disasters</h3>
+    <p>Severe weather or natural disasters may cause delivery delays beyond our control. We appreciate your patience during these events.</p>
+    
+    <h3>11.3 COVID-19 & Health Emergencies</h3>
+    <p>During health emergencies, delivery times may be affected. We prioritize the safety of our staff and delivery partners.</p>
+</section>
+
+{{if dropship_notice}}
+<section id="dropshipping">
+    <h2>12. Drop Shipping Notice</h2>
+    <p>Some products may ship directly from our suppliers or manufacturers. These items may:</p>
+    <ul>
+        <li>Ship in different packaging</li>
+        <li>Have different return addresses</li>
+        <li>Ship separately from other items in your order</li>
+    </ul>
+</section>
+{{/if}}
+
+<section id="contact">
+    <h2>13. Contact Us</h2>
+    <p>For shipping questions or concerns:</p>
+    <address class="slos-contact-info">
+        <strong>{{company_legal_name}}</strong><br>
+        {{company_address}}<br>
+        Email: <a href="mailto:{{support_email}}">{{support_email}}</a><br>
+        {{if contact_phone}}Phone: {{contact_phone}}{{/if}}
+    </address>
+    
+    <p><strong>Customer Service Hours:</strong> {{business_hours|default:"Monday-Friday, 9 AM - 5 PM"}}</p>
+</section>
+
+</article>
+</body>
+</html>

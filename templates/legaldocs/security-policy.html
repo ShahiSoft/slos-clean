@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Policy - {{company_legal_name}}</title>
+</head>
+<body>
+<article class="slos-legal-document slos-security-policy">
+
+<header class="slos-doc-header">
+    <h1>Security Policy</h1>
+    <p class="slos-effective-date"><strong>Effective Date:</strong> {{today}}</p>
+    <p class="slos-last-updated"><strong>Last Updated:</strong> {{today}}</p>
+</header>
+
+<section id="introduction">
+    <h2>1. Introduction</h2>
+    <p><strong>{{company_legal_name}}</strong> is committed to protecting the security and integrity of your data. This Security Policy outlines the measures we take to safeguard information processed through our website <a href="{{site_url}}">{{site_url}}</a>{{if app_name}} and {{app_name}} services{{/if}}.</p>
+</section>
+
+<section id="security-measures">
+    <h2>2. Security Measures</h2>
+    <p>We implement comprehensive security measures to protect your data:</p>
+    
+    <h3>2.1 Data Encryption</h3>
+    <ul>
+        <li><strong>In Transit:</strong> All data transmitted to and from our systems is encrypted using TLS 1.2 or higher</li>
+        <li><strong>At Rest:</strong> Sensitive data stored in our databases is encrypted using industry-standard encryption algorithms</li>
+        <li><strong>End-to-End:</strong> Critical data is protected with end-to-end encryption where applicable</li>
+    </ul>
+    
+    <h3>2.2 Access Controls</h3>
+    <ul>
+        <li>Role-based access control (RBAC) limiting data access to authorized personnel</li>
+        <li>Multi-factor authentication (MFA) for administrative access</li>
+        <li>Regular access reviews and privilege audits</li>
+        <li>Automatic session timeouts for inactive users</li>
+        <li>Strong password policies and secure credential management</li>
+    </ul>
+    
+    {{if security_measures}}
+    <h3>2.3 Additional Security Measures</h3>
+    <ul>{{foreach security_measures_array as measure}}
+        <li>{{measure}}</li>{{/foreach}}
+    </ul>
+    {{/if}}
+</section>
+
+<section id="infrastructure">
+    <h2>3. Infrastructure Security</h2>
+    <h3>3.1 Network Security</h3>
+    <ul>
+        <li>Enterprise-grade firewalls and intrusion detection systems</li>
+        <li>DDoS protection and mitigation</li>
+        <li>Network segmentation and isolation</li>
+        <li>Regular vulnerability scanning and penetration testing</li>
+    </ul>
+    
+    <h3>3.2 Physical Security</h3>
+    <ul>
+        <li>Secure data centers with 24/7 monitoring</li>
+        <li>Biometric access controls and security personnel</li>
+        <li>Environmental controls (fire suppression, climate control)</li>
+        <li>Redundant power and connectivity</li>
+    </ul>
+    
+    <h3>3.3 Application Security</h3>
+    <ul>
+        <li>Secure software development lifecycle (SDLC)</li>
+        <li>Regular security code reviews</li>
+        <li>Automated security testing in CI/CD pipeline</li>
+        <li>Timely patching and updates</li>
+    </ul>
+</section>
+
+<section id="data-protection">
+    <h2>4. Data Protection</h2>
+    <h3>4.1 Data Classification</h3>
+    <p>We classify data based on sensitivity and apply appropriate protection measures:</p>
+    <ul>
+        <li><strong>Public:</strong> Information intended for public disclosure</li>
+        <li><strong>Internal:</strong> Business information for internal use</li>
+        <li><strong>Confidential:</strong> Sensitive information requiring protection</li>
+        <li><strong>Restricted:</strong> Highly sensitive data with strict access controls</li>
+    </ul>
+    
+    <h3>4.2 Data Retention</h3>
+    <p>We retain data only as long as necessary for the purposes collected:</p>
+    <p><strong>Default Retention Period:</strong> {{retention_period|default:"As required by applicable law"}}</p>
+    
+    {{if deletion_policy}}
+    <p><strong>Deletion Policy:</strong> {{deletion_policy}}</p>
+    {{/if}}
+    
+    <h3>4.3 Data Backup</h3>
+    <ul>
+        <li>Regular automated backups</li>
+        <li>Encrypted backup storage</li>
+        <li>Geographically distributed backup locations</li>
+        <li>Regular backup restoration testing</li>
+    </ul>
+</section>
+
+<section id="incident-response">
+    <h2>5. Security Incident Response</h2>
+    <h3>5.1 Incident Detection</h3>
+    <p>We employ multiple detection mechanisms:</p>
+    <ul>
+        <li>24/7 security monitoring and alerting</li>
+        <li>Intrusion detection and prevention systems</li>
+        <li>Log aggregation and analysis</li>
+        <li>User behavior analytics</li>
+    </ul>
+    
+    <h3>5.2 Incident Response Procedure</h3>
+    <ol>
+        <li><strong>Identification:</strong> Detect and identify security incidents</li>
+        <li><strong>Containment:</strong> Limit the scope and impact of the incident</li>
+        <li><strong>Eradication:</strong> Remove the threat from our systems</li>
+        <li><strong>Recovery:</strong> Restore affected systems and data</li>
+        <li><strong>Lessons Learned:</strong> Review and improve security measures</li>
+    </ol>
+    
+    <h3>5.3 Breach Notification</h3>
+    {{if gdpr_applies}}
+    <p>In compliance with GDPR, we will notify the relevant supervisory authority within 72 hours of becoming aware of a personal data breach that poses a risk to individuals' rights and freedoms.</p>
+    {{/if}}
+    
+    <p>Affected individuals will be notified without undue delay when a breach is likely to result in high risk to their rights and freedoms.</p>
+    
+    {{if breach_procedure}}
+    <p><strong>Breach Procedure:</strong> {{breach_procedure}}</p>
+    {{/if}}
+</section>
+
+<section id="compliance">
+    <h2>6. Compliance and Certifications</h2>
+    <p>We maintain compliance with applicable security standards and regulations:</p>
+    <ul>{{if gdpr_applies}}<li>General Data Protection Regulation (GDPR)</li>{{/if}}{{if ccpa_applies}}<li>California Consumer Privacy Act (CCPA)</li>{{/if}}
+        <li>Industry best practices and security frameworks</li>
+    </ul>
+    
+    {{if certifications}}
+    <p><strong>Certifications:</strong> {{certifications}}</p>
+    {{/if}}
+</section>
+
+<section id="employee-security">
+    <h2>7. Employee Security</h2>
+    <ul>
+        <li>Background checks for employees with data access</li>
+        <li>Regular security awareness training</li>
+        <li>Confidentiality agreements</li>
+        <li>Clear acceptable use policies</li>
+        <li>Prompt access revocation upon termination</li>
+    </ul>
+</section>
+
+<section id="vendor-security">
+    <h2>8. Third-Party Security</h2>
+    <p>We require our vendors and service providers to:</p>
+    <ul>
+        <li>Maintain appropriate security certifications</li>
+        <li>Undergo security assessments before engagement</li>
+        <li>Sign data protection agreements</li>
+        <li>Comply with our security requirements</li>
+        <li>Notify us of any security incidents</li>
+    </ul>
+</section>
+
+<section id="reporting">
+    <h2>9. Security Vulnerability Reporting</h2>
+    <p>If you discover a security vulnerability, please report it responsibly to:</p>
+    <address class="slos-contact-info">
+        <strong>Security Team</strong><br>
+        <strong>{{company_legal_name}}</strong><br>
+        Email: <a href="mailto:{{legal_contact_email}}">{{legal_contact_email}}</a>
+    </address>
+    
+    <p>Please include:</p>
+    <ul>
+        <li>Description of the vulnerability</li>
+        <li>Steps to reproduce</li>
+        <li>Potential impact</li>
+        <li>Any suggested remediation</li>
+    </ul>
+    
+    <p>We will acknowledge receipt within 48 hours and keep you informed of our progress.</p>
+</section>
+
+<section id="contact">
+    <h2>10. Contact Us</h2>
+    <p>For security-related inquiries, please contact:</p>
+    <address class="slos-contact-info">
+        <strong>{{company_legal_name}}</strong><br>
+        {{company_address}}<br>
+        Email: <a href="mailto:{{legal_contact_email}}">{{legal_contact_email}}</a><br>
+        {{if contact_phone}}Phone: {{contact_phone}}{{/if}}
+    </address>
+</section>
+
+</article>
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warranty Policy - {{company_legal_name}}</title>
+</head>
+<body>
+<article class="slos-legal-document slos-warranty-policy">
+
+<header class="slos-doc-header">
+    <h1>Warranty Policy</h1>
+    <p class="slos-effective-date"><strong>Effective Date:</strong> {{today}}</p>
+    <p class="slos-last-updated"><strong>Last Updated:</strong> {{today}}</p>
+</header>
+
+<section id="introduction">
+    <h2>1. Introduction</h2>
+    <p>This Warranty Policy describes the warranty coverage provided by <strong>{{company_legal_name}}</strong> for products purchased through {{site_url}} (the "Website").</p>
+    
+    <p>We stand behind the quality of our products and are committed to your satisfaction.</p>
+</section>
+
+<section id="warranty-coverage">
+    <h2>2. Warranty Coverage</h2>
+    <h3>2.1 Limited Warranty</h3>
+    <p>{{company_legal_name}} warrants that products purchased from our Website will be free from defects in materials and workmanship for a period of <strong>{{warranty_period|default:"one (1) year"}}</strong> from the date of original purchase.</p>
+    
+    <h3>2.2 What This Warranty Covers</h3>
+    <ul>
+        <li>Manufacturing defects</li>
+        <li>Material defects</li>
+        <li>Workmanship defects</li>
+        <li>Functional failures under normal use</li>
+    </ul>
+    
+    <h3>2.3 Warranty Period by Product Category</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Product Category</th>
+                <th>Warranty Period</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{if warranty_electronics}}
+            <tr>
+                <td>Electronics</td>
+                <td>{{warranty_electronics}}</td>
+            </tr>
+            {{/if}}
+            {{if warranty_appliances}}
+            <tr>
+                <td>Appliances</td>
+                <td>{{warranty_appliances}}</td>
+            </tr>
+            {{/if}}
+            {{if warranty_furniture}}
+            <tr>
+                <td>Furniture</td>
+                <td>{{warranty_furniture}}</td>
+            </tr>
+            {{/if}}
+            <tr>
+                <td>All Other Products</td>
+                <td>{{warranty_period|default:"1 year"}}</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<section id="warranty-exclusions">
+    <h2>3. What This Warranty Does NOT Cover</h2>
+    <p>This warranty does not cover:</p>
+    
+    <h3>3.1 Damage or Defects Caused By:</h3>
+    <ul>
+        <li>Misuse, abuse, or neglect</li>
+        <li>Accident or physical damage</li>
+        <li>Unauthorized modifications or repairs</li>
+        <li>Failure to follow product instructions</li>
+        <li>Normal wear and tear</li>
+        <li>Improper storage or maintenance</li>
+        <li>Use with incompatible products or accessories</li>
+        <li>Exposure to extreme conditions (heat, cold, moisture, etc.)</li>
+        <li>Power surges or electrical issues</li>
+        <li>Acts of nature (floods, earthquakes, lightning, etc.)</li>
+    </ul>
+    
+    <h3>3.2 Non-Covered Items:</h3>
+    <ul>
+        <li>Consumable parts (batteries, filters, bulbs, etc.)</li>
+        <li>Cosmetic damage (scratches, dents, etc.)</li>
+        <li>Products with removed or altered serial numbers</li>
+        <li>Products purchased from unauthorized sellers</li>
+        <li>Demo, used, or refurbished products (unless stated)</li>
+        <li>Accessories not sold by {{company_legal_name}}</li>
+    </ul>
+    
+    <h3>3.3 Non-Covered Circumstances:</h3>
+    <ul>
+        <li>Commercial or business use (unless designed for such use)</li>
+        <li>Rental or institutional use</li>
+        <li>Products used outside their intended purpose</li>
+    </ul>
+</section>
+
+<section id="warranty-remedies">
+    <h2>4. Warranty Remedies</h2>
+    <p>If a product is found to be defective under this warranty, {{company_legal_name}} will, at its sole discretion:</p>
+    <ol>
+        <li><strong>Repair</strong> the defective product at no charge</li>
+        <li><strong>Replace</strong> the defective product with a new or refurbished equivalent</li>
+        <li><strong>Refund</strong> the original purchase price</li>
+    </ol>
+    
+    <p>Replacement products may be new or refurbished and are warranted for the remainder of the original warranty period or {{replacement_warranty_period|default:"90 days"}}, whichever is longer.</p>
+    
+    <h3>4.1 Repair vs. Replacement Decision</h3>
+    <p>The choice of remedy is at our sole discretion based on:</p>
+    <ul>
+        <li>Nature and extent of the defect</li>
+        <li>Availability of replacement parts</li>
+        <li>Product availability</li>
+        <li>Economic feasibility</li>
+    </ul>
+</section>
+
+<section id="warranty-claims">
+    <h2>5. How to Make a Warranty Claim</h2>
+    <h3>5.1 Contact Us</h3>
+    <p>To initiate a warranty claim, contact our customer service:</p>
+    <ul>
+        <li>Email: <a href="mailto:{{support_email}}">{{support_email}}</a></li>{{if warranty_email}}<li>Warranty Department: <a href="mailto:{{warranty_email}}">{{warranty_email}}</a></li>{{/if}}{{if contact_phone}}<li>Phone: {{contact_phone}}</li>{{/if}}
+    </ul>
+    
+    <h3>5.2 Required Information</h3>
+    <p>Please provide:</p>
+    <ul>
+        <li>Order number or invoice</li>
+        <li>Date of purchase</li>
+        <li>Product name and model number</li>
+        <li>Serial number (if applicable)</li>
+        <li>Detailed description of the defect</li>
+        <li>Photos or videos of the defect (if applicable)</li>
+    </ul>
+    
+    <h3>5.3 Proof of Purchase</h3>
+    <p>A valid proof of purchase is required for all warranty claims. Acceptable proof includes:</p>
+    <ul>
+        <li>Original receipt or invoice</li>
+        <li>Order confirmation email</li>
+        <li>Credit card statement showing the purchase</li>
+    </ul>
+    
+    <h3>5.4 Return Authorization</h3>
+    <p>Do not return any product without first obtaining a Return Merchandise Authorization (RMA) number. Unauthorized returns may be refused.</p>
+</section>
+
+<section id="warranty-process">
+    <h2>6. Warranty Claim Process</h2>
+    <ol>
+        <li><strong>Submit Claim:</strong> Contact us with required information</li>
+        <li><strong>Review:</strong> We will review your claim within {{claim_review_time|default:"3-5 business days"}}</li>
+        <li><strong>Authorization:</strong> If approved, you'll receive an RMA number</li>
+        <li><strong>Ship Product:</strong> Send the product to our warranty center</li>
+        <li><strong>Inspection:</strong> We will inspect the product</li>
+        <li><strong>Resolution:</strong> Repair, replace, or refund as determined</li>
+        <li><strong>Return:</strong> Repaired/replacement product shipped to you</li>
+    </ol>
+    
+    <h3>6.1 Shipping for Warranty Claims</h3>
+    <ul>
+        <li><strong>Defective products:</strong> We will provide a prepaid shipping label</li>
+        <li><strong>Non-covered claims:</strong> Customer is responsible for shipping costs</li>
+        <li><strong>Return shipping:</strong> We cover return shipping for approved claims</li>
+    </ul>
+    
+    <h3>6.2 Processing Time</h3>
+    <p>Standard warranty claim processing takes {{warranty_processing_time|default:"10-14 business days"}} from receipt of the product.</p>
+</section>
+
+<section id="extended-warranty">
+    <h2>7. Extended Warranty</h2>
+    {{if offers_extended_warranty}}
+    <h3>7.1 Extended Protection Plans</h3>
+    <p>We offer extended warranty protection plans that can be purchased at the time of your original order. Extended warranties provide:</p>
+    <ul>
+        <li>Extended coverage beyond the standard warranty period</li>
+        <li>Additional protection options</li>
+        <li>Priority service</li>
+    </ul>
+    
+    <h3>7.2 Extended Warranty Terms</h3>
+    <p>Extended warranty terms and conditions are provided separately at the time of purchase.</p>
+    {{else}}
+    <p>Extended warranty options may be available for select products. Contact our customer service for more information.</p>
+    {{/if}}
+</section>
+
+<section id="limitation-liability">
+    <h2>8. Limitation of Liability</h2>
+    <p>THIS WARRANTY IS THE SOLE WARRANTY PROVIDED BY {{company_legal_name}} AND IS IN LIEU OF ALL OTHER WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.</p>
+    
+    <p>IN NO EVENT SHALL {{company_legal_name}} BE LIABLE FOR:</p>
+    <ul>
+        <li>Incidental or consequential damages</li>
+        <li>Loss of use, data, or profits</li>
+        <li>Personal injury or property damage beyond the product itself</li>
+        <li>Any amount exceeding the original purchase price</li>
+    </ul>
+    
+    <p>Some jurisdictions do not allow limitations on implied warranties or exclusion of incidental or consequential damages, so the above limitations may not apply to you.</p>
+</section>
+
+<section id="statutory-rights">
+    <h2>9. Your Statutory Rights</h2>
+    <p>This warranty gives you specific legal rights, and you may also have other rights which vary by jurisdiction.</p>
+    
+    <h3>9.1 Consumer Rights (EU/UK)</h3>
+    <p>If you are a consumer in the European Union or United Kingdom, you have statutory rights under consumer protection laws. This warranty does not affect those rights.</p>
+    
+    <h3>9.2 Australian Consumer Law</h3>
+    <p>For consumers in Australia, our goods come with guarantees that cannot be excluded under the Australian Consumer Law.</p>
+</section>
+
+<section id="manufacturer-warranty">
+    <h2>10. Manufacturer Warranties</h2>
+    <p>Some products may come with a separate manufacturer's warranty in addition to our warranty. In case of conflict:</p>
+    <ul>
+        <li>You may pursue warranty claims with either party</li>
+        <li>The more favorable terms apply</li>
+        <li>Manufacturer warranty terms are provided with the product</li>
+    </ul>
+</section>
+
+<section id="warranty-transfer">
+    <h2>11. Warranty Transfer</h2>
+    <p>This warranty is {{warranty_transferable|default:"non-transferable"}} and applies only to the original purchaser of the product from {{company_legal_name}} or an authorized retailer.</p>
+</section>
+
+<section id="contact">
+    <h2>12. Contact Us</h2>
+    <p>For warranty inquiries or claims:</p>
+    <address class="slos-contact-info">
+        <strong>{{company_legal_name}}</strong><br>
+        {{company_address}}<br>
+        Email: <a href="mailto:{{support_email}}">{{support_email}}</a><br>
+        {{if contact_phone}}Phone: {{contact_phone}}{{/if}}
+    </address>
+    
+    <p><strong>Customer Service Hours:</strong> {{business_hours|default:"Monday-Friday, 9 AM - 5 PM"}}</p>
+</section>
+
+</article>
+</body>
+</html>

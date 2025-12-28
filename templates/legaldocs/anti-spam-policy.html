@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anti-Spam Policy - {{company_legal_name}}</title>
+</head>
+<body>
+<article class="slos-legal-document slos-anti-spam-policy">
+
+<header class="slos-doc-header">
+    <h1>Anti-Spam Policy</h1>
+    <p class="slos-effective-date"><strong>Effective Date:</strong> {{today}}</p>
+    <p class="slos-last-updated"><strong>Last Updated:</strong> {{today}}</p>
+</header>
+
+<section id="introduction">
+    <h2>1. Introduction</h2>
+    <p><strong>{{company_legal_name}}</strong> ("Company," "we," "us," or "our") is committed to fighting spam and maintaining the integrity of our communications. This Anti-Spam Policy explains our practices regarding unsolicited electronic messages and outlines the standards we expect from users of our services.</p>
+    
+    <p>This policy applies to all electronic communications sent through or in connection with our website <a href="{{site_url}}">{{site_url}}</a>{{if app_name}} and {{app_name}} services{{/if}}.</p>
+</section>
+
+<section id="definition">
+    <h2>2. What is Spam?</h2>
+    <p>For the purposes of this policy, "spam" includes:</p>
+    <ul>
+        <li>Unsolicited bulk email (UBE) - mass emails sent to recipients who haven't requested them</li>
+        <li>Unsolicited commercial email (UCE) - promotional emails sent without consent</li>
+        <li>Unsolicited messages through any electronic medium (SMS, social media, instant messaging)</li>
+        <li>Any communication that violates applicable anti-spam laws</li>
+    </ul>
+</section>
+
+<section id="our-commitment">
+    <h2>3. Our Anti-Spam Commitment</h2>
+    <p>We commit to the following practices:</p>
+    
+    <h3>3.1 Consent-Based Communications</h3>
+    <ul>
+        <li>We only send marketing emails to individuals who have explicitly opted in</li>
+        <li>We maintain accurate records of consent</li>
+        <li>We honor all opt-out requests promptly</li>
+    </ul>
+    
+    <h3>3.2 Clear Identification</h3>
+    <ul>
+        <li>All our emails clearly identify {{company_legal_name}} as the sender</li>
+        <li>Our physical address is included in all commercial emails</li>
+        <li>Subject lines accurately reflect email content</li>
+    </ul>
+    
+    <h3>3.3 Easy Unsubscribe</h3>
+    <ul>
+        <li>Every marketing email includes a clear unsubscribe link</li>
+        <li>Unsubscribe requests are processed within 10 business days</li>
+        <li>We do not require login or multiple steps to unsubscribe</li>
+    </ul>
+</section>
+
+<section id="prohibited-activities">
+    <h2>4. Prohibited Activities</h2>
+    <p>Users of our services are prohibited from:</p>
+    <ul>
+        <li>Sending unsolicited bulk emails through our systems</li>
+        <li>Using our services to collect email addresses for spamming</li>
+        <li>Harvesting email addresses from our website or services</li>
+        <li>Sending emails with forged headers or deceptive subject lines</li>
+        <li>Using our name or brand in spam campaigns</li>
+        <li>Distributing malware, viruses, or harmful content via email</li>
+        <li>Sending chain letters or pyramid schemes</li>
+        <li>Engaging in email bombing or mail flooding</li>
+    </ul>
+</section>
+
+<section id="legal-compliance">
+    <h2>5. Legal Compliance</h2>
+    <p>We comply with applicable anti-spam legislation including:</p>
+    <ul>
+        <li><strong>CAN-SPAM Act</strong> (United States)</li>
+        <li><strong>CASL</strong> - Canada's Anti-Spam Legislation</li>{{if gdpr_applies}}<li><strong>GDPR</strong> - General Data Protection Regulation (EU)</li>{{/if}}
+        <li><strong>Privacy and Electronic Communications Regulations</strong> (UK)</li>
+        <li>Other applicable regional anti-spam laws</li>
+    </ul>
+</section>
+
+<section id="enforcement">
+    <h2>6. Enforcement</h2>
+    <p>Violations of this Anti-Spam Policy may result in:</p>
+    <ul>
+        <li>Warning and request to cease the activity</li>
+        <li>Temporary suspension of service access</li>
+        <li>Permanent termination of account</li>
+        <li>Legal action where appropriate</li>
+        <li>Reporting to relevant authorities</li>
+    </ul>
+    
+    <p>We reserve the right to take immediate action without prior notice for severe violations.</p>
+</section>
+
+<section id="reporting">
+    <h2>7. Reporting Spam</h2>
+    <p>If you receive spam that appears to be from {{company_legal_name}} or uses our brand, please report it to us immediately:</p>
+    <address class="slos-contact-info">
+        <strong>{{company_legal_name}}</strong><br>
+        Email: <a href="mailto:{{legal_contact_email}}">{{legal_contact_email}}</a>
+    </address>
+    
+    <p>When reporting spam, please include:</p>
+    <ul>
+        <li>Complete email headers</li>
+        <li>The full content of the spam message</li>
+        <li>The date and time received</li>
+        <li>Any other relevant information</li>
+    </ul>
+</section>
+
+<section id="managing-preferences">
+    <h2>8. Managing Your Communication Preferences</h2>
+    <p>You can manage your email preferences by:</p>
+    <ul>
+        <li>Clicking the "unsubscribe" link in any of our marketing emails</li>
+        <li>Contacting us at <a href="mailto:{{legal_contact_email}}">{{legal_contact_email}}</a></li>
+        <li>Updating your preferences in your account settings (if applicable)</li>
+    </ul>
+    
+    <p>Please note that even if you opt out of marketing communications, you may still receive transactional emails related to your account or purchases.</p>
+</section>
+
+<section id="contact">
+    <h2>9. Contact Us</h2>
+    <p>For questions about this Anti-Spam Policy, please contact:</p>
+    <address class="slos-contact-info">
+        <strong>{{company_legal_name}}</strong><br>
+        {{company_address}}<br>
+        Email: <a href="mailto:{{legal_contact_email}}">{{legal_contact_email}}</a><br>
+        {{if contact_phone}}Phone: {{contact_phone}}{{/if}}
+    </address>
+</section>
+
+</article>
+</body>
+</html>

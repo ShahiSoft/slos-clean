@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Processing Agreement - {{company_legal_name}}</title>
+</head>
+<body>
+<article class="slos-legal-document slos-data-processing-agreement">
+
+<header class="slos-doc-header">
+    <h1>Data Processing Agreement</h1>
+    <p class="slos-effective-date"><strong>Effective Date:</strong> {{today}}</p>
+    <p class="slos-last-updated"><strong>Last Updated:</strong> {{today}}</p>
+</header>
+
+<section id="introduction">
+    <h2>1. Introduction</h2>
+    <p>This Data Processing Agreement ("DPA") forms part of the agreement between <strong>{{company_legal_name}}</strong> ("Data Controller" or "Controller") and you, the data processor ("Data Processor" or "Processor"), for the processing of personal data on behalf of the Controller.</p>
+    
+    <p>This DPA is entered into in compliance with:</p>
+    <ul>{{if gdpr_applies}}<li>General Data Protection Regulation (EU) 2016/679 ("GDPR")</li>{{/if}}{{if ccpa_applies}}<li>California Consumer Privacy Act ("CCPA")</li>{{/if}}{{if lgpd_applies}}<li>Brazil's Lei Geral de Proteção de Dados ("LGPD")</li>{{/if}}
+        <li>Other applicable data protection laws</li>
+    </ul>
+</section>
+
+<section id="definitions">
+    <h2>2. Definitions</h2>
+    <p>For the purposes of this DPA:</p>
+    <ul>
+        <li><strong>"Personal Data"</strong> means any information relating to an identified or identifiable natural person</li>
+        <li><strong>"Data Subject"</strong> means the individual to whom the Personal Data relates</li>
+        <li><strong>"Processing"</strong> means any operation performed on Personal Data</li>
+        <li><strong>"Sub-processor"</strong> means any third party engaged by the Processor to process Personal Data</li>
+        <li><strong>"Data Breach"</strong> means any accidental or unlawful destruction, loss, alteration, unauthorized disclosure of, or access to Personal Data</li>
+    </ul>
+</section>
+
+<section id="scope">
+    <h2>3. Scope of Processing</h2>
+    <h3>3.1 Subject Matter</h3>
+    <p>The Processor will process Personal Data only for the purposes of providing the services agreed upon with the Controller.</p>
+    
+    <h3>3.2 Nature of Processing</h3>
+    <p>The nature of processing includes collection, storage, organization, retrieval, use, disclosure, and erasure of Personal Data as necessary for the services.</p>
+    
+    <h3>3.3 Types of Personal Data</h3>
+    <p>The Personal Data processed may include:</p>
+    <ul>{{foreach data_types_array as dtype}}
+        <li>{{dtype}}</li>{{/foreach}}
+    </ul>
+    
+    <h3>3.4 Categories of Data Subjects</h3>
+    <p>Data Subjects may include customers, users, employees, and business contacts of the Controller.</p>
+    
+    <h3>3.5 Duration</h3>
+    <p>Processing shall continue for the duration of the service agreement unless otherwise specified.</p>
+</section>
+
+<section id="obligations">
+    <h2>4. Processor Obligations</h2>
+    <p>The Processor agrees to:</p>
+    
+    <h3>4.1 Processing Instructions</h3>
+    <ul>
+        <li>Process Personal Data only on documented instructions from the Controller</li>
+        <li>Immediately inform the Controller if instructions violate applicable data protection laws</li>
+        <li>Not process Personal Data for any purpose other than as specified</li>
+    </ul>
+    
+    <h3>4.2 Confidentiality</h3>
+    <ul>
+        <li>Ensure all personnel processing Personal Data are bound by confidentiality obligations</li>
+        <li>Limit access to Personal Data to authorized personnel only</li>
+    </ul>
+    
+    <h3>4.3 Security Measures</h3>
+    <p>Implement appropriate technical and organizational measures including:</p>
+    <ul>
+        <li>Encryption of Personal Data in transit and at rest</li>
+        <li>Regular security assessments and testing</li>
+        <li>Access controls and authentication measures</li>
+        <li>Incident response and disaster recovery procedures</li>
+        <li>Employee training on data protection</li>
+    </ul>
+    
+    <h3>4.4 Sub-processors</h3>
+    <ul>
+        <li>Not engage any Sub-processor without prior written authorization from the Controller</li>
+        <li>Ensure Sub-processors are bound by equivalent data protection obligations</li>
+        <li>Remain liable for Sub-processor compliance</li>
+    </ul>
+    
+    <h3>4.5 Data Subject Rights</h3>
+    <ul>
+        <li>Assist the Controller in responding to Data Subject requests</li>
+        <li>Notify the Controller promptly upon receiving any Data Subject request</li>
+        <li>Not respond directly to Data Subjects without Controller authorization</li>
+    </ul>
+</section>
+
+<section id="controller-obligations">
+    <h2>5. Controller Obligations</h2>
+    <p>The Controller agrees to:</p>
+    <ul>
+        <li>Provide clear and documented processing instructions</li>
+        <li>Ensure lawful bases exist for all processing activities</li>
+        <li>Respond to Data Subject requests within required timeframes</li>
+        <li>Maintain appropriate privacy notices and consents</li>
+        <li>Comply with all applicable data protection laws</li>
+    </ul>
+</section>
+
+<section id="data-breach">
+    <h2>6. Data Breach Notification</h2>
+    <p>In the event of a Data Breach, the Processor shall:</p>
+    <ol>
+        <li>Notify the Controller without undue delay and in any event within 24 hours of becoming aware of the breach</li>
+        <li>Provide detailed information including:
+            <ul>
+                <li>Nature of the breach</li>
+                <li>Categories and approximate number of Data Subjects affected</li>
+                <li>Categories and approximate number of records concerned</li>
+                <li>Likely consequences of the breach</li>
+                <li>Measures taken or proposed to address the breach</li>
+            </ul>
+        </li>
+        <li>Cooperate with the Controller's investigation and remediation efforts</li>
+        <li>Take immediate steps to mitigate the effects of the breach</li>
+    </ol>
+</section>
+
+<section id="international-transfers">
+    <h2>7. International Data Transfers</h2>
+    {{if gdpr_applies}}
+    <p>The Processor shall not transfer Personal Data outside the European Economic Area (EEA) unless:</p>
+    <ul>
+        <li>The transfer is to a country with an adequacy decision</li>
+        <li>Appropriate safeguards are in place (e.g., Standard Contractual Clauses)</li>
+        <li>A valid derogation applies under Article 49 GDPR</li>
+    </ul>
+    
+    <p>The Controller authorizes transfers to the following countries: {{jurisdiction}}</p>
+    {{/if}}
+</section>
+
+<section id="audits">
+    <h2>8. Audits and Inspections</h2>
+    <p>The Processor shall:</p>
+    <ul>
+        <li>Make available all information necessary to demonstrate compliance</li>
+        <li>Allow for and contribute to audits conducted by the Controller or an auditor</li>
+        <li>Provide reasonable notice requirements (minimum 30 days for on-site audits)</li>
+        <li>Ensure audit costs are borne by the requesting party unless non-compliance is found</li>
+    </ul>
+</section>
+
+<section id="termination">
+    <h2>9. Termination and Data Return</h2>
+    <p>Upon termination of the service agreement:</p>
+    <ul>
+        <li>The Processor shall cease all processing of Personal Data</li>
+        <li>At the Controller's choice, return or delete all Personal Data within 30 days</li>
+        <li>Provide written certification of data deletion upon request</li>
+        <li>Delete existing copies unless retention is required by law</li>
+    </ul>
+    
+    <p><strong>Data Retention Period:</strong> {{retention_period|default:"As specified in the service agreement"}}</p>
+</section>
+
+<section id="liability">
+    <h2>10. Liability and Indemnification</h2>
+    <p>Each party shall be liable for damages caused by processing that violates this DPA or applicable data protection laws. The Processor shall indemnify the Controller against claims arising from the Processor's breach of this DPA or applicable laws.</p>
+</section>
+
+<section id="contact">
+    <h2>11. Contact Information</h2>
+    <p>For all matters relating to this DPA, please contact:</p>
+    <address class="slos-contact-info">
+        <strong>{{company_legal_name}}</strong><br>
+        {{company_address}}<br>
+        {{if dpo_email}}Data Protection Officer: <a href="mailto:{{dpo_email}}">{{dpo_email}}</a><br>{{/if}}
+        Legal: <a href="mailto:{{legal_contact_email}}">{{legal_contact_email}}</a>
+    </address>
+</section>
+
+</article>
+</body>
+</html>

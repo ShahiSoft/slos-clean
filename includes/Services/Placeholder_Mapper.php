@@ -216,6 +216,54 @@ class Placeholder_Mapper extends Base_Service {
 		$user_rights = $profile['user_rights'] ?? array();
 		$map['response_timeframe'] = $user_rights['response_timeframe'] ?? 30;
 
+		// E-Commerce (Step 9)
+		$ecommerce = $profile['ecommerce'] ?? array();
+		$map['ecommerce_enabled']        = ! empty( $ecommerce['enabled'] );
+		$map['sells_physical']           = ! empty( $ecommerce['sells_physical'] );
+		$map['sells_digital']            = ! empty( $ecommerce['sells_digital'] );
+		$map['sells_subscriptions']      = ! empty( $ecommerce['sells_subscriptions'] );
+		$map['sells_services']           = ! empty( $ecommerce['sells_services'] );
+		$map['shipping_regions']         = $this->format_list( $ecommerce['shipping_regions'] ?? array() );
+		$map['shipping_regions_array']   = $ecommerce['shipping_regions'] ?? array();
+		$map['shipping_timeframe']       = $ecommerce['shipping_timeframe'] ?? '';
+		$map['return_window']            = $this->format_return_window( $ecommerce['return_window'] ?? '' );
+		$map['refund_timeframe']         = $ecommerce['refund_timeframe'] ?? '7-10 business days';
+		$map['warranty_period']          = $this->format_warranty_period( $ecommerce['warranty_period'] ?? '' );
+		$map['has_warranty']             = ! empty( $ecommerce['warranty_period'] ) && 'none' !== $ecommerce['warranty_period'];
+		$map['billing_cycle']            = $this->format_billing_cycle( $ecommerce['billing_cycle'] ?? '' );
+		$map['cancellation_notice']      = $ecommerce['cancellation_notice'] ?? '';
+		$map['has_affiliate']            = ! empty( $ecommerce['has_affiliate'] );
+		$map['affiliate_commission']     = $ecommerce['affiliate_commission'] ?? '';
+		$map['affiliate_cookie']         = $ecommerce['affiliate_cookie'] ?? '30 days';
+
+		// Software & API (Step 10)
+		$software = $profile['software'] ?? array();
+		$map['has_downloadable']         = ! empty( $software['has_downloadable'] );
+		$map['license_type']             = $this->format_license_type( $software['license_type'] ?? '' );
+		$map['license_restrictions']     = $this->format_list( $software['restrictions'] ?? array() );
+		$map['license_restrictions_array'] = $software['restrictions'] ?? array();
+		$map['has_api']                  = ! empty( $software['has_api'] );
+		$map['api_rate_limit']           = $software['api_rate_limit'] ?? '';
+		$map['api_authentication']       = $this->format_list( $software['api_authentication'] ?? array() );
+		$map['api_authentication_array'] = $software['api_authentication'] ?? array();
+		$map['api_usage_limits']         = $software['api_usage_limits'] ?? '';
+
+		// Community & Content (Step 11)
+		$community = $profile['community'] ?? array();
+		$map['has_user_accounts']        = ! empty( $community['has_user_accounts'] );
+		$map['has_forums']               = ! empty( $community['has_forums'] );
+		$map['has_comments']             = ! empty( $community['has_comments'] );
+		$map['has_ugc']                  = ! empty( $community['has_ugc'] );
+		$map['content_moderation']       = $community['content_moderation'] ?? '';
+		$map['age_restricted']           = ! empty( $community['age_restricted'] );
+		$map['age_verification']         = $community['age_verification'] ?? '';
+		$map['dmca_agent_name']          = $community['dmca_agent_name'] ?? '';
+		$map['dmca_agent_email']         = $community['dmca_agent_email'] ?? $map['legal_contact_email'];
+		$map['dmca_agent_address']       = $community['dmca_agent_address'] ?? $map['company_address'];
+		$map['has_mobile_app']           = ! empty( $community['has_mobile_app'] );
+		$map['app_stores']               = $this->format_list( $community['app_stores'] ?? array() );
+		$map['app_stores_array']         = $community['app_stores'] ?? array();
+
 		// System/WordPress variables
 		$map['site_name']    = get_bloginfo( 'name' );
 		$map['admin_email']  = get_option( 'admin_email' );
@@ -579,6 +627,78 @@ class Placeholder_Mapper extends Base_Service {
 	public function format_retention_period( string $period ): string {
 		$periods = \ShahiLegalFlowSuite\Database\Migrations\Migration_Company_Profile::get_retention_periods();
 		return $periods[ $period ] ?? $period;
+	}
+
+	/**
+	 * Format return window label
+	 *
+	 * @since 4.1.0
+	 * @param string $window Return window code.
+	 * @return string Human-readable label
+	 */
+	public function format_return_window( string $window ): string {
+		$windows = array(
+			'14_days' => __( '14 days', 'shahi-legalflowsuite' ),
+			'30_days' => __( '30 days', 'shahi-legalflowsuite' ),
+			'60_days' => __( '60 days', 'shahi-legalflowsuite' ),
+			'90_days' => __( '90 days', 'shahi-legalflowsuite' ),
+			'none'    => __( 'No returns accepted', 'shahi-legalflowsuite' ),
+		);
+		return $windows[ $window ] ?? $window;
+	}
+
+	/**
+	 * Format warranty period label
+	 *
+	 * @since 4.1.0
+	 * @param string $period Warranty period code.
+	 * @return string Human-readable label
+	 */
+	public function format_warranty_period( string $period ): string {
+		$periods = array(
+			'none'     => __( 'No warranty', 'shahi-legalflowsuite' ),
+			'30_days'  => __( '30 days', 'shahi-legalflowsuite' ),
+			'90_days'  => __( '90 days', 'shahi-legalflowsuite' ),
+			'1_year'   => __( '1 year', 'shahi-legalflowsuite' ),
+			'2_years'  => __( '2 years', 'shahi-legalflowsuite' ),
+			'lifetime' => __( 'Lifetime', 'shahi-legalflowsuite' ),
+		);
+		return $periods[ $period ] ?? $period;
+	}
+
+	/**
+	 * Format billing cycle label
+	 *
+	 * @since 4.1.0
+	 * @param string $cycle Billing cycle code.
+	 * @return string Human-readable label
+	 */
+	public function format_billing_cycle( string $cycle ): string {
+		$cycles = array(
+			'weekly'    => __( 'Weekly', 'shahi-legalflowsuite' ),
+			'monthly'   => __( 'Monthly', 'shahi-legalflowsuite' ),
+			'quarterly' => __( 'Quarterly', 'shahi-legalflowsuite' ),
+			'annually'  => __( 'Annually', 'shahi-legalflowsuite' ),
+		);
+		return $cycles[ $cycle ] ?? $cycle;
+	}
+
+	/**
+	 * Format license type label
+	 *
+	 * @since 4.1.0
+	 * @param string $type License type code.
+	 * @return string Human-readable label
+	 */
+	public function format_license_type( string $type ): string {
+		$types = array(
+			'personal'    => __( 'Personal Use License', 'shahi-legalflowsuite' ),
+			'commercial'  => __( 'Commercial License', 'shahi-legalflowsuite' ),
+			'enterprise'  => __( 'Enterprise License', 'shahi-legalflowsuite' ),
+			'open_source' => __( 'Open Source License', 'shahi-legalflowsuite' ),
+			'saas'        => __( 'Software as a Service (SaaS)', 'shahi-legalflowsuite' ),
+		);
+		return $types[ $type ] ?? $type;
 	}
 
 	/**

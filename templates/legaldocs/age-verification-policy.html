@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Verification Policy - {{company_legal_name}}</title>
+</head>
+<body>
+<article class="slos-legal-document slos-age-verification-policy">
+
+<header class="slos-doc-header">
+    <h1>Age Verification Policy</h1>
+    <p class="slos-effective-date"><strong>Effective Date:</strong> {{today}}</p>
+    <p class="slos-last-updated"><strong>Last Updated:</strong> {{today}}</p>
+</header>
+
+<section id="introduction">
+    <h2>1. Introduction</h2>
+    <p>This Age Verification Policy explains how <strong>{{company_legal_name}}</strong> verifies user ages and restricts access to age-restricted content and services on {{site_url}}{{if app_name}} and {{app_name}}{{/if}} (the "Website").</p>
+    
+    <p>We are committed to protecting minors and ensuring compliance with applicable laws regarding age-restricted content, products, and services.</p>
+</section>
+
+<section id="age-requirements">
+    <h2>2. Age Requirements</h2>
+    <h3>2.1 Minimum Age for Website Access</h3>
+    <p>You must be at least <strong>{{minimum_age|default:"13"}}</strong> years old to access and use our Website.</p>
+    
+    <h3>2.2 Age-Restricted Services</h3>
+    <p>Certain services or content on our Website may require you to be of legal age in your jurisdiction:</p>
+    <ul>{{if sells_alcohol}}<li><strong>Alcohol Products:</strong> You must be of legal drinking age in your jurisdiction (typically 18-21 years)</li>{{/if}}{{if sells_tobacco}}<li><strong>Tobacco Products:</strong> You must be at least 21 years old</li>{{/if}}{{if has_gambling}}<li><strong>Gambling Services:</strong> You must be of legal gambling age in your jurisdiction</li>{{/if}}
+        <li><strong>Account Creation:</strong> Users must be at least {{minimum_age|default:"13"}} years old</li>
+        <li><strong>Purchases:</strong> Users must be at least {{purchase_age|default:"18"}} years old or have parental consent</li>
+    </ul>
+</section>
+
+<section id="verification-methods">
+    <h2>3. Age Verification Methods</h2>
+    <p>We use the following methods to verify user ages:</p>
+    
+    <h3>3.1 Self-Declaration</h3>
+    <p>Users may be asked to confirm their age through:</p>
+    <ul>
+        <li>Date of birth entry during registration</li>
+        <li>Age confirmation checkboxes</li>
+        <li>Age gate pop-ups before accessing certain content</li>
+    </ul>
+    
+    <h3>3.2 Third-Party Verification</h3>
+    <p>For certain products or services, we may use third-party age verification services that verify age through:</p>
+    <ul>
+        <li>Government-issued ID verification</li>
+        <li>Database verification against public records</li>
+        <li>Credit card verification (where card ownership implies minimum age)</li>
+    </ul>
+    
+    <h3>3.3 In-Person Verification</h3>
+    <p>For physical deliveries of age-restricted products, we may require:</p>
+    <ul>
+        <li>ID check upon delivery</li>
+        <li>Signature from a person of legal age</li>
+        <li>Adult signature required designation</li>
+    </ul>
+</section>
+
+<section id="parental-consent">
+    <h2>4. Parental Consent</h2>
+    <h3>4.1 COPPA Compliance (US Users)</h3>
+    <p>For users under 13 years of age in the United States, we comply with the Children's Online Privacy Protection Act (COPPA). We do not knowingly collect personal information from children under 13 without verifiable parental consent.</p>
+    
+    <h3>4.2 Parental Controls</h3>
+    <p>Parents or guardians may:</p>
+    <ul>
+        <li>Request information about data collected from their child</li>
+        <li>Refuse further collection of their child's data</li>
+        <li>Request deletion of their child's personal information</li>
+    </ul>
+    
+    <h3>4.3 Verifiable Parental Consent Methods</h3>
+    <p>Where required, we obtain parental consent through:</p>
+    <ul>
+        <li>Signed consent forms</li>
+        <li>Credit card verification with notification</li>
+        <li>Direct contact with parent via phone or video</li>
+        <li>Government ID verification of parent</li>
+    </ul>
+</section>
+
+<section id="age-restricted-content">
+    <h2>5. Age-Restricted Content</h2>
+    <h3>5.1 Content Categories</h3>
+    <p>The following content categories require age verification:</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Content Type</th>
+                <th>Minimum Age</th>
+                <th>Verification Level</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{if sells_alcohol}}
+            <tr>
+                <td>Alcohol-related content</td>
+                <td>Legal drinking age</td>
+                <td>Self-declaration + ID at delivery</td>
+            </tr>
+            {{/if}}
+            {{if sells_tobacco}}
+            <tr>
+                <td>Tobacco products</td>
+                <td>21 years</td>
+                <td>ID verification required</td>
+            </tr>
+            {{/if}}
+            <tr>
+                <td>Mature content</td>
+                <td>18 years</td>
+                <td>Self-declaration</td>
+            </tr>
+            <tr>
+                <td>Forum participation</td>
+                <td>{{minimum_age|default:"13"}} years</td>
+                <td>Registration age confirmation</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h3>5.2 Age Gates</h3>
+    <p>We implement age gates that require users to confirm their age before accessing restricted content. These gates:</p>
+    <ul>
+        <li>Clearly state the age requirement</li>
+        <li>Require active confirmation (clicking "I am [age] or older")</li>
+        <li>May use session cookies to remember verification</li>
+    </ul>
+</section>
+
+<section id="user-responsibilities">
+    <h2>6. User Responsibilities</h2>
+    <p>By using our Website, you agree to:</p>
+    <ul>
+        <li>Provide accurate age information</li>
+        <li>Not misrepresent your age to access age-restricted content</li>
+        <li>Not allow minors to use your account to access age-restricted content</li>
+        <li>Supervise minors' use of the Website if you are their parent or guardian</li>
+        <li>Report suspected underage users accessing restricted content</li>
+    </ul>
+</section>
+
+<section id="consequences">
+    <h2>7. Consequences of Violations</h2>
+    <h3>7.1 False Age Declaration</h3>
+    <p>Providing false age information may result in:</p>
+    <ul>
+        <li>Immediate account termination</li>
+        <li>Ban from future account creation</li>
+        <li>Cancellation of orders or purchases</li>
+        <li>Reporting to relevant authorities if required by law</li>
+    </ul>
+    
+    <h3>7.2 Legal Consequences</h3>
+    <p>False age declaration to purchase age-restricted products may be a criminal offense in many jurisdictions. You may be held legally responsible for any consequences.</p>
+</section>
+
+<section id="data-protection">
+    <h2>8. Data Protection for Minors</h2>
+    <p>We take additional precautions to protect minors' data:</p>
+    <ul>
+        <li>Limited data collection from known minors</li>
+        <li>No targeted advertising to users under 18</li>
+        <li>No sale of minors' personal information</li>
+        <li>Age-appropriate privacy settings by default</li>
+        <li>Parental access to minors' account information</li>
+    </ul>
+</section>
+
+<section id="regional-compliance">
+    <h2>9. Regional Compliance</h2>
+    <h3>9.1 United States</h3>
+    <ul>
+        <li>COPPA compliance for users under 13</li>
+        <li>State-specific requirements for alcohol and tobacco</li>
+    </ul>
+    
+    <h3>9.2 European Union</h3>
+    <ul>
+        <li>GDPR special provisions for processing children's data</li>
+        <li>Member state variations in age of consent for data processing (13-16 years)</li>
+    </ul>
+    
+    <h3>9.3 United Kingdom</h3>
+    <ul>
+        <li>Age Appropriate Design Code compliance</li>
+        <li>Enhanced protections for users under 18</li>
+    </ul>
+    
+    <h3>9.4 Other Regions</h3>
+    <p>We comply with local age verification and child protection laws in all regions where we operate.</p>
+</section>
+
+<section id="reporting">
+    <h2>10. Reporting Underage Users</h2>
+    <p>If you believe a minor is accessing age-restricted content inappropriately, please report it to:</p>
+    <ul>
+        <li>Email: <a href="mailto:{{support_email}}">{{support_email}}</a></li>{{if abuse_email}}<li>Abuse Reports: <a href="mailto:{{abuse_email}}">{{abuse_email}}</a></li>{{/if}}
+    </ul>
+    
+    <p>Please include:</p>
+    <ul>
+        <li>The username or profile in question</li>
+        <li>Evidence suggesting the user is underage</li>
+        <li>The restricted content or service being accessed</li>
+    </ul>
+</section>
+
+<section id="changes">
+    <h2>11. Changes to This Policy</h2>
+    <p>We may update this Age Verification Policy to reflect changes in our practices or legal requirements. We will notify users of significant changes through our Website or email.</p>
+</section>
+
+<section id="contact">
+    <h2>12. Contact Us</h2>
+    <p>For questions about this Age Verification Policy:</p>
+    <address class="slos-contact-info">
+        <strong>{{company_legal_name}}</strong><br>
+        {{company_address}}<br>
+        Email: <a href="mailto:{{privacy_contact_email}}">{{privacy_contact_email}}</a><br>
+        {{if contact_phone}}Phone: {{contact_phone}}{{/if}}
+    </address>
+</section>
+
+</article>
+</body>
+</html>

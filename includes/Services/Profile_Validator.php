@@ -120,6 +120,9 @@ class Profile_Validator extends Base_Service {
 		'retention'       => 8,
 		'security'        => 8,
 		'user_rights'     => 8,
+		'ecommerce'       => 9,
+		'software'        => 10,
+		'community'       => 11,
 	);
 
 	/**
@@ -350,7 +353,7 @@ class Profile_Validator extends Base_Service {
 
 		$details = array();
 
-		for ( $step = 1; $step <= 8; $step++ ) {
+		for ( $step = 1; $step <= 11; $step++ ) {
 			$step_fields    = $this->get_step_mandatory_fields( $step );
 			$total          = count( $step_fields );
 			$completed      = 0;
