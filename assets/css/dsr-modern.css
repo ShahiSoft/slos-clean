@@ -1543,3 +1543,45 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* ============================================
+   Informational Descriptions
+   ============================================ */
+.slos-section-description {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--slos-text-muted);
+    margin: 0 0 var(--slos-space-lg);
+    padding: var(--slos-space-sm) var(--slos-space-md);
+    background: rgba(59, 130, 246, 0.05);
+    border-left: 3px solid var(--slos-primary);
+    border-radius: 0 var(--slos-radius-sm) var(--slos-radius-sm) 0;
+}
+
+.slos-widget-description {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--slos-text-muted);
+    margin: 0 var(--slos-space-md) var(--slos-space-md);
+    padding: var(--slos-space-xs) 0;
+    border-bottom: 1px dashed var(--slos-border);
+}
+
+.slos-viz-description {
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--slos-text-muted);
+    margin: calc(-1 * var(--slos-space-sm)) 0 var(--slos-space-sm);
+    opacity: 0.85;
+}
+
+.slos-settings-card .slos-widget-description {
+    margin: var(--slos-space-sm) var(--slos-space-md) var(--slos-space-md);
+    padding-bottom: var(--slos-space-sm);
+}
+
+.slos-settings-widget .slos-widget-description {
+    margin: var(--slos-space-xs) 0 var(--slos-space-md);
+    padding: 0;
+    border-bottom: none;
+}

@@ -26,6 +26,11 @@ $circumference = 2 * M_PI * 65;
 $offset = $circumference - ( $stats['compliance_score'] / 100 ) * $circumference;
 ?>
 
+<!-- Section Description -->
+<p class="slos-section-description">
+	<?php esc_html_e( 'Real-time overview of your privacy compliance status. Monitor consent metrics, review activity, and track compliance health across all supported regulations.', 'shahi-legalops-suite' ); ?>
+</p>
+
 <!-- Stats Grid -->
 <div class="slos-stats-grid">
     <div class="slos-stat-card accent">
@@ -93,6 +98,9 @@ $offset = $circumference - ( $stats['compliance_score'] / 100 ) * $circumference
                 </h3>
                 <span class="badge"><?php esc_html_e( 'Live', 'shahi-legalops-suite' ); ?></span>
             </div>
+            <p class="slos-widget-description">
+                <?php esc_html_e( 'Your overall privacy compliance rating based on consent acceptance rates. Score of 90%+ is excellent (Grade A). The gauge shows real-time compliance with GDPR, CCPA, LGPD, and ePrivacy requirements.', 'shahi-legalops-suite' ); ?>
+            </p>
             <div class="slos-card-body">
                 <div class="slos-score-section">
                     <div class="slos-score-gauge <?php echo esc_attr( $grade_class ); ?>">
@@ -155,6 +163,9 @@ $offset = $circumference - ( $stats['compliance_score'] / 100 ) * $circumference
                     <button class="slos-btn-ghost" data-limit="50">50</button>
                 </div>
             </div>
+            <p class="slos-widget-description">
+                <?php esc_html_e( 'Latest consent interactions from your visitors. Click the view button to see full consent details. Use the number buttons to adjust how many records appear. For full history, visit Consent Records tab.', 'shahi-legalops-suite' ); ?>
+            </p>
             <div class="slos-card-body" style="padding: 0;">
                 <?php if ( ! empty( $recent_activity ) ) : ?>
                     <table class="slos-data-table">
@@ -232,6 +243,9 @@ $offset = $circumference - ( $stats['compliance_score'] / 100 ) * $circumference
                     <?php esc_html_e( 'Quick Actions', 'shahi-legalops-suite' ); ?>
                 </h3>
             </div>
+            <p class="slos-widget-description">
+                <?php esc_html_e( 'Common compliance tasks at your fingertips. Scan for cookies, customize your consent banner, export data for audits, or email reports to stakeholders.', 'shahi-legalops-suite' ); ?>
+            </p>
             <div class="slos-card-body">
                 <div class="slos-quick-actions">
                     <a href="<?php echo esc_url( add_query_arg( 'tab', 'cookies', admin_url( 'admin.php?page=slos-compliance' ) ) ); ?>" class="slos-quick-action">
@@ -266,6 +280,9 @@ $offset = $circumference - ( $stats['compliance_score'] / 100 ) * $circumference
                     <?php esc_html_e( 'Consent Breakdown', 'shahi-legalops-suite' ); ?>
                 </h3>
             </div>
+            <p class="slos-widget-description">
+                <?php esc_html_e( 'Consent rates by category type. Necessary cookies are always 100% (required). Analytics, Marketing, and Preferences reflect actual user choices on your site.', 'shahi-legalops-suite' ); ?>
+            </p>
             <div class="slos-card-body">
                 <div class="slos-consent-breakdown">
                     <div class="slos-breakdown-item">
@@ -324,6 +341,9 @@ $offset = $circumference - ( $stats['compliance_score'] / 100 ) * $circumference
                     <?php esc_html_e( 'Active Geo Rules', 'shahi-legalops-suite' ); ?>
                 </h3>
             </div>
+            <p class="slos-widget-description">
+                <?php esc_html_e( 'Region-specific consent rules currently active. Configure rules in the Geo Rules tab to show appropriate consent banners based on visitor location.', 'shahi-legalops-suite' ); ?>
+            </p>
             <div class="slos-card-body">
                 <?php if ( ! empty( $active_rules ) ) : ?>
                 <div class="slos-region-list">
@@ -371,6 +391,9 @@ $offset = $circumference - ( $stats['compliance_score'] / 100 ) * $circumference
                     <?php esc_html_e( 'Alerts', 'shahi-legalops-suite' ); ?>
                 </h3>
             </div>
+            <p class="slos-widget-description">
+                <?php esc_html_e( 'Compliance warnings requiring attention. Address alerts promptly to maintain full regulatory compliance. Yellow = action recommended, Red = urgent action required.', 'shahi-legalops-suite' ); ?>
+            </p>
             <div class="slos-card-body">
                 <div class="slos-alerts-list">
                     <?php if ( $stats['withdrawn'] > 0 ) : ?>

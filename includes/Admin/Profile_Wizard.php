@@ -163,7 +163,7 @@ class Profile_Wizard {
 		);
 
 		// Get steps for JavaScript
-		$steps = $this->profile_service->get_steps();
+		$steps     = $this->profile_service->get_steps();
 		$step_data = array();
 		foreach ( $steps as $num => $step ) {
 			$step_data[ $num ] = array(
@@ -179,33 +179,33 @@ class Profile_Wizard {
 			'slos-profile-wizard',
 			'slosProfileWizard',
 			array(
-				'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
-				'nonce'        => wp_create_nonce( 'slos_profile_wizard' ),
-				'steps'        => $step_data,
-				'totalSteps'   => count( $steps ),
-				'currentStep'  => $this->get_current_step(),
-				'hubUrl'       => admin_url( 'admin.php?page=slos-documents' ),
-				'i18n'      => array(
-					'saving'            => __( 'Saving...', 'shahi-legalops-suite' ),
-					'saved'             => __( 'Saved', 'shahi-legalops-suite' ),
-					'saveError'         => __( 'Error saving. Please try again.', 'shahi-legalops-suite' ),
-					'validating'        => __( 'Validating...', 'shahi-legalops-suite' ),
-					'requiredField'     => __( 'This field is required', 'shahi-legalops-suite' ),
-					'invalidEmail'      => __( 'Please enter a valid email address', 'shahi-legalops-suite' ),
-					'invalidUrl'        => __( 'Please enter a valid URL', 'shahi-legalops-suite' ),
-					'unsavedChanges'    => __( 'You have unsaved changes. Are you sure you want to leave?', 'shahi-legalops-suite' ),
-					'stepComplete'      => __( 'Step complete!', 'shahi-legalops-suite' ),
-					'profileComplete'   => __( 'Profile complete! You can now generate legal documents.', 'shahi-legalops-suite' ),
-					'generateDocs'      => __( 'Generate Documents', 'shahi-legalops-suite' ),
-					'nextStep'          => __( 'Next Step', 'shahi-legalops-suite' ),
-					'previousStep'      => __( 'Previous', 'shahi-legalops-suite' ),
-					'finish'            => __( 'Finish Setup', 'shahi-legalops-suite' ),
-					'confirmReset'      => __( 'Are you sure you want to reset the profile? This cannot be undone.', 'shahi-legalops-suite' ),
-					'addCookie'         => __( 'Add Cookie', 'shahi-legalops-suite' ),
-					'removeCookie'      => __( 'Remove', 'shahi-legalops-suite' ),
-					'cookieName'        => __( 'Cookie Name', 'shahi-legalops-suite' ),
-					'cookiePurpose'     => __( 'Purpose', 'shahi-legalops-suite' ),
-					'cookieDuration'    => __( 'Duration', 'shahi-legalops-suite' ),
+				'ajaxUrl'     => admin_url( 'admin-ajax.php' ),
+				'nonce'       => wp_create_nonce( 'slos_profile_wizard' ),
+				'steps'       => $step_data,
+				'totalSteps'  => count( $steps ),
+				'currentStep' => $this->get_current_step(),
+				'hubUrl'      => admin_url( 'admin.php?page=slos-documents' ),
+				'i18n'        => array(
+					'saving'          => __( 'Saving...', 'shahi-legalops-suite' ),
+					'saved'           => __( 'Saved', 'shahi-legalops-suite' ),
+					'saveError'       => __( 'Error saving. Please try again.', 'shahi-legalops-suite' ),
+					'validating'      => __( 'Validating...', 'shahi-legalops-suite' ),
+					'requiredField'   => __( 'This field is required', 'shahi-legalops-suite' ),
+					'invalidEmail'    => __( 'Please enter a valid email address', 'shahi-legalops-suite' ),
+					'invalidUrl'      => __( 'Please enter a valid URL', 'shahi-legalops-suite' ),
+					'unsavedChanges'  => __( 'You have unsaved changes. Are you sure you want to leave?', 'shahi-legalops-suite' ),
+					'stepComplete'    => __( 'Step complete!', 'shahi-legalops-suite' ),
+					'profileComplete' => __( 'Profile complete! You can now generate legal documents.', 'shahi-legalops-suite' ),
+					'generateDocs'    => __( 'Generate Documents', 'shahi-legalops-suite' ),
+					'nextStep'        => __( 'Next Step', 'shahi-legalops-suite' ),
+					'previousStep'    => __( 'Previous', 'shahi-legalops-suite' ),
+					'finish'          => __( 'Finish Setup', 'shahi-legalops-suite' ),
+					'confirmReset'    => __( 'Are you sure you want to reset the profile? This cannot be undone.', 'shahi-legalops-suite' ),
+					'addCookie'       => __( 'Add Cookie', 'shahi-legalops-suite' ),
+					'removeCookie'    => __( 'Remove', 'shahi-legalops-suite' ),
+					'cookieName'      => __( 'Cookie Name', 'shahi-legalops-suite' ),
+					'cookiePurpose'   => __( 'Purpose', 'shahi-legalops-suite' ),
+					'cookieDuration'  => __( 'Duration', 'shahi-legalops-suite' ),
 				),
 			)
 		);
@@ -223,10 +223,10 @@ class Profile_Wizard {
 			wp_die( esc_html__( 'You do not have permission to access this page.', 'shahi-legalops-suite' ) );
 		}
 
-		$steps          = $this->profile_service->get_steps();
-		$profile        = $this->repository->get_profile();
-		$completion     = $this->build_completion_data( $profile );
-		$current_step   = $this->get_current_step();
+		$steps        = $this->profile_service->get_steps();
+		$profile      = $this->repository->get_profile();
+		$completion   = $this->build_completion_data( $profile );
+		$current_step = $this->get_current_step();
 
 		include SHAHI_LEGALOPS_SUITE_PLUGIN_DIR . 'templates/admin/profile/wizard.php';
 	}
@@ -246,7 +246,7 @@ class Profile_Wizard {
 
 		foreach ( $step['fields'] as $field_path => $field ) {
 			$value = $this->get_nested_value( $profile ?? array(), $field_path );
-			
+
 			// Apply default if empty
 			if ( empty( $value ) && isset( $field['default'] ) ) {
 				$value = $field['default'];
@@ -255,7 +255,7 @@ class Profile_Wizard {
 			$field_id   = 'slos-field-' . str_replace( '.', '-', $field_path );
 			$field_name = $field_path;
 			$required   = ! empty( $field['required'] );
-			
+
 			// Check conditional display
 			if ( isset( $field['condition'] ) ) {
 				$condition_met = $this->check_field_condition( $field['condition'], $profile );
@@ -265,7 +265,7 @@ class Profile_Wizard {
 			}
 
 			echo '<div class="slos-field-group" data-field="' . esc_attr( $field_path ) . '">';
-			
+
 			// Label
 			echo '<label for="' . esc_attr( $field_id ) . '" class="slos-field-label">';
 			echo esc_html( $field['label'] );
@@ -366,7 +366,7 @@ class Profile_Wizard {
 				$options = $field['options'] ?? array();
 				echo '<div class="slos-radio-group">';
 				foreach ( $options as $opt_value => $opt_label ) {
-					$checked = checked( $value, $opt_value, false );
+					$checked  = checked( $value, $opt_value, false );
 					$radio_id = $field_id . '-' . sanitize_key( $opt_value );
 					echo '<label class="slos-radio-label" for="' . esc_attr( $radio_id ) . '">';
 					echo '<input type="radio" id="' . esc_attr( $radio_id ) . '" ';
@@ -512,8 +512,8 @@ class Profile_Wizard {
 	 * @return array Completion data with percentage and steps
 	 */
 	protected function build_completion_data( ?array $profile ): array {
-		$percentage       = $this->validator->calculate_completion( $profile );
-		$completion_data  = $this->validator->get_completion_details( $profile );
+		$percentage      = $this->validator->calculate_completion( $profile );
+		$completion_data = $this->validator->get_completion_details( $profile );
 
 		$steps = array();
 		foreach ( $completion_data as $step_num => $step_data ) {
@@ -600,7 +600,7 @@ class Profile_Wizard {
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		$step_number = isset( $_POST['step'] ) ? absint( $_POST['step'] ) : 0;
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		$step_data   = isset( $_POST['data'] ) ? $this->sanitize_step_data( wp_unslash( $_POST['data'] ) ) : array();
+		$step_data = isset( $_POST['data'] ) ? $this->sanitize_step_data( wp_unslash( $_POST['data'] ) ) : array();
 
 		if ( $step_number < 1 || $step_number > 8 ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid step number.', 'shahi-legalops-suite' ) ) );
@@ -622,8 +622,8 @@ class Profile_Wizard {
 
 		// Validate step data
 		$validation_result = $this->validator->validate_step( $step_number, $step_data, $profile );
-		$is_valid = ( true === $validation_result );
-		$errors = array();
+		$is_valid          = ( true === $validation_result );
+		$errors            = array();
 		if ( is_wp_error( $validation_result ) ) {
 			$errors = $validation_result->get_error_data()['errors'] ?? array();
 		}
@@ -714,9 +714,9 @@ class Profile_Wizard {
 		$validation = $this->validator->validate_for_generation( $profile );
 		$completion = $this->validator->calculate_completion( $profile );
 
-		$is_valid      = ( true === $validation );
+		$is_valid       = ( true === $validation );
 		$missing_fields = array();
-		
+
 		if ( is_wp_error( $validation ) ) {
 			$missing_fields = $validation->get_error_data()['missing'] ?? array();
 		}
@@ -924,12 +924,12 @@ class Profile_Wizard {
 	 * @return array Steps status
 	 */
 	protected function get_steps_status( ?array $profile ): array {
-		$steps            = $this->profile_service->get_steps();
-		$completion_data  = $this->validator->get_completion_details( $profile );
-		$steps_status     = array();
+		$steps           = $this->profile_service->get_steps();
+		$completion_data = $this->validator->get_completion_details( $profile );
+		$steps_status    = array();
 
 		foreach ( $steps as $num => $step ) {
-			$step_completion = $completion_data[ $num ] ?? array();
+			$step_completion      = $completion_data[ $num ] ?? array();
 			$steps_status[ $num ] = array(
 				'key'        => $step['key'],
 				'title'      => $step['title'],

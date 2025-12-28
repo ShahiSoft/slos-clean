@@ -158,6 +158,18 @@ class AccessibilityScanner extends Module {
 	}
 
 	/**
+	 * Get module settings URL
+	 *
+	 * Returns the admin URL for Accessibility Scanner settings page.
+	 *
+	 * @since 3.1.1
+	 * @return string Settings URL
+	 */
+	public function get_settings_url() {
+		return admin_url( 'admin.php?page=slos-accessibility-settings' );
+	}
+
+	/**
 	 * Initialize module
 	 *
 	 * @since 1.0.0

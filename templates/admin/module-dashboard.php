@@ -68,6 +68,9 @@ if (!defined('ABSPATH')) {
     <!-- ═══════════════════════════════════════════════════════════════════════
          STATS ROW
          ═══════════════════════════════════════════════════════════════════════ -->
+    <div class="shahi-v3-section-intro">
+        <p class="shahi-v3-section-desc"><?php echo esc_html__('Overview of your module activation status and system performance. Track active modules and monitor overall health.', 'shahi-legalops-suite'); ?></p>
+    </div>
     <div class="shahi-v3-stats-row">
         <div class="shahi-v3-stat-card">
             <div class="shahi-v3-stat-icon-wrap">
@@ -133,6 +136,9 @@ if (!defined('ABSPATH')) {
     <!-- ═══════════════════════════════════════════════════════════════════════
          FILTERS & SEARCH
          ═══════════════════════════════════════════════════════════════════════ -->
+    <div class="shahi-v3-section-intro shahi-v3-section-intro-controls">
+        <p class="shahi-v3-section-desc"><?php echo esc_html__('Search by name or description, filter by status, and switch between grid or list view. Use bulk actions to manage multiple modules at once.', 'shahi-legalops-suite'); ?></p>
+    </div>
     <div class="shahi-v3-controls">
         <div class="shahi-v3-search-wrapper">
             <span class="dashicons dashicons-search"></span>
@@ -173,6 +179,9 @@ if (!defined('ABSPATH')) {
          MODULES GRID
          ═══════════════════════════════════════════════════════════════════════ -->
     <div class="shahi-v3-modules-container">
+        <div class="shahi-v3-section-intro shahi-v3-section-intro-grid">
+            <p class="shahi-v3-section-desc"><?php echo esc_html__('Toggle individual modules on or off using the switch. Click the settings icon to configure, or the info icon to view module details. Hover over cards for 3D effects.', 'shahi-legalops-suite'); ?></p>
+        </div>
         <div class="shahi-v3-modules-grid" data-view="grid">
             <?php foreach ($modules as $module): ?>
                 <div class="shahi-v3-module-card <?php echo $module['enabled'] ? 'active' : 'inactive'; ?>" 
@@ -268,11 +277,11 @@ if (!defined('ABSPATH')) {
                                 }
                                 ?>
                                 <?php if (!empty($settings_url) && $module['enabled']): ?>
-                                    <a href="<?php echo esc_url($settings_url); ?>" class="shahi-v3-action-btn" title="<?php echo esc_attr__('Settings', 'shahi-legalops-suite'); ?>">
+                                    <a href="<?php echo esc_url($settings_url); ?>" class="shahi-v3-action-btn shahi-v3-settings-btn" title="<?php echo esc_attr__('Settings', 'shahi-legalops-suite'); ?>">
                                         <span class="dashicons dashicons-admin-generic"></span>
                                     </a>
                                 <?php endif; ?>
-                                <button class="shahi-v3-action-btn" title="<?php echo esc_attr__('Info', 'shahi-legalops-suite'); ?>">
+                                <button type="button" class="shahi-v3-action-btn shahi-v3-info-btn" data-module-slug="<?php echo esc_attr($module['slug']); ?>" title="<?php echo esc_attr__('Info', 'shahi-legalops-suite'); ?>">
                                     <span class="dashicons dashicons-info-outline"></span>
                                 </button>
                             </div>
@@ -301,3 +310,189 @@ if (!defined('ABSPATH')) {
     </div>
 
 </div>
+
+<script type="text/javascript">
+/**
+ * Module Info Button Handler - Inline fallback
+ * Ensures info buttons work even if main JS has issues
+ */
+(function($) {
+    'use strict';
+    
+    // Module descriptions data
+    var moduleDescriptions = {
+        'consent-management': {
+            title: 'Consent Management',
+            fullDesc: 'A comprehensive consent management platform that helps your website comply with GDPR, CCPA, and other privacy regulations. This module provides a customizable cookie consent banner that appears to visitors, allowing them to choose which types of cookies to accept.',
+            features: [
+                'Customizable consent banner with multiple templates and themes',
+                'Granular cookie categories (Necessary, Analytics, Marketing, Preferences)',
+                'Automatic script blocking until consent is given',
+                'Consent audit logging with timestamps and IP addresses',
+                'User preference center for managing consent choices',
+                'Geolocation-based banner display rules',
+                'Integration with Google Tag Manager and analytics platforms',
+                'Consent export for compliance audits'
+            ]
+        },
+        'dsr-portal': {
+            title: 'DSR Portal (Data Subject Requests)',
+            fullDesc: 'The DSR Portal module provides a complete workflow system for managing Data Subject Access Requests (DSARs) as required by GDPR Article 15-22. It enables visitors to submit requests for accessing, correcting, or deleting their personal data.',
+            features: [
+                'Public-facing request submission form with customizable fields',
+                'Identity verification workflow before processing requests',
+                'Automated email notifications at each stage of the process',
+                'Request tracking dashboard with status management',
+                'Configurable SLA timers (default 30 days per GDPR)',
+                'Data export in portable formats (JSON, CSV)',
+                'Request type support: Access, Deletion, Rectification, Portability',
+                'Audit trail for all request activities'
+            ]
+        },
+        'legal-docs': {
+            title: 'Legal Documents Generator',
+            fullDesc: 'The Legal Documents module helps you create professional, legally-compliant documents for your website. Using your Company Profile data, it generates customized Privacy Policies, Terms of Service, Cookie Policies, and other legal documents.',
+            features: [
+                'Auto-generated Privacy Policy based on your data practices',
+                'Terms of Service document with customizable clauses',
+                'Cookie Policy synchronized with Consent Management settings',
+                'GDPR-specific disclosures and rights information',
+                'Document versioning and change history',
+                'PDF export for record-keeping',
+                'Automatic placeholders filled from Company Profile',
+                'Multi-language document support with WPML integration'
+            ]
+        },
+        'accessibility-scanner': {
+            title: 'Accessibility Scanner',
+            fullDesc: 'A comprehensive accessibility auditing tool that scans your WordPress content for WCAG 2.1 compliance issues. It helps identify barriers that may prevent users with disabilities from accessing your website content.',
+            features: [
+                'Automated scanning of pages, posts, and custom post types',
+                'WCAG 2.1 Level A, AA, and AAA checks',
+                'Issue categorization by severity (Error, Warning, Notice)',
+                'Detailed remediation guidance for each issue',
+                'Alt text quality analysis for images',
+                'Heading structure and semantic HTML validation',
+                'Color contrast checking for text readability',
+                'Form accessibility validation (labels, ARIA)',
+                'Accessibility statement generator',
+                'Scheduled automatic scans'
+            ]
+        }
+    };
+    
+    function showModuleInfo(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        var $btn = $(e.currentTarget);
+        var $card = $btn.closest('.shahi-v3-module-card');
+        var moduleSlug = $btn.data('module-slug') || $card.data('module');
+        var moduleName = $card.find('.shahi-v3-module-title').text();
+        var moduleCategory = $card.data('category') || 'compliance';
+        var moduleStatus = $card.data('status');
+        var usageCount = $card.find('.shahi-v3-mini-stat-value').first().text() || '0';
+        var perfScore = $card.find('.shahi-v3-mini-stat-value').last().text() || '0%';
+        
+        var moduleInfo = moduleDescriptions[moduleSlug] || {
+            title: moduleName,
+            fullDesc: $card.find('.shahi-v3-module-desc').text(),
+            features: ['Module functionality as described above']
+        };
+        
+        var featuresHtml = '';
+        for (var i = 0; i < moduleInfo.features.length; i++) {
+            featuresHtml += '<li><span class="dashicons dashicons-yes-alt"></span>' + moduleInfo.features[i] + '</li>';
+        }
+        
+        var modalHtml = '<div class="shahi-v3-info-modal-overlay">' +
+            '<div class="shahi-v3-info-modal shahi-v3-info-modal-detailed">' +
+                '<div class="shahi-v3-info-modal-header">' +
+                    '<div class="shahi-v3-info-modal-title-wrap">' +
+                        '<span class="shahi-v3-info-modal-icon dashicons dashicons-admin-plugins"></span>' +
+                        '<div>' +
+                            '<h3>' + moduleInfo.title + '</h3>' +
+                            '<span class="shahi-v3-info-modal-category">' + moduleCategory + '</span>' +
+                        '</div>' +
+                    '</div>' +
+                    '<button type="button" class="shahi-v3-info-modal-close">&times;</button>' +
+                '</div>' +
+                '<div class="shahi-v3-info-modal-body">' +
+                    '<div class="shahi-v3-info-section">' +
+                        '<h4>Overview</h4>' +
+                        '<p class="shahi-v3-info-full-desc">' + moduleInfo.fullDesc + '</p>' +
+                    '</div>' +
+                    '<div class="shahi-v3-info-section">' +
+                        '<h4>Key Features</h4>' +
+                        '<ul class="shahi-v3-info-features">' + featuresHtml + '</ul>' +
+                    '</div>' +
+                    '<div class="shahi-v3-info-stats-grid">' +
+                        '<div class="shahi-v3-info-stat-box">' +
+                            '<span class="shahi-v3-info-stat-icon dashicons dashicons-chart-bar"></span>' +
+                            '<div class="shahi-v3-info-stat-content">' +
+                                '<span class="shahi-v3-info-stat-value">' + usageCount + '</span>' +
+                                '<span class="shahi-v3-info-stat-label">Total Uses</span>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="shahi-v3-info-stat-box">' +
+                            '<span class="shahi-v3-info-stat-icon dashicons dashicons-performance"></span>' +
+                            '<div class="shahi-v3-info-stat-content">' +
+                                '<span class="shahi-v3-info-stat-value">' + perfScore + '</span>' +
+                                '<span class="shahi-v3-info-stat-label">Performance</span>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="shahi-v3-info-stat-box">' +
+                            '<span class="shahi-v3-info-stat-icon dashicons dashicons-flag"></span>' +
+                            '<div class="shahi-v3-info-stat-content">' +
+                                '<span class="shahi-v3-info-stat-value status-' + moduleStatus + '">' + (moduleStatus === 'active' ? 'Active' : 'Inactive') + '</span>' +
+                                '<span class="shahi-v3-info-stat-label">Status</span>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="shahi-v3-info-stat-box">' +
+                            '<span class="shahi-v3-info-stat-icon dashicons dashicons-category"></span>' +
+                            '<div class="shahi-v3-info-stat-content">' +
+                                '<span class="shahi-v3-info-stat-value">' + moduleCategory + '</span>' +
+                                '<span class="shahi-v3-info-stat-label">Category</span>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="shahi-v3-info-modal-footer">' +
+                    '<button type="button" class="shahi-v3-btn shahi-v3-btn-secondary shahi-v3-info-modal-close-btn">Close</button>' +
+                '</div>' +
+            '</div>' +
+        '</div>';
+        
+        var $modal = $(modalHtml);
+        $('body').append($modal);
+        
+        setTimeout(function() { $modal.addClass('show'); }, 10);
+        
+        function closeModal() {
+            $modal.removeClass('show');
+            setTimeout(function() { $modal.remove(); }, 300);
+            $(document).off('keydown.shahiInfoModal');
+        }
+        
+        $modal.find('.shahi-v3-info-modal-close, .shahi-v3-info-modal-close-btn').on('click', closeModal);
+        $modal.on('click', function(evt) {
+            if ($(evt.target).hasClass('shahi-v3-info-modal-overlay')) {
+                closeModal();
+            }
+        });
+        
+        $(document).on('keydown.shahiInfoModal', function(evt) {
+            if (evt.key === 'Escape') {
+                closeModal();
+            }
+        });
+    }
+    
+    // Bind on document ready
+    $(document).ready(function() {
+        // Use event delegation for maximum reliability
+        $(document).on('click', '.shahi-v3-info-btn', showModuleInfo);
+    });
+    
+})(jQuery);
+</script>

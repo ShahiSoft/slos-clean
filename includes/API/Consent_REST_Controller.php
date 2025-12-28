@@ -208,17 +208,17 @@ class Consent_REST_Controller extends Base_REST_Controller {
 				'callback'            => array( $this, 'reject_consent_simple' ),
 				'permission_callback' => '__return_true', // Public for anonymous users
 				'args'                => array(
-					'user_id'    => array(
+					'user_id' => array(
 						'description' => __( 'User ID (0 for anonymous)', 'shahi-legalops-suite' ),
 						'type'        => 'integer',
 						'default'     => 0,
 					),
-					'purpose'    => array(
+					'purpose' => array(
 						'description' => __( 'Consent purpose/type', 'shahi-legalops-suite' ),
 						'type'        => 'string',
 						'required'    => true,
 					),
-					'source'     => array(
+					'source'  => array(
 						'description' => __( 'Source of consent', 'shahi-legalops-suite' ),
 						'type'        => 'string',
 						'default'     => 'banner',
@@ -331,7 +331,7 @@ class Consent_REST_Controller extends Base_REST_Controller {
 		$this->log_request( $request, 'Get Consents' );
 
 		$pagination = $this->prepare_pagination_params( $request );
-		
+
 		// Get filters from request
 		$filters = array(
 			'type'         => $this->sanitize_text_param( $request->get_param( 'type' ) ),
@@ -342,10 +342,10 @@ class Consent_REST_Controller extends Base_REST_Controller {
 			'region'       => $this->sanitize_text_param( $request->get_param( 'region' ) ),
 			'country_code' => $this->sanitize_text_param( $request->get_param( 'country_code' ) ),
 		);
-		
+
 		// Remove empty values
 		$filters = array_filter( $filters );
-		
+
 		$consents = $this->service->get_consents( $filters, $pagination );
 		$total    = $this->service->get_consents_count( $filters );
 
@@ -360,14 +360,17 @@ class Consent_REST_Controller extends Base_REST_Controller {
 
 		// Return array directly for easier frontend consumption
 		$response_data = array_map( array( $this, 'prepare_item_for_response' ), $consents );
-		
-		$response = new \WP_REST_Response( array(
-			'success' => true,
-			'data'    => $response_data,
-			'total'   => $total,
-			'page'    => $pagination['page'],
-			'per_page'=> $pagination['per_page'],
-		), 200 );
+
+		$response = new \WP_REST_Response(
+			array(
+				'success'  => true,
+				'data'     => $response_data,
+				'total'    => $total,
+				'page'     => $pagination['page'],
+				'per_page' => $pagination['per_page'],
+			),
+			200
+		);
 
 		return $response;
 	}
@@ -674,7 +677,7 @@ class Consent_REST_Controller extends Base_REST_Controller {
 				__( 'Consent granted for %s', 'shahi-legalops-suite' ),
 				$purpose
 			),
-			'source'       => $request->get_param('source') ?? 'preferences-ui',
+			'source'       => $request->get_param( 'source' ) ?? 'preferences-ui',
 			'geo_rule_id'  => $geo_rule_id,
 			'country_code' => strtoupper( $country_code ),
 			'region'       => strtoupper( $region ),
@@ -956,7 +959,7 @@ class Consent_REST_Controller extends Base_REST_Controller {
 	 * @return bool|WP_Error True if allowed
 	 */
 	public function check_user_or_admin( $request ) {
-		$user_id = absint( $request->get_param( 'user_id' ) );
+		$user_id      = absint( $request->get_param( 'user_id' ) );
 		$current_user = get_current_user_id();
 
 		if ( $user_id === $current_user || current_user_can( 'manage_options' ) ) {
@@ -974,8 +977,8 @@ class Consent_REST_Controller extends Base_REST_Controller {
 	 * Prepare item for response
 	 *
 	 * @since 3.0.1
-	 * @param object             $consent Consent object
-	 * @param \WP_REST_Request   $request Request object
+	 * @param object           $consent Consent object
+	 * @param \WP_REST_Request $request Request object
 	 * @return array Formatted consent data
 	 */
 	public function prepare_item_for_response( $consent, $request = null ): array {

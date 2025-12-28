@@ -18,8 +18,62 @@
             this.chartInit();
             this.formValidation();
             this.toasts();
+            this.headerActions();
             
             console.log('DSR Modern UI initialized');
+        },
+
+        /**
+         * Header action buttons
+         */
+        headerActions: function() {
+            // New Request button
+            $('#slos-new-request').on('click', function(e) {
+                e.preventDefault();
+                // Redirect to DSR form page or open modal
+                const dsrFormUrl = typeof slosDSR !== 'undefined' && slosDSR.dsr_form_url 
+                    ? slosDSR.dsr_form_url 
+                    : window.location.origin + '/data-request/';
+                window.open(dsrFormUrl, '_blank');
+                DSRModern.showToast('Opening DSR submission form...', 'info');
+            });
+            
+            // Export Requests button
+            $('#slos-export-requests').on('click', function(e) {
+                e.preventDefault();
+                // Get current filters and build export URL
+                const params = new URLSearchParams(window.location.search);
+                params.set('action', 'export_csv');
+                params.set('_wpnonce', typeof slosDSR !== 'undefined' ? slosDSR.nonce : '');
+                
+                const exportUrl = window.location.pathname + '?' + params.toString();
+                window.location.href = exportUrl;
+                DSRModern.showToast('Preparing export...', 'info');
+            });
+            
+            // Generate Report button
+            $('#slos-generate-report').on('click', function(e) {
+                e.preventDefault();
+                // Trigger report generation with current date range
+                const startDate = $('#start_date').val() || '';
+                const endDate = $('#end_date').val() || '';
+                
+                DSRModern.showToast('Generating report for ' + startDate + ' to ' + endDate + '...', 'info');
+                
+                // Submit the date range form to regenerate report
+                if (startDate && endDate) {
+                    $('.slos-date-range-form').submit();
+                } else {
+                    DSRModern.showToast('Please select a date range first', 'warning');
+                }
+            });
+            
+            // Header Save Settings button (in header, different from form submit)
+            $('#slos-save-settings').on('click', function(e) {
+                e.preventDefault();
+                // Trigger the form submit
+                $('.slos-settings-form').submit();
+            });
         },
 
         /**

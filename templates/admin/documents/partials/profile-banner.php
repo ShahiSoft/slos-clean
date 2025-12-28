@@ -28,6 +28,10 @@ $is_sufficient = $completeness >= 70; // Enough for generation.
 $banner_class  = $is_complete ? 'slos-hub-banner--success' : ( $is_sufficient ? 'slos-hub-banner--info' : 'slos-hub-banner--warning' );
 ?>
 
+<p class="slos-widget-description" style="margin-bottom: 16px;">
+	<?php esc_html_e( 'Company Profile completion determines document generation quality. 100% recommended but 70% sufficient for basic generation. Profile changes trigger "Outdated" warnings on existing documents.', 'shahi-legalops-suite' ); ?>
+</p>
+
 <div class="slos-hub-banner <?php echo esc_attr( $banner_class ); ?>">
 	<div class="slos-hub-banner__progress">
 		<div class="slos-hub-banner__progress-ring">

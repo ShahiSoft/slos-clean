@@ -113,7 +113,7 @@ class MenuManager {
 		// Initialize ModuleDashboard eagerly because it has AJAX handlers
 		// that need to be registered before any AJAX requests
 		$this->module_dashboard = new ModuleDashboard();
-		
+
 		// Other page controllers are initialized lazily when needed (see get_* methods)
 	}
 
@@ -245,7 +245,7 @@ class MenuManager {
 		// Module-specific pages are registered by their respective module classes at priority 20
 		// They will appear here: Requests, Compliance, Documents, Accessibility
 		// See: DSR_Portal, ConsentManagement, LegalDocs, AccessibilityScanner modules
-		
+
 		// Modules submenu
 		add_submenu_page(
 			self::MENU_SLUG,
@@ -270,7 +270,7 @@ class MenuManager {
 		// See: DSR_Portal, ConsentManagement, LegalDocs, AccessibilityScanner modules
 
 		// Hidden utility pages (not visible in menu, accessible via direct URL)
-		
+
 		// DSR Request Detail page (hidden)
 		add_submenu_page(
 			null,
@@ -321,7 +321,6 @@ class MenuManager {
 		if ( $role ) {
 			$capabilities = array(
 				'manage_shahi_template',
-				'view_shahi_analytics',
 				'manage_shahi_modules',
 				'edit_shahi_settings',
 				'slos_manage_dsr',
@@ -348,7 +347,6 @@ class MenuManager {
 		if ( $role ) {
 			$capabilities = array(
 				'manage_shahi_template',
-				'view_shahi_analytics',
 				'manage_shahi_modules',
 				'edit_shahi_settings',
 				'slos_manage_dsr',
@@ -398,7 +396,6 @@ class MenuManager {
 		// Check if it's one of our pages
 		$valid_pages = array(
 			self::MENU_SLUG,
-			self::MENU_SLUG . '-analytics',
 			self::MENU_SLUG . '-modules',
 			self::MENU_SLUG . '-settings',
 			self::MENU_SLUG . '-support',
@@ -450,11 +447,11 @@ class MenuManager {
 	 */
 	public function highlight_submenu( $submenu_file ) {
 		$current_page = $this->get_current_page();
-		
+
 		if ( $current_page && $this->is_plugin_page() ) {
 			$submenu_file = $current_page;
 		}
-		
+
 		return $submenu_file;
 	}
 
@@ -499,14 +496,14 @@ class MenuManager {
 		// Add current page if not dashboard
 		if ( $current_page !== self::MENU_SLUG ) {
 			$page_titles = array(
-				self::MENU_SLUG . '-modules'   => __( 'Modules', 'shahi-legalops-suite' ),
-				self::MENU_SLUG . '-settings'  => __( 'Settings', 'shahi-legalops-suite' ),
-				self::MENU_SLUG . '-support'   => __( 'Support & Docs', 'shahi-legalops-suite' ),
+				self::MENU_SLUG . '-modules'  => __( 'Modules', 'shahi-legalops-suite' ),
+				self::MENU_SLUG . '-settings' => __( 'Settings', 'shahi-legalops-suite' ),
+				self::MENU_SLUG . '-support'  => __( 'Support & Docs', 'shahi-legalops-suite' ),
 				// Module pages
-				'slos-requests'       => __( 'Requests', 'shahi-legalops-suite' ),
-				'slos-compliance'     => __( 'Compliance', 'shahi-legalops-suite' ),
-				'slos-documents'      => __( 'Documents', 'shahi-legalops-suite' ),
-				'slos-accessibility'  => __( 'Accessibility', 'shahi-legalops-suite' ),
+				'slos-requests'               => __( 'Requests', 'shahi-legalops-suite' ),
+				'slos-compliance'             => __( 'Compliance', 'shahi-legalops-suite' ),
+				'slos-documents'              => __( 'Documents', 'shahi-legalops-suite' ),
+				'slos-accessibility'          => __( 'Accessibility', 'shahi-legalops-suite' ),
 			);
 
 			if ( isset( $page_titles[ $current_page ] ) ) {
@@ -560,4 +557,3 @@ class MenuManager {
 		echo '</nav>';
 	}
 }
-

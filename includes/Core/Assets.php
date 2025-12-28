@@ -502,6 +502,7 @@ class Assets {
 				true
 			);
 
+			$this->localize_dashboard_script();
 		} elseif ( $this->is_modules_page( $hook ) ) {
 			$this->enqueue_script(
 				'shahi-admin-modules',
@@ -706,6 +707,7 @@ class Assets {
 			'shahi-admin-dashboard',
 			'shahiDashboard',
 			array(
+				'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
 				'nonce'        => Security::generate_nonce( 'shahi_dashboard' ),
 				'refreshNonce' => Security::generate_nonce( 'shahi_refresh_stats' ),
 				'i18n'         => array(
@@ -863,24 +865,24 @@ class Assets {
 			'shahi-admin-consent',
 			'slosConsentAdmin',
 			array(
-				'restUrl'  => rest_url( 'slos/v1' ),
-				'routes'   => array(
+				'restUrl' => rest_url( 'slos/v1' ),
+				'routes'  => array(
 					'consents' => rest_url( 'slos/v1/consents' ),
 					'stats'    => rest_url( 'slos/v1/consents/stats' ),
 				),
-				'nonce'    => wp_create_nonce( 'wp_rest' ),
-				'filters'  => array(
+				'nonce'   => wp_create_nonce( 'wp_rest' ),
+				'filters' => array(
 					'types'    => $service->get_allowed_types(),
 					'statuses' => $service->get_allowed_statuses(),
 				),
-				'i18n'     => array(
-					'loading'        => I18n::translate( 'Loading…' ),
-					'noData'         => I18n::translate( 'No consent data available for this view.' ),
-					'error'          => I18n::translate( 'Unable to load consent data. Please retry.' ),
-					'exportReady'    => I18n::translate( 'Export is ready' ),
-					'filterCleared'  => I18n::translate( 'Filters reset' ),
-					'lastUpdated'    => I18n::translate( 'Last updated' ),
-					'view'           => I18n::translate( 'View' ),
+				'i18n'    => array(
+					'loading'       => I18n::translate( 'Loading…' ),
+					'noData'        => I18n::translate( 'No consent data available for this view.' ),
+					'error'         => I18n::translate( 'Unable to load consent data. Please retry.' ),
+					'exportReady'   => I18n::translate( 'Export is ready' ),
+					'filterCleared' => I18n::translate( 'Filters reset' ),
+					'lastUpdated'   => I18n::translate( 'Last updated' ),
+					'view'          => I18n::translate( 'View' ),
 				),
 			)
 		);
@@ -897,17 +899,17 @@ class Assets {
 			'shahi-admin-export-import',
 			'slosExportImportI18n',
 			array(
-				'exporting'        => __( 'Exporting consent records...', 'shahi-legalops-suite' ),
-				'exportSuccess'    => __( 'Export completed successfully!', 'shahi-legalops-suite' ),
-				'selectFile'       => __( 'Please select a file to import.', 'shahi-legalops-suite' ),
-				'invalidFileType'  => __( 'Invalid file type. Please upload CSV or JSON file.', 'shahi-legalops-suite' ),
-				'readingFile'      => __( 'Reading file...', 'shahi-legalops-suite' ),
-				'noDataFound'      => __( 'No valid data found in file.', 'shahi-legalops-suite' ),
-				'parseError'       => __( 'Error parsing file', 'shahi-legalops-suite' ),
-				'readError'        => __( 'Error reading file.', 'shahi-legalops-suite' ),
-				'importing'        => __( 'Importing %d records...', 'shahi-legalops-suite' ),
-				'imported'         => __( 'Imported', 'shahi-legalops-suite' ),
-				'skipped'          => __( 'Skipped', 'shahi-legalops-suite' ),
+				'exporting'       => __( 'Exporting consent records...', 'shahi-legalops-suite' ),
+				'exportSuccess'   => __( 'Export completed successfully!', 'shahi-legalops-suite' ),
+				'selectFile'      => __( 'Please select a file to import.', 'shahi-legalops-suite' ),
+				'invalidFileType' => __( 'Invalid file type. Please upload CSV or JSON file.', 'shahi-legalops-suite' ),
+				'readingFile'     => __( 'Reading file...', 'shahi-legalops-suite' ),
+				'noDataFound'     => __( 'No valid data found in file.', 'shahi-legalops-suite' ),
+				'parseError'      => __( 'Error parsing file', 'shahi-legalops-suite' ),
+				'readError'       => __( 'Error reading file.', 'shahi-legalops-suite' ),
+				'importing'       => __( 'Importing %d records...', 'shahi-legalops-suite' ),
+				'imported'        => __( 'Imported', 'shahi-legalops-suite' ),
+				'skipped'         => __( 'Skipped', 'shahi-legalops-suite' ),
 			)
 		);
 	}
@@ -1215,4 +1217,3 @@ class Assets {
 		);
 	}
 }
-

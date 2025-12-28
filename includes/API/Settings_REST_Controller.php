@@ -172,19 +172,19 @@ class Settings_REST_Controller extends Base_REST_Controller {
 	 */
 	private function get_default_banner_settings() {
 		return array(
-			'position'       => 'bottom',
-			'layout'         => 'bar',
-			'bg_color'       => '#1a1a2e',
-			'text_color'     => '#ffffff',
-			'primary_color'  => '#3b82f6',
-			'title'          => __( 'We value your privacy', 'shahi-legalops-suite' ),
-			'message'        => __( 'We use cookies to enhance your browsing experience, serve personalized content, and analyze our traffic. By clicking "Accept All", you consent to our use of cookies.', 'shahi-legalops-suite' ),
-			'accept_text'    => __( 'Accept All', 'shahi-legalops-suite' ),
-			'reject_text'    => __( 'Reject All', 'shahi-legalops-suite' ),
-			'settings_text'  => __( 'Cookie Settings', 'shahi-legalops-suite' ),
-			'show_reject'    => true,
-			'show_settings'  => true,
-			'auto_hide'      => false,
+			'position'        => 'bottom',
+			'layout'          => 'bar',
+			'bg_color'        => '#1a1a2e',
+			'text_color'      => '#ffffff',
+			'primary_color'   => '#3b82f6',
+			'title'           => __( 'We value your privacy', 'shahi-legalops-suite' ),
+			'message'         => __( 'We use cookies to enhance your browsing experience, serve personalized content, and analyze our traffic. By clicking "Accept All", you consent to our use of cookies.', 'shahi-legalops-suite' ),
+			'accept_text'     => __( 'Accept All', 'shahi-legalops-suite' ),
+			'reject_text'     => __( 'Reject All', 'shahi-legalops-suite' ),
+			'settings_text'   => __( 'Cookie Settings', 'shahi-legalops-suite' ),
+			'show_reject'     => true,
+			'show_settings'   => true,
+			'auto_hide'       => false,
 			'blur_background' => false,
 		);
 	}
@@ -219,7 +219,7 @@ class Settings_REST_Controller extends Base_REST_Controller {
 	 */
 	public function update_banner_settings( WP_REST_Request $request ) {
 		$params = $request->get_json_params();
-		
+
 		if ( empty( $params ) ) {
 			$params = $request->get_params();
 		}
@@ -335,13 +335,13 @@ class Settings_REST_Controller extends Base_REST_Controller {
 	 */
 	public function create_geo_rule( WP_REST_Request $request ) {
 		$params = $request->get_json_params();
-		
+
 		if ( empty( $params ) ) {
 			$params = $request->get_params();
 		}
 
 		$rules = get_option( 'slos_geo_rules', array() );
-		
+
 		// Generate new ID
 		$new_id = empty( $rules ) ? 1 : max( array_keys( $rules ) ) + 1;
 
@@ -383,7 +383,7 @@ class Settings_REST_Controller extends Base_REST_Controller {
 	public function update_geo_rule( WP_REST_Request $request ) {
 		$id     = (int) $request->get_param( 'id' );
 		$params = $request->get_json_params();
-		
+
 		if ( empty( $params ) ) {
 			$params = $request->get_params();
 		}
@@ -481,7 +481,7 @@ class Settings_REST_Controller extends Base_REST_Controller {
 		$original = $rules[ $id ];
 		$new_id   = max( array_keys( $rules ) ) + 1;
 
-		$new_rule = $original;
+		$new_rule               = $original;
 		$new_rule['id']         = $new_id;
 		$new_rule['name']       = $original['name'] . ' ' . __( '(Copy)', 'shahi-legalops-suite' );
 		$new_rule['created_at'] = current_time( 'mysql' );
@@ -527,7 +527,7 @@ class Settings_REST_Controller extends Base_REST_Controller {
 		return new WP_REST_Response(
 			array(
 				'success' => true,
-				'message' => $rules[ $id ]['active'] 
+				'message' => $rules[ $id ]['active']
 					? __( 'Geo rule activated.', 'shahi-legalops-suite' )
 					: __( 'Geo rule deactivated.', 'shahi-legalops-suite' ),
 				'data'    => $rules[ $id ],

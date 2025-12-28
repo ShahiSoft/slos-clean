@@ -1,0 +1,11 @@
+parameters:
+    level: 5
+    paths:
+        - includes/
+    bootstrapFiles:
+        - vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
+    ignoreErrors:
+        # Allow WordPress functions
+        - '#Function [a-z_]+ not found\.#'
+        # Allow WordPress constants
+        - '#Constant [A-Z_]+ not found\.#'

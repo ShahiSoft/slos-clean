@@ -419,6 +419,11 @@ foreach ( $detected_cookies as $cookie ) {
 </style>
 
 <div class="slos-scanner-container">
+    <!-- Section Description -->
+    <p class="slos-section-description">
+        <?php esc_html_e( 'Automatically detect and categorize cookies used on your website. GDPR and ePrivacy Directive require disclosure of all cookies in your consent banner. Uncategorized cookies need immediate attention—assign them to Necessary, Analytics, Marketing, or Preferences categories.', 'shahi-legalops-suite' ); ?>
+    </p>
+    
     <!-- Header -->
     <div class="slos-scanner-header">
         <div class="slos-scanner-stats">

@@ -228,13 +228,16 @@ class DSR_Portal extends Module {
 			'slos-dsr-modern',
 			'slosDSR',
 			array(
-				'ajaxUrl'   => admin_url( 'admin-ajax.php' ),
-				'restUrl'   => rest_url( 'slos/v1/dsr' ),
-				'nonce'     => wp_create_nonce( 'slos_dsr_nonce' ),
-				'i18n'      => array(
+				'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
+				'restUrl'      => rest_url( 'slos/v1/dsr' ),
+				'nonce'        => wp_create_nonce( 'slos_dsr_nonce' ),
+				'dsr_form_url' => home_url( '/data-request/' ),
+				'i18n'         => array(
 					'confirmDelete' => __( 'Are you sure you want to delete this request?', 'shahi-legalops-suite' ),
 					'saved'         => __( 'Settings saved successfully', 'shahi-legalops-suite' ),
 					'error'         => __( 'An error occurred', 'shahi-legalops-suite' ),
+					'exporting'     => __( 'Preparing export...', 'shahi-legalops-suite' ),
+					'generating'    => __( 'Generating report...', 'shahi-legalops-suite' ),
 				),
 			)
 		);

@@ -75,11 +75,11 @@ class RestAPI {
 	 */
 	private function init_controllers() {
 		$this->controllers = array(
-			'analytics'       => new AnalyticsController(),
-			'modules'         => new ModulesController(),
-			'settings'        => new SettingsController(),
-			'onboarding'      => new OnboardingController(),
-			'system'          => new SystemController(),
+			'analytics'  => new AnalyticsController(),
+			'modules'    => new ModulesController(),
+			'settings'   => new SettingsController(),
+			'onboarding' => new OnboardingController(),
+			'system'     => new SystemController(),
 		);
 		// Consent-related controllers are now registered by the ConsentManagement module
 	}
@@ -226,4 +226,3 @@ class RestAPI {
 		return true;
 	}
 }
-

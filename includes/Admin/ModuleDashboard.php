@@ -212,20 +212,25 @@ class ModuleDashboard {
 	 * @return int Performance score (0-100)
 	 */
 	private function calculate_performance_score( $module_slug ) {
-		// Mock performance score based on module slug
-		// In production, this would analyze actual performance metrics
-		$scores = array(
-			'custom-post-types' => 95,
-			'custom-taxonomies' => 92,
-			'widgets'           => 88,
-			'shortcodes'        => 90,
-			'custom-fields'     => 93,
-			'page-builder'      => 85,
-			'seo-tools'         => 91,
-			'social-sharing'    => 87,
-		);
+		// Calculate based on module status and health metrics
+		// For now, return a simple score based on enabled status
+		$module_manager = ModuleManager::get_instance();
+		$module         = $module_manager->get_module( $module_slug );
 
-		return isset( $scores[ $module_slug ] ) ? $scores[ $module_slug ] : rand( 75, 95 );
+		if ( ! $module ) {
+			return 0;
+		}
+
+		// Base score for enabled modules
+		$score = $module->is_enabled() ? 85 : 50;
+
+		// Future: Add more sophisticated metrics
+		// - Configuration completeness
+		// - Error rates
+		// - Resource usage
+		// - User engagement
+
+		return $score;
 	}
 
 	/**
@@ -439,4 +444,3 @@ class ModuleDashboard {
 		update_option( 'shahi_module_last_used', $last_used );
 	}
 }
-

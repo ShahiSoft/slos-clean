@@ -332,6 +332,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 </style>
 
 <div class="slos-audit-container">
+    <!-- Section Description -->
+    <p class="slos-section-description">
+        <?php esc_html_e( 'Tamper-proof audit trail of all consent-related actions. Each entry is timestamped and includes user agent, IP (hashed), and previous state for forensic analysis. Required by GDPR Article 30 for Records of Processing Activities. Logs cannot be modified or deleted to maintain integrity.', 'shahi-legalops-suite' ); ?>
+    </p>
+    
     <!-- Header -->
     <div class="slos-audit-header">
         <div class="slos-audit-info">

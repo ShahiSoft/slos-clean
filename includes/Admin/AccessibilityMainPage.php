@@ -207,7 +207,7 @@ class AccessibilityMainPage {
 	private function render_tabs() {
 		$tabs        = $this->get_tabs();
 		$current_url = admin_url( 'admin.php?page=slos-accessibility' );
-		
+
 		// Tab icons
 		$tab_icons = array(
 			'tools'     => 'dashicons-admin-tools',
@@ -216,12 +216,12 @@ class AccessibilityMainPage {
 		);
 
 		echo '<nav class="slos-tab-nav" aria-label="' . esc_attr__( 'Accessibility sections', 'shahi-legalops-suite' ) . '">';
-		
+
 		foreach ( $tabs as $tab_key => $tab_label ) {
 			$active_class = ( $this->current_tab === $tab_key ) ? 'active' : '';
 			$tab_url      = add_query_arg( 'tab', $tab_key, $current_url );
 			$icon         = isset( $tab_icons[ $tab_key ] ) ? $tab_icons[ $tab_key ] : 'dashicons-admin-generic';
-			
+
 			printf(
 				'<a href="%s" class="slos-tab-link %s"><span class="dashicons %s"></span>%s</a>',
 				esc_url( $tab_url ),
@@ -230,7 +230,7 @@ class AccessibilityMainPage {
 				esc_html( $tab_label )
 			);
 		}
-		
+
 		echo '</nav>';
 	}
 
@@ -267,7 +267,7 @@ class AccessibilityMainPage {
 	 */
 	private function render_tools_tab() {
 		echo '<div class="slos-tab-pane slos-tools-pane">';
-		
+
 		// Render tools page content
 		if ( method_exists( $this->scanner_page, 'render_content' ) ) {
 			$this->scanner_page->render_content();
@@ -275,7 +275,7 @@ class AccessibilityMainPage {
 			// Fallback
 			echo '<p>' . esc_html__( 'Tools interface will be displayed here.', 'shahi-legalops-suite' ) . '</p>';
 		}
-		
+
 		echo '</div>';
 	}
 
@@ -287,14 +287,14 @@ class AccessibilityMainPage {
 	 */
 	private function render_dashboard_tab() {
 		echo '<div class="slos-tab-pane slos-dashboard-pane">';
-		
+
 		// Render dashboard page content
 		if ( method_exists( $this->dashboard_page, 'render_content' ) ) {
 			$this->dashboard_page->render_content();
 		} else {
 			echo '<p>' . esc_html__( 'Dashboard and reports will be displayed here.', 'shahi-legalops-suite' ) . '</p>';
 		}
-		
+
 		echo '</div>';
 	}
 
@@ -306,7 +306,7 @@ class AccessibilityMainPage {
 	 */
 	private function render_settings_tab() {
 		echo '<div class="slos-tab-pane slos-settings-pane">';
-		
+
 		// Render settings page content
 		if ( method_exists( $this->settings_page, 'render_content' ) ) {
 			$this->settings_page->render_content();
@@ -325,7 +325,7 @@ class AccessibilityMainPage {
 			</div>
 			<?php
 		}
-		
+
 		echo '</div>';
 	}
 }

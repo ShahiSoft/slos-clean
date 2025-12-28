@@ -294,7 +294,7 @@ abstract class Base_REST_Controller extends WP_REST_Controller {
 		$page     = absint( $request->get_param( 'page' ) ) ?: 1;
 		$per_page = absint( $request->get_param( 'per_page' ) ) ?: 25;
 		$per_page = min( $per_page, 100 ); // Cap at 100
-		
+
 		$order_by = sanitize_text_field( $request->get_param( 'orderby' ) ) ?: 'created_at';
 		$order    = strtoupper( sanitize_text_field( $request->get_param( 'order' ) ) ) === 'ASC' ? 'ASC' : 'DESC';
 
@@ -391,13 +391,15 @@ abstract class Base_REST_Controller extends WP_REST_Controller {
 	 */
 	protected function log_request( WP_REST_Request $request, string $action ): void {
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( sprintf(
-				'[SLOS API] %s - %s %s - User: %d',
-				$action,
-				$request->get_method(),
-				$request->get_route(),
-				get_current_user_id()
-			) );
+			error_log(
+				sprintf(
+					'[SLOS API] %s - %s %s - User: %d',
+					$action,
+					$request->get_method(),
+					$request->get_route(),
+					get_current_user_id()
+				)
+			);
 		}
 	}
 }

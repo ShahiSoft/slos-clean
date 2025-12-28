@@ -112,31 +112,31 @@ class ComplianceMainPage {
 	 */
 	private function get_dashboard_stats() {
 		$stats = $this->consent_service->get_statistics();
-		
-		$total    = array_sum( $stats['by_status'] ?? array() );
-		$accepted = $stats['by_status']['accepted'] ?? 0;
-		$rejected = $stats['by_status']['rejected'] ?? 0;
+
+		$total     = array_sum( $stats['by_status'] ?? array() );
+		$accepted  = $stats['by_status']['accepted'] ?? 0;
+		$rejected  = $stats['by_status']['rejected'] ?? 0;
 		$withdrawn = $stats['by_status']['withdrawn'] ?? 0;
-		$pending  = $stats['by_status']['pending'] ?? 0;
+		$pending   = $stats['by_status']['pending'] ?? 0;
 
 		// Calculate compliance score (simplified)
 		$compliance_score = $total > 0 ? round( ( $accepted / $total ) * 100 ) : 100;
-		
+
 		// Determine grade
 		if ( $compliance_score >= 90 ) {
-			$grade = 'A';
+			$grade      = 'A';
 			$grade_text = __( 'Excellent', 'shahi-legalops-suite' );
 		} elseif ( $compliance_score >= 80 ) {
-			$grade = 'B';
+			$grade      = 'B';
 			$grade_text = __( 'Good', 'shahi-legalops-suite' );
 		} elseif ( $compliance_score >= 70 ) {
-			$grade = 'C';
+			$grade      = 'C';
 			$grade_text = __( 'Fair', 'shahi-legalops-suite' );
 		} elseif ( $compliance_score >= 60 ) {
-			$grade = 'D';
+			$grade      = 'D';
 			$grade_text = __( 'Needs Work', 'shahi-legalops-suite' );
 		} else {
-			$grade = 'F';
+			$grade      = 'F';
 			$grade_text = __( 'Critical', 'shahi-legalops-suite' );
 		}
 

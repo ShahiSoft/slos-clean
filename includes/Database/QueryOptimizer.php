@@ -58,14 +58,14 @@ class QueryOptimizer {
 
 		// Check if table exists
 		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) != $table_name ) {
-			// Table doesn't exist, return mock data
+			// Table doesn't exist, return zeros
 			return array(
-				'total_events'    => rand( 1200, 5000 ),
-				'unique_users'    => rand( 200, 800 ),
-				'page_views'      => rand( 800, 3000 ),
-				'avg_duration'    => rand( 120, 300 ),
-				'bounce_rate'     => rand( 30, 60 ),
-				'conversion_rate' => rand( 2, 8 ),
+				'total_events'    => 0,
+				'unique_users'    => 0,
+				'page_views'      => 0,
+				'avg_duration'    => 0,
+				'bounce_rate'     => 0,
+				'conversion_rate' => 0,
 			);
 		}
 
@@ -227,21 +227,8 @@ class QueryOptimizer {
 		$table_name = $wpdb->prefix . 'shahi_analytics_events';
 
 		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) != $table_name ) {
-			// Return mock data
-			$mock = array(
-				'Home'     => rand( 500, 1500 ),
-				'Products' => rand( 300, 1000 ),
-				'About Us' => rand( 200, 800 ),
-				'Contact'  => rand( 150, 600 ),
-				'Blog'     => rand( 100, 500 ),
-				'Services' => rand( 80, 400 ),
-				'Pricing'  => rand( 60, 300 ),
-				'FAQ'      => rand( 50, 250 ),
-				'Terms'    => rand( 30, 200 ),
-				'Privacy'  => rand( 20, 150 ),
-			);
-			arsort( $mock );
-			return array_slice( $mock, 0, $limit, true );
+			// Return empty array if table doesn't exist
+			return array();
 		}
 
 		$start_datetime = date( 'Y-m-d H:i:s', $start );

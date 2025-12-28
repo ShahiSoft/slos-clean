@@ -15,6 +15,7 @@ namespace ShahiLegalopsSuite\Admin;
 
 use ShahiLegalopsSuite\Core\Security;
 use ShahiLegalopsSuite\Database\QueryOptimizer;
+use ShahiLegalopsSuite\Modules\ModuleManager;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -90,76 +91,84 @@ class Dashboard {
 	 */
 	private function get_plugin_info() {
 		return array(
-			'name'         => __( 'Shahi LegalOps Suite', 'shahi-legalops-suite' ),
-			'short_name'   => 'SLOS',
-			'version'      => defined( 'SHAHI_LEGALOPS_SUITE_VERSION' ) ? SHAHI_LEGALOPS_SUITE_VERSION : '3.0.1',
-			'description'  => __( 'A comprehensive legal operations management suite for WordPress, featuring DSR management, consent compliance, legal document handling, and accessibility scanning.', 'shahi-legalops-suite' ),
-			'author'       => __( 'Shahi Digital', 'shahi-legalops-suite' ),
-			'author_url'   => 'https://shahidigital.com',
-			'plugin_url'   => 'https://shahidigital.com/plugins/legalops-suite',
-			'license'      => 'GPL-3.0+',
-			'php_version'  => PHP_VERSION,
-			'wp_version'   => get_bloginfo( 'version' ),
-			'db_version'   => get_option( 'shahi_legalops_suite_db_version', '1.0.0' ),
+			'name'        => __( 'Shahi LegalOps Suite', 'shahi-legalops-suite' ),
+			'short_name'  => 'SLOS',
+			'version'     => defined( 'SHAHI_LEGALOPS_SUITE_VERSION' ) ? SHAHI_LEGALOPS_SUITE_VERSION : '3.0.1',
+			'description' => __( 'A comprehensive legal operations management suite for WordPress, featuring DSR management, consent compliance, legal document handling, and accessibility scanning.', 'shahi-legalops-suite' ),
+			'author'      => __( 'Shahi Digital', 'shahi-legalops-suite' ),
+			'author_url'  => 'https://shahidigital.com',
+			'plugin_url'  => 'https://shahidigital.com/plugins/legalops-suite',
+			'license'     => 'GPL-3.0+',
+			'php_version' => PHP_VERSION,
+			'wp_version'  => get_bloginfo( 'version' ),
+			'db_version'  => get_option( 'shahi_legalops_suite_db_version', '1.0.0' ),
 		);
 	}
 
 	/**
 	 * Get modules status
 	 *
-	 * Returns the status of all available modules.
+	 * Returns the status of all available modules using ModuleManager
+	 * to ensure consistency with Module Dashboard.
 	 *
 	 * @since 3.0.1
 	 * @return array Modules status data
 	 */
 	private function get_modules_status() {
-		$all_modules = array(
-			'dsr_portal' => array(
-				'name'        => __( 'DSR Portal', 'shahi-legalops-suite' ),
-				'description' => __( 'Data Subject Request management', 'shahi-legalops-suite' ),
-				'icon'        => '📋',
-				'page'        => 'slos-dsr-requests',
-				'dashicon'    => 'dashicons-clipboard',
+		// Define which modules to display on Dashboard (core compliance modules)
+		$display_modules = array(
+			'dsr-portal'            => array(
+				'icon'     => '📋',
+				'page'     => 'slos-requests',
+				'dashicon' => 'dashicons-clipboard',
 			),
-			'consent_management' => array(
-				'name'        => __( 'Consent Management', 'shahi-legalops-suite' ),
-				'description' => __( 'Cookie consent & compliance', 'shahi-legalops-suite' ),
-				'icon'        => '🛡️',
-				'page'        => 'slos-consent-compliance',
-				'dashicon'    => 'dashicons-shield',
+			'consent-management'    => array(
+				'icon'     => '🛡️',
+				'page'     => 'slos-compliance',
+				'dashicon' => 'dashicons-shield',
 			),
-			'legal_docs' => array(
-				'name'        => __( 'Legal Documents', 'shahi-legalops-suite' ),
-				'description' => __( 'Document management & templates', 'shahi-legalops-suite' ),
-				'icon'        => '📄',
-				'page'        => 'slos-legal-documents',
-				'dashicon'    => 'dashicons-media-document',
+			'legal-docs'            => array(
+				'icon'     => '📄',
+				'page'     => 'slos-documents',
+				'dashicon' => 'dashicons-media-document',
 			),
-			'accessibility_scanner' => array(
-				'name'        => __( 'Accessibility Scanner', 'shahi-legalops-suite' ),
-				'description' => __( 'WCAG compliance scanning', 'shahi-legalops-suite' ),
-				'icon'        => '♿',
-				'page'        => 'slos-accessibility',
-				'dashicon'    => 'dashicons-universal-access',
+			'accessibility-scanner' => array(
+				'icon'     => '♿',
+				'page'     => 'slos-accessibility',
+				'dashicon' => 'dashicons-universal-access',
 			),
 		);
 
-		// Get enabled modules from database
-		global $wpdb;
-		$table   = $wpdb->prefix . 'shahi_modules';
-		$enabled = array();
+		// Get modules from ModuleManager (same source as Module Dashboard)
+		$module_manager = ModuleManager::get_instance();
+		$all_modules    = array();
 
-		if ( QueryOptimizer::table_exists_cached( $table ) ) {
-			$results = $wpdb->get_results( "SELECT module_slug, is_enabled FROM $table" );
-			foreach ( $results as $row ) {
-				$enabled[ $row->module_slug ] = (bool) $row->is_enabled;
+		foreach ( $display_modules as $key => $display_info ) {
+			$module_obj = $module_manager->get_module( $key );
+
+			if ( $module_obj ) {
+				// Module exists - get real data from ModuleManager
+				$all_modules[ $key ] = array(
+					'name'        => $module_obj->get_name(),
+					'description' => $module_obj->get_description(),
+					'icon'        => $display_info['icon'],
+					'page'        => $display_info['page'],
+					'dashicon'    => $display_info['dashicon'],
+					'enabled'     => $module_obj->is_enabled(),
+					'slug'        => $key,
+				);
+			} else {
+				// Module not registered - show as disabled
+				$all_modules[ $key ] = array(
+					'name'        => ucwords( str_replace( '-', ' ', $key ) ),
+					'description' => __( 'Module not available', 'shahi-legalops-suite' ),
+					'icon'        => $display_info['icon'],
+					'page'        => $display_info['page'],
+					'dashicon'    => $display_info['dashicon'],
+					'enabled'     => false,
+					'slug'        => $key,
+				);
 			}
-		}
-
-		// Merge status into modules array
-		foreach ( $all_modules as $slug => &$module ) {
-			$module['enabled'] = isset( $enabled[ $slug ] ) ? $enabled[ $slug ] : false;
-			$module['slug']    = $slug;
 		}
 
 		return $all_modules;
@@ -231,34 +240,38 @@ class Dashboard {
 	private function get_statistics() {
 		return array(
 			array(
-				'title' => __( 'Active Modules', 'shahi-legalops-suite' ),
-				'value' => $this->get_active_modules_count(),
-				'icon'  => 'dashicons-admin-plugins',
-				'color' => 'primary',
-				'trend' => null,
+				'title'       => __( 'Active Modules', 'shahi-legalops-suite' ),
+				'value'       => $this->get_active_modules_count(),
+				'icon'        => 'dashicons-admin-plugins',
+				'color'       => 'primary',
+				'trend'       => null,
+				'description' => __( 'Compliance features currently enabled on your site', 'shahi-legalops-suite' ),
 			),
 			array(
-				'title' => __( 'Total Events', 'shahi-legalops-suite' ),
-				'value' => $this->get_total_events_count(),
-				'icon'  => 'dashicons-chart-line',
-				'color' => 'success',
-				'trend' => '+12%',
+				'title'       => __( 'Total Events', 'shahi-legalops-suite' ),
+				'value'       => $this->get_total_events_count(),
+				'icon'        => 'dashicons-chart-line',
+				'color'       => 'success',
+				'trend'       => null,
+				'description' => __( 'Consent records, DSR requests, and system actions logged', 'shahi-legalops-suite' ),
 			),
 			array(
-				'title'  => __( 'Performance Score', 'shahi-legalops-suite' ),
-				'value'  => '98',
-				'suffix' => '%',
-				'icon'   => 'dashicons-performance',
-				'color'  => 'accent',
-				'trend'  => '+5%',
+				'title'       => __( 'Performance Score', 'shahi-legalops-suite' ),
+				'value'       => $this->get_performance_score(),
+				'suffix'      => '%',
+				'icon'        => 'dashicons-performance',
+				'color'       => 'accent',
+				'trend'       => null,
+				'description' => __( 'Overall plugin health based on config and optimizations', 'shahi-legalops-suite' ),
 			),
 			array(
-				'title'   => __( 'Last Activity', 'shahi-legalops-suite' ),
-				'value'   => $this->get_last_activity_time(),
-				'icon'    => 'dashicons-clock',
-				'color'   => 'info',
-				'trend'   => null,
-				'is_time' => true,
+				'title'       => __( 'Last Activity', 'shahi-legalops-suite' ),
+				'value'       => $this->get_last_activity_time(),
+				'icon'        => 'dashicons-clock',
+				'color'       => 'info',
+				'trend'       => null,
+				'is_time'     => true,
+				'description' => __( 'Most recent compliance event or configuration change', 'shahi-legalops-suite' ),
 			),
 		);
 	}
@@ -326,6 +339,59 @@ class Dashboard {
 	}
 
 	/**
+	 * Get performance score
+	 *
+	 * Calculate overall plugin health score based on:
+	 * - Active modules count
+	 * - Configuration completeness
+	 * - Database health
+	 *
+	 * @since 3.0.1
+	 * @return int Performance score (0-100)
+	 */
+	private function get_performance_score() {
+		$score = 0;
+
+		// Factor 1: Active modules (max 40 points)
+		$module_manager = ModuleManager::get_instance();
+		$stats          = $module_manager->get_statistics();
+		if ( $stats['total'] > 0 ) {
+			$enabled_ratio = $stats['enabled'] / $stats['total'];
+			$score        += (int) ( $enabled_ratio * 40 );
+		}
+
+		// Factor 2: Configuration completeness (max 30 points)
+		// Check if company profile is configured
+		$profile_repo = \ShahiLegalopsSuite\Database\Repositories\Company_Profile_Repository::get_instance();
+		$profile      = $profile_repo->get_profile();
+
+		// Check if profile has meaningful data (not just defaults)
+		$completion = $profile_repo->get_completion_percentage();
+		if ( $completion > 10 ) { // At least 10% configured
+			$score += 30;
+		}
+
+		// Factor 3: Database health (max 30 points)
+		// Check if tables exist and have data
+		global $wpdb;
+		$tables = array(
+			$wpdb->prefix . 'slos_consents',
+			$wpdb->prefix . 'slos_dsr_requests',
+			$wpdb->prefix . 'slos_documents',
+		);
+
+		$healthy_tables = 0;
+		foreach ( $tables as $table ) {
+			if ( QueryOptimizer::table_exists_cached( $table ) ) {
+				++$healthy_tables;
+			}
+		}
+		$score += (int) ( ( $healthy_tables / count( $tables ) ) * 30 );
+
+		return min( 100, $score );
+	}
+
+	/**
 	 * Get quick actions
 	 *
 	 * Returns an array of quick action buttons to display on the dashboard.
@@ -343,25 +409,39 @@ class Dashboard {
 				'color'       => 'primary',
 			),
 			array(
-				'title'       => __( 'View Analytics', 'shahi-legalops-suite' ),
-				'description' => __( 'Check your plugin analytics', 'shahi-legalops-suite' ),
-				'icon'        => 'dashicons-chart-bar',
-				'url'         => admin_url( 'admin.php?page=shahi-legalops-suite-analytics' ),
+				'title'       => __( 'DSR Requests', 'shahi-legalops-suite' ),
+				'description' => __( 'Manage data subject requests', 'shahi-legalops-suite' ),
+				'icon'        => 'dashicons-clipboard',
+				'url'         => admin_url( 'admin.php?page=slos-requests' ),
 				'color'       => 'success',
+			),
+			array(
+				'title'       => __( 'Consent Compliance', 'shahi-legalops-suite' ),
+				'description' => __( 'Manage cookie consent & banners', 'shahi-legalops-suite' ),
+				'icon'        => 'dashicons-shield',
+				'url'         => admin_url( 'admin.php?page=slos-compliance' ),
+				'color'       => 'accent',
+			),
+			array(
+				'title'       => __( 'Legal Documents', 'shahi-legalops-suite' ),
+				'description' => __( 'Generate & manage legal docs', 'shahi-legalops-suite' ),
+				'icon'        => 'dashicons-media-document',
+				'url'         => admin_url( 'admin.php?page=slos-documents' ),
+				'color'       => 'warning',
 			),
 			array(
 				'title'       => __( 'Plugin Settings', 'shahi-legalops-suite' ),
 				'description' => __( 'Configure plugin options', 'shahi-legalops-suite' ),
 				'icon'        => 'dashicons-admin-settings',
 				'url'         => admin_url( 'admin.php?page=shahi-legalops-suite-settings' ),
-				'color'       => 'accent',
+				'color'       => 'info',
 			),
 			array(
 				'title'       => __( 'Get Support', 'shahi-legalops-suite' ),
 				'description' => __( 'Documentation and help', 'shahi-legalops-suite' ),
 				'icon'        => 'dashicons-sos',
 				'url'         => admin_url( 'admin.php?page=shahi-legalops-suite-support' ),
-				'color'       => 'info',
+				'color'       => 'purple',
 			),
 		);
 	}
@@ -488,6 +568,10 @@ class Dashboard {
 		$modules_configured   = $this->get_active_modules_count() > 0;
 		$settings_configured  = ! empty( get_option( 'shahi_legalops_suite_settings', array() ) );
 
+		// Check if company profile is set up
+		$company_profile    = get_option( 'slos_company_profile', array() );
+		$profile_configured = ! empty( $company_profile ) && ! empty( $company_profile['company_name'] );
+
 		return array(
 			array(
 				'title'        => __( 'Complete Onboarding', 'shahi-legalops-suite' ),
@@ -514,14 +598,13 @@ class Dashboard {
 				'action_class' => '',
 			),
 			array(
-				'title'        => __( 'Explore Analytics', 'shahi-legalops-suite' ),
-				'description'  => __( 'Track your plugin performance and usage', 'shahi-legalops-suite' ),
-				'completed'    => false,
-				'action_text'  => __( 'View Analytics', 'shahi-legalops-suite' ),
-				'action_url'   => admin_url( 'admin.php?page=shahi-legalops-suite-analytics' ),
+				'title'        => __( 'Setup Company Profile', 'shahi-legalops-suite' ),
+				'description'  => __( 'Configure your company details for legal documents', 'shahi-legalops-suite' ),
+				'completed'    => $profile_configured,
+				'action_text'  => $profile_configured ? __( 'Edit Profile', 'shahi-legalops-suite' ) : __( 'Setup Now', 'shahi-legalops-suite' ),
+				'action_url'   => admin_url( 'admin.php?page=slos-company-profile' ),
 				'action_class' => '',
 			),
 		);
 	}
 }
-

@@ -237,10 +237,10 @@ class Multilingual_Integration {
 	 */
 	public static function get_language_switcher( array $args = array() ): string {
 		$defaults = array(
-			'show_flags'        => true,
-			'show_names'        => true,
-			'dropdown'          => false,
-			'echo'              => false,
+			'show_flags'             => true,
+			'show_names'             => true,
+			'dropdown'               => false,
+			'echo'                   => false,
 			'hide_if_no_translation' => false,
 		);
 
@@ -249,11 +249,11 @@ class Multilingual_Integration {
 		// Polylang
 		if ( self::is_polylang_active() && function_exists( 'pll_the_languages' ) ) {
 			$pll_args = array(
-				'dropdown'             => $args['dropdown'] ? 1 : 0,
-				'show_flags'           => $args['show_flags'] ? 1 : 0,
-				'show_names'           => $args['show_names'] ? 1 : 0,
+				'dropdown'               => $args['dropdown'] ? 1 : 0,
+				'show_flags'             => $args['show_flags'] ? 1 : 0,
+				'show_names'             => $args['show_names'] ? 1 : 0,
 				'hide_if_no_translation' => $args['hide_if_no_translation'] ? 1 : 0,
-				'echo'                 => 0,
+				'echo'                   => 0,
 			);
 			return pll_the_languages( $pll_args );
 		}

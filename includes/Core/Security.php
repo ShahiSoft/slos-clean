@@ -631,4 +631,3 @@ class Security {
 		error_log( '[ShahiLegalopsSuite Security] ' . wp_json_encode( $log_entry ) );
 	}
 }
-
