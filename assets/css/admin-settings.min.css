@@ -1,0 +1,508 @@
+/**
+ * ShahiLegalFlowSuite - Settings Page Styles
+ * 
+ * Styles for the settings page with tabs and forms.
+ *
+ * @package    ShahiLegalFlowSuite
+ * @version     3.0.1
+ */
+
+/* ============================================================================
+   SETTINGS LAYOUT
+   ========================================================================= */
+
+.shahi-settings-page {
+    max-width: 1000px;
+}
+
+.shahi-settings-container {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: var(--shahi-space-md);
+    margin-top: var(--shahi-space-md);
+}
+
+/* ============================================================================
+   SETTINGS TABS
+   ========================================================================= */
+
+.shahi-settings-tabs {
+    background: var(--shahi-bg-secondary);
+    border: 1px solid var(--shahi-border-color);
+    border-radius: var(--shahi-radius-lg);
+    padding: var(--shahi-space-md);
+    margin-bottom: var(--shahi-space-lg);
+}
+
+.shahi-tabs-nav {
+    display: flex;
+    gap: var(--shahi-space-xs);
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.shahi-tab-link,
+.shahi-settings-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 24px;
+    color: #f8fafc;
+    background: #1e293b;
+    text-decoration: none;
+    border-radius: var(--shahi-radius-md);
+    transition: all var(--shahi-transition-fast);
+    font-size: 15px;
+    font-weight: 500;
+    border: 2px solid #334155;
+    white-space: nowrap;
+}
+
+.shahi-tab-link .dashicons,
+.shahi-settings-tab .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: var(--shahi-accent-primary);
+}
+
+.shahi-tab-link:hover,
+.shahi-settings-tab:hover {
+    background: #334155;
+    color: var(--shahi-accent-primary, #3b82f6);
+    border-color: var(--shahi-accent-primary, #3b82f6);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+.shahi-tab-link.active,
+.shahi-settings-tab.active {
+    background: linear-gradient(135deg, #3b82f6 0%, #93c5fd 50%, #ffffff 100%);
+    color: #1e3a5f;
+    font-weight: 700;
+    border-color: var(--shahi-accent-primary);
+    box-shadow: 0 6px 20px rgba(96, 165, 250, 0.4), 0 0 40px rgba(147, 197, 253, 0.3);
+    transform: translateY(-2px);
+}
+
+.shahi-tab-link.active .dashicons,
+.shahi-settings-tab.active .dashicons {
+    color: #1e3a5f;
+}
+
+/* ============================================================================
+   SETTINGS CONTENT
+   ========================================================================= */
+
+.shahi-settings-content {
+    background: var(--shahi-bg-secondary);
+    border: 1px solid var(--shahi-border-color);
+    border-radius: var(--shahi-radius-lg);
+    padding: var(--shahi-space-lg);
+}
+
+.shahi-settings-section {
+    margin-bottom: var(--shahi-space-lg);
+}
+
+.shahi-settings-section:last-child {
+    margin-bottom: 0;
+}
+
+.shahi-settings-section-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--shahi-text-primary);
+    margin-bottom: var(--shahi-space-md);
+    padding-bottom: var(--shahi-space-sm);
+    border-bottom: 1px solid var(--shahi-border-color);
+}
+
+.shahi-settings-section-description {
+    color: var(--shahi-text-secondary);
+    margin-bottom: var(--shahi-space-md);
+}
+
+/* ============================================================================
+   SETTINGS FORM FIELDS
+   ========================================================================= */
+
+.shahi-setting-row {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: var(--shahi-space-md);
+    align-items: start;
+    margin-bottom: var(--shahi-space-md);
+    padding-bottom: var(--shahi-space-md);
+    border-bottom: 1px solid var(--shahi-border-color);
+}
+
+.shahi-setting-row:last-child {
+    border-bottom: none;
+}
+
+.shahi-setting-label {
+    font-weight: 500;
+    color: var(--shahi-text-primary);
+    padding-top: 10px;
+}
+
+.shahi-setting-label-description {
+    font-size: 13px;
+    color: var(--shahi-text-muted);
+    margin-top: 4px;
+}
+
+.shahi-setting-field {
+    width: 100%;
+}
+
+.shahi-setting-help {
+    font-size: 13px;
+    color: var(--shahi-text-muted);
+    margin-top: var(--shahi-space-xs);
+}
+
+/* ============================================================================
+   CHECKBOX & RADIO STYLES
+   ========================================================================= */
+
+.shahi-checkbox-group,
+.shahi-radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--shahi-space-sm);
+}
+
+.shahi-checkbox,
+.shahi-radio {
+    display: flex;
+    align-items: center;
+    gap: var(--shahi-space-xs);
+    cursor: pointer;
+}
+
+.shahi-checkbox input[type="checkbox"],
+.shahi-radio input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.shahi-checkbox label,
+.shahi-radio label {
+    cursor: pointer;
+    color: var(--shahi-text-secondary);
+}
+
+/* ============================================================================
+   SETTINGS FOOTER
+   ========================================================================= */
+
+.shahi-settings-footer {
+    margin-top: var(--shahi-space-lg);
+    padding-top: var(--shahi-space-md);
+    border-top: 1px solid var(--shahi-border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* ============================================================================
+   COLOR PICKER
+   ========================================================================= */
+
+.shahi-color-picker {
+    display: flex;
+    align-items: center;
+    gap: var(--shahi-space-sm);
+}
+
+.shahi-color-preview {
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--shahi-border-color);
+    border-radius: var(--shahi-radius-md);
+    cursor: pointer;
+}
+
+.shahi-color-input {
+    flex: 1;
+}
+
+/* ============================================================================
+   IMPORT/EXPORT FEATURES
+   ========================================================================= */
+
+.shahi-file-input {
+    margin-bottom: var(--shahi-space-sm);
+    padding: var(--shahi-space-sm);
+    border: 2px dashed var(--shahi-border-color);
+    border-radius: var(--shahi-radius-md);
+    background: var(--shahi-bg-tertiary);
+    cursor: pointer;
+    transition: all var(--shahi-transition-fast);
+}
+
+.shahi-file-input:hover {
+    border-color: var(--shahi-primary);
+}
+
+.shahi-input-group {
+    display: flex;
+    gap: var(--shahi-space-sm);
+    align-items: center;
+}
+
+.shahi-input-group .shahi-input {
+    flex: 1;
+}
+
+.shahi-inline-group {
+    display: flex;
+    align-items: center;
+    gap: var(--shahi-space-sm);
+    flex-wrap: wrap;
+}
+
+/* ============================================================================
+   ALERTS & BADGES
+   ========================================================================= */
+
+.shahi-alert {
+    padding: var(--shahi-space-md);
+    border-radius: var(--shahi-radius-md);
+    margin-bottom: var(--shahi-space-md);
+    display: flex;
+    align-items: center;
+    gap: var(--shahi-space-sm);
+}
+
+.shahi-alert .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.shahi-alert-info {
+    background: rgba(59, 130, 246, 0.1);
+    border-left: 4px solid #2196f3;
+    color: #60a5fa;
+}
+
+.shahi-alert-success {
+    background: rgba(34, 197, 94, 0.1);
+    border-left: 4px solid #4caf50;
+    color: #22c55e;
+}
+
+.shahi-alert-warning {
+    background: rgba(245, 158, 11, 0.1);
+    border-left: 4px solid #ff9800;
+    color: #f59e0b;
+}
+
+.shahi-alert-danger,
+.shahi-alert-error {
+    background: rgba(239, 68, 68, 0.1);
+    border-left: 4px solid #f44336;
+    color: #ef4444;
+}
+
+.shahi-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+}
+
+.shahi-badge-warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+.shahi-badge-success {
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+}
+
+.shahi-badge-secondary {
+    background: rgba(100, 116, 139, 0.2);
+    color: #94a3b8;
+}
+
+.shahi-text-danger {
+    color: #ef4444 !important;
+}
+
+.shahi-text-warning {
+    color: #f59e0b !important;
+}
+
+/* ============================================================================
+   FORM FOOTER
+   ========================================================================= */
+
+.shahi-form-footer {
+    margin-top: var(--shahi-space-lg);
+    padding-top: var(--shahi-space-md);
+    border-top: 1px solid var(--shahi-border-color);
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* ============================================================================
+   INPUT SUFFIX
+   ========================================================================= */
+
+.shahi-input-suffix {
+    margin-left: var(--shahi-space-xs);
+    color: var(--shahi-text-muted);
+    font-size: 14px;
+}
+
+.shahi-input-sm {
+    width: 120px;
+}
+
+/* ============================================================================
+   TEXTAREA
+   ========================================================================= */
+
+.shahi-textarea {
+    width: 100%;
+    padding: var(--shahi-space-sm);
+    border: 1px solid var(--shahi-border-color);
+    border-radius: var(--shahi-radius-md);
+    background: var(--shahi-bg-primary);
+    color: var(--shahi-text-primary);
+    font-family: monospace;
+    font-size: 13px;
+    resize: vertical;
+    transition: all var(--shahi-transition-fast);
+}
+
+.shahi-textarea:focus {
+    outline: none;
+    border-color: var(--shahi-primary);
+    box-shadow: 0 0 0 3px rgba(70, 130, 255, 0.1);
+}
+
+/* ============================================================================
+   SETTINGS CONTROL
+   ========================================================================= */
+
+.shahi-setting-control {
+    display: flex;
+    flex-direction: column;
+    gap: var(--shahi-space-sm);
+}
+
+.shahi-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: var(--shahi-space-xs);
+    cursor: pointer;
+    padding: var(--shahi-space-xs) 0;
+}
+
+.shahi-checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.shahi-checkbox-label span {
+    color: var(--shahi-text-secondary);
+}
+
+.shahi-setting-description {
+    font-size: 13px;
+    color: var(--shahi-text-muted);
+    margin: 0;
+}
+
+/* ============================================================================
+   LOADING STATE
+   ========================================================================= */
+
+.shahi-loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.shahi-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--shahi-primary);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+/* ============================================================================
+   RESPONSIVE
+   ========================================================================= */
+
+@media (max-width: 1024px) {
+    .shahi-settings-container {
+        grid-template-columns: 200px 1fr;
+    }
+    
+    .shahi-setting-row {
+        grid-template-columns: 1fr;
+        gap: var(--shahi-space-sm);
+    }
+    
+    .shahi-setting-label {
+        padding-top: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .shahi-settings-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .shahi-settings-tabs {
+        display: flex;
+        overflow-x: auto;
+        gap: var(--shahi-space-xs);
+    }
+    
+    .shahi-settings-tab {
+        white-space: nowrap;
+        margin-bottom: 0;
+    }
+    
+    .shahi-settings-content {
+        padding: var(--shahi-space-md);
+    }
+    
+    .shahi-settings-footer,
+    .shahi-form-footer {
+        flex-direction: column;
+        gap: var(--shahi-space-sm);
+    }
+    
+    .shahi-inline-group {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+

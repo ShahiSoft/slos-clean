@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - {{company_legal_name}}</title>
+</head>
+<body>
+<article class="slos-legal-document slos-privacy-policy">
+
+<header class="slos-doc-header">
+    <h1>Privacy Policy</h1>
+    <p class="slos-effective-date"><strong>Effective Date:</strong> {{today}}</p>
+    <p class="slos-last-updated"><strong>Last Updated:</strong> {{today}}</p>
+</header>
+
+<section id="introduction">
+    <h2>1. Introduction</h2>
+    <p>Welcome to <strong>{{company_trading_name}}</strong> ("we," "us," or "our"). We are committed to protecting your personal information and your right to privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website <a href="{{site_url}}">{{site_url}}</a>{{if app_name}} or use our services (collectively, the "Services"){{/if}}.</p>
+    
+    <p>Please read this privacy policy carefully. If you do not agree with the terms of this privacy policy, please do not access our website or use our services.</p>
+    
+    {{if service_description}}
+    <p><strong>About Our Services:</strong> {{service_description}}</p>
+    {{/if}}
+</section>
+
+<section id="data-controller">
+    <h2>2. Data Controller</h2>
+    <p>The data controller responsible for your personal data is:</p>
+    <address class="slos-contact-info">
+        <strong>{{company_legal_name}}</strong><br>
+        {{company_address}}<br>
+        {{if company_registration}}Registration Number: {{company_registration}}<br>{{/if}}
+        Email: <a href="mailto:{{legal_contact_email}}">{{legal_contact_email}}</a><br>
+        {{if contact_phone}}Phone: {{contact_phone}}{{/if}}
+    </address>
+    
+    {{if dpo_email}}
+    <h3>Data Protection Officer</h3>
+    <p>We have appointed a Data Protection Officer (DPO) who is responsible for overseeing questions in relation to this privacy policy. If you have any questions, please contact our DPO:</p>
+    <address class="slos-dpo-info">
+        {{dpo_name}}<br>
+        Email: <a href="mailto:{{dpo_email}}">{{dpo_email}}</a><br>
+        {{if dpo_phone}}Phone: {{dpo_phone}}<br>{{/if}}
+        {{if dpo_address}}Address: {{dpo_address}}{{/if}}
+    </address>
+    {{/if}}
+    
+    {{if has_eu_rep}}
+    <h3>EU Representative</h3>
+    <p>For users in the European Union, our representative is:</p>
+    <address>
+        {{eu_rep_name}}<br>
+        {{eu_rep_address}}<br>
+        Email: <a href="mailto:{{eu_rep_email}}">{{eu_rep_email}}</a>
+    </address>
+    {{/if}}
+    
+    {{if has_uk_rep}}
+    <h3>UK Representative</h3>
+    <p>For users in the United Kingdom, our representative is:</p>
+    <address>
+        {{uk_rep_name}}<br>
+        {{uk_rep_address}}<br>
+        Email: <a href="mailto:{{uk_rep_email}}">{{uk_rep_email}}</a>
+    </address>
+    {{/if}}
+</section>
+
+<section id="information-we-collect">
+    <h2>3. Information We Collect</h2>
+    
+    <h3>3.1 Personal Data We Collect</h3>
+    <p>We may collect and process the following types of personal data:</p>
+    <ul class="slos-data-types-list">{{foreach data_types_array as dtype}}<li>{{dtype}}</li>{{/foreach}}</ul>
+    
+    {{if special_categories}}
+    <h3>3.2 Special Categories of Data</h3>
+    <p>In certain circumstances, we may collect special categories of personal data (also known as sensitive data). This includes information about your health, racial or ethnic origin, religious beliefs, or other sensitive information. We will only collect such data with your explicit consent or where legally required.</p>
+    {{/if}}
+    
+    {{if children_data}}
+    <h3>3.3 Children's Data</h3>
+    <p>We do not knowingly collect personal data from children under the age of {{minimum_age}}. If you are a parent or guardian and believe your child has provided us with personal data, please contact us immediately so we can take steps to remove such information.</p>
+    {{/if}}
+</section>
+
+<section id="how-we-use">
+    <h2>4. How We Use Your Information</h2>
+    <p>We use the personal information we collect for the following purposes:</p>
+    <ul class="slos-purposes-list">{{foreach data_purposes_array as purpose}}<li>{{purpose}}</li>{{/foreach}}</ul>
+</section>
+
+<section id="legal-basis">
+    <h2>5. Legal Basis for Processing</h2>
+    {{if gdpr_applies}}
+    <p>Under the General Data Protection Regulation (GDPR), we rely on the following legal bases to process your personal data:</p>
+    <ul class="slos-legal-bases">{{foreach lawful_bases_array as basis}}<li>{{basis}}</li>{{/foreach}}</ul>
+    {{/if}}
+    
+    {{if ccpa_applies}}
+    <p>Under the California Consumer Privacy Act (CCPA), we are required to disclose the categories of personal information we collect, the purposes for which we use this information, and your rights regarding this information.</p>
+    {{/if}}
+    
+    {{if lgpd_applies}}
+    <p>Under Brazil's Lei Geral de Proteção de Dados (LGPD), we process your personal data in accordance with the legal bases established by Brazilian law.</p>
+    {{/if}}
+</section>
+
+<section id="data-sharing">
+    <h2>6. Sharing Your Information</h2>
+    
+    {{if has_third_parties}}
+    <p>We may share your personal information with the following categories of third parties:</p>
+    
+    {{if third_party_processors}}
+    <h3>6.1 Service Providers (Data Processors)</h3>
+    <p>We use the following service providers who process data on our behalf:</p>
+    <ul class="slos-processors-list">{{foreach third_party_processors as processor}}<li><strong>{{processor.name}}</strong> - {{processor.purpose}}{{if processor.country}} ({{processor.country}}){{/if}}</li>{{/foreach}}</ul>
+    {{/if}}
+    
+    {{if third_party_partners}}
+    <h3>6.2 Business Partners</h3>
+    <p>We may share data with the following business partners:</p>
+    <ul class="slos-partners-list">{{foreach third_party_partners as partner}}<li><strong>{{partner.name}}</strong> - {{partner.purpose}}</li>{{/foreach}}</ul>
+    {{/if}}
+    {{/if}}
+    
+    <h3>6.3 Legal Requirements</h3>
+    <p>We may disclose your information where required by law, such as in response to a court order, legal process, or government request.</p>
+</section>
+
+<section id="international-transfers">
+    <h2>7. International Data Transfers</h2>
+    <p>Your personal data may be transferred to, and processed in, countries other than the country in which you are resident. These countries may have data protection laws that are different from the laws of your country.</p>
+    
+    {{if gdpr_applies}}
+    <p>When we transfer your personal data outside the European Economic Area (EEA), we ensure appropriate safeguards are in place, including:</p>
+    <ul>
+        <li>Standard Contractual Clauses approved by the European Commission</li>
+        <li>Binding Corporate Rules where applicable</li>
+        <li>Transfers to countries with an adequacy decision</li>
+    </ul>
+    {{/if}}
+</section>
+
+<section id="data-retention">
+    <h2>8. Data Retention</h2>
+    <p>We will retain your personal data for as long as necessary to fulfill the purposes for which we collected it, including to satisfy any legal, accounting, or reporting requirements.</p>
+    
+    <p><strong>Default Retention Period:</strong> {{retention_period|default:"As required by applicable law"}}</p>
+    
+    {{if retention_by_category}}
+    <h3>Retention by Data Category</h3>
+    <table class="slos-retention-table">
+        <thead>
+            <tr>
+                <th>Data Category</th>
+                <th>Retention Period</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{foreach retention_by_category as category}}
+            <tr>
+                <td>{{category.name}}</td>
+                <td>{{category.period}}</td>
+            </tr>
+            {{/foreach}}
+        </tbody>
+    </table>
+    {{/if}}
+    
+    {{if deletion_policy}}
+    <p><strong>Deletion Policy:</strong> {{deletion_policy}}</p>
+    {{/if}}
+</section>
+
+<section id="your-rights">
+    <h2>9. Your Rights</h2>
+    <p>Depending on your location, you may have the following rights regarding your personal data:</p>
+    
+    <ul class="slos-rights-list">
+        <li><strong>Right of Access:</strong> You have the right to request copies of your personal data.</li>
+        <li><strong>Right to Rectification:</strong> You have the right to request that we correct any information you believe is inaccurate.</li>
+        <li><strong>Right to Erasure:</strong> You have the right to request that we erase your personal data, under certain conditions.</li>
+        <li><strong>Right to Restrict Processing:</strong> You have the right to request that we restrict the processing of your personal data, under certain conditions.</li>
+        <li><strong>Right to Data Portability:</strong> You have the right to request that we transfer the data we have collected to another organization, or directly to you, under certain conditions.</li>
+        <li><strong>Right to Object:</strong> You have the right to object to our processing of your personal data, under certain conditions.</li>
+        <li><strong>Right to Withdraw Consent:</strong> If we are processing your data based on consent, you have the right to withdraw your consent at any time.</li>
+    </ul>
+    
+    {{if ccpa_applies}}
+    <h3>California Residents (CCPA Rights)</h3>
+    <p>California residents have additional rights under the CCPA:</p>
+    <ul>
+        <li>Right to know what personal information is collected, used, shared, or sold</li>
+        <li>Right to delete personal information held by businesses</li>
+        <li>Right to opt-out of the sale of personal information</li>
+        <li>Right to non-discrimination for exercising CCPA rights</li>
+    </ul>
+    {{/if}}
+    
+    <p>To exercise any of these rights, please contact us at <a href="mailto:{{legal_contact_email}}">{{legal_contact_email}}</a>. We will respond to your request within {{response_timeframe|default:"30"}} days.</p>
+</section>
+
+<section id="data-security">
+    <h2>10. Data Security</h2>
+    <p>We have implemented appropriate technical and organizational measures to secure your personal data from accidental loss and from unauthorized access, use, alteration, and disclosure.</p>
+    
+    {{if security_measures}}
+    <p>Our security measures include:</p>
+    <ul class="slos-security-list">{{foreach security_measures_array as measure}}<li>{{measure}}</li>{{/foreach}}</ul>
+    {{/if}}
+    
+    {{if certifications}}
+    <p><strong>Certifications:</strong> {{certifications}}</p>
+    {{/if}}
+    
+    {{if breach_procedure}}
+    <h3>Data Breach Procedures</h3>
+    <p>{{breach_procedure}}</p>
+    {{/if}}
+</section>
+
+<section id="cookies">
+    <h2>11. Cookies and Tracking Technologies</h2>
+    <p>We use cookies and similar tracking technologies to track activity on our website and hold certain information. For detailed information about the cookies we use and the purposes for which we use them, please see our <a href="{{site_url}}/cookie-policy">Cookie Policy</a>.</p>
+</section>
+
+<section id="third-party-links">
+    <h2>12. Third-Party Links</h2>
+    <p>Our website may contain links to other websites that are not operated by us. If you click on a third-party link, you will be directed to that third party's site. We strongly advise you to review the Privacy Policy of every site you visit. We have no control over and assume no responsibility for the content, privacy policies, or practices of any third-party sites or services.</p>
+</section>
+
+<section id="changes">
+    <h2>13. Changes to This Privacy Policy</h2>
+    <p>We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date at the top of this Privacy Policy.</p>
+    <p>You are advised to review this Privacy Policy periodically for any changes. Changes to this Privacy Policy are effective when they are posted on this page.</p>
+</section>
+
+<section id="contact">
+    <h2>14. Contact Us</h2>
+    <p>If you have any questions about this Privacy Policy, please contact us:</p>
+    <address class="slos-contact-info">
+        <strong>{{company_legal_name}}</strong><br>
+        {{company_address}}<br>
+        Email: <a href="mailto:{{legal_contact_email}}">{{legal_contact_email}}</a><br>
+        {{if contact_phone}}Phone: {{contact_phone}}<br>{{/if}}
+        {{if support_email}}Support: <a href="mailto:{{support_email}}">{{support_email}}</a>{{/if}}
+    </address>
+    
+    {{if supervisory_authority}}
+    <h3>Supervisory Authority</h3>
+    <p>You have the right to lodge a complaint with a supervisory authority. Our lead supervisory authority is: {{supervisory_authority}}</p>
+    {{/if}}
+</section>
+
+</article>
+</body>
+</html>

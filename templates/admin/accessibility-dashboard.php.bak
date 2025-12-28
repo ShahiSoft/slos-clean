@@ -1,0 +1,205 @@
+<?php
+/**
+ * Accessibility Dashboard Template
+ *
+ * @package    ShahiLegalopsSuite
+ * @subpackage Templates/Admin
+ */
+
+if (!defined('ABSPATH')) {
+    exit;
+}
+?>
+
+<div class="wrap shahi-module-dashboard shahi-legalops-suite-admin">
+    
+    <!-- Header -->
+    <div class="shahi-dashboard-header">
+        <div class="shahi-header-content">
+            <div class="shahi-header-text">
+                <h1 class="shahi-page-title">
+                    <span class="shahi-icon-badge">
+                        <span class="dashicons dashicons-universal-access"></span>
+                    </span>
+                    <?php echo esc_html__('Accessibility Dashboard', 'shahi-legalops-suite'); ?>
+                </h1>
+                <p class="shahi-page-subtitle">
+                    <?php echo esc_html__('Monitor your website accessibility score, scan history, and compliance status.', 'shahi-legalops-suite'); ?>
+                </p>
+            </div>
+            <div class="shahi-header-actions">
+                <a href="<?php echo admin_url('admin.php?page=slos-accessibility-scanner'); ?>" class="shahi-btn shahi-btn-gradient">
+                    <span class="dashicons dashicons-search"></span>
+                    <?php echo esc_html__('Run New Scan', 'shahi-legalops-suite'); ?>
+                </a>
+                <a href="<?php echo admin_url('admin.php?page=slos-accessibility-settings'); ?>" class="shahi-btn shahi-btn-outline">
+                    <span class="dashicons dashicons-admin-settings"></span>
+                    <?php echo esc_html__('Settings', 'shahi-legalops-suite'); ?>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="shahi-stats-container">
+        <div class="shahi-stat-card shahi-stat-performance">
+            <div class="shahi-stat-icon">
+                <span class="dashicons dashicons-chart-bar"></span>
+            </div>
+            <div class="shahi-stat-content">
+                <div class="shahi-stat-value"><?php echo esc_html($stats['score']); ?>/100</div>
+                <div class="shahi-stat-label"><?php echo esc_html__('Overall Score', 'shahi-legalops-suite'); ?></div>
+            </div>
+            <div class="shahi-stat-progress">
+                <div class="shahi-stat-progress-bar" style="width: <?php echo esc_attr($stats['score']); ?>%"></div>
+            </div>
+            <div class="shahi-stat-glow"></div>
+        </div>
+
+        <div class="shahi-stat-card shahi-stat-total">
+            <div class="shahi-stat-icon">
+                <span class="dashicons dashicons-list-view"></span>
+            </div>
+            <div class="shahi-stat-content">
+                <div class="shahi-stat-value"><?php echo esc_html($stats['issues_total']); ?></div>
+                <div class="shahi-stat-label"><?php echo esc_html__('Total Issues', 'shahi-legalops-suite'); ?></div>
+            </div>
+            <div class="shahi-stat-glow"></div>
+        </div>
+
+        <div class="shahi-stat-card shahi-stat-inactive">
+            <div class="shahi-stat-icon">
+                <span class="dashicons dashicons-warning"></span>
+            </div>
+            <div class="shahi-stat-content">
+                <div class="shahi-stat-value"><?php echo esc_html($stats['issues_critical']); ?></div>
+                <div class="shahi-stat-label"><?php echo esc_html__('Critical Issues', 'shahi-legalops-suite'); ?></div>
+            </div>
+            <div class="shahi-stat-glow"></div>
+        </div>
+
+        <div class="shahi-stat-card shahi-stat-active">
+            <div class="shahi-stat-icon">
+                <span class="dashicons dashicons-admin-page"></span>
+            </div>
+            <div class="shahi-stat-content">
+                <div class="shahi-stat-value"><?php echo esc_html($stats['pages_scanned']); ?></div>
+                <div class="shahi-stat-label"><?php echo esc_html__('Pages Scanned', 'shahi-legalops-suite'); ?></div>
+            </div>
+            <div class="shahi-stat-glow"></div>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="shahi-dashboard-grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-top: 30px;">
+        
+        <!-- Left Column: History & Last Scan -->
+        <div class="shahi-dashboard-main">
+            
+            <!-- Last Scan Summary -->
+            <div class="shahi-card" style="margin-bottom: 24px;">
+                <div class="shahi-card-header">
+                    <h3><?php echo esc_html__('Last Scan Results', 'shahi-legalops-suite'); ?></h3>
+                    <div class="shahi-card-actions">
+                        <button class="shahi-btn shahi-btn-sm shahi-btn-outline" id="slos-export-report">
+                            <span class="dashicons dashicons-download"></span> <?php echo esc_html__('Export Report', 'shahi-legalops-suite'); ?>
+                        </button>
+                    </div>
+                </div>
+                <div class="shahi-card-body">
+                    <?php if (empty($last_scan)): ?>
+                        <p><?php echo esc_html__('No scan results found. Run a scan to see details here.', 'shahi-legalops-suite'); ?></p>
+                    <?php else: ?>
+                        <!-- Placeholder for detailed results visualization -->
+                        <p><?php echo esc_html__('Scan completed on: ', 'shahi-legalops-suite') . esc_html($last_scan['date'] ?? 'Unknown'); ?></p>
+                        <!-- Add more details here -->
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <!-- Scan History -->
+            <div class="shahi-card">
+                <div class="shahi-card-header">
+                    <h3><?php echo esc_html__('Scan History', 'shahi-legalops-suite'); ?></h3>
+                </div>
+                <div class="shahi-card-body">
+                    <table class="wp-list-table widefat fixed striped">
+                        <thead>
+                            <tr>
+                                <th><?php echo esc_html__('Date', 'shahi-legalops-suite'); ?></th>
+                                <th><?php echo esc_html__('Pages', 'shahi-legalops-suite'); ?></th>
+                                <th><?php echo esc_html__('Score', 'shahi-legalops-suite'); ?></th>
+                                <th><?php echo esc_html__('Issues', 'shahi-legalops-suite'); ?></th>
+                                <th><?php echo esc_html__('Actions', 'shahi-legalops-suite'); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (empty($history)): ?>
+                                <tr>
+                                    <td colspan="5"><?php echo esc_html__('No history available.', 'shahi-legalops-suite'); ?></td>
+                                </tr>
+                            <?php else: ?>
+                                <?php foreach ($history as $scan): ?>
+                                    <tr>
+                                        <td><?php echo esc_html($scan['date']); ?></td>
+                                        <td><?php echo esc_html($scan['pages']); ?></td>
+                                        <td><?php echo esc_html($scan['score']); ?></td>
+                                        <td><?php echo esc_html($scan['issues']); ?></td>
+                                        <td><a href="#"><?php echo esc_html__('View Report', 'shahi-legalops-suite'); ?></a></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Column: Quick Actions & Tools -->
+        <div class="shahi-dashboard-sidebar">
+            
+            <!-- Quick Actions -->
+            <div class="shahi-card" style="margin-bottom: 24px;">
+                <div class="shahi-card-header">
+                    <h3><?php echo esc_html__('Quick Actions', 'shahi-legalops-suite'); ?></h3>
+                </div>
+                <div class="shahi-card-body">
+                    <ul class="shahi-action-list" style="list-style: none; padding: 0; margin: 0;">
+                        <li style="margin-bottom: 10px;">
+                            <a href="<?php echo admin_url('admin.php?page=slos-accessibility-scanner'); ?>" class="shahi-btn shahi-btn-full shahi-btn-primary">
+                                <span class="dashicons dashicons-search"></span> <?php echo esc_html__('Start Full Scan', 'shahi-legalops-suite'); ?>
+                            </a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="#" class="shahi-btn shahi-btn-full shahi-btn-outline">
+                                <span class="dashicons dashicons-media-document"></span> <?php echo esc_html__('Generate Statement', 'shahi-legalops-suite'); ?>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo admin_url('admin.php?page=slos-accessibility-settings'); ?>" class="shahi-btn shahi-btn-full shahi-btn-outline">
+                                <span class="dashicons dashicons-admin-settings"></span> <?php echo esc_html__('Configure Settings', 'shahi-legalops-suite'); ?>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Compliance Status -->
+            <div class="shahi-card">
+                <div class="shahi-card-header">
+                    <h3><?php echo esc_html__('Compliance Status', 'shahi-legalops-suite'); ?></h3>
+                </div>
+                <div class="shahi-card-body">
+                    <div class="shahi-compliance-badge" style="text-align: center; padding: 20px;">
+                        <span class="dashicons dashicons-shield" style="font-size: 48px; width: 48px; height: 48px; color: #10b981;"></span>
+                        <h4 style="margin: 10px 0;"><?php echo esc_html__('WCAG 2.1 AA', 'shahi-legalops-suite'); ?></h4>
+                        <p style="color: var(--shahi-text-muted);"><?php echo esc_html__('Target Compliance Level', 'shahi-legalops-suite'); ?></p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

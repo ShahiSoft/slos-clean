@@ -1,0 +1,108 @@
+/**
+ * Consent Preferences UI - RTL Styles
+ *
+ * Right-to-left language support for Arabic, Hebrew, Farsi, Urdu.
+ *
+ * @package ShahiLegalFlowSuite
+ * @since 3.0.1
+ */
+
+/* ========================================================================
+   Base RTL Adjustments
+   ======================================================================== */
+
+body[dir="rtl"] #slos-consent-preferences {
+	direction: rtl;
+	text-align: right;
+}
+
+/* ========================================================================
+   Preference Items
+   ======================================================================== */
+
+body[dir="rtl"] .slos-pref-item {
+	flex-direction: row-reverse;
+}
+
+body[dir="rtl"] .slos-pref-info {
+	margin-right: 0;
+	margin-left: 16px;
+}
+
+body[dir="rtl"] .slos-pref-name {
+	flex-direction: row-reverse;
+}
+
+/* Badge */
+body[dir="rtl"] .slos-badge-required {
+	margin-left: 0;
+	margin-right: 8px;
+}
+
+/* ========================================================================
+   Toggle Switch RTL
+   ======================================================================== */
+
+body[dir="rtl"] .slos-toggle-slider:before {
+	left: auto;
+	right: 4px;
+}
+
+body[dir="rtl"] input:checked + .slos-toggle-slider:before {
+	transform: translateX(-24px);
+}
+
+/* ========================================================================
+   Action Buttons RTL
+   ======================================================================== */
+
+body[dir="rtl"] .slos-btn {
+	flex-direction: row-reverse;
+}
+
+/* ========================================================================
+   History RTL
+   ======================================================================== */
+
+body[dir="rtl"] .slos-history-toggle {
+	flex-direction: row-reverse;
+}
+
+body[dir="rtl"] .slos-icon-down {
+	transform: rotate(0deg);
+}
+
+body[dir="rtl"] .slos-icon-up {
+	transform: rotate(180deg);
+}
+
+body[dir="rtl"] .slos-history-item {
+	flex-direction: row-reverse;
+}
+
+/* ========================================================================
+   GDPR Notice RTL
+   ======================================================================== */
+
+body[dir="rtl"] .slos-gdpr-notice {
+	border-left: none;
+	border-right: 4px solid #2196F3;
+}
+
+/* ========================================================================
+   Responsive RTL
+   ======================================================================== */
+
+@media (max-width: 768px) {
+	body[dir="rtl"] .slos-pref-item {
+		flex-direction: column;
+	}
+
+	body[dir="rtl"] .slos-pref-info {
+		margin-left: 0;
+	}
+
+	body[dir="rtl"] .slos-pref-toggle {
+		justify-content: flex-start;
+	}
+}

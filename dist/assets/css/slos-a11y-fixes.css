@@ -1,0 +1,68 @@
+/* SLOS Accessibility Automated Fixes */
+
+/* 2. Add Focus Outlines */
+body.slos-fix-focus-outlines *:focus {
+    outline: 2px solid #2271b1 !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 4px rgba(34, 113, 177, 0.3) !important;
+}
+
+/* 3. Force Link Underlines */
+body.slos-fix-link-underlines a {
+    text-decoration: underline !important;
+}
+body.slos-fix-link-underlines a:hover,
+body.slos-fix-link-underlines a:focus {
+    text-decoration: none !important;
+}
+
+/* 19. Add Link Warnings */
+body.slos-fix-link-warnings a[target="_blank"]::after {
+    content: "\2197"; /* North East Arrow */
+    display: inline-block;
+    margin-left: 4px;
+    font-size: 0.8em;
+}
+body.slos-fix-link-warnings a[href$=".pdf"]::after {
+    content: " (PDF)";
+    font-size: 0.8em;
+}
+body.slos-fix-link-warnings a[href$=".doc"]::after,
+body.slos-fix-link-warnings a[href$=".docx"]::after {
+    content: " (DOC)";
+    font-size: 0.8em;
+}
+
+/* 1. Add Skip Links (Styling) */
+.slos-skip-link {
+    position: absolute;
+    top: -9999px;
+    left: 0;
+    background: #f1f1f1;
+    color: #2271b1;
+    padding: 15px 20px;
+    z-index: 999999;
+    text-decoration: none;
+    font-weight: bold;
+    border: 2px solid #2271b1;
+}
+.slos-skip-link:focus {
+    top: 0;
+}
+
+/* 18. Fix Color Contrast (Basic Enforcement) */
+body.slos-fix-color-contrast {
+    color: #222 !important;
+    background-color: #fff !important;
+}
+body.slos-fix-color-contrast p, 
+body.slos-fix-color-contrast li, 
+body.slos-fix-color-contrast h1, 
+body.slos-fix-color-contrast h2, 
+body.slos-fix-color-contrast h3, 
+body.slos-fix-color-contrast h4, 
+body.slos-fix-color-contrast h5, 
+body.slos-fix-color-contrast h6 {
+    color: #222 !important;
+}
+

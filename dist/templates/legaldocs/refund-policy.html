@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refund & Return Policy - {{company_legal_name}}</title>
+</head>
+<body>
+<article class="slos-legal-document slos-refund-policy">
+
+<header class="slos-doc-header">
+    <h1>Refund & Return Policy</h1>
+    <p class="slos-effective-date"><strong>Effective Date:</strong> {{today}}</p>
+    <p class="slos-last-updated"><strong>Last Updated:</strong> {{today}}</p>
+</header>
+
+<section id="overview">
+    <h2>1. Overview</h2>
+    <p>This Refund & Return Policy explains how <strong>{{company_legal_name}}</strong> handles refunds, returns, and exchanges for purchases made on <a href="{{site_url}}">{{site_url}}</a>. By placing an order, you agree to the terms outlined below.</p>
+</section>
+
+<section id="eligibility">
+    <h2>2. Eligibility for Refunds</h2>
+    <p>To be eligible for a refund, your item must be unused and in the same condition that you received it. Certain types of goods or services may be exempt from being returned or refunded based on their nature.</p>
+</section>
+
+<section id="process">
+    <h2>3. How to Request a Refund</h2>
+    <ol>
+        <li>Contact our support team at <a href="mailto:{{legal_contact_email}}">{{legal_contact_email}}</a>{{if contact_phone}} or {{contact_phone}}{{/if}} within the refund window.</li>
+        <li>Provide your order number, purchase date, and reason for the request.</li>
+        <li>We will confirm eligibility and provide instructions for next steps.</li>
+    </ol>
+</section>
+
+<section id="timeline">
+    <h2>4. Refund Timeline</h2>
+    <p>Once your request is approved, we will process your refund within 7–10 business days. Refunds will be issued to the original payment method unless otherwise agreed.</p>
+</section>
+
+<section id="returns">
+    <h2>5. Returns and Exchanges</h2>
+    <p>If your purchase includes physical goods, you may be responsible for return shipping costs unless the product arrived damaged or incorrect. Exchanges are subject to product availability.</p>
+</section>
+
+<section id="non-refundable">
+    <h2>6. Non-Refundable Items</h2>
+    <ul>
+        <li>Downloadable or digital products once accessed or delivered.</li>
+        <li>Services already rendered or substantially performed.</li>
+        <li>Items marked as final sale.</li>
+    </ul>
+</section>
+
+<section id="chargebacks">
+    <h2>7. Chargebacks</h2>
+    <p>We encourage you to contact us to resolve any issues before initiating a chargeback. Unauthorized chargebacks may result in suspension of services or account termination.</p>
+</section>
+
+<section id="contact">
+    <h2>8. Contact Us</h2>
+    <p>If you have questions about this policy, please reach out at <a href="mailto:{{legal_contact_email}}">{{legal_contact_email}}</a>{{if contact_phone}} or {{contact_phone}}{{/if}}.</p>
+</section>
+
+</article>
+</body>
+</html>

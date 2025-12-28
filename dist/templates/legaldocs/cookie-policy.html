@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie Policy - {{company_legal_name}}</title>
+</head>
+<body>
+<article class="slos-legal-document slos-cookie-policy">
+
+<header class="slos-doc-header">
+    <h1>Cookie Policy</h1>
+    <p class="slos-effective-date"><strong>Effective Date:</strong> {{today}}</p>
+    <p class="slos-last-updated"><strong>Last Updated:</strong> {{today}}</p>
+</header>
+
+<section id="introduction">
+    <h2>1. Introduction</h2>
+    <p>This Cookie Policy explains how <strong>{{company_legal_name}}</strong>{{if company_trading_name}} (trading as "{{company_trading_name}}"){{/if}} ("we," "us," or "our") uses cookies and similar technologies to recognize you when you visit our website at <a href="{{site_url}}">{{site_url}}</a>{{if app_name}} and use our {{app_name}} services{{/if}}. It explains what these technologies are and why we use them, as well as your rights to control our use of them.</p>
+    
+    <p>In some cases we may use cookies to collect personal information, or that becomes personal information if we combine it with other information. In such cases, our <a href="{{site_url}}/privacy-policy">Privacy Policy</a> will apply in addition to this Cookie Policy.</p>
+</section>
+
+<section id="what-are-cookies">
+    <h2>2. What Are Cookies?</h2>
+    <p>Cookies are small data files that are placed on your computer or mobile device when you visit a website. Cookies are widely used by website owners to make their websites work, or to work more efficiently, as well as to provide reporting information.</p>
+    
+    <p>Cookies set by the website owner (in this case, {{company_legal_name}}) are called "first-party cookies." Cookies set by parties other than the website owner are called "third-party cookies." Third-party cookies enable third-party features or functionality to be provided on or through the website (e.g., advertising, interactive content, and analytics). The parties that set these third-party cookies can recognize your computer both when it visits the website in question and also when it visits certain other websites.</p>
+    
+    <h3>Types of Cookies by Duration</h3>
+    <ul>
+        <li><strong>Session Cookies:</strong> These cookies are temporary and expire once you close your browser (or once your session ends).</li>
+        <li><strong>Persistent Cookies:</strong> These cookies remain on your device for a set period of time specified in the cookie. They are activated each time you visit the website that created that particular cookie.</li>
+    </ul>
+</section>
+
+<section id="why-we-use-cookies">
+    <h2>3. Why We Use Cookies</h2>
+    <p>We use first-party and third-party cookies for several reasons. Some cookies are required for technical reasons in order for our website to operate, and we refer to these as "essential" or "strictly necessary" cookies. Other cookies enable us to track and target the interests of our users to enhance the experience on our website. Third parties serve cookies through our website for advertising, analytics, and other purposes.</p>
+</section>
+
+<section id="cookie-categories">
+    <h2>4. Categories of Cookies We Use</h2>
+    
+    <h3>4.1 Essential (Strictly Necessary) Cookies</h3>
+    <p>These cookies are strictly necessary to provide you with services available through our website and to use some of its features, such as access to secure areas. Because these cookies are strictly necessary to deliver the website, you cannot refuse them without impacting how our website functions.</p>
+    
+    {{if essential_cookies}}
+    <table class="slos-cookie-table">
+        <thead>
+            <tr>
+                <th>Cookie Name</th>
+                <th>Provider</th>
+                <th>Purpose</th>
+                <th>Duration</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{foreach essential_cookies as cookie}}
+            <tr>
+                <td>{{cookie.name}}</td>
+                <td>{{cookie.provider|default:"First Party"}}</td>
+                <td>{{cookie.purpose}}</td>
+                <td>{{cookie.duration}}</td>
+            </tr>
+            {{/foreach}}
+        </tbody>
+    </table>
+    {{/if}}
+    
+    {{if has_functional_cookies}}
+    <h3>4.2 Functional Cookies</h3>
+    <p>These cookies enable the website to provide enhanced functionality and personalization. They may be set by us or by third-party providers whose services we have added to our pages. If you do not allow these cookies, some or all of these services may not function properly.</p>
+    
+    {{if functional_cookies}}
+    <table class="slos-cookie-table">
+        <thead>
+            <tr>
+                <th>Cookie Name</th>
+                <th>Provider</th>
+                <th>Purpose</th>
+                <th>Duration</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{foreach functional_cookies as cookie}}
+            <tr>
+                <td>{{cookie.name}}</td>
+                <td>{{cookie.provider|default:"First Party"}}</td>
+                <td>{{cookie.purpose}}</td>
+                <td>{{cookie.duration}}</td>
+            </tr>
+            {{/foreach}}
+        </tbody>
+    </table>
+    {{/if}}
+    {{/if}}
+    
+    {{if has_analytics_cookies}}
+    <h3>4.3 Analytics and Performance Cookies</h3>
+    <p>These cookies are used to collect information about traffic to our website and how users use our website. The information gathered may include the number of visitors to our website, the websites that referred them to our website, the pages they visited on our website, what time of day they visited our website, whether they have visited our website before, and other similar information.</p>
+    
+    <p>We use this information to help operate our website more efficiently, to gather broad demographic information, monitor the level of activity on our website, and improve our website.</p>
+    
+    {{if analytics_cookies}}
+    <table class="slos-cookie-table">
+        <thead>
+            <tr>
+                <th>Cookie Name</th>
+                <th>Provider</th>
+                <th>Purpose</th>
+                <th>Duration</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{foreach analytics_cookies as cookie}}
+            <tr>
+                <td>{{cookie.name}}</td>
+                <td>{{cookie.provider|default:"Third Party"}}</td>
+                <td>{{cookie.purpose}}</td>
+                <td>{{cookie.duration}}</td>
+            </tr>
+            {{/foreach}}
+        </tbody>
+    </table>
+    {{/if}}
+    {{/if}}
+    
+    {{if has_marketing_cookies}}
+    <h3>4.4 Marketing and Advertising Cookies</h3>
+    <p>These cookies are used to make advertising messages more relevant to you. They perform functions like preventing the same ad from continuously reappearing, ensuring that ads are properly displayed for advertisers, and in some cases selecting advertisements that are based on your interests.</p>
+    
+    {{if marketing_cookies}}
+    <table class="slos-cookie-table">
+        <thead>
+            <tr>
+                <th>Cookie Name</th>
+                <th>Provider</th>
+                <th>Purpose</th>
+                <th>Duration</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{foreach marketing_cookies as cookie}}
+            <tr>
+                <td>{{cookie.name}}</td>
+                <td>{{cookie.provider|default:"Third Party"}}</td>
+                <td>{{cookie.purpose}}</td>
+                <td>{{cookie.duration}}</td>
+            </tr>
+            {{/foreach}}
+        </tbody>
+    </table>
+    {{/if}}
+    {{/if}}
+</section>
+
+<section id="other-tracking">
+    <h2>5. Other Tracking Technologies</h2>
+    <p>In addition to cookies, we may use other similar technologies like web beacons (sometimes called "tracking pixels" or "clear gifs"). These are tiny graphics files that contain a unique identifier that enables us to recognize when someone has visited our website or opened an email including them.</p>
+    
+    <p>This allows us, for example, to monitor the traffic patterns of users from one page within a website to another, to deliver or communicate with cookies, to understand whether you have come to the website from an online advertisement displayed on a third-party website, to improve site performance, and to measure the success of email marketing campaigns.</p>
+    
+    <p>In many instances, these technologies are reliant on cookies to function properly, and so declining cookies may impair their functionality.</p>
+</section>
+
+<section id="flash-cookies">
+    <h2>6. Flash Cookies (LSOs)</h2>
+    <p>Our website may also use so-called "Flash Cookies" (also known as Local Shared Objects or "LSOs") to, among other things, collect and store information about your use of our services, fraud prevention, and for other site operations.</p>
+    
+    <p>If you do not want Flash Cookies stored on your computer, you can adjust the settings of your Flash player to block Flash Cookies storage using the tools contained in the <a href="http://www.macromedia.com/support/documentation/en/flashplayer/help/settings_manager07.html" target="_blank" rel="noopener noreferrer">Website Storage Settings Panel</a>. You can also control Flash Cookies by going to the <a href="http://www.macromedia.com/support/documentation/en/flashplayer/help/settings_manager03.html" target="_blank" rel="noopener noreferrer">Global Storage Settings Panel</a> and following the instructions.</p>
+    
+    <p>Please note that setting the Flash Player to restrict or limit acceptance of Flash Cookies may reduce or impede the functionality of some Flash applications.</p>
+</section>
+
+<section id="your-choices">
+    <h2>7. Your Cookie Choices</h2>
+    <p>You have the right to decide whether to accept or reject cookies. You can exercise your cookie preferences in the following ways:</p>
+    
+    <h3>7.1 Cookie Consent Banner</h3>
+    <p>When you first visit our website, you will be presented with a cookie consent banner that allows you to accept or decline non-essential cookies. You can change your preferences at any time by clicking on the "Cookie Settings" link typically found in our website footer.</p>
+    
+    <h3>7.2 Browser Controls</h3>
+    <p>You can set or amend your web browser controls to accept or refuse cookies. If you choose to reject cookies, you may still use our website though your access to some functionality and areas of our website may be restricted. As the means by which you can refuse cookies through your web browser controls vary from browser to browser, you should visit your browser's help menu for more information.</p>
+    
+    <h3>7.3 Opt-Out Links</h3>
+    <p>You can opt out of interest-based advertising through the following mechanisms:</p>
+    <ul>
+        <li><a href="http://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer">Digital Advertising Alliance</a></li>
+        <li><a href="http://www.networkadvertising.org/choices/" target="_blank" rel="noopener noreferrer">Network Advertising Initiative</a></li>
+        <li><a href="http://www.youronlinechoices.com" target="_blank" rel="noopener noreferrer">European Interactive Digital Advertising Alliance (EU users)</a></li>
+    </ul>
+    
+    <h3>7.4 Do Not Track</h3>
+    <p>Some browsers have a "Do Not Track" feature that lets you tell websites that you do not want to have your online activities tracked. These features are not yet uniform, and our website does not currently respond to "Do Not Track" signals.</p>
+</section>
+
+{{if gdpr_applies}}
+<section id="gdpr-epr">
+    <h2>8. GDPR and ePrivacy Regulation</h2>
+    <p>If you are located in the European Economic Area (EEA), you have certain rights under the General Data Protection Regulation (GDPR) and the ePrivacy Directive regarding cookies:</p>
+    
+    <ul>
+        <li><strong>Consent:</strong> For non-essential cookies, we will only place cookies on your device if you have given your consent. You can withdraw your consent at any time.</li>
+        <li><strong>Legitimate Interest:</strong> For some essential cookies, we may rely on our legitimate interests to ensure our website functions properly.</li>
+        <li><strong>Right to Withdraw:</strong> You can withdraw your consent at any time by adjusting your cookie preferences through our cookie banner or your browser settings.</li>
+        <li><strong>Data Subject Rights:</strong> You have the right to access, correct, delete, or transfer your personal data. For more information, please see our <a href="{{site_url}}/privacy-policy">Privacy Policy</a>.</li>
+    </ul>
+    
+    {{if supervisory_authority}}
+    <p>If you have concerns about our use of cookies, you can lodge a complaint with: {{supervisory_authority}}</p>
+    {{/if}}
+</section>
+{{/if}}
+
+{{if ccpa_applies}}
+<section id="ccpa">
+    <h2>9. California Privacy Rights (CCPA)</h2>
+    <p>If you are a California resident, you have the following rights under the California Consumer Privacy Act (CCPA):</p>
+    
+    <ul>
+        <li><strong>Right to Know:</strong> You have the right to request that we disclose what personal information we collect, use, disclose, and sell.</li>
+        <li><strong>Right to Delete:</strong> You have the right to request deletion of your personal information, subject to certain exceptions.</li>
+        <li><strong>Right to Opt-Out:</strong> You have the right to opt out of the "sale" of your personal information. While we do not sell your personal data in the traditional sense, some cookie-based advertising activities may be considered a "sale" under the CCPA.</li>
+        <li><strong>Right to Non-Discrimination:</strong> We will not discriminate against you for exercising any of your CCPA rights.</li>
+    </ul>
+    
+    <p>To exercise these rights, please contact us using the information provided at the end of this policy.</p>
+</section>
+{{/if}}
+
+<section id="updates">
+    <h2>10. Updates to This Cookie Policy</h2>
+    <p>We may update this Cookie Policy from time to time in order to reflect, for example, changes to the cookies we use or for other operational, legal, or regulatory reasons. Please therefore revisit this Cookie Policy regularly to stay informed about our use of cookies and related technologies.</p>
+    
+    <p>The date at the top of this Cookie Policy indicates when it was last updated.</p>
+</section>
+
+<section id="more-information">
+    <h2>11. More Information About Cookies</h2>
+    <p>If you would like to learn more about cookies, the following resources may be helpful:</p>
+    <ul>
+        <li><a href="https://www.allaboutcookies.org/" target="_blank" rel="noopener noreferrer">All About Cookies</a></li>
+        <li><a href="https://www.cookiesandyou.com/" target="_blank" rel="noopener noreferrer">Cookies & You</a></li>
+        <li><a href="https://ico.org.uk/for-the-public/online/cookies/" target="_blank" rel="noopener noreferrer">ICO Guidance on Cookies (UK)</a></li>
+        <li><a href="https://gdpr.eu/cookies/" target="_blank" rel="noopener noreferrer">EU Cookie Law</a></li>
+    </ul>
+</section>
+
+<section id="contact">
+    <h2>12. Contact Us</h2>
+    <p>If you have any questions about our use of cookies or other technologies, please contact us:</p>
+    <address class="slos-contact-info">
+        <strong>{{company_legal_name}}</strong><br>
+        {{company_address}}<br>
+        Email: <a href="mailto:{{legal_contact_email}}">{{legal_contact_email}}</a><br>
+        {{if contact_phone}}Phone: {{contact_phone}}<br>{{/if}}
+        {{if support_email}}Support: <a href="mailto:{{support_email}}">{{support_email}}</a>{{/if}}
+    </address>
+    
+    {{if dpo_email}}
+    <p>For privacy-related inquiries, you may also contact our Data Protection Officer at: <a href="mailto:{{dpo_email}}">{{dpo_email}}</a></p>
+    {{/if}}
+</section>
+
+</article>
+</body>
+</html>

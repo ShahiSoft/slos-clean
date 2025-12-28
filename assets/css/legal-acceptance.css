@@ -1,0 +1,594 @@
+/**
+ * Legal Acceptance Frontend Styles
+ *
+ * Styles for legal document acceptance banners and modals.
+ *
+ * @package    ShahiLegalFlowSuite
+ * @subpackage Assets
+ * @since      3.0.0
+ * @version    1.0.0
+ */
+
+/* ===============================================
+   Banner Styles
+   =============================================== */
+
+#slos-acceptance-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #2c3e50;
+    color: #fff;
+    padding: 20px;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+    transform: translateY(100%);
+    transition: transform 0.3s ease-in-out;
+    z-index: 999999;
+}
+
+#slos-acceptance-banner.slos-show {
+    transform: translateY(0);
+}
+
+.slos-acceptance-banner-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.slos-acceptance-banner-content {
+    flex: 1;
+}
+
+.slos-acceptance-banner-content h3 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.slos-acceptance-banner-content p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    opacity: 0.9;
+}
+
+.slos-acceptance-banner-actions {
+    display: flex;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.slos-acceptance-banner-actions .button {
+    margin: 0;
+    white-space: nowrap;
+}
+
+.slos-review-btn {
+    background: #3498db;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.slos-review-btn:hover,
+.slos-review-btn:focus {
+    background: #2980b9;
+    color: #fff;
+}
+
+.slos-dismiss-btn {
+    background: transparent;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.slos-dismiss-btn:hover,
+.slos-dismiss-btn:focus {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: #fff;
+}
+
+/* ===============================================
+   Modal Styles
+   =============================================== */
+
+#slos-acceptance-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000000;
+}
+
+.slos-acceptance-modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    -webkit-backdrop-filter: blur(2px); /* Safari support */
+    backdrop-filter: blur(2px);
+}
+
+.slos-acceptance-modal-dialog {
+    position: relative;
+    width: 90%;
+    max-width: 800px;
+    margin: 40px auto;
+    max-height: calc(100vh - 80px);
+    display: flex;
+    flex-direction: column;
+    background: var(--shahi-bg-card);
+    border-radius: 8px;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+}
+
+.slos-acceptance-modal-header {
+    padding: 24px 24px 20px;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.slos-acceptance-modal-header h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.slos-acceptance-modal-close {
+    background: transparent;
+    border: none;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 4px;
+    color: #666;
+    transition: all 0.2s;
+}
+
+.slos-acceptance-modal-close:hover {
+    background: var(--shahi-bg-secondary);
+    color: var(--shahi-text-primary);
+}
+
+.slos-acceptance-modal-close .dashicons {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+}
+
+.slos-acceptance-modal-body {
+    padding: 24px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+/* Custom scrollbar */
+.slos-acceptance-modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.slos-acceptance-modal-body::-webkit-scrollbar-track {
+    background: var(--shahi-bg-secondary);
+    border-radius: 4px;
+}
+
+.slos-acceptance-modal-body::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+
+.slos-acceptance-modal-body::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
+
+.slos-acceptance-modal-footer {
+    padding: 20px 24px;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.slos-acceptance-modal-loading {
+    display: none;
+    padding: 40px;
+    text-align: center;
+}
+
+.slos-acceptance-modal-loading .spinner {
+    visibility: visible;
+    float: none;
+    margin: 0 auto;
+}
+
+/* ===============================================
+   Document Cards
+   =============================================== */
+
+.slos-acceptance-documents {
+    display: grid;
+    gap: 16px;
+}
+
+.slos-acceptance-document {
+    background: var(--shahi-bg-secondary);
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 20px;
+    transition: all 0.2s;
+}
+
+.slos-acceptance-document:hover {
+    border-color: #3498db;
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.1);
+}
+
+.slos-acceptance-document-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.slos-acceptance-document-checkbox {
+    flex-shrink: 0;
+    margin-top: 4px;
+}
+
+.slos-acceptance-document-checkbox input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.slos-acceptance-document-info {
+    flex: 1;
+}
+
+.slos-acceptance-document-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0 0 8px 0;
+}
+
+.slos-acceptance-document-meta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.slos-acceptance-document-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #666;
+}
+
+.slos-acceptance-document-meta-item .dashicons {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+}
+
+.slos-acceptance-document-version {
+    background: #3498db;
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.slos-acceptance-document-excerpt {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #555;
+    margin: 0 0 12px 0;
+}
+
+.slos-acceptance-document-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.slos-view-document-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: transparent;
+    color: #3498db;
+    border: 1px solid #3498db;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.slos-view-document-btn:hover,
+.slos-view-document-btn:focus {
+    background: #3498db;
+    color: #fff;
+}
+
+.slos-view-document-btn .dashicons {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+}
+
+/* ===============================================
+   Buttons
+   =============================================== */
+
+.slos-accept-all-btn {
+    background: #27ae60;
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.slos-accept-all-btn:hover:not(:disabled) {
+    background: #229954;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+}
+
+.slos-accept-all-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.slos-cancel-btn {
+    background: transparent;
+    color: #666;
+    border: 1px solid #ddd;
+    padding: 12px 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.slos-cancel-btn:hover {
+    background: var(--shahi-bg-secondary);
+    border-color: #999;
+}
+
+/* ===============================================
+   Success Message
+   =============================================== */
+
+.slos-acceptance-success {
+    text-align: center;
+    padding: 60px 40px;
+}
+
+.slos-acceptance-success .dashicons {
+    width: 80px;
+    height: 80px;
+    font-size: 80px;
+    color: #27ae60;
+    margin-bottom: 20px;
+}
+
+.slos-acceptance-success h3 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #27ae60;
+}
+
+/* ===============================================
+   Body Lock (prevent scrolling when modal open)
+   =============================================== */
+
+body.slos-modal-open {
+    overflow: hidden;
+}
+
+/* ===============================================
+   Responsive Styles
+   =============================================== */
+
+@media screen and (max-width: 768px) {
+    .slos-acceptance-banner-inner {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .slos-acceptance-banner-actions {
+        justify-content: stretch;
+    }
+
+    .slos-acceptance-banner-actions .button {
+        flex: 1;
+    }
+
+    .slos-acceptance-modal-dialog {
+        width: 95%;
+        margin: 20px auto;
+        max-height: calc(100vh - 40px);
+    }
+
+    .slos-acceptance-modal-header {
+        padding: 16px;
+    }
+
+    .slos-acceptance-modal-header h2 {
+        font-size: 20px;
+    }
+
+    .slos-acceptance-modal-body {
+        padding: 16px;
+    }
+
+    .slos-acceptance-modal-footer {
+        padding: 16px;
+        flex-direction: column;
+    }
+
+    .slos-acceptance-modal-footer .button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .slos-acceptance-document {
+        padding: 16px;
+    }
+
+    .slos-acceptance-document-header {
+        gap: 12px;
+    }
+
+    .slos-acceptance-document-title {
+        font-size: 16px;
+    }
+
+    .slos-acceptance-document-meta {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    #slos-acceptance-banner {
+        padding: 16px;
+    }
+
+    .slos-acceptance-banner-content h3 {
+        font-size: 16px;
+    }
+
+    .slos-acceptance-banner-content p {
+        font-size: 13px;
+    }
+
+    .slos-acceptance-modal-dialog {
+        border-radius: 0;
+        width: 100%;
+        margin: 0;
+        max-height: 100vh;
+    }
+}
+
+/* ===============================================
+   Print Styles
+   =============================================== */
+
+@media print {
+    #slos-acceptance-banner,
+    #slos-acceptance-modal {
+        display: none !important;
+    }
+}
+
+/* ===============================================
+   Accessibility
+   =============================================== */
+
+/* Focus styles */
+.slos-review-btn:focus,
+.slos-dismiss-btn:focus,
+.slos-accept-all-btn:focus,
+.slos-cancel-btn:focus,
+.slos-view-document-btn:focus,
+.slos-acceptance-modal-close:focus {
+    outline: 2px solid #3498db;
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    #slos-acceptance-banner {
+        border-top: 3px solid #fff;
+    }
+
+    .slos-acceptance-document {
+        border-width: 2px;
+    }
+
+    .slos-review-btn,
+    .slos-accept-all-btn {
+        border: 2px solid currentColor;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    #slos-acceptance-banner,
+    .slos-acceptance-document,
+    .slos-review-btn,
+    .slos-dismiss-btn,
+    .slos-accept-all-btn,
+    .slos-cancel-btn,
+    .slos-view-document-btn {
+        transition: none;
+    }
+}
+
+/* Dark mode support (if theme supports) */
+@media (prefers-color-scheme: dark) {
+    .slos-acceptance-modal-dialog {
+        background: #1e1e1e;
+        color: #e0e0e0;
+    }
+
+    .slos-acceptance-modal-header,
+    .slos-acceptance-modal-footer {
+        border-color: #333;
+    }
+
+    .slos-acceptance-modal-header h2 {
+        color: #fff;
+    }
+
+    .slos-acceptance-document {
+        background: #2a2a2a;
+        border-color: #444;
+    }
+
+    .slos-acceptance-document-title {
+        color: #fff;
+    }
+
+    .slos-acceptance-document-meta-item,
+    .slos-acceptance-document-excerpt {
+        color: #b0b0b0;
+    }
+}

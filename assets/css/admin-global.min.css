@@ -1,0 +1,582 @@
+/**
+ * ShahiLegalFlowSuite - Admin Global Styles
+ * 
+ * Core styles loaded on all plugin admin pages.
+ * Implements dark futuristic theme with cyberpunk aesthetics.
+ *
+ * Component libraries (components.css, animations.css, utilities.css)
+ * are loaded separately via Assets.php for modular architecture.
+ *
+ * @package    ShahiLegalFlowSuite
+ * @version     3.0.1
+ */
+
+/* ============================================================================
+   CSS VARIABLES - DARK FUTURISTIC THEME
+   ========================================================================= */
+
+:root {
+    /* Background Colors */
+    --shahi-bg-primary: #1a1a1a;
+    --shahi-bg-secondary: #242424;
+    --shahi-bg-tertiary: #2e2e2e;
+    --shahi-bg-elevated: #383838;
+    
+    /* Accent Colors */
+    --shahi-accent-primary: #c0c0c0;
+    --shahi-accent-secondary: #696969;
+    --shahi-accent-tertiary: #a9a9a9;
+    --shahi-accent-success: #90ee90;
+    --shahi-accent-warning: #ffd700;
+    --shahi-accent-error: #ff6b6b;
+    
+    /* Gradients */
+    --shahi-gradient-primary: linear-gradient(135deg, #c0c0c0 0%, #696969 100%);
+    --shahi-gradient-secondary: linear-gradient(135deg, #696969 0%, #505050 100%);
+    --shahi-gradient-success: linear-gradient(135deg, #90ee90 0%, #7dda7d 100%);
+    
+    /* Text Colors */
+    --shahi-text-primary: #ffffff;
+    --shahi-text-secondary: #d3d3d3;
+    --shahi-text-muted: #909090;
+    --shahi-text-accent: #c0c0c0;
+    
+    /* Border & Lines */
+    --shahi-border-color: #383838;
+    --shahi-border-light: #484848;
+    --shahi-border-accent: #c0c0c0;
+    
+    /* Shadows */
+    --shahi-shadow-sm: 0 2px 8px rgba(96, 165, 250, 0.1);
+    --shahi-shadow-md: 0 4px 20px rgba(96, 165, 250, 0.15);
+    --shahi-shadow-lg: 0 8px 30px rgba(96, 165, 250, 0.2);
+    --shahi-shadow-glow: 0 0 20px rgba(96, 165, 250, 0.4);
+    
+    /* Typography */
+    --shahi-font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, sans-serif;
+    --shahi-font-mono: 'Courier New', Courier, monospace;
+    
+    /* Spacing */
+    --shahi-space-xs: 8px;
+    --shahi-space-sm: 16px;
+    --shahi-space-md: 24px;
+    --shahi-space-lg: 32px;
+    --shahi-space-xl: 48px;
+    
+    /* Border Radius */
+    --shahi-radius-sm: 4px;
+    --shahi-radius-md: 8px;
+    --shahi-radius-lg: 12px;
+    --shahi-radius-xl: 16px;
+    
+    /* Transitions */
+    --shahi-transition-fast: 150ms ease;
+    --shahi-transition-base: 250ms ease;
+    --shahi-transition-slow: 350ms ease;
+}
+
+/* ============================================================================
+   GLOBAL ADMIN STYLES
+   ========================================================================= */
+
+/* Wrap all plugin admin pages */
+.shahi-legalflowsuite-admin {
+    background: var(--shahi-bg-primary);
+    min-height: 100vh;
+    color: var(--shahi-text-primary);
+    font-family: var(--shahi-font-primary);
+    padding: var(--shahi-space-md);
+}
+
+/* ============================================================================
+   WORDPRESS ADMIN MENU HIGHLIGHTING
+   ========================================================================= */
+
+/* Highlight active submenu item */
+#adminmenu .wp-submenu li.current a,
+#adminmenu .wp-submenu li a.current {
+    color: var(--shahi-accent-primary, #60a5fa) !important;
+    font-weight: 600 !important;
+}
+
+/* Add indicator for current submenu */
+#adminmenu .wp-submenu li.current a::before,
+#adminmenu .wp-submenu li a.current::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 16px;
+    background: var(--shahi-accent-primary, #60a5fa);
+    border-radius: 0 2px 2px 0;
+}
+
+/* Hover effect for submenu items */
+#adminmenu .wp-submenu li a:hover {
+    color: var(--shahi-accent-primary, #60a5fa) !important;
+}
+
+/* Main container */
+.shahi-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ============================================================================
+   TYPOGRAPHY
+   ========================================================================= */
+
+.shahi-legalflowsuite-admin h1,
+.shahi-legalflowsuite-admin h2,
+.shahi-legalflowsuite-admin h3,
+.shahi-legalflowsuite-admin h4,
+.shahi-legalflowsuite-admin h5,
+.shahi-legalflowsuite-admin h6 {
+    color: var(--shahi-text-primary);
+    font-weight: 600;
+    line-height: 1.3;
+    margin: 0 0 var(--shahi-space-sm);
+}
+
+.shahi-legalflowsuite-admin h1 {
+    font-size: 32px;
+    background: var(--shahi-gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.shahi-legalflowsuite-admin h2 {
+    font-size: 24px;
+}
+
+.shahi-legalflowsuite-admin h3 {
+    font-size: 20px;
+}
+
+.shahi-legalflowsuite-admin p {
+    color: var(--shahi-text-secondary);
+    line-height: 1.6;
+    margin: 0 0 var(--shahi-space-sm);
+}
+
+.shahi-text-muted {
+    color: var(--shahi-text-muted);
+}
+
+.shahi-text-accent {
+    color: var(--shahi-text-accent);
+}
+
+/* ============================================================================
+   CARDS & PANELS
+   ========================================================================= */
+
+.shahi-card {
+    background: var(--shahi-bg-secondary);
+    border: 1px solid var(--shahi-border-color);
+    border-radius: var(--shahi-radius-lg);
+    padding: var(--shahi-space-md);
+    box-shadow: var(--shahi-shadow-sm);
+    transition: all var(--shahi-transition-base);
+}
+
+.shahi-card:hover {
+    border-color: var(--shahi-border-accent);
+    box-shadow: var(--shahi-shadow-md);
+    transform: translateY(-2px);
+}
+
+.shahi-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--shahi-space-md);
+    padding-bottom: var(--shahi-space-sm);
+    border-bottom: 1px solid var(--shahi-border-color);
+}
+
+.shahi-card-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--shahi-text-primary);
+    margin: 0;
+}
+
+.shahi-card-body {
+    color: var(--shahi-text-secondary);
+}
+
+.shahi-card-footer {
+    margin-top: var(--shahi-space-md);
+    padding-top: var(--shahi-space-sm);
+    border-top: 1px solid var(--shahi-border-color);
+}
+
+/* ============================================================================
+   BUTTONS
+   ========================================================================= */
+
+.shahi-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.5;
+    border-radius: var(--shahi-radius-md);
+    border: none;
+    cursor: pointer;
+    transition: all var(--shahi-transition-fast);
+    text-decoration: none;
+    gap: 8px;
+}
+
+.shahi-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3);
+}
+
+/* Primary Button */
+.shahi-btn-primary {
+    background: var(--shahi-gradient-primary);
+    color: var(--shahi-text-primary);
+    box-shadow: var(--shahi-shadow-sm);
+}
+
+.shahi-btn-primary:hover {
+    box-shadow: var(--shahi-shadow-glow);
+    transform: translateY(-1px);
+}
+
+/* Secondary Button */
+.shahi-btn-secondary {
+    background: var(--shahi-bg-tertiary);
+    color: var(--shahi-text-primary);
+    border: 1px solid var(--shahi-border-color);
+}
+
+.shahi-btn-secondary:hover {
+    border-color: var(--shahi-accent-primary);
+    background: var(--shahi-bg-elevated);
+}
+
+/* Success Button */
+.shahi-btn-success {
+    background: var(--shahi-gradient-success);
+    color: var(--shahi-text-primary);
+}
+
+/* Danger Button */
+.shahi-btn-danger {
+    background: var(--shahi-accent-error);
+    color: var(--shahi-text-primary);
+}
+
+.shahi-btn-danger:hover {
+    background: #dc2626;
+}
+
+/* Small Button */
+.shahi-btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+/* Large Button */
+.shahi-btn-lg {
+    padding: 14px 28px;
+    font-size: 16px;
+}
+
+/* ============================================================================
+   FORMS & INPUTS
+   ========================================================================= */
+
+.shahi-form-group {
+    margin-bottom: var(--shahi-space-md);
+}
+
+.shahi-label {
+    display: block;
+    margin-bottom: var(--shahi-space-xs);
+    color: var(--shahi-text-primary);
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.shahi-input,
+.shahi-textarea,
+.shahi-select {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--shahi-bg-tertiary);
+    border: 1px solid var(--shahi-border-color);
+    border-radius: var(--shahi-radius-md);
+    color: var(--shahi-text-primary);
+    font-size: 14px;
+    transition: all var(--shahi-transition-fast);
+}
+
+.shahi-input:focus,
+.shahi-textarea:focus,
+.shahi-select:focus {
+    outline: none;
+    border-color: var(--shahi-accent-primary);
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+}
+
+.shahi-textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.shahi-input::placeholder {
+    color: var(--shahi-text-muted);
+}
+
+/* ============================================================================
+   TABLES
+   ========================================================================= */
+
+.shahi-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--shahi-bg-secondary);
+    border-radius: var(--shahi-radius-lg);
+    overflow: hidden;
+}
+
+.shahi-table thead {
+    background: var(--shahi-bg-tertiary);
+}
+
+.shahi-table th {
+    padding: 14px 16px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--shahi-text-primary);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--shahi-border-color);
+}
+
+.shahi-table td {
+    padding: 14px 16px;
+    color: var(--shahi-text-secondary);
+    border-bottom: 1px solid var(--shahi-border-color);
+}
+
+.shahi-table tbody tr:hover {
+    background: var(--shahi-bg-tertiary);
+}
+
+.shahi-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ============================================================================
+   BADGES & LABELS
+   ========================================================================= */
+
+.shahi-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.shahi-badge-primary {
+    background: rgba(96, 165, 250, 0.2);
+    color: var(--shahi-accent-primary);
+}
+
+.shahi-badge-success {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--shahi-accent-success);
+}
+
+.shahi-badge-warning {
+    background: rgba(245, 158, 11, 0.2);
+    color: var(--shahi-accent-warning);
+}
+
+.shahi-badge-error {
+    background: rgba(239, 68, 68, 0.2);
+    color: var(--shahi-accent-error);
+}
+
+/* ============================================================================
+   ALERTS & NOTICES
+   ========================================================================= */
+
+.shahi-alert {
+    padding: var(--shahi-space-md);
+    border-radius: var(--shahi-radius-md);
+    margin-bottom: var(--shahi-space-md);
+    border-left: 4px solid;
+}
+
+.shahi-alert-success {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: var(--shahi-accent-success);
+    color: var(--shahi-accent-success);
+}
+
+.shahi-alert-warning {
+    background: rgba(245, 158, 11, 0.1);
+    border-color: var(--shahi-accent-warning);
+    color: var(--shahi-accent-warning);
+}
+
+.shahi-alert-error {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: var(--shahi-accent-error);
+    color: var(--shahi-accent-error);
+}
+
+.shahi-alert-info {
+    background: rgba(96, 165, 250, 0.1);
+    border-color: var(--shahi-accent-primary);
+    color: var(--shahi-accent-primary);
+}
+
+/* ============================================================================
+   LOADING & SPINNERS
+   ========================================================================= */
+
+.shahi-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(96, 165, 250, 0.2);
+    border-top-color: var(--shahi-accent-primary);
+    border-radius: 50%;
+    animation: shahi-spin 0.6s linear infinite;
+}
+
+@keyframes shahi-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.shahi-loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(10, 14, 39, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.shahi-loading-overlay .shahi-spinner {
+    width: 60px;
+    height: 60px;
+    border-width: 4px;
+}
+
+/* ============================================================================
+   UTILITIES
+   ========================================================================= */
+
+/* Spacing */
+.shahi-mt-sm { margin-top: var(--shahi-space-sm); }
+.shahi-mt-md { margin-top: var(--shahi-space-md); }
+.shahi-mt-lg { margin-top: var(--shahi-space-lg); }
+.shahi-mb-sm { margin-bottom: var(--shahi-space-sm); }
+.shahi-mb-md { margin-bottom: var(--shahi-space-md); }
+.shahi-mb-lg { margin-bottom: var(--shahi-space-lg); }
+.shahi-p-sm { padding: var(--shahi-space-sm); }
+.shahi-p-md { padding: var(--shahi-space-md); }
+.shahi-p-lg { padding: var(--shahi-space-lg); }
+
+/* Display */
+.shahi-flex { display: flex; }
+.shahi-inline-flex { display: inline-flex; }
+.shahi-grid { display: grid; }
+.shahi-hidden { display: none; }
+
+/* Flex utilities */
+.shahi-items-center { align-items: center; }
+.shahi-justify-between { justify-content: space-between; }
+.shahi-justify-center { justify-content: center; }
+.shahi-gap-sm { gap: var(--shahi-space-sm); }
+.shahi-gap-md { gap: var(--shahi-space-md); }
+
+/* Text alignment */
+.shahi-text-left { text-align: left; }
+.shahi-text-center { text-align: center; }
+.shahi-text-right { text-align: right; }
+
+/* Grid layouts */
+.shahi-grid-2 { grid-template-columns: repeat(2, 1fr); }
+.shahi-grid-3 { grid-template-columns: repeat(3, 1fr); }
+.shahi-grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+/* ============================================================================
+   RESPONSIVE
+   ========================================================================= */
+
+@media (max-width: 1024px) {
+    .shahi-grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .shahi-legalflowsuite-admin {
+        padding: var(--shahi-space-sm);
+    }
+    
+    .shahi-grid-2,
+    .shahi-grid-3,
+    .shahi-grid-4 {
+        grid-template-columns: 1fr;
+    }
+    
+    .shahi-card {
+        padding: var(--shahi-space-sm);
+    }
+    
+    .shahi-legalflowsuite-admin h1 {
+        font-size: 24px;
+    }
+}
+
+/* ============================================================================
+   ACCESSIBILITY
+   ========================================================================= */
+
+.shahi-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Focus visible for keyboard navigation */
+.shahi-btn:focus-visible,
+.shahi-input:focus-visible,
+.shahi-textarea:focus-visible,
+.shahi-select:focus-visible {
+    outline: 2px solid var(--shahi-accent-primary);
+    outline-offset: 2px;
+}
+

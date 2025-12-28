@@ -1,0 +1,1860 @@
+/**
+ * Document Generate Styles
+ *
+ * Styles for the Generate Documents tab interface.
+ * Follows V3 dark theme with modern card-based layout.
+ *
+ * @package    ShahiLegalFlowSuite
+ * @subpackage Assets
+ * @since      4.2.0
+ */
+
+/* ==========================================================================
+   Layout & Container
+   ========================================================================== */
+
+.slos-gen-container {
+	padding: 20px;
+	background: var(--shahi-bg-primary, #0f172a);
+	min-height: calc(100vh - 150px);
+}
+
+.slos-gen-layout {
+	display: grid;
+	grid-template-columns: 1fr 320px;
+	gap: 24px;
+	margin-top: 24px;
+}
+
+.slos-gen-main {
+	min-width: 0;
+}
+
+.slos-gen-sidebar {
+	position: sticky;
+	top: 100px;
+	align-self: start;
+	max-height: calc(100vh - 120px);
+	overflow-y: auto;
+}
+
+/* ==========================================================================
+   Stats Bar
+   ========================================================================== */
+
+.slos-gen-stats-bar {
+	display: flex;
+	gap: 16px;
+	padding: 20px;
+	background: var(--shahi-bg-card, #1e293b);
+	border-radius: 8px;
+	border: 1px solid #333;
+}
+
+.slos-gen-stat {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex: 1;
+	padding: 12px;
+	background: var(--shahi-bg-card, #1e293b);
+	border-radius: 6px;
+	transition: all 0.2s ease;
+}
+
+.slos-gen-stat:hover {
+	background: var(--shahi-bg-tertiary, #334155);
+	transform: translateY(-2px);
+}
+
+.slos-gen-stat__icon {
+	font-size: 32px;
+	line-height: 1;
+}
+
+.slos-gen-stat__value {
+	font-size: 24px;
+	font-weight: 700;
+	color: #4a9eff;
+	line-height: 1.2;
+}
+
+.slos-gen-stat__label {
+	font-size: 12px;
+	color: #999;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+/* ==========================================================================
+   Sections
+   ========================================================================== */
+
+.slos-gen-section {
+	margin-bottom: 32px;
+}
+
+.slos-gen-section-header {
+	margin-bottom: 20px;
+}
+
+.slos-gen-section-header h2 {
+	font-size: 20px;
+	font-weight: 600;
+	color: #fff;
+	margin: 0 0 8px;
+}
+
+.slos-gen-section-desc {
+	font-size: 14px;
+	color: #999;
+	margin: 0;
+}
+
+.slos-gen-section-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 4px 12px;
+	font-size: 11px;
+	font-weight: 600;
+	border-radius: 12px;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	vertical-align: middle;
+}
+
+.slos-gen-section-badge--premium {
+	background: var(--shahi-accent-primary, #3b82f6);
+	color: #fff;
+}
+
+/* ==========================================================================
+   Premium CTA
+   ========================================================================== */
+
+.slos-gen-premium-cta {
+	margin-top: 24px;
+	padding: 32px;
+	background: linear-gradient(135deg, #242424 0%, rgba(139, 92, 246, 0.15) 100%);
+	border: 2px solid #8b5cf6;
+	border-radius: 12px;
+	text-align: center;
+}
+
+.slos-gen-premium-cta__content h3 {
+	font-size: 24px;
+	font-weight: 700;
+	color: #fff;
+	margin: 0 0 12px;
+}
+
+.slos-gen-premium-cta__content p {
+	font-size: 15px;
+	color: #ccc;
+	margin: 0 0 24px;
+	max-width: 600px;
+	margin-left: auto;
+	margin-right: auto;
+	line-height: 1.6;
+}
+
+.slos-gen-premium-cta .button-hero {
+	font-size: 16px;
+	padding: 12px 32px;
+	height: auto;
+}
+
+/* ==========================================================================
+   Document Cards
+   ========================================================================== */
+
+.slos-gen-cards {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+	gap: 20px;
+}
+
+.slos-gen-card {
+	background: var(--shahi-bg-card, #1e293b);
+	border: 2px solid #333;
+	border-radius: 8px;
+	padding: 20px;
+	transition: all 0.3s ease;
+	position: relative;
+	overflow: hidden;
+}
+
+.slos-gen-card:hover {
+	border-color: #4a9eff;
+	box-shadow: 0 4px 12px rgba(74, 158, 255, 0.2);
+	transform: translateY(-2px);
+}
+
+/* Card States */
+.slos-gen-card--not_created {
+	border-color: #555;
+}
+
+.slos-gen-card--draft {
+	border-color: #ffa500;
+}
+
+.slos-gen-card--published {
+	border-color: #00a86b;
+}
+
+.slos-gen-card--outdated {
+	border-color: #ff4444;
+}
+
+.slos-gen-card--outdated::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 0;
+	height: 0;
+	border-style: solid;
+	border-width: 0 40px 40px 0;
+	border-color: transparent #ff4444 transparent transparent;
+}
+
+.slos-gen-card--required::after {
+	content: '★';
+	position: absolute;
+	top: 12px;
+	right: 12px;
+	color: #ffa500;
+	font-size: 18px;
+}
+
+/* Premium/Locked Cards */
+.slos-gen-card--premium,
+.slos-gen-card--locked {
+	position: relative;
+}
+
+.slos-gen-card--locked .slos-gen-card__body,
+.slos-gen-card--locked .slos-gen-card__meta,
+.slos-gen-card--locked .slos-gen-card__description {
+	filter: blur(4px);
+	pointer-events: none;
+	-webkit-user-select: none;
+	user-select: none;
+}
+
+.slos-gen-card__premium-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(26, 26, 26, 0.92);
+	-webkit-backdrop-filter: blur(8px);
+	backdrop-filter: blur(8px);
+	border-radius: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 10;
+}
+
+.slos-gen-card__premium-content {
+	text-align: center;
+	padding: 24px;
+	max-width: 80%;
+}
+
+.slos-gen-card__premium-icon {
+	font-size: 48px;
+	display: block;
+	margin-bottom: 12px;
+	opacity: 0.9;
+}
+
+.slos-gen-card__premium-title {
+	font-size: 16px;
+	font-weight: 600;
+	color: #fff;
+	margin: 0 0 8px;
+}
+
+.slos-gen-card__premium-desc {
+	font-size: 13px;
+	color: #999;
+	margin: 0 0 16px;
+	line-height: 1.5;
+}
+
+.slos-gen-btn-upgrade {
+	background: var(--shahi-accent-primary, #3b82f6);
+	border-color: #8b5cf6;
+	color: #fff;
+	font-weight: 600;
+	padding: 8px 16px;
+	border-radius: 6px;
+	text-decoration: none;
+	display: inline-block;
+	transition: all 0.2s ease;
+}
+
+.slos-gen-btn-upgrade:hover {
+	background: var(--shahi-accent-secondary, #93c5fd);
+	border-color: var(--shahi-accent-secondary, #93c5fd);
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.slos-gen-btn-upgrade-action:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+/* Card Header */
+.slos-gen-card__header {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 16px;
+}
+
+.slos-gen-card__icon {
+	font-size: 32px;
+	line-height: 1;
+}
+
+.slos-gen-card__title {
+	flex: 1;
+	font-size: 16px;
+	font-weight: 600;
+	color: #fff;
+	margin: 0;
+}
+
+.slos-gen-card__badge {
+	padding: 4px 8px;
+	border-radius: 4px;
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.slos-gen-card__badge--required {
+	background: var(--shahi-bg-secondary);
+	color: var(--shahi-text-primary);
+}
+
+/* Card Body */
+.slos-gen-card__body {
+	margin-bottom: 16px;
+}
+
+.slos-gen-card__description {
+	font-size: 13px;
+	color: #ccc;
+	line-height: 1.6;
+	margin: 0 0 16px;
+}
+
+.slos-gen-card__status {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+	margin-bottom: 12px;
+}
+
+.slos-gen-status {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 10px;
+	border-radius: 4px;
+	font-size: 12px;
+	font-weight: 500;
+}
+
+.slos-gen-status__icon {
+	font-size: 14px;
+	line-height: 1;
+}
+
+.slos-gen-status--not-created {
+	background: var(--shahi-bg-tertiary, #334155);
+	color: #999;
+}
+
+.slos-gen-status--draft {
+	background: rgba(255, 165, 0, 0.2);
+	color: #ffa500;
+	border: 1px solid #ffa500;
+}
+
+.slos-gen-status--published {
+	background: rgba(0, 168, 107, 0.2);
+	color: #00a86b;
+	border: 1px solid #00a86b;
+}
+
+.slos-gen-status--outdated {
+	background: rgba(255, 68, 68, 0.2);
+	color: #ff4444;
+	border: 1px solid #ff4444;
+}
+
+/* Card Meta */
+.slos-gen-card__meta {
+	display: flex;
+	gap: 16px;
+	padding: 12px;
+	background: var(--shahi-bg-primary, #0f172a);
+	border-radius: 4px;
+	margin-bottom: 12px;
+}
+
+.slos-gen-card__meta-item {
+	display: flex;
+	gap: 6px;
+	font-size: 12px;
+}
+
+.slos-gen-card__meta-label {
+	color: #999;
+}
+
+.slos-gen-card__meta-value {
+	color: #fff;
+	font-weight: 500;
+}
+
+/* Shortcode Display */
+.slos-gen-card__shortcode {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px;
+	background: var(--shahi-bg-primary, #0f172a);
+	border: 1px solid #333;
+	border-radius: 4px;
+	margin-bottom: 12px;
+}
+
+.slos-gen-shortcode {
+	flex: 1;
+	font-family: 'Courier New', monospace;
+	font-size: 12px;
+	color: #4a9eff;
+	background: transparent;
+	padding: 0;
+	margin: 0;
+}
+
+.slos-gen-copy-shortcode {
+	min-width: auto;
+	padding: 4px 8px;
+	background: var(--shahi-bg-tertiary, #334155);
+	border: 1px solid #444;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.slos-gen-copy-shortcode:hover {
+	background: var(--shahi-accent-primary, #3b82f6);
+	border-color: #4a9eff;
+}
+
+/* Card Actions */
+.slos-gen-card__actions {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+
+.slos-gen-card__actions .button {
+	flex: 1;
+	min-width: 100px;
+	text-align: center;
+	justify-content: center;
+}
+
+/* ==========================================================================
+   Alerts
+   ========================================================================== */
+
+.slos-gen-alert {
+	display: flex;
+	gap: 16px;
+	padding: 16px;
+	border-radius: 8px;
+	margin-bottom: 24px;
+}
+
+.slos-gen-alert__icon {
+	font-size: 24px;
+	line-height: 1;
+}
+
+.slos-gen-alert__content h3,
+.slos-gen-alert__content h4 {
+	margin: 0 0 8px;
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.slos-gen-alert__content p {
+	margin: 0 0 12px;
+	font-size: 14px;
+	line-height: 1.6;
+}
+
+.slos-gen-alert__content p:last-child {
+	margin-bottom: 0;
+}
+
+.slos-gen-alert--warning {
+	background: rgba(255, 165, 0, 0.15);
+	border: 1px solid #ffa500;
+}
+
+.slos-gen-alert--warning .slos-gen-alert__content h3 {
+	color: #ffa500;
+}
+
+.slos-gen-alert--error {
+	background: rgba(255, 68, 68, 0.15);
+	border: 1px solid #ff4444;
+}
+
+.slos-gen-alert--error .slos-gen-alert__content h4 {
+	color: #ff4444;
+}
+
+.slos-gen-alert--info {
+	background: rgba(74, 158, 255, 0.15);
+	border: 1px solid #4a9eff;
+}
+
+.slos-gen-alert--info .slos-gen-alert__content h4 {
+	color: #4a9eff;
+}
+
+/* ==========================================================================
+   Sidebar Panel
+   ========================================================================== */
+
+.slos-gen-panel {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.slos-gen-widget {
+	background: var(--shahi-bg-card, #1e293b);
+	border: 1px solid #333;
+	border-radius: 8px;
+	overflow: hidden;
+}
+
+.slos-gen-widget__title {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 16px;
+	margin: 0;
+	font-size: 14px;
+	font-weight: 600;
+	color: #fff;
+	background: var(--shahi-bg-card, #1e293b);
+	border-bottom: 1px solid #333;
+}
+
+.slos-gen-widget__icon {
+	font-size: 18px;
+	line-height: 1;
+}
+
+.slos-gen-widget__content {
+	padding: 16px;
+}
+
+.slos-gen-widget--attention {
+	border-color: #ffa500;
+}
+
+.slos-gen-widget--attention .slos-gen-widget__title {
+	background: rgba(255, 165, 0, 0.15);
+	color: #ffa500;
+}
+
+.slos-gen-widget--help {
+	border-color: #4a9eff;
+}
+
+.slos-gen-widget--help .slos-gen-widget__title {
+	background: rgba(74, 158, 255, 0.15);
+	color: #4a9eff;
+}
+
+/* Action Links */
+.slos-gen-action-link {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 12px;
+	margin-bottom: 8px;
+	background: var(--shahi-bg-primary, #0f172a);
+	border: 1px solid #333;
+	border-radius: 6px;
+	color: #fff;
+	text-decoration: none;
+	transition: all 0.2s ease;
+	cursor: pointer;
+	width: 100%;
+	text-align: left;
+}
+
+.slos-gen-action-link:last-child {
+	margin-bottom: 0;
+}
+
+.slos-gen-action-link:hover:not(:disabled) {
+	background: var(--shahi-bg-card, #1e293b);
+	border-color: #4a9eff;
+	color: #4a9eff;
+	transform: translateX(4px);
+}
+
+.slos-gen-action-link:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+.slos-gen-action-link__icon {
+	font-size: 18px;
+	line-height: 1;
+}
+
+.slos-gen-action-link__text {
+	flex: 1;
+	font-size: 13px;
+	font-weight: 500;
+}
+
+/* Resource Links */
+.slos-gen-resource-link {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 10px;
+	margin-bottom: 8px;
+	color: #ccc;
+	text-decoration: none;
+	border-radius: 4px;
+	transition: all 0.2s ease;
+}
+
+.slos-gen-resource-link:last-child {
+	margin-bottom: 0;
+}
+
+.slos-gen-resource-link:hover {
+	background: var(--shahi-bg-primary, #0f172a);
+	color: #4a9eff;
+}
+
+.slos-gen-resource-link__icon {
+	font-size: 16px;
+	line-height: 1;
+}
+
+.slos-gen-resource-link__text {
+	flex: 1;
+	font-size: 13px;
+}
+
+.slos-gen-resource-link__external {
+	font-size: 14px;
+	color: #999;
+}
+
+/* Attention Items */
+.slos-gen-attention-item {
+	padding: 12px;
+	background: var(--shahi-bg-primary, #0f172a);
+	border-radius: 4px;
+	margin-bottom: 12px;
+}
+
+.slos-gen-attention-item:last-child {
+	margin-bottom: 0;
+}
+
+.slos-gen-attention-item strong {
+	display: block;
+	margin-bottom: 6px;
+	color: #ffa500;
+	font-size: 13px;
+}
+
+.slos-gen-attention-item p {
+	margin: 0 0 10px;
+	font-size: 12px;
+	color: #ccc;
+	line-height: 1.5;
+}
+
+/* Activity Feed */
+.slos-gen-activity-feed {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.slos-gen-activity-item {
+	display: flex;
+	gap: 12px;
+	padding: 12px;
+	background: var(--shahi-bg-primary, #0f172a);
+	border: 1px solid #333;
+	border-radius: 6px;
+	transition: all 0.2s ease;
+}
+
+.slos-gen-activity-item:hover {
+	background: var(--shahi-bg-primary, #0f172a);
+	border-color: #444;
+}
+
+.slos-gen-activity-item__icon {
+	font-size: 18px;
+	line-height: 1;
+	flex-shrink: 0;
+	margin-top: 2px;
+}
+
+.slos-gen-activity-item__content {
+	flex: 1;
+	min-width: 0;
+}
+
+.slos-gen-activity-item__title {
+	display: block;
+	font-size: 13px;
+	font-weight: 500;
+	color: #fff;
+	margin-bottom: 4px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.slos-gen-activity-item__meta {
+	display: flex;
+	gap: 8px;
+	font-size: 11px;
+	color: #999;
+}
+
+.slos-gen-activity-item__status {
+	font-weight: 500;
+}
+
+.slos-gen-activity-empty {
+	padding: 20px;
+	text-align: center;
+}
+
+.slos-gen-activity-empty p {
+	margin: 0;
+	color: #999;
+	font-size: 13px;
+	font-style: italic;
+}
+
+/* ==========================================================================
+   Modal
+   ========================================================================== */
+
+.slos-gen-modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 100000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.slos-gen-modal__backdrop {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.8);
+	-webkit-backdrop-filter: blur(4px);
+	backdrop-filter: blur(4px);
+}
+
+.slos-gen-modal__container {
+	position: relative;
+	width: 90%;
+	max-width: 800px;
+	max-height: 85vh;
+	background: var(--shahi-bg-primary, #0f172a);
+	border: 1px solid #333;
+	border-radius: 12px;
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+	display: flex;
+	flex-direction: column;
+}
+
+.slos-gen-modal__container--wide {
+	max-width: 1200px;
+}
+
+.slos-gen-modal__content {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+/* Modal Header */
+.slos-gen-modal__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 24px;
+	border-bottom: 1px solid #333;
+}
+
+.slos-gen-modal__title {
+	margin: 0;
+	font-size: 20px;
+	font-weight: 600;
+	color: #fff;
+}
+
+.slos-gen-modal__close {
+	padding: 8px;
+	background: transparent;
+	border: none;
+	color: #999;
+	cursor: pointer;
+	border-radius: 4px;
+	transition: all 0.2s ease;
+}
+
+.slos-gen-modal__close:hover {
+	background: var(--shahi-bg-tertiary, #334155);
+	color: #fff;
+}
+
+.slos-gen-modal__close .dashicons {
+	width: 24px;
+	height: 24px;
+	font-size: 24px;
+}
+
+/* Modal Body */
+.slos-gen-modal__body {
+	flex: 1;
+	overflow-y: auto;
+	padding: 24px;
+}
+
+/* ========================================
+   HISTORY TIMELINE
+   ======================================== */
+
+.slos-gen-history-timeline {
+	position: relative;
+	padding-left: 32px;
+	margin-top: 16px;
+}
+
+.slos-gen-timeline-item {
+	position: relative;
+	padding: 0 0 24px 24px;
+	border-left: 2px solid #333;
+	margin-bottom: 8px;
+}
+
+.slos-gen-timeline-item:last-child {
+	border-left-color: transparent;
+	padding-bottom: 0;
+}
+
+.slos-gen-timeline-item::before {
+	content: '';
+	position: absolute;
+	left: -8px;
+	top: 4px;
+	width: 12px;
+	height: 12px;
+	background: var(--shahi-accent-primary, #3b82f6);
+	border: 2px solid #0f172a;
+	border-radius: 50%;
+	z-index: 2;
+}
+
+.slos-gen-timeline-item--current::before {
+	background: var(--shahi-success, #22c55e);
+	box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
+}
+
+.slos-gen-timeline-item__header {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 8px;
+}
+
+.slos-gen-timeline-item__version {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 4px 10px;
+	background: var(--shahi-bg-card, #1e293b);
+	border: 1px solid #333;
+	border-radius: 4px;
+	font-size: 12px;
+	font-weight: 600;
+	color: #8b5cf6;
+}
+
+.slos-gen-timeline-item__version--current {
+	background: rgba(16, 185, 129, 0.1);
+	border-color: #10b981;
+	color: #10b981;
+}
+
+.slos-gen-timeline-item__meta {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	font-size: 12px;
+	color: #888;
+	margin-bottom: 8px;
+}
+
+.slos-gen-timeline-item__meta-item {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.slos-gen-timeline-item__actions {
+	display: flex;
+	gap: 8px;
+	margin-top: 12px;
+}
+
+.slos-gen-timeline-item__btn {
+	padding: 6px 12px;
+	background: var(--shahi-bg-card, #1e293b);
+	border: 1px solid #333;
+	border-radius: 4px;
+	font-size: 12px;
+	color: #fff;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.slos-gen-timeline-item__btn:hover {
+	background: var(--shahi-bg-card, #1e293b);
+	border-color: #444;
+}
+
+.slos-gen-timeline-item__btn--primary {
+	background: var(--shahi-accent-primary, #3b82f6);
+	border-color: #8b5cf6;
+}
+
+.slos-gen-timeline-item__btn--primary:hover {
+	background: var(--shahi-accent-secondary, #93c5fd);
+	border-color: var(--shahi-accent-secondary, #93c5fd);
+}
+
+/* ========================================
+   VERSION COMPARISON VIEW
+   ======================================== */
+
+.slos-gen-comparison-view {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 16px;
+	margin-top: 16px;
+}
+
+.slos-gen-comparison-panel {
+	background: var(--shahi-bg-primary, #0f172a);
+	border: 1px solid #333;
+	border-radius: 8px;
+	padding: 16px;
+}
+
+.slos-gen-comparison-panel__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 12px;
+	padding-bottom: 12px;
+	border-bottom: 1px solid #333;
+}
+
+.slos-gen-comparison-panel__title {
+	font-size: 14px;
+	font-weight: 600;
+	color: #fff;
+}
+
+.slos-gen-comparison-panel__version {
+	padding: 3px 8px;
+	background: var(--shahi-bg-card, #1e293b);
+	border: 1px solid #333;
+	border-radius: 4px;
+	font-size: 11px;
+	color: #888;
+}
+
+.slos-gen-comparison-panel__content {
+	font-size: 13px;
+	line-height: 1.6;
+	color: #ccc;
+	max-height: 400px;
+	overflow-y: auto;
+}
+
+.slos-gen-comparison-stats {
+	display: flex;
+	gap: 16px;
+	padding: 12px 16px;
+	background: var(--shahi-bg-card, #1e293b);
+	border: 1px solid #333;
+	border-radius: 6px;
+	margin-bottom: 16px;
+}
+
+.slos-gen-comparison-stat {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 12px;
+}
+
+.slos-gen-comparison-stat__label {
+	color: #888;
+}
+
+.slos-gen-comparison-stat__value {
+	font-weight: 600;
+	color: #fff;
+}
+
+.slos-gen-comparison-stat--additions .slos-gen-comparison-stat__value {
+	color: #10b981;
+}
+
+.slos-gen-comparison-stat--deletions .slos-gen-comparison-stat__value {
+	color: #ef4444;
+}
+
+.slos-gen-comparison-stat--changes .slos-gen-comparison-stat__value {
+	color: #f59e0b;
+}
+
+.slos-gen-comparison-diff {
+	font-family: 'Courier New', monospace;
+	font-size: 12px;
+	line-height: 1.5;
+}
+
+.slos-gen-comparison-diff__line {
+	padding: 2px 8px;
+	margin: 1px 0;
+}
+
+.slos-gen-comparison-diff__line--added {
+	background: rgba(16, 185, 129, 0.1);
+	border-left: 3px solid #10b981;
+	color: #10b981;
+}
+
+.slos-gen-comparison-diff__line--removed {
+	background: rgba(239, 68, 68, 0.1);
+	border-left: 3px solid #ef4444;
+	color: #ef4444;
+}
+
+.slos-gen-comparison-diff__line--changed {
+	background: rgba(245, 158, 11, 0.1);
+	border-left: 3px solid #f59e0b;
+	color: #f59e0b;
+}
+
+.slos-gen-modal__body {
+	flex: 1;
+	padding: 24px;
+	overflow-y: auto;
+	max-height: 80vh;
+}
+
+.slos-gen-modal__loading,
+.slos-gen-modal__error {
+	text-align: center;
+	padding: 40px 20px;
+}
+
+.slos-gen-spinner {
+	width: 40px;
+	height: 40px;
+	margin: 0 auto 16px;
+	border: 4px solid #333;
+	border-top-color: #4a9eff;
+	border-radius: 50%;
+	animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+	to { transform: rotate(360deg); }
+}
+
+/* Document Info */
+.slos-gen-doc-info {
+	display: flex;
+	gap: 16px;
+	padding: 20px;
+	background: var(--shahi-bg-card, #1e293b);
+	border: 1px solid #333;
+	border-radius: 8px;
+	margin-bottom: 24px;
+}
+
+.slos-gen-doc-info__icon {
+	font-size: 48px;
+	line-height: 1;
+}
+
+.slos-gen-doc-info__content h3 {
+	margin: 0 0 8px;
+	font-size: 18px;
+	font-weight: 600;
+	color: #fff;
+}
+
+.slos-gen-doc-info__content p {
+	margin: 0;
+	font-size: 14px;
+	color: #ccc;
+	line-height: 1.6;
+}
+
+/* Field Groups */
+.slos-gen-field-groups {
+	margin-top: 24px;
+	max-height: 60vh;
+	overflow-y: auto;
+	padding-right: 8px;
+}
+
+.slos-gen-field-group {
+	margin-bottom: 24px;
+	padding: 20px;
+	background: var(--shahi-bg-card, #1e293b);
+	border: 1px solid #333;
+	border-radius: 8px;
+}
+
+.slos-gen-field-group__title {
+	margin: 0 0 16px;
+	font-size: 16px;
+	font-weight: 600;
+	color: #fff;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.slos-gen-field-group__icon {
+	font-size: 18px;
+	line-height: 1;
+}
+
+.slos-gen-field {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 12px;
+	background: var(--shahi-bg-primary, #0f172a);
+	border: 1px solid #333;
+	border-radius: 6px;
+	margin-bottom: 8px;
+	transition: all 0.2s ease;
+}
+
+.slos-gen-field:last-child {
+	margin-bottom: 0;
+}
+
+.slos-gen-field:hover {
+	background: var(--shahi-bg-primary, #0f172a);
+	border-color: #444;
+}
+
+.slos-gen-field--missing {
+	border-color: #ffa500;
+	background: rgba(255, 165, 0, 0.05);
+}
+
+.slos-gen-field--mandatory {
+	border-left: 3px solid #4a9eff;
+}
+
+.slos-gen-field__checkbox {
+	margin-top: 2px;
+}
+
+.slos-gen-field__content {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+.slos-gen-field__label-row {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.slos-gen-field__label {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 4px;
+	font-size: 13px;
+	font-weight: 500;
+	color: #fff;
+}
+
+.slos-gen-field__badge {
+	padding: 2px 6px;
+	border-radius: 3px;
+	font-size: 10px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.slos-gen-field__badge--mandatory {
+	background: var(--shahi-accent-primary, #3b82f6);
+	color: var(--shahi-text-primary);
+}
+
+.slos-gen-field__badge--missing {
+	background: var(--shahi-bg-secondary);
+	color: var(--shahi-text-primary);
+}
+
+.slos-gen-field__value {
+	font-size: 13px;
+	color: #ccc;
+	word-break: break-word;
+}
+
+.slos-gen-field__value-wrapper {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.slos-gen-field__value--empty {
+	color: #999;
+	font-style: italic;
+}
+
+.slos-gen-field__actions {
+	display: flex;
+	gap: 4px;
+	margin-left: auto;
+}
+
+.slos-gen-field__btn {
+	padding: 4px 8px;
+	background: var(--shahi-bg-tertiary, #334155);
+	border: 1px solid #444;
+	border-radius: 4px;
+	color: #ccc;
+	font-size: 11px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.slos-gen-field__btn:hover {
+	background: var(--shahi-accent-primary, #3b82f6);
+	border-color: #4a9eff;
+	color: #fff;
+}
+
+/* Summary Stats */
+.slos-gen-modal-section--summary {
+	padding: 20px;
+	background: var(--shahi-bg-card, #1e293b);
+	border: 1px solid #333;
+	border-radius: 8px;
+	margin-top: 24px;
+}
+
+.slos-gen-modal-section--summary h3 {
+	margin: 0 0 16px;
+	font-size: 16px;
+	font-weight: 600;
+	color: #fff;
+}
+
+.slos-gen-summary-stats {
+	display: flex;
+	gap: 20px;
+}
+
+.slos-gen-summary-stat {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.slos-gen-summary-stat__label {
+	font-size: 12px;
+	color: #999;
+}
+
+.slos-gen-summary-stat__value {
+	font-size: 20px;
+	font-weight: 700;
+	color: #4a9eff;
+}
+
+/* Modal Footer */
+.slos-gen-modal__footer {
+	display: flex;
+	justify-content: space-between;
+	padding: 20px 24px;
+	border-top: 1px solid #333;
+	background: var(--shahi-bg-card, #1e293b);
+	position: sticky;
+	bottom: 0;
+	margin-top: auto;
+	z-index: 2;
+}
+
+.slos-gen-modal__footer-left,
+.slos-gen-modal__footer-right {
+	display: flex;
+	gap: 12px;
+}
+
+/* ==========================================================================
+   Notices
+   ========================================================================== */
+
+.slos-gen-notices {
+	position: fixed;
+	top: 32px;
+	right: 20px;
+	z-index: 100001;
+	max-width: 400px;
+}
+
+.slos-gen-notice {
+	padding: 16px;
+	margin-bottom: 12px;
+	border-radius: 6px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+	animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+	from {
+		transform: translateX(100%);
+		opacity: 0;
+	}
+	to {
+		transform: translateX(0);
+		opacity: 1;
+	}
+}
+
+.slos-gen-notice--success {
+	background: var(--shahi-success, #22c55e);
+	color: #fff;
+}
+
+.slos-gen-notice--error {
+	background: var(--shahi-bg-secondary);
+	color: #fff;
+}
+
+.slos-gen-notice--info {
+	background: var(--shahi-accent-primary, #3b82f6);
+	color: #fff;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 1280px) {
+	.slos-gen-layout {
+		grid-template-columns: 1fr;
+	}
+	
+	.slos-gen-sidebar {
+		position: static;
+		max-height: none;
+	}
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+/* Tablet landscape (1024px and down) */
+@media (max-width: 1024px) {
+	.slos-gen-stats-bar {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 12px;
+	}
+
+	.slos-gen-cards-grid {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 16px;
+	}
+
+	.slos-gen-comparison-view {
+		grid-template-columns: 1fr;
+		gap: 12px;
+	}
+
+	.slos-gen-modal__container--wide {
+		max-width: 95%;
+	}
+
+	.slos-gen-panel {
+		margin-left: 0;
+		margin-top: 24px;
+		max-width: 100%;
+	}
+
+	.slos-gen-timeline-item {
+		padding-left: 16px;
+	}
+}
+
+@media (max-width: 768px) {
+	.slos-gen-stats-bar {
+		flex-wrap: wrap;
+	}
+	
+	.slos-gen-stat {
+		flex: 1 1 calc(50% - 8px);
+		min-width: 150px;
+	}
+	
+	.slos-gen-cards {
+		grid-template-columns: 1fr;
+	}
+
+	.slos-gen-cards-grid {
+		grid-template-columns: 1fr;
+	}
+
+/* ==========================================================================
+   Enhanced Field Editing & Checkbox Toggle Styles
+   Per Tab Plan Section 2: Pre-Generation Data Review Modal
+   ========================================================================== */
+
+/* Checkbox wrapper with custom styling */
+.slos-gen-field__checkbox-wrapper {
+	display: flex;
+	align-items: center;
+	margin-top: 4px;
+}
+
+.slos-gen-field__checkbox {
+	width: 18px;
+	height: 18px;
+	margin: 0;
+	cursor: pointer;
+	accent-color: #4a9eff;
+}
+
+.slos-gen-field__checkbox:disabled {
+	cursor: not-allowed;
+	opacity: 0.5;
+}
+
+.slos-gen-field__checkbox-label {
+	display: none; /* Hidden, checkbox itself is visible */
+}
+
+/* Field label row with badges */
+.slos-gen-field__label-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	margin-bottom: 6px;
+}
+
+.slos-gen-field__label-text {
+	font-size: 13px;
+	font-weight: 500;
+	color: #fff;
+}
+
+.slos-gen-field__badges {
+	display: flex;
+	gap: 4px;
+}
+
+.slos-gen-field__badge--optional {
+	background: #555;
+	color: #ccc;
+}
+
+/* Value wrapper for editing */
+.slos-gen-field__value-wrapper {
+	margin-bottom: 8px;
+}
+
+.slos-gen-field__placeholder {
+	color: #666;
+	font-style: italic;
+	font-size: 13px;
+}
+
+/* Inline edit input */
+.slos-gen-field__input {
+	width: 100%;
+	padding: 8px 12px;
+	background: var(--shahi-bg-primary, #0f172a);
+	border: 1px solid #4a9eff;
+	border-radius: 4px;
+	color: #fff;
+	font-size: 13px;
+	outline: none;
+	transition: all 0.2s ease;
+}
+
+.slos-gen-field__input:focus {
+	border-color: #6ab7ff;
+	box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.2);
+}
+
+.slos-gen-field__input--modified {
+	border-color: #2ecc71;
+	background: rgba(46, 204, 113, 0.05);
+}
+
+/* Field states */
+.slos-gen-field--editing {
+	background: #1e1e2e;
+	border-color: #4a9eff;
+}
+
+.slos-gen-field--excluded {
+	opacity: 0.5;
+	background: var(--shahi-bg-primary, #0f172a);
+	border-color: #333;
+}
+
+.slos-gen-field--excluded .slos-gen-field__label-text {
+	text-decoration: line-through;
+	color: #666;
+}
+
+.slos-gen-field--excluded .slos-gen-field__value {
+	color: #666;
+}
+
+.slos-gen-field--modified {
+	border-color: #2ecc71;
+}
+
+.slos-gen-field--modified::after {
+	content: '✓ Modified';
+	position: absolute;
+	top: 4px;
+	right: 8px;
+	font-size: 10px;
+	color: #2ecc71;
+}
+
+.slos-gen-field--empty.slos-gen-field--mandatory {
+	border-color: #e74c3c;
+	background: rgba(231, 76, 60, 0.05);
+}
+
+/* Action buttons enhanced styling */
+.slos-gen-field__actions {
+	display: flex;
+	gap: 6px;
+	flex-wrap: wrap;
+}
+
+.slos-gen-field__btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	padding: 6px 10px;
+	background: var(--shahi-bg-tertiary, #334155);
+	border: 1px solid #444;
+	border-radius: 4px;
+	color: #ccc;
+	font-size: 12px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.slos-gen-field__btn span {
+	font-size: 11px;
+}
+
+.slos-gen-field__btn--edit:hover {
+	background: var(--shahi-accent-primary, #3b82f6);
+	border-color: #4a9eff;
+	color: #fff;
+}
+
+.slos-gen-field__btn--save {
+	background: var(--shahi-success, #22c55e);
+	border-color: #2ecc71;
+	color: #fff;
+}
+
+.slos-gen-field__btn--save:hover {
+	background: var(--shahi-success, #22c55e);
+	border-color: #27ae60;
+}
+
+.slos-gen-field__btn--cancel:hover {
+	background: var(--shahi-error, #ef4444);
+	border-color: #e74c3c;
+	color: #fff;
+}
+
+.slos-gen-field__btn--add {
+	background: var(--shahi-bg-tertiary, #334155);
+	border-color: #4a9eff;
+	color: #4a9eff;
+}
+
+.slos-gen-field__btn--add:hover {
+	background: var(--shahi-accent-primary, #3b82f6);
+	color: #fff;
+}
+
+.slos-gen-field__btn--remove:hover {
+	background: var(--shahi-error, #ef4444);
+	border-color: #e74c3c;
+	color: #fff;
+}
+
+/* Instructions section */
+.slos-gen-modal-section--instructions {
+	margin-bottom: 16px;
+}
+
+.slos-gen-alert--help {
+	background: rgba(74, 158, 255, 0.08);
+	border: 1px solid rgba(74, 158, 255, 0.3);
+	border-radius: 6px;
+}
+
+.slos-gen-instructions-list {
+	margin: 8px 0 0;
+	padding-left: 20px;
+	font-size: 12px;
+	color: #ccc;
+}
+
+.slos-gen-instructions-list li {
+	margin-bottom: 4px;
+}
+
+.slos-gen-instructions-list strong {
+	color: #4a9eff;
+}
+
+/* Summary stats enhancements */
+.slos-gen-summary-stat--excluded .slos-gen-summary-stat__value {
+	color: #888;
+}
+
+.slos-gen-summary-stat--warning .slos-gen-summary-stat__value {
+	color: #ffa500;
+}
+
+/* ==========================================================================
+   Document Card Actions Rows
+   ========================================================================== */
+
+.slos-gen-card__actions-primary {
+	display: flex;
+	gap: 8px;
+	margin-bottom: 8px;
+}
+
+.slos-gen-card__actions-secondary {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+
+.slos-gen-card__actions-secondary .button-small {
+	padding: 4px 10px;
+	font-size: 12px;
+}
+
+/* View/History button styles */
+.slos-gen-btn-view,
+.slos-gen-btn-history {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+}
+
+/* ==========================================================================
+   Document Preview/View Modal
+   ========================================================================== */
+
+.slos-gen-document-preview {
+	padding: 24px;
+	background: var(--shahi-bg-card);
+	color: #333;
+	max-height: 60vh;
+	overflow-y: auto;
+}
+
+.slos-gen-document-preview h1,
+.slos-gen-document-preview h2,
+.slos-gen-document-preview h3 {
+	color: #222;
+	margin: 1em 0 0.5em;
+}
+
+.slos-gen-document-preview h1:first-child {
+	margin-top: 0;
+}
+
+.slos-gen-document-preview p {
+	margin: 0.5em 0;
+	line-height: 1.6;
+}
+
+.slos-gen-document-preview ul,
+.slos-gen-document-preview ol {
+	margin: 0.5em 0;
+	padding-left: 1.5em;
+}
+
+.slos-gen-preview-stats {
+	font-size: 12px;
+	color: #888;
+}
+
+/* ==========================================================================
+   Responsive Adjustments
+   ========================================================================== */
+
+@media (max-width: 782px) {
+
+	.slos-gen-header {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 16px;
+	}
+
+	.slos-gen-header__actions {
+		width: 100%;
+		justify-content: flex-start;
+	}
+
+	.slos-gen-timeline-item {
+		padding-left: 12px;
+	}
+
+	.slos-gen-timeline-item__actions {
+		flex-direction: column;
+	}
+
+	.slos-gen-timeline-item__btn {
+		width: 100%;
+	}
+
+	.slos-gen-comparison-stats {
+		flex-direction: column;
+		gap: 8px;
+	}
+	
+	.slos-gen-modal__container {
+		width: 95%;
+		max-height: 90vh;
+	}
+	
+	.slos-gen-modal__footer {
+		flex-direction: column;
+		gap: 12px;
+	}
+	
+	.slos-gen-modal__footer-left,
+	.slos-gen-modal__footer-right {
+		width: 100%;
+	}
+	
+	.slos-gen-modal__footer .button {
+		width: 100%;
+	}
+	
+	/* Card actions responsive */
+	.slos-gen-card__actions-primary,
+	.slos-gen-card__actions-secondary {
+		flex-wrap: wrap;
+	}
+	
+	.slos-gen-field__actions {
+		flex-direction: column;
+	}
+	
+	.slos-gen-field__btn {
+		width: 100%;
+		justify-content: center;
+	}
+}
+
+@media (max-width: 480px) {
+	.slos-gen-container {
+		padding: 12px;
+	}
+	
+	.slos-gen-stats-bar {
+		flex-direction: column;
+	}
+	
+	.slos-gen-stat {
+		flex: 1 1 100%;
+	}
+	
+	.slos-gen-summary-stats {
+		flex-direction: column;
+	}
+}
+

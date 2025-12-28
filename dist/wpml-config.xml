@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<wpml-config>
+	<!--
+		WPML Configuration for Shahi LegalFlowSuite
+		
+		This file tells WPML which strings and options should be translatable.
+		For more info: https://wpml.org/documentation/support/language-configuration-files/
+	-->
+
+	<!-- Admin Texts - Settings and Options -->
+	<admin-texts>
+		<!-- General Plugin Settings -->
+		<key name="shahi_legalops_suite_settings">
+			<key name="plugin_name" />
+			<key name="plugin_description" />
+		</key>
+
+		<!-- Consent Banner Settings -->
+		<key name="slos_consent_settings">
+			<key name="banner_heading" />
+			<key name="banner_message" />
+			<key name="banner_accept_text" />
+			<key name="banner_reject_text" />
+			<key name="banner_customize_text" />
+			<key name="banner_learn_more_text" />
+			<key name="banner_privacy_policy_url" />
+		</key>
+
+		<!-- Consent Purposes/Categories -->
+		<key name="slos_consent_purposes">
+			<key name="necessary_label" />
+			<key name="necessary_description" />
+			<key name="analytics_label" />
+			<key name="analytics_description" />
+			<key name="marketing_label" />
+			<key name="marketing_description" />
+			<key name="preferences_label" />
+			<key name="preferences_description" />
+		</key>
+
+		<!-- Export/Import Settings -->
+		<key name="slos_export_settings">
+			<key name="export_filename_prefix" />
+			<key name="export_email_subject" />
+			<key name="export_email_body" />
+		</key>
+
+		<!-- Consent Logs Settings -->
+		<key name="slos_logs_settings">
+			<key name="retention_policy_notice" />
+		</key>
+	</admin-texts>
+
+	<!-- Custom Post Types -->
+	<custom-types>
+		<!-- If consent records were stored as CPT (future enhancement) -->
+		<!--
+		<custom-type translate="1">slos_consent</custom-type>
+		-->
+	</custom-types>
+
+	<!-- Custom Taxonomies -->
+	<taxonomies>
+		<!-- If consent categories were taxonomies (future enhancement) -->
+		<!--
+		<taxonomy translate="1">slos_consent_category</taxonomy>
+		-->
+	</taxonomies>
+
+	<!-- Custom Fields (if using ACF or similar) -->
+	<custom-fields>
+		<!-- Example consent metadata fields -->
+		<!--
+		<custom-field action="translate">consent_description</custom-field>
+		<custom-field action="translate">consent_text</custom-field>
+		<custom-field action="copy">consent_type</custom-field>
+		<custom-field action="copy">consent_status</custom-field>
+		-->
+	</custom-fields>
+
+	<!-- Language Switcher Location -->
+	<language-switcher-settings>
+		<key name="display_on_banner">1</key>
+		<key name="display_on_preferences_modal">1</key>
+	</language-switcher-settings>
+</wpml-config>

@@ -1,0 +1,1066 @@
+/**
+ * Company Profile Wizard Styles
+ *
+ * Styling for the 8-step company profile wizard with dark theme support.
+ *
+ * @package     ShahiLegalFlowSuite
+ * @subpackage  Assets/CSS
+ * @version     4.1.0
+ * @since       4.1.0
+ */
+
+/* ============================================
+   CSS Custom Properties (Variables)
+   ============================================ */
+
+:root {
+	/* Colors - Primary */
+	--slos-wizard-primary: #3b82f6;
+	--slos-wizard-primary-hover: #2563eb;
+	--slos-wizard-primary-light: rgba(59, 130, 246, 0.1);
+	
+	/* Colors - Status */
+	--slos-wizard-success: #10b981;
+	--slos-wizard-success-light: rgba(16, 185, 129, 0.1);
+	--slos-wizard-warning: #f59e0b;
+	--slos-wizard-warning-light: rgba(245, 158, 11, 0.1);
+	--slos-wizard-error: #ef4444;
+	--slos-wizard-error-light: rgba(239, 68, 68, 0.1);
+	
+	/* Colors - Neutral - Mac Slate Liquid Theme */
+	--slos-wizard-bg: #0f172a;
+	--slos-wizard-bg-secondary: #1e293b;
+	--slos-wizard-bg-tertiary: #334155;
+	--slos-wizard-text: #f8fafc;
+	--slos-wizard-text-secondary: #94a3b8;
+	--slos-wizard-text-muted: #64748b;
+	--slos-wizard-border: #334155;
+	--slos-wizard-border-light: #475569;
+	
+	/* Shadows */
+	--slos-wizard-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+	--slos-wizard-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+	
+	/* Spacing */
+	--slos-wizard-gap: 1.5rem;
+	--slos-wizard-radius: 0.5rem;
+	--slos-wizard-radius-lg: 0.75rem;
+	
+	/* Transitions */
+	--slos-wizard-transition: all 0.2s ease;
+}
+
+/* ============================================
+   Base Wrapper
+   ============================================ */
+
+.slos-profile-wizard-wrap {
+	max-width: 1400px;
+	margin: 0 auto;
+	padding: var(--slos-wizard-gap);
+}
+
+.slos-wizard-container {
+	background: var(--slos-wizard-bg);
+	border-radius: var(--slos-wizard-radius-lg);
+	box-shadow: var(--slos-wizard-shadow-lg);
+	overflow: hidden;
+}
+
+/* ============================================
+   Header
+   ============================================ */
+
+.slos-wizard-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1.5rem 2rem;
+	background: var(--slos-wizard-bg-secondary);
+	border-bottom: 1px solid var(--slos-wizard-border);
+}
+
+.slos-wizard-header-content {
+	flex: 1;
+}
+
+.slos-wizard-title {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	font-size: 1.5rem;
+	font-weight: 600;
+	color: var(--slos-wizard-text);
+	margin: 0;
+}
+
+.slos-wizard-title .dashicons {
+	font-size: 1.75rem;
+	width: 1.75rem;
+	height: 1.75rem;
+	color: var(--slos-wizard-primary);
+}
+
+.slos-wizard-subtitle {
+	margin: 0.5rem 0 0;
+	color: var(--slos-wizard-text-secondary);
+	font-size: 0.925rem;
+}
+
+/* ============================================
+   Progress Bar
+   ============================================ */
+
+.slos-wizard-progress {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	padding: 1rem 2rem;
+	background: var(--slos-wizard-bg-secondary);
+	border-bottom: 1px solid var(--slos-wizard-border);
+}
+
+.slos-progress-bar {
+	flex: 1;
+	height: 8px;
+	background: var(--slos-wizard-bg-tertiary);
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.slos-progress-fill {
+	height: 100%;
+	background: linear-gradient(90deg, var(--slos-wizard-primary), var(--slos-wizard-success));
+	border-radius: 4px;
+	transition: width 0.4s ease;
+}
+
+.slos-progress-text {
+	display: flex;
+	align-items: baseline;
+	gap: 0.5rem;
+	flex-shrink: 0;
+}
+
+.slos-progress-percentage {
+	font-size: 1.125rem;
+	font-weight: 600;
+	color: var(--slos-wizard-primary);
+}
+
+.slos-progress-label {
+	font-size: 0.875rem;
+	color: var(--slos-wizard-text-secondary);
+}
+
+/* ============================================
+   Main Layout
+   ============================================ */
+
+.slos-wizard-main {
+	display: grid;
+	grid-template-columns: 280px 1fr;
+	min-height: 600px;
+}
+
+/* ============================================
+   Step Navigation (Sidebar)
+   ============================================ */
+
+.slos-wizard-nav {
+	background: var(--slos-wizard-bg-secondary);
+	border-right: 1px solid var(--slos-wizard-border);
+	padding: 1.5rem 0;
+}
+
+.slos-step-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.slos-step-item {
+	position: relative;
+}
+
+.slos-step-item::before {
+	content: '';
+	position: absolute;
+	left: 2.5rem;
+	top: 100%;
+	width: 2px;
+	height: 16px;
+	background: var(--slos-wizard-border);
+}
+
+.slos-step-item:last-child::before {
+	display: none;
+}
+
+.slos-step-button {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	width: 100%;
+	padding: 1rem 1.5rem;
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	text-align: left;
+	transition: var(--slos-wizard-transition);
+}
+
+.slos-step-button:hover {
+	background: var(--slos-wizard-bg-tertiary);
+}
+
+.slos-step-number {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 2rem;
+	height: 2rem;
+	border-radius: 50%;
+	background: var(--slos-wizard-bg-tertiary);
+	border: 2px solid var(--slos-wizard-border);
+	font-size: 0.875rem;
+	font-weight: 600;
+	color: var(--slos-wizard-text-secondary);
+	flex-shrink: 0;
+	transition: var(--slos-wizard-transition);
+}
+
+.slos-step-number .dashicons {
+	font-size: 1rem;
+	width: 1rem;
+	height: 1rem;
+}
+
+.slos-step-info {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+	overflow: hidden;
+}
+
+.slos-step-title {
+	font-size: 0.9rem;
+	font-weight: 500;
+	color: var(--slos-wizard-text);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.slos-step-status {
+	font-size: 0.75rem;
+	color: var(--slos-wizard-text-muted);
+}
+
+/* Step States */
+.slos-step-item.slos-step-active .slos-step-button {
+	background: var(--slos-wizard-primary-light);
+}
+
+.slos-step-item.slos-step-active .slos-step-number {
+	background: var(--slos-wizard-primary);
+	border-color: var(--slos-wizard-primary);
+	color: #fff;
+}
+
+.slos-step-item.slos-step-complete .slos-step-number {
+	background: var(--slos-wizard-success);
+	border-color: var(--slos-wizard-success);
+	color: #fff;
+}
+
+.slos-step-item.slos-step-complete .slos-step-status {
+	color: var(--slos-wizard-success);
+}
+
+/* ============================================
+   Step Content
+   ============================================ */
+
+.slos-wizard-content {
+	padding: 2rem;
+	overflow-y: auto;
+}
+
+.slos-step-panel {
+	display: none;
+}
+
+.slos-step-panel.slos-step-active {
+	display: block;
+	animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* Step Header */
+.slos-step-header {
+	display: flex;
+	gap: 1.5rem;
+	margin-bottom: 2rem;
+	padding-bottom: 1.5rem;
+	border-bottom: 1px solid var(--slos-wizard-border);
+}
+
+.slos-step-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 4rem;
+	height: 4rem;
+	background: var(--slos-wizard-primary-light);
+	border-radius: var(--slos-wizard-radius);
+	flex-shrink: 0;
+}
+
+.slos-step-icon .dashicons {
+	font-size: 2rem;
+	width: 2rem;
+	height: 2rem;
+	color: var(--slos-wizard-primary);
+}
+
+.slos-step-meta {
+	flex: 1;
+}
+
+.slos-step-badge {
+	display: inline-block;
+	padding: 0.25rem 0.75rem;
+	background: var(--slos-wizard-bg-tertiary);
+	border-radius: 1rem;
+	font-size: 0.75rem;
+	font-weight: 500;
+	color: var(--slos-wizard-text-secondary);
+	text-transform: uppercase;
+	letter-spacing: 0.025em;
+}
+
+.slos-step-heading {
+	margin: 0.5rem 0 0.25rem;
+	font-size: 1.5rem;
+	font-weight: 600;
+	color: var(--slos-wizard-text);
+}
+
+.slos-step-description {
+	margin: 0;
+	color: var(--slos-wizard-text-secondary);
+	line-height: 1.5;
+}
+
+/* ============================================
+   Form Fields
+   ============================================ */
+
+.slos-step-fields {
+	display: grid;
+	gap: 1.5rem;
+}
+
+.slos-field-group {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.slos-field-label {
+	font-size: 0.9rem;
+	font-weight: 500;
+	color: var(--slos-wizard-text);
+}
+
+.slos-required {
+	color: var(--slos-wizard-error);
+	margin-left: 0.25rem;
+}
+
+.slos-field-input,
+.slos-field-textarea,
+.slos-field-select {
+	width: 100%;
+	padding: 0.75rem 1rem;
+	background: var(--slos-wizard-bg-secondary);
+	border: 1px solid var(--slos-wizard-border);
+	border-radius: var(--slos-wizard-radius);
+	color: var(--slos-wizard-text);
+	font-size: 0.95rem;
+	transition: var(--slos-wizard-transition);
+}
+
+.slos-field-input:focus,
+.slos-field-textarea:focus,
+.slos-field-select:focus {
+	outline: none;
+	border-color: var(--slos-wizard-primary);
+	box-shadow: 0 0 0 3px var(--slos-wizard-primary-light);
+}
+
+.slos-field-input::placeholder,
+.slos-field-textarea::placeholder {
+	color: var(--slos-wizard-text-muted);
+}
+
+.slos-field-textarea {
+	resize: vertical;
+	min-height: 100px;
+}
+
+.slos-field-select {
+	cursor: pointer;
+	appearance: none;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23a1a1aa' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right 1rem center;
+	padding-right: 2.5rem;
+}
+
+.slos-field-help {
+	font-size: 0.8rem;
+	color: var(--slos-wizard-text-muted);
+	margin: 0;
+}
+
+.slos-field-error {
+	display: none;
+	font-size: 0.8rem;
+	color: var(--slos-wizard-error);
+}
+
+.slos-has-error .slos-field-input,
+.slos-has-error .slos-field-textarea,
+.slos-has-error .slos-field-select {
+	border-color: var(--slos-wizard-error);
+}
+
+.slos-has-error .slos-field-error {
+	display: block;
+}
+
+/* Radio and Checkbox Groups */
+.slos-radio-group,
+.slos-checkbox-group {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1rem;
+}
+
+.slos-radio-label,
+.slos-checkbox-label {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	cursor: pointer;
+	padding: 0.5rem 1rem;
+	background: var(--slos-wizard-bg-secondary);
+	border: 1px solid var(--slos-wizard-border);
+	border-radius: var(--slos-wizard-radius);
+	transition: var(--slos-wizard-transition);
+}
+
+.slos-radio-label:hover,
+.slos-checkbox-label:hover {
+	border-color: var(--slos-wizard-primary);
+}
+
+.slos-radio-label:has(:checked),
+.slos-checkbox-label:has(:checked) {
+	background: var(--slos-wizard-primary-light);
+	border-color: var(--slos-wizard-primary);
+}
+
+.slos-field-radio,
+.slos-field-checkbox {
+	accent-color: var(--slos-wizard-primary);
+}
+
+.slos-radio-text,
+.slos-checkbox-text {
+	font-size: 0.9rem;
+	color: var(--slos-wizard-text);
+}
+
+/* Tags Input */
+.slos-tags-input {
+	position: relative;
+}
+
+.slos-tags-container {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	padding: 0.5rem;
+	background: var(--slos-wizard-bg-secondary);
+	border: 1px solid var(--slos-wizard-border);
+	border-radius: var(--slos-wizard-radius);
+	min-height: 44px;
+}
+
+.slos-tag {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.25rem 0.5rem 0.25rem 0.75rem;
+	background: var(--slos-wizard-primary-light);
+	border: 1px solid var(--slos-wizard-primary);
+	border-radius: 1rem;
+	font-size: 0.85rem;
+	color: var(--slos-wizard-primary);
+}
+
+.slos-tag-remove {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 1.25rem;
+	height: 1.25rem;
+	padding: 0;
+	background: transparent;
+	border: none;
+	border-radius: 50%;
+	color: var(--slos-wizard-primary);
+	font-size: 1rem;
+	cursor: pointer;
+	transition: var(--slos-wizard-transition);
+}
+
+.slos-tag-remove:hover {
+	background: var(--slos-wizard-primary);
+	color: #fff;
+}
+
+.slos-tags-input-field {
+	flex: 1;
+	min-width: 120px;
+	padding: 0.25rem 0.5rem;
+	background: transparent;
+	border: none;
+	color: var(--slos-wizard-text);
+	font-size: 0.9rem;
+	outline: none;
+}
+
+.slos-tags-suggestions {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	right: 0;
+	background: var(--slos-wizard-bg-secondary);
+	border: 1px solid var(--slos-wizard-border);
+	border-radius: var(--slos-wizard-radius);
+	box-shadow: var(--slos-wizard-shadow);
+	z-index: 100;
+	display: none;
+	max-height: 200px;
+	overflow-y: auto;
+}
+
+.slos-suggestion {
+	padding: 0.75rem 1rem;
+	cursor: pointer;
+	transition: var(--slos-wizard-transition);
+}
+
+.slos-suggestion:hover {
+	background: var(--slos-wizard-bg-tertiary);
+}
+
+/* Cookie List */
+.slos-cookie-list {
+	background: var(--slos-wizard-bg-secondary);
+	border-radius: var(--slos-wizard-radius);
+	overflow: hidden;
+}
+
+.slos-cookie-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.slos-cookie-table th,
+.slos-cookie-table td {
+	padding: 0.75rem 1rem;
+	text-align: left;
+	border-bottom: 1px solid var(--slos-wizard-border);
+}
+
+.slos-cookie-table th {
+	background: var(--slos-wizard-bg-tertiary);
+	font-size: 0.8rem;
+	font-weight: 600;
+	color: var(--slos-wizard-text-secondary);
+	text-transform: uppercase;
+	letter-spacing: 0.025em;
+}
+
+.slos-cookie-table td {
+	vertical-align: middle;
+}
+
+.slos-cookie-table .slos-field-input {
+	padding: 0.5rem 0.75rem;
+	background: var(--slos-wizard-bg);
+}
+
+.slos-cookie-row td:last-child {
+	width: 50px;
+	text-align: center;
+}
+
+.slos-add-cookie {
+	margin: 1rem;
+}
+
+/* ============================================
+   Buttons
+   ============================================ */
+
+.slos-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.75rem 1.5rem;
+	border: none;
+	border-radius: var(--slos-wizard-radius);
+	font-size: 0.9rem;
+	font-weight: 500;
+	cursor: pointer;
+	transition: var(--slos-wizard-transition);
+	text-decoration: none;
+}
+
+.slos-btn .dashicons {
+	font-size: 1.125rem;
+	width: 1.125rem;
+	height: 1.125rem;
+}
+
+.slos-btn-primary {
+	background: var(--slos-wizard-primary);
+	color: #fff;
+}
+
+.slos-btn-primary:hover {
+	background: var(--slos-wizard-primary-hover);
+	color: #fff;
+}
+
+.slos-btn-secondary {
+	background: var(--slos-wizard-bg-tertiary);
+	color: var(--slos-wizard-text);
+	border: 1px solid var(--slos-wizard-border);
+}
+
+.slos-btn-secondary:hover {
+	background: var(--slos-wizard-border);
+	color: var(--slos-wizard-text);
+}
+
+.slos-btn-success {
+	background: var(--slos-wizard-success);
+	color: #fff;
+}
+
+.slos-btn-success:hover {
+	background: #059669;
+	color: #fff;
+}
+
+.slos-btn-danger {
+	background: var(--slos-wizard-error-light);
+	color: var(--slos-wizard-error);
+}
+
+.slos-btn-danger:hover {
+	background: var(--slos-wizard-error);
+	color: #fff;
+}
+
+.slos-btn-sm {
+	padding: 0.5rem 0.75rem;
+	font-size: 0.8rem;
+}
+
+.slos-btn-sm .dashicons {
+	font-size: 1rem;
+	width: 1rem;
+	height: 1rem;
+}
+
+.slos-btn:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+/* ============================================
+   Wizard Actions (Footer)
+   ============================================ */
+
+.slos-wizard-actions {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: 2rem;
+	padding-top: 1.5rem;
+	border-top: 1px solid var(--slos-wizard-border);
+}
+
+.slos-wizard-actions-right {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+}
+
+/* Save Status */
+.slos-save-status {
+	display: none;
+	align-items: center;
+	gap: 0.5rem;
+	font-size: 0.85rem;
+	padding: 0.5rem 1rem;
+	border-radius: var(--slos-wizard-radius);
+}
+
+.slos-save-status .dashicons {
+	font-size: 1rem;
+	width: 1rem;
+	height: 1rem;
+}
+
+.slos-status-pending {
+	background: var(--slos-wizard-warning-light);
+	color: var(--slos-wizard-warning);
+}
+
+.slos-status-saving {
+	background: var(--slos-wizard-primary-light);
+	color: var(--slos-wizard-primary);
+}
+
+.slos-status-saved {
+	background: var(--slos-wizard-success-light);
+	color: var(--slos-wizard-success);
+}
+
+.slos-status-error {
+	background: var(--slos-wizard-error-light);
+	color: var(--slos-wizard-error);
+}
+
+/* Spin animation */
+.dashicons.spin {
+	animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+	from { transform: rotate(0deg); }
+	to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   Modal
+   ============================================ */
+
+.slos-modal {
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.7);
+	z-index: 100000;
+	align-items: center;
+	justify-content: center;
+}
+
+.slos-modal.slos-modal-open {
+	display: flex;
+}
+
+body.slos-modal-active {
+	overflow: hidden;
+}
+
+.slos-modal-content {
+	background: var(--slos-wizard-bg);
+	border-radius: var(--slos-wizard-radius-lg);
+	box-shadow: var(--slos-wizard-shadow-lg);
+	max-width: 480px;
+	width: 90%;
+	animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+	from {
+		opacity: 0;
+		transform: translateY(-20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.slos-modal-header {
+	text-align: center;
+	padding: 2rem 2rem 1rem;
+}
+
+.slos-modal-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 4rem;
+	height: 4rem;
+	border-radius: 50%;
+	margin-bottom: 1rem;
+}
+
+.slos-modal-icon-success {
+	background: var(--slos-wizard-success-light);
+}
+
+.slos-modal-icon-success .dashicons {
+	font-size: 2.5rem;
+	width: 2.5rem;
+	height: 2.5rem;
+	color: var(--slos-wizard-success);
+}
+
+.slos-modal-header h3 {
+	margin: 0;
+	font-size: 1.25rem;
+	font-weight: 600;
+	color: var(--slos-wizard-text);
+}
+
+.slos-modal-body {
+	padding: 0 2rem;
+	text-align: center;
+}
+
+.slos-modal-body p {
+	margin: 0;
+	color: var(--slos-wizard-text-secondary);
+	line-height: 1.6;
+}
+
+.slos-modal-footer {
+	display: flex;
+	justify-content: center;
+	gap: 1rem;
+	padding: 1.5rem 2rem 2rem;
+}
+
+/* ============================================
+   Notices
+   ============================================ */
+
+.slos-wizard-notice {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	padding: 1rem 1.5rem;
+	margin: 0 2rem 1rem;
+	border-radius: var(--slos-wizard-radius);
+	animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+	from {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.slos-wizard-notice .dashicons {
+	font-size: 1.25rem;
+	width: 1.25rem;
+	height: 1.25rem;
+	flex-shrink: 0;
+}
+
+.slos-notice-message {
+	flex: 1;
+	font-size: 0.9rem;
+}
+
+.slos-notice-dismiss {
+	padding: 0.25rem;
+	background: transparent;
+	border: none;
+	color: inherit;
+	opacity: 0.7;
+	font-size: 1.25rem;
+	cursor: pointer;
+	transition: var(--slos-wizard-transition);
+}
+
+.slos-notice-dismiss:hover {
+	opacity: 1;
+}
+
+.slos-notice-success {
+	background: var(--slos-wizard-success-light);
+	color: var(--slos-wizard-success);
+}
+
+.slos-notice-error {
+	background: var(--slos-wizard-error-light);
+	color: var(--slos-wizard-error);
+}
+
+.slos-notice-warning {
+	background: var(--slos-wizard-warning-light);
+	color: var(--slos-wizard-warning);
+}
+
+.slos-notice-info {
+	background: var(--slos-wizard-primary-light);
+	color: var(--slos-wizard-primary);
+}
+
+/* ============================================
+   Responsive Design
+   ============================================ */
+
+@media (max-width: 1024px) {
+	.slos-wizard-main {
+		grid-template-columns: 1fr;
+	}
+	
+	.slos-wizard-nav {
+		border-right: none;
+		border-bottom: 1px solid var(--slos-wizard-border);
+		padding: 1rem 0;
+	}
+	
+	.slos-step-list {
+		display: flex;
+		overflow-x: auto;
+		gap: 0.5rem;
+		padding: 0 1rem;
+	}
+	
+	.slos-step-item {
+		flex-shrink: 0;
+	}
+	
+	.slos-step-item::before {
+		display: none;
+	}
+	
+	.slos-step-button {
+		flex-direction: column;
+		padding: 0.75rem 1rem;
+		text-align: center;
+	}
+	
+	.slos-step-info {
+		align-items: center;
+	}
+	
+	.slos-step-title {
+		font-size: 0.75rem;
+	}
+	
+	.slos-step-status {
+		display: none;
+	}
+}
+
+@media (max-width: 768px) {
+	.slos-wizard-header {
+		flex-direction: column;
+		gap: 1rem;
+		text-align: center;
+	}
+	
+	.slos-wizard-header-actions {
+		width: 100%;
+	}
+	
+	.slos-wizard-header-actions .slos-btn {
+		width: 100%;
+		justify-content: center;
+	}
+	
+	.slos-step-header {
+		flex-direction: column;
+		text-align: center;
+	}
+	
+	.slos-step-icon {
+		margin: 0 auto;
+	}
+	
+	.slos-wizard-actions {
+		flex-direction: column;
+		gap: 1rem;
+	}
+	
+	.slos-wizard-actions-right {
+		width: 100%;
+		flex-direction: column;
+	}
+	
+	.slos-wizard-actions .slos-btn {
+		width: 100%;
+		justify-content: center;
+	}
+	
+	.slos-radio-group,
+	.slos-checkbox-group {
+		flex-direction: column;
+	}
+	
+	.slos-modal-footer {
+		flex-direction: column;
+	}
+	
+	.slos-modal-footer .slos-btn {
+		width: 100%;
+		justify-content: center;
+	}
+}
+
+@media (max-width: 480px) {
+	.slos-profile-wizard-wrap {
+		padding: 0.5rem;
+	}
+	
+	.slos-wizard-content {
+		padding: 1rem;
+	}
+	
+	.slos-wizard-header {
+		padding: 1rem;
+	}
+	
+	.slos-wizard-title {
+		font-size: 1.25rem;
+	}
+	
+	.slos-step-heading {
+		font-size: 1.25rem;
+	}
+}

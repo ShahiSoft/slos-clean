@@ -1,0 +1,179 @@
+/* DSR Settings Page Styles */
+
+.slos-dsr-settings {
+	max-width: 900px;
+	margin-top: 20px;
+}
+
+.slos-dsr-settings h1 {
+	margin-bottom: 30px;
+	padding-bottom: 10px;
+	border-bottom: 2px solid #3b82f6;
+	color: #f8fafc;
+}
+
+.slos-dsr-settings .form-table {
+	margin-top: 20px;
+}
+
+.slos-dsr-settings .form-table th {
+	width: 300px;
+	font-weight: 600;
+	padding: 15px 10px;
+	text-align: left;
+	vertical-align: top;
+}
+
+.slos-dsr-settings .form-table td {
+	padding: 15px 10px;
+	vertical-align: top;
+}
+
+.slos-dsr-settings .form-table tr:hover {
+	background-color: #334155;
+}
+
+.slos-dsr-settings .form-table h3 {
+	margin: 20px 0 10px 0;
+	padding-top: 10px;
+	border-top: 1px solid #334155;
+	font-size: 14px;
+	color: #3b82f6;
+	font-weight: 600;
+}
+
+/* Input Fields */
+.slos-dsr-settings input[type="text"],
+.slos-dsr-settings input[type="url"],
+.slos-dsr-settings input[type="number"] {
+	border: 1px solid #334155;
+	border-radius: 4px;
+	padding: 6px 10px;
+	font-size: 14px;
+}
+
+.slos-dsr-settings input[type="text"]:focus,
+.slos-dsr-settings input[type="url"]:focus,
+.slos-dsr-settings input[type="number"]:focus {
+	border-color: #3b82f6;
+	box-shadow: 0 0 0 2px rgba(0, 115, 170, 0.1);
+	outline: none;
+}
+
+.slos-dsr-settings input[type="text"].regular-text {
+	width: 100%;
+	max-width: 500px;
+}
+
+.slos-dsr-settings input[type="number"].small-text {
+	width: 100px;
+}
+
+/* Textarea */
+.slos-dsr-settings textarea {
+	border: 1px solid #334155;
+	border-radius: 4px;
+	padding: 8px 10px;
+	font-family: inherit;
+	font-size: 14px;
+	width: 100%;
+	max-width: 600px;
+	box-sizing: border-box;
+}
+
+.slos-dsr-settings textarea:focus {
+	border-color: #3b82f6;
+	box-shadow: 0 0 0 2px rgba(0, 115, 170, 0.1);
+	outline: none;
+}
+
+.slos-dsr-settings textarea.large-text {
+	min-height: 100px;
+}
+
+/* Checkboxes */
+.slos-dsr-settings input[type="checkbox"] {
+	margin-right: 8px;
+	cursor: pointer;
+}
+
+.slos-dsr-settings label {
+	display: inline-flex;
+	align-items: center;
+	cursor: pointer;
+}
+
+/* Description Text */
+.slos-dsr-settings .description {
+	display: block;
+	margin-top: 5px;
+	font-size: 12px;
+	font-style: italic;
+	color: #94a3b8;
+}
+
+/* Section Descriptions */
+.slos-dsr-settings .form-table p {
+	margin: 10px 0;
+	color: #94a3b8;
+	font-size: 13px;
+	line-height: 1.5;
+}
+
+/* Submit Button */
+.slos-dsr-settings .submit {
+	margin-top: 30px;
+	padding-top: 15px;
+	border-top: 1px solid #334155;
+}
+
+.slos-dsr-settings .button-primary {
+	background-color: #3b82f6;
+	border-color: #2563eb;
+	color: white;
+	padding: 8px 20px;
+	cursor: pointer;
+	font-size: 14px;
+	border-radius: 4px;
+	transition: background-color 0.2s;
+}
+
+.slos-dsr-settings .button-primary:hover {
+	background-color: #2563eb;
+}
+
+.slos-dsr-settings .button-primary:active {
+	background-color: #1d4ed8;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+	.slos-dsr-settings .form-table th {
+		width: 100%;
+		display: block;
+		margin-bottom: 10px;
+	}
+
+	.slos-dsr-settings .form-table td {
+		display: block;
+		width: 100%;
+	}
+
+	.slos-dsr-settings input[type="text"].regular-text,
+	.slos-dsr-settings textarea {
+		max-width: 100%;
+	}
+}
+
+/* Success Message */
+.slos-dsr-settings .updated {
+	background-color: rgba(245, 158, 11, 0.1);
+	border: 1px solid #f59e0b;
+	border-radius: 4px;
+	padding: 12px;
+	margin: 20px 0;
+}
+
+.slos-dsr-settings .notice-success {
+	border-left-color: #46b450;
+}

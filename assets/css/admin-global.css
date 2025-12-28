@@ -1,0 +1,905 @@
+/**
+ * ShahiLegalFlowSuite - Admin Global Styles
+ * 
+ * Core styles loaded on all plugin admin pages.
+ * Implements dark futuristic theme with cyberpunk aesthetics.
+ *
+ * Component libraries (components.css, animations.css, utilities.css)
+ * are loaded separately via Assets.php for modular architecture.
+ *
+ * @package    ShahiLegalFlowSuite
+ * @version    3.0.1
+ * @version     3.0.1
+ */
+
+/* ============================================================================
+   CSS VARIABLES - ACCESSIBILITY SCANNER GLOBAL DESIGN SYSTEM
+   Based on Accessibility Scanner interface for unified design
+   ========================================================================= */
+
+:root {
+    /* Background Colors - Dark Navy Blue Theme */
+    --shahi-bg-primary: #0f172a;
+    --shahi-bg-secondary: #1e293b;
+    --shahi-bg-tertiary: #334155;
+    --shahi-bg-elevated: #475569;
+    --shahi-bg-card: #1e293b;
+    --shahi-bg-input: #0f172a;
+    
+    /* Accent Colors - Clean Blue System */
+    --shahi-accent-primary: #3b82f6;
+    --shahi-accent-secondary: #60a5fa;
+    --shahi-accent-tertiary: #93c5fd;
+    --shahi-success: #22c55e;
+    --shahi-warning: #f59e0b;
+    --shahi-error: #ef4444;
+    --shahi-info: #06b6d4;
+    
+    /* Gradients */
+    --shahi-gradient-primary: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+    --shahi-gradient-secondary: linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%);
+    --shahi-gradient-success: linear-gradient(135deg, #22c55e 0%, #10b981 100%);
+    
+    /* Text Colors */
+    --shahi-text-primary: #ffffff;
+    --shahi-text-secondary: #cbd5e1;
+    --shahi-text-muted: #94a3b8;
+    --shahi-text-accent: #3b82f6;
+    
+    /* Border & Lines */
+    --shahi-border: #334155;
+    --shahi-border-light: #475569;
+    --shahi-border-accent: #3b82f6;
+    
+    /* Shadows - Blue Glow System */
+    --shahi-shadow: 0 4px 20px rgba(59, 130, 246, 0.1);
+    --shahi-shadow-md: 0 8px 30px rgba(59, 130, 246, 0.15);
+    --shahi-shadow-lg: 0 12px 40px rgba(59, 130, 246, 0.2);
+    --shahi-hover-shadow: 0 8px 30px rgba(59, 130, 246, 0.25);
+    
+    /* Typography */
+    --shahi-font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, sans-serif;
+    --shahi-font-mono: 'Courier New', Courier, monospace;
+    
+    /* Spacing */
+    --shahi-space-xs: 8px;
+    --shahi-space-sm: 16px;
+    --shahi-space-md: 24px;
+    --shahi-space-lg: 32px;
+    --shahi-space-xl: 48px;
+    
+    /* Border Radius */
+    --shahi-radius-sm: 6px;
+    --shahi-radius-md: 8px;
+    --shahi-radius-lg: 12px;
+    --shahi-radius-xl: 16px;
+    
+    /* Transitions */
+    --shahi-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --shahi-transition-fast: 150ms ease;
+    --shahi-transition-base: 250ms ease;
+    --shahi-transition-slow: 350ms ease;
+}
+
+/* ============================================================================
+   GLOBAL ADMIN STYLES
+   ========================================================================= */
+
+/* Wrap all plugin admin pages */
+.shahi-legalflowsuite-admin {
+    background: var(--shahi-bg-primary);
+    min-height: 100vh;
+    color: var(--shahi-text-primary);
+    font-family: var(--shahi-font-primary);
+    padding: var(--shahi-space-md);
+}
+
+/* ============================================================================
+   WORDPRESS ADMIN MENU HIGHLIGHTING
+   ========================================================================= */
+
+/* Position context for submenu items */
+#adminmenu .wp-submenu li {
+    position: relative;
+}
+
+/* Highlight active submenu item */
+#adminmenu .wp-submenu li.current a,
+#adminmenu .wp-submenu li a.current {
+    color: var(--shahi-accent-primary, #60a5fa) !important;
+    font-weight: 600 !important;
+}
+
+/* Add indicator for current submenu */
+#adminmenu .wp-submenu li.current a::before,
+#adminmenu .wp-submenu li a.current::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 16px;
+    background: var(--shahi-accent-primary, #60a5fa);
+    border-radius: 0 2px 2px 0;
+}
+
+/* Hover effect for submenu items */
+#adminmenu .wp-submenu li a:hover {
+    color: var(--shahi-accent-primary, #60a5fa) !important;
+}
+
+/* Main container */
+.shahi-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ============================================================================
+   TYPOGRAPHY
+   ========================================================================= */
+
+.shahi-legalflowsuite-admin h1,
+.shahi-legalflowsuite-admin h2,
+.shahi-legalflowsuite-admin h3,
+.shahi-legalflowsuite-admin h4,
+.shahi-legalflowsuite-admin h5,
+.shahi-legalflowsuite-admin h6 {
+    color: var(--shahi-text-primary);
+    font-weight: 600;
+    line-height: 1.3;
+    margin: 0 0 var(--shahi-space-sm);
+}
+
+.shahi-legalflowsuite-admin h1 {
+    font-size: 32px;
+    background: var(--shahi-gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.shahi-legalflowsuite-admin h2 {
+    font-size: 24px;
+}
+
+.shahi-legalflowsuite-admin h3 {
+    font-size: 20px;
+}
+
+.shahi-legalflowsuite-admin p {
+    color: var(--shahi-text-secondary);
+    line-height: 1.6;
+    margin: 0 0 var(--shahi-space-sm);
+}
+
+.shahi-text-muted {
+    color: var(--shahi-text-muted);
+}
+
+.shahi-text-accent {
+    color: var(--shahi-text-accent);
+}
+
+/* ============================================================================
+   CARDS & PANELS
+   ========================================================================= */
+
+.shahi-card {
+    background: var(--shahi-bg-secondary);
+    border: 1px solid var(--shahi-border-color);
+    border-radius: var(--shahi-radius-lg);
+    padding: var(--shahi-space-md);
+    box-shadow: var(--shahi-shadow-sm);
+    transition: all var(--shahi-transition-base);
+}
+
+.shahi-card:hover {
+    border-color: var(--shahi-border-accent);
+    box-shadow: var(--shahi-shadow-md);
+    transform: translateY(-2px);
+}
+
+.shahi-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--shahi-space-md);
+    padding-bottom: var(--shahi-space-sm);
+    border-bottom: 1px solid var(--shahi-border-color);
+}
+
+.shahi-card-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--shahi-text-primary);
+    margin: 0;
+}
+
+.shahi-card-body {
+    color: var(--shahi-text-secondary);
+}
+
+.shahi-card-footer {
+    margin-top: var(--shahi-space-md);
+    padding-top: var(--shahi-space-sm);
+    border-top: 1px solid var(--shahi-border-color);
+}
+
+/* ============================================================================
+   BUTTONS
+   ========================================================================= */
+
+.shahi-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.5;
+    border-radius: var(--shahi-radius-md);
+    border: none;
+    cursor: pointer;
+    transition: all var(--shahi-transition-fast);
+    text-decoration: none;
+    gap: 8px;
+}
+
+.shahi-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3);
+}
+
+/* Primary Button */
+.shahi-btn-primary {
+    background: var(--shahi-gradient-primary);
+    color: var(--shahi-text-primary);
+    box-shadow: var(--shahi-shadow-sm);
+}
+
+.shahi-btn-primary:hover {
+    box-shadow: var(--shahi-shadow-glow);
+    transform: translateY(-1px);
+}
+
+/* Secondary Button */
+.shahi-btn-secondary {
+    background: var(--shahi-bg-tertiary);
+    color: var(--shahi-text-primary);
+    border: 1px solid var(--shahi-border-color);
+}
+
+.shahi-btn-secondary:hover {
+    border-color: var(--shahi-accent-primary);
+    background: var(--shahi-bg-elevated);
+}
+
+/* Success Button */
+.shahi-btn-success {
+    background: var(--shahi-gradient-success);
+    color: var(--shahi-text-primary);
+}
+
+/* Danger Button */
+.shahi-btn-danger {
+    background: var(--shahi-accent-error);
+    color: var(--shahi-text-primary);
+}
+
+.shahi-btn-danger:hover {
+    background: #dc2626;
+}
+
+/* Small Button */
+.shahi-btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+/* Large Button */
+.shahi-btn-lg {
+    padding: 14px 28px;
+    font-size: 16px;
+}
+
+/* ============================================================================
+   FORMS & INPUTS
+   ========================================================================= */
+
+.shahi-form-group {
+    margin-bottom: var(--shahi-space-md);
+}
+
+.shahi-label {
+    display: block;
+    margin-bottom: var(--shahi-space-xs);
+    color: var(--shahi-text-primary);
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.shahi-input,
+.shahi-textarea,
+.shahi-select {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--shahi-bg-tertiary);
+    border: 1px solid var(--shahi-border-color);
+    border-radius: var(--shahi-radius-md);
+    color: var(--shahi-text-primary);
+    font-size: 14px;
+    transition: all var(--shahi-transition-fast);
+}
+
+.shahi-input:focus,
+.shahi-textarea:focus,
+.shahi-select:focus {
+    outline: none;
+    border-color: var(--shahi-accent-primary);
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+}
+
+.shahi-textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.shahi-input::placeholder {
+    color: var(--shahi-text-muted);
+}
+
+/* ============================================================================
+   TABLES
+   ========================================================================= */
+
+.shahi-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--shahi-bg-secondary);
+    border-radius: var(--shahi-radius-lg);
+    overflow: hidden;
+}
+
+.shahi-table thead {
+    background: var(--shahi-bg-tertiary);
+}
+
+.shahi-table th {
+    padding: 14px 16px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--shahi-text-primary);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--shahi-border-color);
+}
+
+.shahi-table td {
+    padding: 14px 16px;
+    color: var(--shahi-text-secondary);
+    border-bottom: 1px solid var(--shahi-border-color);
+}
+
+.shahi-table tbody tr:hover {
+    background: var(--shahi-bg-tertiary);
+}
+
+.shahi-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ============================================================================
+   BADGES & LABELS
+   ========================================================================= */
+
+.shahi-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.shahi-badge-primary {
+    background: rgba(96, 165, 250, 0.2);
+    color: var(--shahi-accent-primary);
+}
+
+.shahi-badge-success {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--shahi-accent-success);
+}
+
+.shahi-badge-warning {
+    background: rgba(245, 158, 11, 0.2);
+    color: var(--shahi-accent-warning);
+}
+
+.shahi-badge-error {
+    background: rgba(239, 68, 68, 0.2);
+    color: var(--shahi-accent-error);
+}
+
+/* ============================================================================
+   ALERTS & NOTICES
+   ========================================================================= */
+
+.shahi-alert {
+    padding: var(--shahi-space-md);
+    border-radius: var(--shahi-radius-md);
+    margin-bottom: var(--shahi-space-md);
+    border-left: 4px solid;
+}
+
+.shahi-alert-success {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: var(--shahi-accent-success);
+    color: var(--shahi-accent-success);
+}
+
+.shahi-alert-warning {
+    background: rgba(245, 158, 11, 0.1);
+    border-color: var(--shahi-accent-warning);
+    color: var(--shahi-accent-warning);
+}
+
+.shahi-alert-error {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: var(--shahi-accent-error);
+    color: var(--shahi-accent-error);
+}
+
+.shahi-alert-info {
+    background: rgba(96, 165, 250, 0.1);
+    border-color: var(--shahi-accent-primary);
+    color: var(--shahi-accent-primary);
+}
+
+/* ============================================================================
+   LOADING & SPINNERS
+   ========================================================================= */
+
+.shahi-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(96, 165, 250, 0.2);
+    border-top-color: var(--shahi-accent-primary);
+    border-radius: 50%;
+    animation: shahi-spin 0.6s linear infinite;
+}
+
+@keyframes shahi-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.shahi-loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(10, 14, 39, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.shahi-loading-overlay .shahi-spinner {
+    width: 60px;
+    height: 60px;
+    border-width: 4px;
+}
+
+/* ============================================================================
+   UTILITIES
+   ========================================================================= */
+
+/* Spacing */
+.shahi-mt-sm { margin-top: var(--shahi-space-sm); }
+.shahi-mt-md { margin-top: var(--shahi-space-md); }
+.shahi-mt-lg { margin-top: var(--shahi-space-lg); }
+.shahi-mb-sm { margin-bottom: var(--shahi-space-sm); }
+.shahi-mb-md { margin-bottom: var(--shahi-space-md); }
+.shahi-mb-lg { margin-bottom: var(--shahi-space-lg); }
+.shahi-p-sm { padding: var(--shahi-space-sm); }
+.shahi-p-md { padding: var(--shahi-space-md); }
+.shahi-p-lg { padding: var(--shahi-space-lg); }
+
+/* Display */
+.shahi-flex { display: flex; }
+.shahi-inline-flex { display: inline-flex; }
+.shahi-grid { display: grid; }
+.shahi-hidden { display: none; }
+
+/* Flex utilities */
+.shahi-items-center { align-items: center; }
+.shahi-justify-between { justify-content: space-between; }
+.shahi-justify-center { justify-content: center; }
+.shahi-gap-sm { gap: var(--shahi-space-sm); }
+.shahi-gap-md { gap: var(--shahi-space-md); }
+
+/* Text alignment */
+.shahi-text-left { text-align: left; }
+.shahi-text-center { text-align: center; }
+.shahi-text-right { text-align: right; }
+
+/* Grid layouts */
+.shahi-grid-2 { grid-template-columns: repeat(2, 1fr); }
+.shahi-grid-3 { grid-template-columns: repeat(3, 1fr); }
+.shahi-grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+/* ============================================================================
+   RESPONSIVE
+   ========================================================================= */
+
+@media (max-width: 1024px) {
+    .shahi-grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .shahi-legalflowsuite-admin {
+        padding: var(--shahi-space-sm);
+    }
+    
+    .shahi-grid-2,
+    .shahi-grid-3,
+    .shahi-grid-4 {
+        grid-template-columns: 1fr;
+    }
+    
+    .shahi-card {
+        padding: var(--shahi-space-sm);
+    }
+    
+    .shahi-legalflowsuite-admin h1 {
+        font-size: 24px;
+    }
+}
+
+/* ============================================================================
+   ACCESSIBILITY
+   ========================================================================= */
+
+.shahi-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Focus visible for keyboard navigation */
+.shahi-btn:focus-visible,
+.shahi-input:focus-visible,
+.shahi-textarea:focus-visible,
+.shahi-select:focus-visible {
+    outline: 2px solid var(--shahi-accent-primary);
+    outline-offset: 2px;
+}
+
+
+/* ============================================================================
+   UNIFIED COMPONENT LIBRARY - ACCESSIBILITY SCANNER DESIGN
+   Applied globally to all admin interfaces
+   ========================================================================= */
+
+/* Cards - Unified Design */
+.shahi-card, .slos-card, [class*="-card"] {
+    background: var(--shahi-bg-card, #1e293b) !important;
+    border: 1px solid var(--shahi-border, #334155) !important;
+    border-radius: var(--shahi-radius-lg, 12px) !important;
+    padding: var(--shahi-space-md, 24px) !important;
+    box-shadow: var(--shahi-shadow, 0 4px 20px rgba(59, 130, 246, 0.1)) !important;
+    transition: var(--shahi-transition, all 0.3s cubic-bezier(0.4, 0, 0.2, 1)) !important;
+}
+
+.shahi-card:hover, .slos-card:hover {
+    box-shadow: var(--shahi-hover-shadow, 0 8px 30px rgba(59, 130, 246, 0.25)) !important;
+    border-color: var(--shahi-accent-primary, #3b82f6) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Stat Cards */
+.shahi-stat-card, .slos-stat-card {
+    background: var(--shahi-bg-card, #1e293b) !important;
+    border: 1px solid var(--shahi-border, #334155) !important;
+    border-radius: var(--shahi-radius-lg, 12px) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.shahi-stat-card::before, .slos-stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--shahi-gradient-primary, linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%)) !important;
+}
+
+/* Buttons - Unified Blue Design */
+.shahi-btn, .slos-btn, [class*="-button"], button[class*="shahi"], button[class*="slos"] {
+    background: var(--shahi-gradient-primary, linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%)) !important;
+    border: none !important;
+    border-radius: var(--shahi-radius-md, 8px) !important;
+    padding: 12px 24px !important;
+    color: #ffffff !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: var(--shahi-transition, all 0.3s cubic-bezier(0.4, 0, 0.2, 1)) !important;
+}
+
+.shahi-btn:hover, .slos-btn:hover {
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Inputs - Unified Dark Design */
+.shahi-input, .slos-input, input[type="text"].shahi, input[type="text"].slos,
+input[type="email"].shahi, input[type="url"].slos {
+    background: var(--shahi-bg-input, #0f172a) !important;
+    border: 1px solid var(--shahi-border, #334155) !important;
+    border-radius: var(--shahi-radius-md, 8px) !important;
+    padding: 12px 16px !important;
+    color: var(--shahi-text-primary, #ffffff) !important;
+    font-size: 14px !important;
+    transition: var(--shahi-transition, all 0.3s cubic-bezier(0.4, 0, 0.2, 1)) !important;
+}
+
+.shahi-input:focus, .slos-input:focus {
+    outline: none !important;
+    border-color: var(--shahi-accent-primary, #3b82f6) !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+/* Progress Circles */
+.shahi-progress-circle, .slos-progress-circle {
+    stroke: var(--shahi-accent-primary, #3b82f6) !important;
+}
+
+/* Status Badges */
+.shahi-badge, .slos-badge, [class*="-badge"] {
+    padding: 4px 12px !important;
+    border-radius: 20px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+}
+
+.shahi-badge-success, .slos-badge-success {
+    background: rgba(34, 197, 94, 0.1) !important;
+    color: var(--shahi-success, #22c55e) !important;
+    border: 1px solid rgba(34, 197, 94, 0.3) !important;
+}
+
+.shahi-badge-warning, .slos-badge-warning {
+    background: rgba(245, 158, 11, 0.1) !important;
+    color: var(--shahi-warning, #f59e0b) !important;
+    border: 1px solid rgba(245, 158, 11, 0.3) !important;
+}
+
+.shahi-badge-error, .slos-badge-error {
+    background: rgba(239, 68, 68, 0.1) !important;
+    color: var(--shahi-error, #ef4444) !important;
+    border: 1px solid rgba(239, 68, 68, 0.3) !important;
+}
+
+.shahi-badge-info, .slos-badge-info {
+    background: rgba(59, 130, 246, 0.1) !important;
+    color: var(--shahi-accent-primary, #3b82f6) !important;
+    border: 1px solid rgba(59, 130, 246, 0.3) !important;
+}
+
+/* Tables - Unified Design */
+table.shahi-table, table.slos-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table.shahi-table th, table.slos-table th {
+    background: var(--shahi-bg-tertiary, #334155) !important;
+    color: var(--shahi-text-primary, #ffffff) !important;
+    padding: 12px 16px !important;
+    text-align: left !important;
+    font-weight: 600 !important;
+    border-bottom: 1px solid var(--shahi-border, #334155) !important;
+}
+
+table.shahi-table td, table.slos-table td {
+    padding: 12px 16px !important;
+    color: var(--shahi-text-secondary, #cbd5e1) !important;
+    border-bottom: 1px solid var(--shahi-border, #334155) !important;
+}
+
+table.shahi-table tr:hover, table.slos-table tr:hover {
+    background: var(--shahi-bg-tertiary, #334155) !important;
+}
+
+
+/* ==================================================
+   GLOBAL THEME OVERRIDE - ACCESSIBILITY SCANNER DESIGN
+   Applied to ALL admin pages for unified appearance
+   ================================================== */
+
+/* Force dark backgrounds everywhere */
+body.wp-admin, .wrap, [class*="shahi-"], [class*="slos-"] {
+    background: var(--shahi-bg-primary, #0f172a) !important;
+}
+
+/* Unified page wrapper */
+.wrap {
+    background: var(--shahi-bg-primary, #0f172a) !important;
+    color: var(--shahi-text-primary, #ffffff) !important;
+}
+
+/* All headings use unified colors */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--shahi-text-primary, #ffffff) !important;
+}
+
+/* All text uses unified colors */
+p, span, div, td, th, li {
+    color: var(--shahi-text-secondary, #cbd5e1);
+}
+
+/* Stats cards unified */
+[class*="-stat"], [class*="-metric"], [class*="-kpi"] {
+    background: var(--shahi-bg-card, #1e293b) !important;
+    border: 1px solid var(--shahi-border, #334155) !important;
+    border-radius: var(--shahi-radius-lg, 12px) !important;
+    box-shadow: var(--shahi-shadow, 0 4px 20px rgba(59, 130, 246, 0.1)) !important;
+}
+
+/* All icons use blue accent */
+.dashicons, [class*="-icon"] {
+    color: var(--shahi-accent-primary, #3b82f6) !important;
+}
+
+/* Progress circles unified */
+circle[class*="progress"], svg[class*="circle"] circle {
+    stroke: var(--shahi-accent-primary, #3b82f6) !important;
+}
+
+/* Tabs unified */
+[class*="-tab"], [class*="-nav"] a {
+    color: var(--shahi-text-secondary, #cbd5e1) !important;
+}
+
+[class*="-tab"].active, [class*="-tab"]:hover,
+[class*="-nav"] a.active, [class*="-nav"] a:hover {
+    color: var(--shahi-accent-primary, #3b82f6) !important;
+    border-color: var(--shahi-accent-primary, #3b82f6) !important;
+}
+
+
+/* ============================================================================
+   GLOBAL THEME ENFORCEMENT - Unified Dark Theme
+   These rules enforce consistent dark theme across ALL plugin interfaces
+   ========================================================================= */
+
+/* Plugin wrapper - dark navy background */
+.shahi-legalflowsuite-admin,
+.slos-wrapper,
+.slos-page-wrap,
+.slos-admin-page,
+.slos-dsr-wrapper,
+.shahi-dashboard-wrap,
+.shahi-compliance-page,
+.shahi-accessibility-wrap,
+.shahi-settings-page,
+.shahi-document-hub-wrap,
+.shahi-legal-docs-wrap {
+    background: var(--shahi-bg-primary, #0f172a) !important;
+    color: var(--shahi-text-primary, #ffffff) !important;
+}
+
+/* All admin containers */
+.wrap[class*="shahi"],
+.wrap[class*="slos"],
+.toplevel_page_shahi-legalflowsuite .wrap,
+[class*="shahi_page_"] .wrap,
+[class*="slos_page_"] .wrap {
+    background: var(--shahi-bg-primary, #0f172a) !important;
+}
+
+/* Force all cards/panels to dark slate */
+[class*="-card"],
+[class*="-panel"],
+[class*="-box"],
+[class*="-container"],
+.postbox {
+    background: var(--shahi-bg-card, #1e293b) !important;
+    border: 1px solid var(--shahi-border, #334155) !important;
+}
+
+/* Force all text to be white/gray */
+.wrap,
+[class*="shahi-"],
+[class*="slos-"],
+[class*="admin-"],
+.postbox,
+h1, h2, h3, h4, h5, h6,
+p, span, div, td, th, li {
+    color: var(--shahi-text-primary, #ffffff) !important;
+}
+
+/* Force inputs to dark theme */
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="password"],
+input[type="search"],
+input[type="url"],
+textarea,
+select {
+    background: var(--shahi-bg-input, #0f172a) !important;
+    border: 1px solid var(--shahi-border, #334155) !important;
+    color: var(--shahi-text-primary, #ffffff) !important;
+}
+
+/* Force buttons to blue gradient */
+button:not(.slos-modal-close),
+.button,
+[class*="-btn"],
+input[type="submit"],
+input[type="button"] {
+    background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%) !important;
+    border: none !important;
+    color: #ffffff !important;
+}
+
+/* Force tables to dark theme */
+table,
+.widefat,
+[class*="-table"] {
+    background: var(--shahi-bg-card, #1e293b) !important;
+    border: 1px solid var(--shahi-border, #334155) !important;
+}
+
+table th,
+.widefat th {
+    background: var(--shahi-bg-secondary, #1e293b) !important;
+    color: var(--shahi-text-primary, #ffffff) !important;
+    border-bottom: 2px solid var(--shahi-accent-primary, #3b82f6) !important;
+}
+
+table td,
+.widefat td {
+    background: var(--shahi-bg-card, #1e293b) !important;
+    color: var(--shahi-text-secondary, #cbd5e1) !important;
+    border-bottom: 1px solid var(--shahi-border, #334155) !important;
+}
+
+/* Remove any light-colored backgrounds */
+*[style*="background:#fff"],
+*[style*="background: #fff"],
+*[style*="background:white"],
+*[style*="background: white"] {
+    background: var(--shahi-bg-card) !important;
+}
+
+/* Remove any black text */
+*[style*="color:#000"],
+*[style*="color: #000"],
+*[style*="color:black"],
+*[style*="color: black"] {
+    color: var(--shahi-text-primary) !important;
+}
