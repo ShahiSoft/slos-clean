@@ -22,6 +22,18 @@ class AccessibilitySettings {
 	public function register_settings() {
 		register_setting( 'slos_accessibility_settings', 'slos_active_checkers' );
 		register_setting( 'slos_accessibility_settings', 'slos_active_fixes' );
+		register_setting( 'slos_accessibility_settings', 'slos_widget_enabled', array(
+			'type'    => 'boolean',
+			'default' => true,
+		) );
+		register_setting( 'slos_accessibility_settings', 'slos_widget_position', array(
+			'type'    => 'string',
+			'default' => 'bottom-right',
+		) );
+		register_setting( 'slos_accessibility_settings', 'slos_widget_features', array(
+			'type'    => 'array',
+			'default' => array(),
+		) );
 	}
 
 	public function render() {
@@ -65,8 +77,13 @@ class AccessibilitySettings {
 		$active_checkers = get_option( 'slos_active_checkers', array() );
 		$active_fixes    = get_option( 'slos_active_fixes', array() );
 
+		// Get widget settings
+		$widget_enabled  = get_option( 'slos_widget_enabled', true );
+		$widget_position = get_option( 'slos_widget_position', 'bottom-right' );
+		$widget_features = get_option( 'slos_widget_features', array() );
+
 		// Render inline settings (embedded in tab)
-		$this->render_settings_content( $checkers, $fixes, $active_checkers, $active_fixes );
+		$this->render_settings_content( $checkers, $fixes, $active_checkers, $active_fixes, $widget_enabled, $widget_position, $widget_features );
 	}
 
 	/**
@@ -76,9 +93,12 @@ class AccessibilitySettings {
 	 * @param array $fixes Available fixes
 	 * @param array $active_checkers Active checkers
 	 * @param array $active_fixes Active fixes
+	 * @param bool $widget_enabled Widget enabled status
+	 * @param string $widget_position Widget position
+	 * @param array $widget_features Widget features
 	 * @return void
 	 */
-	private function render_settings_content( $checkers, $fixes, $active_checkers, $active_fixes ) {
+	private function render_settings_content( $checkers, $fixes, $active_checkers, $active_fixes, $widget_enabled = true, $widget_position = 'bottom-right', $widget_features = array() ) {
 		?>
 		<style>
 		.slos-settings-v3 {
@@ -250,6 +270,100 @@ class AccessibilitySettings {
 					</div>
 				</div>
 
+				<!-- Frontend Widget Settings Card -->
+				<div class="slos-settings-card" style="margin-top: 24px;">
+					<div class="slos-card-header">
+						<div>
+							<h3>
+								<span class="dashicons dashicons-universal-access"></span>
+								<?php esc_html_e( 'Frontend Widget Settings', 'shahi-legalflowsuite' ); ?>
+							</h3>
+							<p><?php esc_html_e( 'Configure the accessibility widget displayed on your website frontend.', 'shahi-legalflowsuite' ); ?></p>
+						</div>
+					</div>
+					<div class="slos-card-body">
+						<!-- Enable/Disable Widget -->
+						<div style="margin-bottom: 24px; padding: 16px; background: rgba(255,255,255,0.02); border-radius: 8px;">
+							<label class="slos-checkbox-item" style="cursor: pointer;">
+								<input type="checkbox" name="slos_widget_enabled" value="1" 
+									<?php checked( $widget_enabled ); ?>
+									style="width: 20px; height: 20px;">
+								<span style="font-size: 14px; font-weight: 600; color: var(--slos-text-primary);">
+									<?php esc_html_e( 'Enable Frontend Accessibility Widget', 'shahi-legalflowsuite' ); ?>
+								</span>
+							</label>
+							<p style="margin: 8px 0 0 30px; color: var(--slos-text-muted); font-size: 13px;">
+								<?php esc_html_e( 'Display the accessibility tools icon on your website for visitors to adjust their experience.', 'shahi-legalflowsuite' ); ?>
+							</p>
+						</div>
+
+						<!-- Widget Position -->
+						<div style="margin-bottom: 24px;">
+							<h4 style="color: var(--slos-text-primary); margin-bottom: 12px; font-size: 14px;">
+								<?php esc_html_e( 'Widget Position', 'shahi-legalflowsuite' ); ?>
+							</h4>
+							<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+								<?php
+								$positions = array(
+									'bottom-right' => __( 'Bottom Right (Recommended)', 'shahi-legalflowsuite' ),
+									'bottom-left'  => __( 'Bottom Left', 'shahi-legalflowsuite' ),
+									'top-right'    => __( 'Top Right', 'shahi-legalflowsuite' ),
+									'top-left'     => __( 'Top Left', 'shahi-legalflowsuite' ),
+								);
+								foreach ( $positions as $pos_key => $pos_label ) :
+									?>
+									<label class="slos-checkbox-item" style="cursor: pointer; background: rgba(255,255,255,0.02);">
+										<input type="radio" name="slos_widget_position" value="<?php echo esc_attr( $pos_key ); ?>" 
+											<?php checked( $widget_position, $pos_key ); ?>
+											style="width: 18px; height: 18px;">
+										<span style="font-size: 13px;"><?php echo esc_html( $pos_label ); ?></span>
+									</label>
+								<?php endforeach; ?>
+							</div>
+						</div>
+
+						<!-- Widget Features -->
+						<div>
+							<h4 style="color: var(--slos-text-primary); margin-bottom: 12px; font-size: 14px;">
+								<?php esc_html_e( 'Available Features', 'shahi-legalflowsuite' ); ?>
+							</h4>
+							<p style="color: var(--slos-text-muted); font-size: 13px; margin-bottom: 16px;">
+								<?php esc_html_e( 'Select which accessibility features to include in the widget. Unchecked features will be hidden from users.', 'shahi-legalflowsuite' ); ?>
+							</p>
+							
+							<?php
+							$widget_features_list = $this->get_available_widget_features();
+							foreach ( $widget_features_list as $category_key => $category ) :
+								?>
+								<div style="margin-bottom: 20px; border: 1px solid var(--slos-border); border-radius: 8px; padding: 16px; background: rgba(255,255,255,0.01);">
+									<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+										<h5 style="color: var(--slos-text-primary); margin: 0; font-size: 13px; font-weight: 600;">
+											<?php echo esc_html( $category['label'] ); ?>
+										</h5>
+										<div class="slos-btn-group">
+											<button type="button" class="slos-btn-sm slos-select-all" data-target="category-<?php echo esc_attr( $category_key ); ?>">
+												<?php esc_html_e( 'All', 'shahi-legalflowsuite' ); ?>
+											</button>
+											<button type="button" class="slos-btn-sm slos-deselect-all" data-target="category-<?php echo esc_attr( $category_key ); ?>">
+												<?php esc_html_e( 'None', 'shahi-legalflowsuite' ); ?>
+											</button>
+										</div>
+									</div>
+									<div class="slos-checkbox-grid">
+										<?php foreach ( $category['features'] as $feature_key => $feature_label ) : ?>
+											<label class="slos-checkbox-item category-<?php echo esc_attr( $category_key ); ?>">
+												<input type="checkbox" name="slos_widget_features[]" value="<?php echo esc_attr( $feature_key ); ?>" 
+													<?php checked( in_array( $feature_key, $widget_features, true ) || empty( $widget_features ) ); ?>>
+												<span><?php echo esc_html( $feature_label ); ?></span>
+											</label>
+										<?php endforeach; ?>
+									</div>
+								</div>
+							<?php endforeach; ?>
+						</div>
+					</div>
+				</div>
+
 				<div class="slos-form-actions">
 					<button type="submit" class="slos-btn-primary">
 						<span class="dashicons dashicons-saved"></span>
@@ -263,12 +377,26 @@ class AccessibilitySettings {
 		jQuery(document).ready(function($) {
 			$('.slos-select-all').on('click', function() {
 				var target = $(this).data('target');
-				$('input[name="' + target + '[]"]').prop('checked', true);
+				if (target.startsWith('category-')) {
+					// Select all in specific category
+					$('.slos-checkbox-item.' + target + ' input[type="checkbox"]').prop('checked', true);
+				} else {
+					// Select all in settings group
+					$('input[name="' + target + '[]"]').prop('checked', true);
+				}
 			});
 			
 			$('.slos-deselect-all').on('click', function() {
 				var target = $(this).data('target');
-				$('input[name="' + target + '[]"]').prop('checked', false);
+				if (target.startsWith('category-')) {
+					// Deselect all in specific category
+					$('.slos-checkbox-item.' + target + ' input[type="checkbox"]').prop('checked', false);
+				} else {
+					// Deselect all in settings group
+					$('input[name="' + target + '[]"]').prop('checked', false);
+				}
+			});
+		});
 			});
 		});
 		</script>
@@ -319,5 +447,85 @@ class AccessibilitySettings {
 	private function get_available_fixes() {
 		// Automated fixes have been removed to prevent unintended modifications
 		return array();
+	}
+
+	/**
+	 * Get available widget features organized by category
+	 *
+	 * @return array Widget features grouped by category
+	 */
+	private function get_available_widget_features() {
+		return array(
+			'profiles' => array(
+				'label' => 'Accessibility Profiles',
+				'features' => array(
+					'profile-epilepsy' => 'Epilepsy Safe',
+					'profile-visually-impaired' => 'Visually Impaired',
+					'profile-cognitive' => 'Cognitive Disability',
+					'profile-adhd' => 'ADHD Friendly',
+					'profile-blind' => 'Blind Users',
+				),
+			),
+			'content' => array(
+				'label' => 'Content Adjustments',
+				'features' => array(
+					'increase-text' => 'Increase Text',
+					'decrease-text' => 'Decrease Text',
+					'readable-font' => 'Readable Font',
+					'highlight-links' => 'Highlight Links',
+					'underline-links' => 'Underline Links',
+					'big-cursor' => 'Big Cursor',
+					'stop-animations' => 'Stop Animations',
+					'highlight-headings' => 'Highlight Headings',
+					'hide-images' => 'Hide Images',
+					'reading-guide' => 'Reading Guide',
+				),
+			),
+			'spacing' => array(
+				'label' => 'Text Spacing & Alignment',
+				'features' => array(
+					'increase-line-height' => 'Increase Line Height',
+					'increase-letter-spacing' => 'Increase Letter Spacing',
+					'align-left' => 'Align Left',
+					'align-center' => 'Align Center',
+					'align-right' => 'Align Right',
+				),
+			),
+			'color' => array(
+				'label' => 'Color & Contrast',
+				'features' => array(
+					'grayscale' => 'Grayscale',
+					'monochrome' => 'Monochrome',
+					'low-saturation' => 'Low Saturation',
+					'dark-mode' => 'Dark Mode',
+					'blue-light-filter' => 'Blue Light Filter',
+					'protanopia' => 'Protanopia (Color Blindness)',
+					'deuteranopia' => 'Deuteranopia (Color Blindness)',
+					'tritanopia' => 'Tritanopia (Color Blindness)',
+					'high-contrast' => 'High Contrast',
+					'negative-contrast' => 'Negative Contrast',
+					'light-background' => 'Light Background',
+					'smart-contrast' => 'Smart Contrast',
+				),
+			),
+			'navigation' => array(
+				'label' => 'Navigation & Interaction',
+				'features' => array(
+					'reading-mask' => 'Reading Mask',
+					'text-to-speech' => 'Text to Speech',
+					'tooltip-hover' => 'Tooltip on Hover',
+					'virtual-keyboard' => 'Virtual Keyboard',
+				),
+			),
+			'readability' => array(
+				'label' => 'Content & Readability',
+				'features' => array(
+					'page-structure' => 'Page Structure',
+					'dictionary' => 'Dictionary',
+					'reader-mode' => 'Reader Mode',
+					'translate' => 'Translate',
+				),
+			),
+		);
 	}
 }

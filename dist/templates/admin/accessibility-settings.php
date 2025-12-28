@@ -72,6 +72,26 @@ if (!defined('ABSPATH')) {
                 </div>
             </div>
 
+            <!-- Frontend Widget Settings (passed from render method) -->
+            <?php if (isset($widget_enabled)): ?>
+            <div class="shahi-card" style="margin-top: 24px;">
+                <div class="shahi-card-header">
+                    <div>
+                        <h3>
+                            <span class="dashicons dashicons-universal-access"></span>
+                            <?php echo esc_html__('Frontend Widget', 'shahi-legalflowsuite'); ?>
+                        </h3>
+                        <p class="description"><?php echo esc_html__('Configure the accessibility widget on your website.', 'shahi-legalflowsuite'); ?></p>
+                    </div>
+                </div>
+                <div class="shahi-card-body">
+                    <p style="color: #94a3b8; margin-bottom: 16px;">
+                        <?php echo esc_html__('Widget settings are managed in the settings page above. This section is for reference only.', 'shahi-legalflowsuite'); ?>
+                    </p>
+                </div>
+            </div>
+            <?php endif; ?>
+
         </div>
 
         <div class="shahi-form-actions" style="margin-top: 30px; text-align: right;">
@@ -88,12 +108,20 @@ if (!defined('ABSPATH')) {
 jQuery(document).ready(function($) {
     $('.slos-select-all').on('click', function() {
         var target = $(this).data('target');
-        $('input[name="' + target + '[]"]').prop('checked', true);
+        if (target && target.startsWith('category-')) {
+            $('.slos-checkbox-item.' + target + ' input[type="checkbox"]').prop('checked', true);
+        } else if (target) {
+            $('input[name="' + target + '[]"]').prop('checked', true);
+        }
     });
     
     $('.slos-deselect-all').on('click', function() {
         var target = $(this).data('target');
-        $('input[name="' + target + '[]"]').prop('checked', false);
+        if (target && target.startsWith('category-')) {
+            $('.slos-checkbox-item.' + target + ' input[type="checkbox"]').prop('checked', false);
+        } else if (target) {
+            $('input[name="' + target + '[]"]').prop('checked', false);
+        }
     });
 });
 </script>

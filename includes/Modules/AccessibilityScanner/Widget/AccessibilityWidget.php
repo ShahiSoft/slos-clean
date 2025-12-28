@@ -41,6 +41,12 @@ class AccessibilityWidget {
 			return;
 		}
 
+		// Check if widget is enabled in settings
+		$widget_enabled = get_option( 'slos_widget_enabled', true );
+		if ( ! $widget_enabled ) {
+			return;
+		}
+
 		wp_enqueue_style(
 			'slos-accessibility-widget',
 			SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/css/slos-accessibility-widget.css',
@@ -56,11 +62,15 @@ class AccessibilityWidget {
 			true
 		);
 
+		// Get widget position
+		$widget_position = get_option( 'slos_widget_position', 'bottom-right' );
+
 		wp_localize_script(
 			'slos-accessibility-widget',
 			'slosWidget',
 			array(
 				'ajax_url' => admin_url( 'admin-ajax.php' ),
+				'position' => $widget_position,
 			)
 		);
 	}
@@ -77,8 +87,45 @@ class AccessibilityWidget {
 			return;
 		}
 
+		// Check if widget is enabled in settings
+		$widget_enabled = get_option( 'slos_widget_enabled', true );
+		if ( ! $widget_enabled ) {
+			return;
+		}
+
+		// Get widget settings
+		$widget_position = get_option( 'slos_widget_position', 'bottom-right' );
+		$widget_features = get_option( 'slos_widget_features', array() );
+
+		// If no features selected, show all (default behavior)
+		$show_all = empty( $widget_features );
+
+		// Define feature categories for conditional rendering
+		$categories = array(
+			'profiles'   => array( 'profile-epilepsy', 'profile-visually-impaired', 'profile-cognitive', 'profile-adhd', 'profile-blind' ),
+			'content'    => array( 'increase-text', 'decrease-text', 'readable-font', 'highlight-links', 'underline-links', 'big-cursor', 'stop-animations', 'highlight-headings', 'hide-images', 'reading-guide' ),
+			'spacing'    => array( 'increase-line-height', 'increase-letter-spacing', 'align-left', 'align-center', 'align-right' ),
+			'color'      => array( 'grayscale', 'monochrome', 'low-saturation', 'dark-mode', 'blue-light-filter', 'protanopia', 'deuteranopia', 'tritanopia', 'high-contrast', 'negative-contrast', 'light-background', 'smart-contrast' ),
+			'navigation' => array( 'reading-mask', 'text-to-speech', 'tooltip-hover', 'virtual-keyboard' ),
+			'readability' => array( 'page-structure', 'dictionary', 'reader-mode', 'translate' ),
+		);
+
+		// Check which categories have enabled features
+		$show_category = array();
+		if ( $show_all ) {
+			// Show all categories if no features selected
+			foreach ( array_keys( $categories ) as $cat ) {
+				$show_category[ $cat ] = true;
+			}
+		} else {
+			// Only show categories that have at least one enabled feature
+			foreach ( $categories as $cat_key => $cat_features ) {
+				$show_category[ $cat_key ] = ! empty( array_intersect( $cat_features, $widget_features ) );
+			}
+		}
+
 		?>
-		<div id="slos-accessibility-widget" class="slos-aw-widget" role="region" aria-label="Accessibility Tools">
+		<div id="slos-accessibility-widget" class="slos-aw-widget slos-aw-<?php echo esc_attr( $widget_position ); ?>" role="region" aria-label="Accessibility Tools">
 			<button id="slos-aw-toggle" class="slos-aw-toggle" aria-label="Open Accessibility Tools" aria-expanded="false">
 				<span class="dashicons dashicons-universal-access"></span>
 			</button>
@@ -92,58 +139,92 @@ class AccessibilityWidget {
 				</div>
 				
 				<div class="slos-aw-body">
+					<?php if ( ! empty( $show_category['profiles'] ) ) : ?>
 					<div class="slos-aw-group slos-aw-profiles">
 						<h4>Accessibility Profiles</h4>
+						<?php if ( $this->should_show_feature( 'profile-epilepsy', $show_all, $widget_features ) ) : ?>
 						<button class="slos-aw-btn slos-aw-profile-btn" data-action="profile-epilepsy">
 							<span class="dashicons dashicons-warning"></span> Epilepsy Safe
 						</button>
+						<?php endif; ?>
+						<?php if ( $this->should_show_feature( 'profile-visually-impaired', $show_all, $widget_features ) ) : ?>
 						<button class="slos-aw-btn slos-aw-profile-btn" data-action="profile-visually-impaired">
 							<span class="dashicons dashicons-visibility"></span> Visually Impaired
 						</button>
+						<?php endif; ?>
+						<?php if ( $this->should_show_feature( 'profile-cognitive', $show_all, $widget_features ) ) : ?>
 						<button class="slos-aw-btn slos-aw-profile-btn" data-action="profile-cognitive">
 							<span class="dashicons dashicons-lightbulb"></span> Cognitive Disability
 						</button>
+						<?php endif; ?>
+						<?php if ( $this->should_show_feature( 'profile-adhd', $show_all, $widget_features ) ) : ?>
 						<button class="slos-aw-btn slos-aw-profile-btn" data-action="profile-adhd">
 							<span class="dashicons dashicons-dismiss"></span> ADHD Friendly
 						</button>
+						<?php endif; ?>
+						<?php if ( $this->should_show_feature( 'profile-blind', $show_all, $widget_features ) ) : ?>
 						<button class="slos-aw-btn slos-aw-profile-btn" data-action="profile-blind">
 							<span class="dashicons dashicons-hidden"></span> Blind Users
 						</button>
+						<?php endif; ?>
 					</div>
+					<?php endif; ?>
 
+					<?php if ( ! empty( $show_category['content'] ) ) : ?>
 					<div class="slos-aw-group">
 						<h4>Content Adjustments</h4>
+						<?php if ( $this->should_show_feature( 'increase-text', $show_all, $widget_features ) ) : ?>
 						<button class="slos-aw-btn" data-action="increase-text">
 							<span class="dashicons dashicons-editor-textcolor"></span> Increase Text
 						</button>
+						<?php endif; ?>
+						<?php if ( $this->should_show_feature( 'decrease-text', $show_all, $widget_features ) ) : ?>
 						<button class="slos-aw-btn" data-action="decrease-text">
 							<span class="dashicons dashicons-editor-shrinktext"></span> Decrease Text
 						</button>
+						<?php endif; ?>
+						<?php if ( $this->should_show_feature( 'readable-font', $show_all, $widget_features ) ) : ?>
 						<button class="slos-aw-btn" data-action="readable-font">
 							<span class="dashicons dashicons-editor-font"></span> Readable Font
 						</button>
+						<?php endif; ?>
+						<?php if ( $this->should_show_feature( 'highlight-links', $show_all, $widget_features ) ) : ?>
 						<button class="slos-aw-btn" data-action="highlight-links">
 							<span class="dashicons dashicons-admin-links"></span> Highlight Links
 						</button>
+						<?php endif; ?>
+						<?php if ( $this->should_show_feature( 'underline-links', $show_all, $widget_features ) ) : ?>
 						<button class="slos-aw-btn" data-action="underline-links">
 							<span class="dashicons dashicons-editor-underline"></span> Underline Links
 						</button>
+						<?php endif; ?>
+						<?php if ( $this->should_show_feature( 'big-cursor', $show_all, $widget_features ) ) : ?>
 						<button class="slos-aw-btn" data-action="big-cursor">
 							<span class="dashicons dashicons-arrow-up-alt"></span> Big Cursor
 						</button>
+						<?php endif; ?>
+						<?php if ( $this->should_show_feature( 'stop-animations', $show_all, $widget_features ) ) : ?>
 						<button class="slos-aw-btn" data-action="stop-animations">
 							<span class="dashicons dashicons-controls-pause"></span> Stop Animations
 						</button>
+						<?php endif; ?>
+						<?php if ( $this->should_show_feature( 'highlight-headings', $show_all, $widget_features ) ) : ?>
 						<button class="slos-aw-btn" data-action="highlight-headings">
 							<span class="dashicons dashicons-heading"></span> Highlight Headings
 						</button>
+						<?php endif; ?>
+						<?php if ( $this->should_show_feature( 'hide-images', $show_all, $widget_features ) ) : ?>
 						<button class="slos-aw-btn" data-action="hide-images">
 							<span class="dashicons dashicons-hidden"></span> Hide Images
 						</button>
+						<?php endif; ?>
+						<?php if ( $this->should_show_feature( 'reading-guide', $show_all, $widget_features ) ) : ?>
 						<button class="slos-aw-btn" data-action="reading-guide">
 							<span class="dashicons dashicons-minus"></span> Reading Guide
 						</button>
+						<?php endif; ?>
 					</div>
+					<?php endif; ?>
 
 					<div class="slos-aw-group">
 						<h4>Text Spacing & Alignment</h4>
@@ -243,5 +324,32 @@ class AccessibilityWidget {
 		</div>
 		<?php
 	}
-}
 
+	/**
+	 * Check if any features in a category are enabled
+	 *
+	 * @param array  $features Enabled features array
+	 * @param string $prefix   Category prefix to check
+	 * @return bool
+	 */
+	private function has_feature_in_category( $features, $prefix ) {
+		foreach ( $features as $feature ) {
+			if ( strpos( $feature, $prefix ) === 0 ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Check if a feature should be shown
+	 *
+	 * @param string $feature_key Feature key to check
+	 * @param bool   $show_all    Whether to show all features
+	 * @param array  $features    Enabled features array
+	 * @return bool
+	 */
+	private function should_show_feature( $feature_key, $show_all, $features ) {
+		return $show_all || in_array( $feature_key, $features, true );
+	}
+}
