@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Metaboxes Framework
  *
@@ -69,7 +69,7 @@ class Metaboxes {
 		$this->metaboxes['template_item_details'] = array(
 			'id'        => 'shahi_item_details',
 			'title'     => __( 'Item Details', 'shahi-legalflowsuite' ),
-			'post_type' => 'shahi_legalops_suite_item',
+			'post_type' => 'shahi_legalflowsuite_item',
 			'context'   => 'normal',
 			'priority'  => 'high',
 			'callback'  => array( $this, 'render_item_details_metabox' ),
@@ -112,7 +112,7 @@ class Metaboxes {
 		$this->metaboxes['template_item_settings'] = array(
 			'id'        => 'shahi_item_settings',
 			'title'     => __( 'Additional Settings', 'shahi-legalflowsuite' ),
-			'post_type' => 'shahi_legalops_suite_item',
+			'post_type' => 'shahi_legalflowsuite_item',
 			'context'   => 'side',
 			'priority'  => 'default',
 			'callback'  => array( $this, 'render_item_settings_metabox' ),
@@ -292,7 +292,7 @@ class Metaboxes {
 		}
 
 		// Check post type
-		if ( $post->post_type !== 'shahi_legalops_suite_item' ) {
+		if ( $post->post_type !== 'shahi_legalflowsuite_item' ) {
 			return;
 		}
 
@@ -375,7 +375,7 @@ class Metaboxes {
 		}
 
 		global $post;
-		if ( ! $post || $post->post_type !== 'shahi_legalops_suite_item' ) {
+		if ( ! $post || $post->post_type !== 'shahi_legalflowsuite_item' ) {
 			return;
 		}
 

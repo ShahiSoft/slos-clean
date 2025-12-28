@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Settings Admin Page
  *
@@ -54,7 +54,7 @@ class Settings {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const OPTION_NAME = 'shahi_legalops_suite_settings';
+	const OPTION_NAME = 'shahi_legalflowsuite_settings';
 
 	/**
 	 * Initialize the settings page
@@ -780,18 +780,18 @@ class Settings {
 		}
 
 		// Step 1: Delete via WordPress API
-		delete_option( 'shahi_legalops_suite_onboarding_completed' );
-		delete_option( 'shahi_legalops_suite_onboarding_data' );
+		delete_option( 'shahi_legalflowsuite_onboarding_completed' );
+		delete_option( 'shahi_legalflowsuite_onboarding_data' );
 
 		// Step 2: Direct database deletion (bypass all caching)
 		global $wpdb;
-		$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name IN ('shahi_legalops_suite_onboarding_completed', 'shahi_legalops_suite_onboarding_data')" );
+		$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name IN ('shahi_legalflowsuite_onboarding_completed', 'shahi_legalflowsuite_onboarding_data')" );
 
 		// Step 3: Flush ALL caches (nuclear approach)
 		wp_cache_flush();
 
 		// Step 4: Verify deletion
-		$still_completed = get_option( 'shahi_legalops_suite_onboarding_completed', false );
+		$still_completed = get_option( 'shahi_legalflowsuite_onboarding_completed', false );
 
 		if ( $still_completed ) {
 			wp_send_json_error(

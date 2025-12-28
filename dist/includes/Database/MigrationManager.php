@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Database Migration Manager
  *
@@ -38,7 +38,7 @@ class MigrationManager {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const VERSION_OPTION = 'shahi_legalops_suite_db_version';
+	const VERSION_OPTION = 'shahi_legalflowsuite_db_version';
 
 	/**
 	 * Migrations directory path

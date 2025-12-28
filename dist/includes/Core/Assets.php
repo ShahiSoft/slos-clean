@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Assets Management Class
  *
@@ -679,7 +679,7 @@ class Assets {
 			'shahiTemplate',
 			array(
 				'ajaxurl'   => admin_url( 'admin-ajax.php' ),
-				'nonce'     => Security::generate_nonce( 'shahi_legalops_suite_ajax' ),
+				'nonce'     => Security::generate_nonce( 'shahi_legalflowsuite_ajax' ),
 				'pluginUrl' => SHAHI_LEGALFLOWSUITE_PLUGIN_URL,
 				'version'   => SHAHI_LEGALFLOWSUITE_VERSION,
 				'i18n'      => array(

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Module Manager
  *
@@ -409,7 +409,7 @@ class ModuleManager
 		 * @since 1.0.0
 		 * @param ModuleManager $manager Module manager instance.
 		 */
-		do_action('shahi_legalops_suite_register_modules', $this);
+		do_action('shahi_legalflowsuite_register_modules', $this);
 	}
 
 	/**

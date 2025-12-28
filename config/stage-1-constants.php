@@ -189,7 +189,7 @@ if ( ! defined( 'SLOS_ALLOW_THEME_TEMPLATES' ) ) {
 
 // Theme template path (relative to theme root)
 if ( ! defined( 'SLOS_THEME_TEMPLATE_PATH' ) ) {
-	define( 'SLOS_THEME_TEMPLATE_PATH', 'shahi-legalops/legaldocs' );
+	define( 'SLOS_THEME_TEMPLATE_PATH', 'shahi-legalflowsuite/legaldocs' );
 }
 
 /*

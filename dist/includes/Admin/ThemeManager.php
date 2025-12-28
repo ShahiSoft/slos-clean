@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Theme Manager
  *
@@ -46,7 +46,7 @@ class ThemeManager {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const THEME_OPTION = 'shahi_legalops_suite_theme';
+	const THEME_OPTION = 'shahi_legalflowsuite_theme';
 
 	/**
 	 * Constructor

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Post Type Manager
  *
@@ -95,8 +95,8 @@ class PostTypeManager {
 		add_action( 'save_post', array( $this, 'save_quick_edit' ), 10, 2 );
 
 		// Bulk actions
-		add_filter( 'bulk_actions-edit-shahi_legalops_suite_item', array( $this, 'register_bulk_actions' ) );
-		add_filter( 'handle_bulk_actions-edit-shahi_legalops_suite_item', array( $this, 'handle_bulk_actions' ), 10, 3 );
+		add_filter( 'bulk_actions-edit-shahi_legalflowsuite_item', array( $this, 'register_bulk_actions' ) );
+		add_filter( 'handle_bulk_actions-edit-shahi_legalflowsuite_item', array( $this, 'handle_bulk_actions' ), 10, 3 );
 		add_action( 'admin_notices', array( $this, 'bulk_action_notices' ) );
 	}
 

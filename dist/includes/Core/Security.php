@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Security Layer
  *
@@ -31,7 +31,7 @@ class Security {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const NONCE_PREFIX = 'shahi_legalops_suite_';
+	const NONCE_PREFIX = 'shahi_legalflowsuite_';
 
 	/**
 	 * Generate a nonce

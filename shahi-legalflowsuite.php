@@ -113,7 +113,7 @@ function enqueue_slos_consent_banner()
 	$geo = array();
 
 	// Respect admin settings
-	$settings = get_option('shahi_legalops_suite_settings', array());
+	$settings = get_option('shahi_legalflowsuite_settings', array());
 	$enabled_geo = isset($settings['enable_geolocation_detection']) ? (bool) $settings['enable_geolocation_detection'] : true;
 	$override = isset($settings['geolocation_override_region']) ? (string) $settings['geolocation_override_region'] : '';
 

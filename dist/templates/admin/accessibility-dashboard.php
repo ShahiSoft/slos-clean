@@ -1449,7 +1449,7 @@ $widget_enabled = get_option('slos_widget_enabled', true);
                     <div style="text-align: center;">
                         <span class="dashicons dashicons-chart-area" style="font-size: 48px; margin-bottom: 12px; display: block; color: var(--slos-text-muted);"></span>
                         <p><?php esc_html_e('No scan history yet. Run your first scan to see trends.', 'shahi-legalflowsuite'); ?></p>
-                        <a href="<?php echo esc_url(admin_url('admin.php?page=shahi-legalops-accessibility&tab=tools')); ?>" class="slos-primary-btn" style="margin-top: 16px; display: inline-block;">
+                        <a href="<?php echo esc_url(admin_url('admin.php?page=shahi-legalflowsuite-accessibility&tab=tools')); ?>" class="slos-primary-btn" style="margin-top: 16px; display: inline-block;">
                             <?php esc_html_e('Run First Scan', 'shahi-legalflowsuite'); ?>
                         </a>
                     </div>

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Fired during plugin deactivation
  *
@@ -60,8 +60,8 @@ class Deactivator {
 				"DELETE FROM {$wpdb->options} 
                 WHERE option_name LIKE %s 
                 OR option_name LIKE %s",
-				$wpdb->esc_like( '_transient_shahi_legalops_suite_' ) . '%',
-				$wpdb->esc_like( '_transient_timeout_shahi_legalops_suite_' ) . '%'
+				$wpdb->esc_like( '_transient_shahi_legalflowsuite_' ) . '%',
+				$wpdb->esc_like( '_transient_timeout_shahi_legalflowsuite_' ) . '%'
 			)
 		);
 	}

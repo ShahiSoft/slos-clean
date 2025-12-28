@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Fired during plugin activation
  *
@@ -41,12 +41,12 @@ class Activator {
 		self::set_default_options();
 
 		// Set installation timestamp
-		if ( ! get_option( 'shahi_legalops_suite_installed_at' ) ) {
-			add_option( 'shahi_legalops_suite_installed_at', current_time( 'mysql' ) );
+		if ( ! get_option( 'shahi_legalflowsuite_installed_at' ) ) {
+			add_option( 'shahi_legalflowsuite_installed_at', current_time( 'mysql' ) );
 		}
 
 		// Set version
-		update_option( 'shahi_legalops_suite_version', SHAHI_LEGALFLOWSUITE_VERSION );
+		update_option( 'shahi_legalflowsuite_version', SHAHI_LEGALFLOWSUITE_VERSION );
 
 		// Add custom capabilities
 		\ShahiLegalFlowSuite\Admin\MenuManager::add_capabilities();
@@ -225,18 +225,18 @@ class Activator {
 	 */
 	private static function set_default_options() {
 		// General settings
-		if ( ! get_option( 'shahi_legalops_suite_settings' ) ) {
+		if ( ! get_option( 'shahi_legalflowsuite_settings' ) ) {
 			$default_settings = array(
 				'plugin_enabled' => true,
 				'admin_email'    => get_option( 'admin_email' ),
 				'date_format'    => get_option( 'date_format' ),
 				'time_format'    => get_option( 'time_format' ),
 			);
-			add_option( 'shahi_legalops_suite_settings', $default_settings );
+			add_option( 'shahi_legalflowsuite_settings', $default_settings );
 		}
 
 		// Advanced settings
-		if ( ! get_option( 'shahi_legalops_suite_advanced_settings' ) ) {
+		if ( ! get_option( 'shahi_legalflowsuite_advanced_settings' ) ) {
 			$advanced_settings = array(
 				'debug_mode'     => false,
 				'custom_css'     => '',
@@ -244,11 +244,11 @@ class Activator {
 				'developer_mode' => false,
 				'api_rate_limit' => 100,
 			);
-			add_option( 'shahi_legalops_suite_advanced_settings', $advanced_settings );
+			add_option( 'shahi_legalflowsuite_advanced_settings', $advanced_settings );
 		}
 
 		// Uninstall preferences (preserve data by default)
-		if ( ! get_option( 'shahi_legalops_suite_uninstall_preferences' ) ) {
+		if ( ! get_option( 'shahi_legalflowsuite_uninstall_preferences' ) ) {
 			$uninstall_preferences = array(
 				'preserve_all'        => true,
 				'delete_settings'     => false,
@@ -257,21 +257,21 @@ class Activator {
 				'delete_capabilities' => false,
 				'delete_tables'       => false,
 			);
-			add_option( 'shahi_legalops_suite_uninstall_preferences', $uninstall_preferences );
+			add_option( 'shahi_legalflowsuite_uninstall_preferences', $uninstall_preferences );
 		}
 
 		// Enabled modules
-		if ( ! get_option( 'shahi_legalops_suite_modules_enabled' ) ) {
+		if ( ! get_option( 'shahi_legalflowsuite_modules_enabled' ) ) {
 			$modules_enabled = array(
 				'analytics' => true,
 				'security'  => true,
 			);
-			add_option( 'shahi_legalops_suite_modules_enabled', $modules_enabled );
+			add_option( 'shahi_legalflowsuite_modules_enabled', $modules_enabled );
 		}
 
 		// Onboarding completion status
-		if ( ! get_option( 'shahi_legalops_suite_onboarding_completed' ) ) {
-			add_option( 'shahi_legalops_suite_onboarding_completed', false );
+		if ( ! get_option( 'shahi_legalflowsuite_onboarding_completed' ) ) {
+			add_option( 'shahi_legalflowsuite_onboarding_completed', false );
 		}
 	}
 

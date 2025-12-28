@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Geolocation Detection Service
  *
@@ -41,7 +41,7 @@ class Geo_Service extends Base_Service {
      * Load settings
      */
     private function load_settings(): void {
-        $settings = get_option( 'shahi_legalops_suite_settings', array() );
+        $settings = get_option( 'shahi_legalflowsuite_settings', array() );
         if ( isset( $settings['geolocation_cache_ttl'] ) ) {
             $ttl = (int) $settings['geolocation_cache_ttl'];
             if ( $ttl > 0 ) {

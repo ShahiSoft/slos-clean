@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Dashboard Admin Page
  *
@@ -101,7 +101,7 @@ class Dashboard {
 			'license'     => 'GPL-3.0+',
 			'php_version' => PHP_VERSION,
 			'wp_version'  => get_bloginfo( 'version' ),
-			'db_version'  => get_option( 'shahi_legalops_suite_db_version', '1.0.0' ),
+			'db_version'  => get_option( 'shahi_legalflowsuite_db_version', '1.0.0' ),
 		);
 	}
 
@@ -564,9 +564,9 @@ class Dashboard {
 	 * @return array Getting started items
 	 */
 	private function get_getting_started_items() {
-		$onboarding_completed = get_option( 'shahi_legalops_suite_onboarding_completed', false );
+		$onboarding_completed = get_option( 'shahi_legalflowsuite_onboarding_completed', false );
 		$modules_configured   = $this->get_active_modules_count() > 0;
-		$settings_configured  = ! empty( get_option( 'shahi_legalops_suite_settings', array() ) );
+		$settings_configured  = ! empty( get_option( 'shahi_legalflowsuite_settings', array() ) );
 
 		// Check if company profile is set up
 		$company_profile    = get_option( 'slos_company_profile', array() );

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Onboarding Controller
  *
@@ -42,7 +42,7 @@ class Onboarding {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const OPTION_COMPLETED = 'shahi_legalops_suite_onboarding_completed';
+	const OPTION_COMPLETED = 'shahi_legalflowsuite_onboarding_completed';
 
 	/**
 	 * Option name for onboarding data
@@ -50,7 +50,7 @@ class Onboarding {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const OPTION_DATA = 'shahi_legalops_suite_onboarding_data';
+	const OPTION_DATA = 'shahi_legalflowsuite_onboarding_data';
 
 	/**
 	 * Initialize the onboarding controller
@@ -69,8 +69,8 @@ class Onboarding {
 	 */
 	public function should_show_onboarding() {
 		// Force fresh read from database, bypassing cache
-		wp_cache_delete( 'shahi_legalops_suite_onboarding_completed', 'options' );
-		wp_cache_delete( 'shahi_legalops_suite_onboarding_data', 'options' );
+		wp_cache_delete( 'shahi_legalflowsuite_onboarding_completed', 'options' );
+		wp_cache_delete( 'shahi_legalflowsuite_onboarding_data', 'options' );
 
 		// Don't show if user doesn't have permission
 		if ( ! current_user_can( 'manage_shahi_template' ) ) {
@@ -395,7 +395,7 @@ class Onboarding {
 	 * @return void
 	 */
 	private function apply_settings( $settings ) {
-		$current_settings = get_option( 'shahi_legalops_suite_settings', array() );
+		$current_settings = get_option( 'shahi_legalflowsuite_settings', array() );
 
 		// Merge with onboarding preferences
 		if ( isset( $settings['enable_analytics'] ) ) {
@@ -406,7 +406,7 @@ class Onboarding {
 			$current_settings['enable_email_notifications'] = $settings['enable_notifications'];
 		}
 
-		update_option( 'shahi_legalops_suite_settings', $current_settings );
+		update_option( 'shahi_legalflowsuite_settings', $current_settings );
 	}
 
 	/**

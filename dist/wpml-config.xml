@@ -10,7 +10,7 @@
 	<!-- Admin Texts - Settings and Options -->
 	<admin-texts>
 		<!-- General Plugin Settings -->
-		<key name="shahi_legalops_suite_settings">
+		<key name="shahi_legalflowsuite_settings">
 			<key name="plugin_name" />
 			<key name="plugin_description" />
 		</key>

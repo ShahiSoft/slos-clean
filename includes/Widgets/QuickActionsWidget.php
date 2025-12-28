@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Quick Actions Widget
  *
@@ -105,7 +105,7 @@ class QuickActionsWidget extends \WP_Widget {
 
 		// Add template item link
 		if ( $show_add_item ) {
-			$add_item_url = admin_url( 'post-new.php?post_type=shahi_legalops_suite_item' );
+			$add_item_url = admin_url( 'post-new.php?post_type=shahi_legalflowsuite_item' );
 			echo '<li>';
 			echo '<a href="' . esc_url( $add_item_url ) . '" class="shahi-action-button">';
 			echo '<span class="dashicons dashicons-plus-alt"></span> ';

@@ -689,7 +689,7 @@ class Document_Generator extends Base_Service {
 	 * @return string|false Custom template path or false
 	 */
 	protected function get_custom_template( string $document_type ) {
-		$theme_template = get_stylesheet_directory() . '/shahi-legalops/legaldocs/' . $document_type . '.html';
+		$theme_template = get_stylesheet_directory() . '/shahi-legalflowsuite/legaldocs/' . $document_type . '.html';
 
 		if ( file_exists( $theme_template ) ) {
 			return $theme_template;
