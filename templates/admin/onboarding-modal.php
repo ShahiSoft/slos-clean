@@ -64,13 +64,6 @@ $available_modules = $onboarding->get_available_modules();
                     <div class="shahi-welcome-feature">
                         <span class="dashicons dashicons-yes-alt"></span>
                         <div>
-                            <h4><?php echo esc_html__('Analytics & Insights', 'shahi-legalflowsuite'); ?></h4>
-                            <p><?php echo esc_html__('Track performance and user behavior', 'shahi-legalflowsuite'); ?></p>
-                        </div>
-                    </div>
-                    <div class="shahi-welcome-feature">
-                        <span class="dashicons dashicons-yes-alt"></span>
-                        <div>
                             <h4><?php echo esc_html__('Enterprise Ready', 'shahi-legalflowsuite'); ?></h4>
                             <p><?php echo esc_html__('Built with best practices and security', 'shahi-legalflowsuite'); ?></p>
                         </div>
@@ -114,7 +107,8 @@ $available_modules = $onboarding->get_available_modules();
             <div class="shahi-step-content">
                 <div class="shahi-onboarding-modules-grid">
                     <?php foreach ($available_modules as $key => $module): ?>
-                        <div class="shahi-onboarding-module-card <?php echo in_array($key, ['analytics']) ? 'active' : ''; ?>" 
+                        <?php if ($key === 'analytics') continue; // Skip analytics module ?>
+                        <div class="shahi-onboarding-module-card active" 
                              data-module="<?php echo esc_attr($key); ?>">
                             
                             <!-- Card Background Effects -->
@@ -144,7 +138,7 @@ $available_modules = $onboarding->get_available_modules();
                                            name="modules[]"
                                            value="<?php echo esc_attr($key); ?>"
                                            data-module="<?php echo esc_attr($key); ?>"
-                                           <?php checked(in_array($key, ['analytics'])); ?>>
+                                           checked>
                                     <span class="shahi-toggle-slider">
                                         <span class="shahi-toggle-icon shahi-toggle-icon-on">
                                             <span class="dashicons dashicons-yes"></span>
@@ -185,16 +179,6 @@ $available_modules = $onboarding->get_available_modules();
             
             <div class="shahi-step-content">
                 <div class="shahi-config-form">
-                    <div class="shahi-config-row">
-                        <label class="shahi-config-label">
-                            <input type="checkbox" name="settings[enable_analytics]" value="1" checked>
-                            <div class="shahi-config-details">
-                                <h4><?php echo esc_html__('Enable Analytics Tracking', 'shahi-legalflowsuite'); ?></h4>
-                                <p><?php echo esc_html__('Track plugin events and user behavior for insights', 'shahi-legalflowsuite'); ?></p>
-                            </div>
-                        </label>
-                    </div>
-                    
                     <div class="shahi-config-row">
                         <label class="shahi-config-label">
                             <input type="checkbox" name="settings[enable_notifications]" value="1">

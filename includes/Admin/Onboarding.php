@@ -207,15 +207,15 @@ class Onboarding {
 	 */
 	public function get_recommended_modules( $purpose = '' ) {
 		$recommendations = array(
-			'ecommerce'  => array( 'analytics', 'cache', 'security' ),
-			'blog'       => array( 'analytics', 'seo', 'cache' ),
-			'business'   => array( 'analytics', 'security', 'notifications' ),
-			'portfolio'  => array( 'analytics', 'cache' ),
+			'ecommerce'  => array( 'cache', 'security', 'notifications' ),
+			'blog'       => array( 'seo', 'cache', 'notifications' ),
+			'business'   => array( 'security', 'notifications', 'api' ),
+			'portfolio'  => array( 'cache', 'notifications', 'security' ),
 			'membership' => array( 'security', 'notifications', 'api' ),
-			'other'      => array( 'analytics' ),
+			'other'      => array( 'notifications', 'cache', 'security' ),
 		);
 
-		return isset( $recommendations[ $purpose ] ) ? $recommendations[ $purpose ] : array( 'analytics' );
+		return isset( $recommendations[ $purpose ] ) ? $recommendations[ $purpose ] : array( 'notifications', 'cache', 'security' );
 	}
 
 	/**
@@ -226,11 +226,6 @@ class Onboarding {
 	 */
 	public function get_available_modules() {
 		return array(
-			'analytics'     => array(
-				'name'        => __( 'Analytics Tracking', 'shahi-legalflowsuite' ),
-				'description' => __( 'Track user behavior and plugin usage', 'shahi-legalflowsuite' ),
-				'icon'        => 'dashicons-chart-line',
-			),
 			'notifications' => array(
 				'name'        => __( 'Email Notifications', 'shahi-legalflowsuite' ),
 				'description' => __( 'Automated email alerts for events', 'shahi-legalflowsuite' ),
@@ -297,7 +292,7 @@ class Onboarding {
 
 		// Sanitize settings
 		$sanitized_settings = array(
-			'enable_analytics'     => isset( $settings['enable_analytics'] ) ? (bool) $settings['enable_analytics'] : true,
+			'enable_analytics'     => false,
 			'enable_notifications' => isset( $settings['enable_notifications'] ) ? (bool) $settings['enable_notifications'] : false,
 		);
 
