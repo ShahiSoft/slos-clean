@@ -105,18 +105,6 @@ class Document_Hub_Service
                 'icon' => 'dashicons-book',
                 'category' => 'legal',
             ),
-            'cookie-policy' => array(
-                'title' => __('Cookie Policy', 'shahi-legalflowsuite'),
-                'description' => __('Explains how your website uses cookies and similar technologies.', 'shahi-legalflowsuite'),
-                'icon' => 'dashicons-visibility',
-                'category' => 'compliance',
-            ),
-            'disclaimer' => array(
-                'title' => __('Disclaimer', 'shahi-legalflowsuite'),
-                'description' => __('Limits your liability for the content published on your site.', 'shahi-legalflowsuite'),
-                'icon' => 'dashicons-warning',
-                'category' => 'legal',
-            ),
             'refund-policy' => array(
                 'title' => __('Refund & Return Policy', 'shahi-legalflowsuite'),
                 'description' => __('Policy regarding refunds and returns for e-commerce stores.', 'shahi-legalflowsuite'),

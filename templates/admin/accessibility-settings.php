@@ -24,7 +24,7 @@ if (!defined('ABSPATH')) {
                     <?php echo esc_html__('Accessibility Settings', 'shahi-legalflowsuite'); ?>
                 </h1>
                 <p class="shahi-page-subtitle">
-                    <?php echo esc_html__('Configure automated checks and fixes for your website.', 'shahi-legalflowsuite'); ?>
+                    <?php echo esc_html__('Configure automated checks for your website.', 'shahi-legalflowsuite'); ?>
                 </p>
             </div>
             <div class="shahi-header-actions">
@@ -39,7 +39,7 @@ if (!defined('ABSPATH')) {
     <form method="post" action="options.php">
         <?php settings_fields('slos_accessibility_settings'); ?>
         
-        <div class="shahi-dashboard-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+        <div class="shahi-dashboard-grid" style="max-width: 1200px;">
             
             <!-- Automated Checks -->
             <div class="shahi-card">
@@ -65,37 +65,6 @@ if (!defined('ABSPATH')) {
                             <label class="shahi-checkbox-label" style="display: flex; align-items: center; gap: 10px;">
                                 <input type="checkbox" name="slos_active_checkers[]" value="<?php echo esc_attr($key); ?>" 
                                     <?php checked(in_array($key, $active_checkers)); ?>>
-                                <span><?php echo esc_html($label); ?></span>
-                            </label>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Automated Fixes -->
-            <div class="shahi-card">
-                <div class="shahi-card-header">
-                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                        <div>
-                            <h3><?php echo esc_html__('Automated Fixes', 'shahi-legalflowsuite'); ?></h3>
-                            <p class="description"><?php echo esc_html__('Select which issues to automatically attempt to fix.', 'shahi-legalflowsuite'); ?></p>
-                        </div>
-                        <div class="shahi-toggle-actions">
-                            <button type="button" class="shahi-btn shahi-btn-sm shahi-btn-outline slos-select-all" data-target="slos_active_fixes">
-                                <?php echo esc_html__('Select All', 'shahi-legalflowsuite'); ?>
-                            </button>
-                            <button type="button" class="shahi-btn shahi-btn-sm shahi-btn-outline slos-deselect-all" data-target="slos_active_fixes">
-                                <?php echo esc_html__('Deselect All', 'shahi-legalflowsuite'); ?>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="shahi-card-body">
-                    <div class="shahi-checkbox-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
-                        <?php foreach ($fixes as $key => $label): ?>
-                            <label class="shahi-checkbox-label" style="display: flex; align-items: center; gap: 10px;">
-                                <input type="checkbox" name="slos_active_fixes[]" value="<?php echo esc_attr($key); ?>" 
-                                    <?php checked(in_array($key, $active_fixes)); ?>>
                                 <span><?php echo esc_html($label); ?></span>
                             </label>
                         <?php endforeach; ?>

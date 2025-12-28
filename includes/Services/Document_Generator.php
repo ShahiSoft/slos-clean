@@ -66,8 +66,6 @@ class Document_Generator extends Base_Service {
 	const DOCUMENT_TYPES = array(
 		'privacy-policy'     => 'Privacy Policy',
 		'terms-of-service'   => 'Terms of Service',
-		'cookie-policy'      => 'Cookie Policy',
-		'disclaimer'         => 'Disclaimer',
 		'refund-policy'      => 'Refund & Return Policy',
 	);
 
@@ -226,15 +224,6 @@ class Document_Generator extends Base_Service {
 
 		// Document-specific validation
 		switch ( $document_type ) {
-			case 'cookie-policy':
-				// Ensure cookie data exists
-				$cookies = $profile['cookies'] ?? array();
-				if ( empty( $cookies['essential'] ) ) {
-					$is_ready = false;
-					$missing_fields[] = __( 'Essential Cookies', 'shahi-legalflowsuite' );
-				}
-				break;
-
 			case 'terms-of-service':
 				// Ensure service description exists
 				$website = $profile['website'] ?? array();
