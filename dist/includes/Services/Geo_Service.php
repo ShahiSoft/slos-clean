@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Geolocation Detection Service
  *

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Database Migration Manager
  *
