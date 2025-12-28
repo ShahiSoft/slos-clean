@@ -1,0 +1,106 @@
+<!-- Edge case: Language change detection scenarios -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Language Change Edge Cases</title>
+</head>
+<body>
+    <main>
+        <h1>Language Change Detection</h1>
+        
+        <!-- Properly marked language changes (PASS) -->
+        <section>
+            <h2>Correctly Marked Language Changes</h2>
+            
+            <p>The French phrase <span lang="fr">c'est la vie</span> means "that's life".</p>
+            
+            <p>In German, <q lang="de">Guten Tag</q> is a greeting.</p>
+            
+            <blockquote lang="es">
+                <p>Hola, ¿cómo estás?</p>
+                <footer>— Spanish greeting</footer>
+            </blockquote>
+            
+            <p>The Latin expression <em lang="la">carpe diem</em> means "seize the day".</p>
+            
+            <!-- Nested language changes -->
+            <p lang="fr">
+                Voici un texte en français avec 
+                <span lang="en">an English phrase</span> 
+                au milieu.
+            </p>
+        </section>
+        
+        <!-- Missing language marks (FAIL) -->
+        <section>
+            <h2>Missing Language Marks</h2>
+            
+            <!-- Common foreign phrases without lang attribute -->
+            <p>The phrase c'est la vie is used in English conversation.</p>
+            
+            <p>Japanese: こんにちは (without lang attribute)</p>
+            
+            <p>Chinese: 你好 (without lang attribute)</p>
+            
+            <p>Arabic: مرحبا (without lang attribute)</p>
+            
+            <p>Russian: Привет (without lang attribute)</p>
+            
+            <p>Greek: Γεια σας (without lang attribute)</p>
+            
+            <!-- Mixed content without proper marking -->
+            <p>
+                We say bonjour in French, guten tag in German, 
+                and ciao in Italian.
+            </p>
+            
+            <!-- Technical terms from other languages -->
+            <p>
+                The restaurant serves haute cuisine and their 
+                pièce de résistance is the crème brûlée.
+            </p>
+        </section>
+        
+        <!-- Edge cases -->
+        <section>
+            <h2>Edge Cases</h2>
+            
+            <!-- Proper nouns (debatable) -->
+            <p>I visited Paris and ate at Café de Flore.</p>
+            
+            <!-- Borrowed words fully assimilated into English -->
+            <p>Let's meet at the cafe for a rendezvous.</p>
+            
+            <!-- Technical/scientific Latin -->
+            <p>The species <i>Homo sapiens</i> evolved in Africa.</p>
+            
+            <!-- Music terms from Italian -->
+            <p>Play the passage <i>piano</i> then <i>crescendo</i> to <i>forte</i>.</p>
+            
+            <!-- Legal Latin -->
+            <p>The court issued a <i>habeas corpus</i> writ.</p>
+            
+            <!-- Empty lang attribute -->
+            <p>Text with <span lang="">empty lang attribute</span>.</p>
+            
+            <!-- Invalid lang code -->
+            <p>Text with <span lang="xx-invalid">invalid lang code</span>.</p>
+            
+            <!-- Same language explicitly marked -->
+            <p>This <span lang="en">English text</span> has redundant marking.</p>
+        </section>
+        
+        <!-- Document with wrong base language -->
+        <section>
+            <h2>Base Language Issues</h2>
+            
+            <!-- If html lang="en" but content is actually French -->
+            <p>
+                Ce paragraphe est entièrement en français mais la page 
+                est marquée comme anglais. C'est un problème d'accessibilité.
+            </p>
+        </section>
+    </main>
+</body>
+</html>

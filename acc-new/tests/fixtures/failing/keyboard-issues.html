@@ -1,0 +1,90 @@
+<!-- EXPECTED: keyboard-trap and interactive-element checks should FAIL -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Keyboard Issues Test</title>
+    <style>
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            margin: 100px auto;
+            width: 400px;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Keyboard Accessibility Issues</h1>
+        
+        <!-- Clickable div without keyboard support -->
+        <div onclick="doSomething()" class="fake-button" style="cursor: pointer; padding: 10px; background: #007bff; color: white;">
+            Click Me (div)
+        </div>
+        
+        <!-- Span acting as button but no keyboard events -->
+        <span onclick="toggle()" role="button" style="cursor: pointer; text-decoration: underline;">
+            Toggle (span) - has role but no keyboard handler
+        </span>
+        
+        <!-- Clickable image without keyboard support -->
+        <img src="button.png" onclick="submit()" alt="Submit" style="cursor: pointer;">
+        
+        <!-- Custom dropdown without keyboard -->
+        <div class="custom-dropdown" onclick="openDropdown()">
+            <span>Select an option</span>
+            <ul style="display: none;">
+                <li onclick="selectOption(1)">Option 1</li>
+                <li onclick="selectOption(2)">Option 2</li>
+                <li onclick="selectOption(3)">Option 3</li>
+            </ul>
+        </div>
+        
+        <!-- Positive tabindex (bad practice) -->
+        <button tabindex="5">Tab Order 5</button>
+        <button tabindex="1">Tab Order 1</button>
+        <button tabindex="3">Tab Order 3</button>
+        
+        <!-- Tabindex on non-interactive element without role -->
+        <div tabindex="0">
+            Focusable div without role or keyboard handlers
+        </div>
+        
+        <!-- Hidden but focusable elements -->
+        <button style="display: none;" tabindex="0">Hidden but focusable</button>
+        <a href="/page" style="visibility: hidden;">Invisible but maybe focusable</a>
+        
+        <!-- Modal without focus trap (keyboard trap issue) -->
+        <div class="modal-overlay" id="bad-modal">
+            <div class="modal-content">
+                <h2>Modal Title</h2>
+                <p>This modal doesn't trap focus properly.</p>
+                <p>Users can tab out of it to the page behind.</p>
+                <input type="text" placeholder="Name">
+                <button>Submit</button>
+            </div>
+        </div>
+        
+        <!-- Link that removes focus -->
+        <a href="#" onfocus="this.blur()">Link that blurs on focus</a>
+        
+        <!-- Scrollable area without keyboard access -->
+        <div style="height: 100px; overflow: auto;">
+            <p>This scrollable area cannot be accessed by keyboard.</p>
+            <p>Content line 1</p>
+            <p>Content line 2</p>
+            <p>Content line 3</p>
+            <p>Content line 4</p>
+            <p>Content line 5</p>
+        </div>
+    </main>
+</body>
+</html>

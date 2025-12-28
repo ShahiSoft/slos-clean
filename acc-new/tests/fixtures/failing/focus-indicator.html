@@ -1,0 +1,121 @@
+<!-- EXPECTED: focus-indicator check should FAIL -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Focus Indicator Issues Test</title>
+    <style>
+        /* Global focus removal (very bad) */
+        *:focus {
+            outline: none;
+        }
+        
+        /* Button focus removal */
+        button:focus {
+            outline: 0;
+        }
+        
+        /* Link focus removal */
+        a:focus {
+            outline: none;
+            border: none;
+        }
+        
+        /* Input focus removal */
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            box-shadow: none;
+        }
+        
+        /* Low contrast focus indicator */
+        .low-contrast-focus:focus {
+            outline: 1px solid #ddd;
+        }
+        
+        /* Focus indicator too thin */
+        .thin-focus:focus {
+            outline: 1px dotted gray;
+        }
+        
+        /* Focus indicator same color as background */
+        .invisible-focus:focus {
+            outline: 2px solid white;
+            background: white;
+        }
+    </style>
+</head>
+<body style="background: #fff;">
+    <main>
+        <h1>Focus Indicator Issues</h1>
+        
+        <!-- Buttons with removed outline -->
+        <section>
+            <h2>Buttons Without Focus</h2>
+            <button style="outline: none;">No Outline Button</button>
+            <button style="outline: 0;">Zero Outline Button</button>
+            <button style="outline: transparent;">Transparent Outline</button>
+        </section>
+        
+        <!-- Links with removed outline -->
+        <section>
+            <h2>Links Without Focus</h2>
+            <a href="/page1" style="outline: none;">Link 1</a>
+            <a href="/page2" style="outline: 0;">Link 2</a>
+            <a href="/page3">Link 3 (CSS removes focus)</a>
+        </section>
+        
+        <!-- Form elements without focus -->
+        <section>
+            <h2>Form Elements</h2>
+            <form>
+                <div>
+                    <label for="name">Name</label>
+                    <input type="text" id="name" style="outline: none;">
+                </div>
+                <div>
+                    <label for="email">Email</label>
+                    <input type="email" id="email" style="outline: 0;">
+                </div>
+                <div>
+                    <label for="country">Country</label>
+                    <select id="country" style="outline: none;">
+                        <option>Select</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="message">Message</label>
+                    <textarea id="message" style="outline: none;"></textarea>
+                </div>
+            </form>
+        </section>
+        
+        <!-- Low contrast focus indicators -->
+        <section>
+            <h2>Low Contrast Focus</h2>
+            <button class="low-contrast-focus">Low Contrast Focus</button>
+            <button class="thin-focus">Thin Focus Line</button>
+            <button class="invisible-focus">Invisible Focus</button>
+        </section>
+        
+        <!-- Interactive elements -->
+        <section>
+            <h2>Interactive Elements</h2>
+            <div tabindex="0" style="padding: 10px; border: 1px solid #ccc;">
+                Focusable div (no focus style)
+            </div>
+            <span role="button" tabindex="0" style="cursor: pointer;">
+                Custom button (no focus style)
+            </span>
+        </section>
+        
+        <!-- Using CSS class that removes focus -->
+        <section>
+            <h2>CSS Class Focus Removal</h2>
+            <button class="btn">Button with class removing focus</button>
+            <a href="/page" class="link">Link with class removing focus</a>
+        </section>
+    </main>
+</body>
+</html>

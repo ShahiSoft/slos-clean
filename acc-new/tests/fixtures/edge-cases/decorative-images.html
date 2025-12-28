@@ -1,0 +1,75 @@
+<!-- Edge case: Decorative images that SHOULD have empty alt -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Decorative Images Edge Cases</title>
+</head>
+<body>
+    <main>
+        <h1>Decorative Image Handling</h1>
+        
+        <!-- Decorative images - SHOULD have empty alt (PASS) -->
+        <section>
+            <h2>Properly Marked Decorative Images</h2>
+            
+            <!-- Decorative border/spacer -->
+            <img src="decorative-border.png" alt="" role="presentation">
+            
+            <!-- Icon next to text (text provides meaning) -->
+            <p><img src="bullet-icon.gif" alt=""> List item content</p>
+            
+            <!-- Decorative background pattern -->
+            <img src="pattern-bg.png" alt="">
+            
+            <!-- Purely aesthetic flourish -->
+            <img src="flourish.svg" alt="" aria-hidden="true">
+        </section>
+        
+        <!-- Non-decorative images that incorrectly have empty alt (FAIL) -->
+        <section>
+            <h2>Images That Need Alt Text</h2>
+            
+            <!-- Linked image - NOT decorative -->
+            <a href="/product">
+                <img src="product.jpg" alt="">
+            </a>
+            
+            <!-- Image that conveys information -->
+            <figure>
+                <img src="chart.png" alt="">
+                <figcaption>Sales Chart</figcaption>
+            </figure>
+            
+            <!-- Image button without text alternative -->
+            <button>
+                <img src="submit-icon.png" alt="">
+            </button>
+            
+            <!-- Image is only content in link -->
+            <a href="/home"><img src="logo.png" alt=""></a>
+        </section>
+        
+        <!-- CSS background images with content -->
+        <section>
+            <h2>Background Images</h2>
+            
+            <!-- Decorative background - OK -->
+            <div style="background-image: url('texture.jpg');">
+                <p>Content over decorative background.</p>
+            </div>
+            
+            <!-- Meaningful background - needs alt (FAIL) -->
+            <div style="background-image: url('info-graphic.jpg')" role="img">
+                <!-- No aria-label for meaningful image -->
+            </div>
+            
+            <!-- Properly labeled background image (PASS) -->
+            <div style="background-image: url('hero.jpg')" 
+                 role="img" 
+                 aria-label="Team members collaborating in office">
+            </div>
+        </section>
+    </main>
+</body>
+</html>

@@ -80,6 +80,11 @@ use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Scanner\Checkers\EmptyTable
 use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Scanner\Checkers\ViewportCheck;
 use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Scanner\Checkers\TouchTargetCheck;
 use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Scanner\Checkers\TouchGestureCheck;
+use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Scanner\Checkers\LanguageChangeCheck;
+use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Scanner\Checkers\AnimationPauseCheck;
+use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Scanner\Checkers\TimingControlCheck;
+use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Scanner\Checkers\StatusMessageCheck;
+use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Scanner\Checkers\ErrorIdentificationCheck;
 use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Widget\AccessibilityWidget;
 use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Admin\ScannerPage;
 use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Admin\AccessibilityDashboard;
@@ -1029,6 +1034,11 @@ class AccessibilityScanner extends Module {
 			'viewport'            => ViewportCheck::class,
 			'touch-target'        => TouchTargetCheck::class,
 			'touch-gesture'       => TouchGestureCheck::class,
+			'language-change'     => LanguageChangeCheck::class,
+			'animation-pause'     => AnimationPauseCheck::class,
+			'timing-control'      => TimingControlCheck::class,
+			'status-message'      => StatusMessageCheck::class,
+			'error-identification' => ErrorIdentificationCheck::class,
 		);
 	}
 

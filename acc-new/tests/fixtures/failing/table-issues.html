@@ -1,0 +1,169 @@
+<!-- EXPECTED: table-header and table-caption checks should FAIL -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Table Accessibility Issues Test</title>
+</head>
+<body>
+    <main>
+        <h1>Table Accessibility Issues</h1>
+        
+        <!-- Table without headers -->
+        <section>
+            <h2>Table Without Headers</h2>
+            <table>
+                <tr>
+                    <td>Product</td>
+                    <td>Price</td>
+                    <td>Quantity</td>
+                </tr>
+                <tr>
+                    <td>Widget A</td>
+                    <td>$10</td>
+                    <td>5</td>
+                </tr>
+                <tr>
+                    <td>Widget B</td>
+                    <td>$20</td>
+                    <td>3</td>
+                </tr>
+            </table>
+        </section>
+        
+        <!-- Table without caption -->
+        <section>
+            <h2>Table Without Caption</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Location</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Alice</td>
+                        <td>Engineering</td>
+                        <td>NYC</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        
+        <!-- Headers without scope -->
+        <section>
+            <h2>Headers Without Scope</h2>
+            <table>
+                <caption>Sales Data</caption>
+                <thead>
+                    <tr>
+                        <th>Month</th>
+                        <th>Revenue</th>
+                        <th>Expenses</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>January</th>
+                        <td>$50,000</td>
+                        <td>$30,000</td>
+                    </tr>
+                    <tr>
+                        <th>February</th>
+                        <td>$55,000</td>
+                        <td>$28,000</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        
+        <!-- Complex table without proper associations -->
+        <section>
+            <h2>Complex Table Without IDs/Headers</h2>
+            <table>
+                <caption>Quarterly Sales by Region</caption>
+                <tr>
+                    <td></td>
+                    <td colspan="2">North</td>
+                    <td colspan="2">South</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Q1</td>
+                    <td>Q2</td>
+                    <td>Q1</td>
+                    <td>Q2</td>
+                </tr>
+                <tr>
+                    <td>Product A</td>
+                    <td>100</td>
+                    <td>150</td>
+                    <td>80</td>
+                    <td>120</td>
+                </tr>
+            </table>
+        </section>
+        
+        <!-- Layout table marked as data table -->
+        <section>
+            <h2>Layout Table</h2>
+            <table>
+                <tr>
+                    <td><img src="logo.png" alt="Company Logo"></td>
+                    <td>
+                        <h1>Company Name</h1>
+                        <p>Company tagline</p>
+                    </td>
+                </tr>
+            </table>
+        </section>
+        
+        <!-- Empty table -->
+        <section>
+            <h2>Empty Table</h2>
+            <table>
+                <caption>No data available</caption>
+            </table>
+        </section>
+        
+        <!-- Table with no data cells -->
+        <section>
+            <h2>Headers Only</h2>
+            <table>
+                <caption>Placeholder</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">Column 1</th>
+                        <th scope="col">Column 2</th>
+                        <th scope="col">Column 3</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </section>
+        
+        <!-- Nested tables -->
+        <section>
+            <h2>Nested Tables (Anti-pattern)</h2>
+            <table>
+                <caption>Outer Table</caption>
+                <tr>
+                    <th scope="col">Column</th>
+                    <td>
+                        <table>
+                            <caption>Inner Table</caption>
+                            <tr>
+                                <th>Nested Header</th>
+                                <td>Nested Data</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </section>
+    </main>
+</body>
+</html>

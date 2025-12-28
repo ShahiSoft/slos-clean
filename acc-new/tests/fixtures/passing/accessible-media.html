@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accessible Media Test</title>
+</head>
+<body>
+    <main>
+        <h1>Accessible Media Examples</h1>
+        
+        <!-- Images with descriptive alt text -->
+        <section>
+            <h2>Product Images</h2>
+            
+            <figure>
+                <img src="product-sneakers.jpg" 
+                     alt="Red Nike Air Max sneakers with white sole, shown from the side">
+                <figcaption>Nike Air Max - Red Edition</figcaption>
+            </figure>
+            
+            <figure>
+                <img src="product-chart.png" 
+                     alt="Bar chart showing quarterly sales: Q1 $50K, Q2 $75K, Q3 $90K, Q4 $120K">
+                <figcaption>Quarterly Sales Performance 2024</figcaption>
+            </figure>
+            
+            <!-- Decorative image with empty alt -->
+            <img src="decorative-border.png" alt="" role="presentation">
+            
+            <!-- SVG with accessible title -->
+            <svg role="img" aria-labelledby="svg-title svg-desc" viewBox="0 0 100 100">
+                <title id="svg-title">Company Logo</title>
+                <desc id="svg-desc">A blue shield with three stars</desc>
+                <circle cx="50" cy="50" r="40" fill="blue"/>
+            </svg>
+        </section>
+        
+        <!-- Video with captions and controls -->
+        <section>
+            <h2>Video Content</h2>
+            
+            <video controls width="640" height="360" poster="video-poster.jpg">
+                <source src="product-demo.mp4" type="video/mp4">
+                <source src="product-demo.webm" type="video/webm">
+                <track kind="captions" src="captions-en.vtt" srclang="en" label="English" default>
+                <track kind="captions" src="captions-es.vtt" srclang="es" label="Spanish">
+                <track kind="descriptions" src="audio-desc.vtt" srclang="en" label="Audio Descriptions">
+                <p>Your browser doesn't support HTML5 video. 
+                   <a href="product-demo.mp4">Download the video</a> instead.</p>
+            </video>
+        </section>
+        
+        <!-- Audio with transcript link -->
+        <section>
+            <h2>Audio Content</h2>
+            
+            <audio controls>
+                <source src="podcast-episode.mp3" type="audio/mpeg">
+                <source src="podcast-episode.ogg" type="audio/ogg">
+                <p>Your browser doesn't support HTML5 audio.</p>
+            </audio>
+            <p><a href="transcript.html">Read the transcript</a></p>
+        </section>
+        
+        <!-- Embedded video with accessible iframe -->
+        <section>
+            <h2>Embedded Video</h2>
+            
+            <iframe 
+                src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+                title="Product Introduction Video - 3 minute overview"
+                width="560" 
+                height="315"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+            </iframe>
+        </section>
+    </main>
+</body>
+</html>

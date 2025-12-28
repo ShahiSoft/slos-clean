@@ -1,0 +1,117 @@
+<!-- EXPECTED: timing-control check should FAIL -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Auto-refresh - accessibility violation -->
+    <meta http-equiv="refresh" content="30">
+    <title>Timing Control Issues Test</title>
+</head>
+<body>
+    <main>
+        <h1>Timing Accessibility Issues</h1>
+        
+        <!-- Auto-refresh notification -->
+        <div class="notice">
+            This page refreshes automatically every 30 seconds.
+        </div>
+        
+        <!-- Session timeout without warning -->
+        <section>
+            <h2>Session Management</h2>
+            <p>Your session will expire in 5 minutes.</p>
+            <!-- No option to extend or warning before timeout -->
+            <form>
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username">
+                <button type="submit">Login</button>
+            </form>
+        </section>
+        
+        <!-- Countdown timer without controls -->
+        <section>
+            <h2>Limited Time Offer</h2>
+            <div class="countdown-timer" data-end="2024-12-31T23:59:59">
+                <span class="days">05</span>:<span class="hours">12</span>:<span class="minutes">30</span>:<span class="seconds">45</span>
+            </div>
+            <p>Offer expires when timer reaches zero!</p>
+            <!-- No way to pause or extend -->
+        </section>
+        
+        <!-- Quiz with time limit -->
+        <section>
+            <h2>Timed Quiz</h2>
+            <div class="quiz-timer">
+                Time remaining: 10:00
+            </div>
+            <form class="quiz">
+                <p>Question 1: What is 2 + 2?</p>
+                <label><input type="radio" name="q1" value="3"> 3</label>
+                <label><input type="radio" name="q1" value="4"> 4</label>
+                <label><input type="radio" name="q1" value="5"> 5</label>
+                <!-- No option to extend time -->
+            </form>
+        </section>
+        
+        <!-- Auto-advancing slideshow -->
+        <section>
+            <h2>Auto-Advancing Content</h2>
+            <div class="slideshow" data-auto-advance="5000">
+                <div class="slide">Slide 1 - advances in 5 seconds</div>
+                <div class="slide">Slide 2</div>
+                <div class="slide">Slide 3</div>
+                <!-- No pause control -->
+            </div>
+        </section>
+        
+        <!-- Auto-updating content -->
+        <section>
+            <h2>Live Stock Prices</h2>
+            <div class="stock-ticker" data-refresh="1000">
+                AAPL: $150.25 (+1.5%)
+            </div>
+            <p>Updates every second without user control.</p>
+        </section>
+        
+        <!-- Form with submission timeout -->
+        <section>
+            <h2>Checkout (Time Limited)</h2>
+            <div class="checkout-warning">
+                Complete your purchase within 15 minutes or your cart will be cleared.
+            </div>
+            <form class="checkout-form">
+                <div>
+                    <label for="card">Card Number</label>
+                    <input type="text" id="card" name="card" autocomplete="cc-number">
+                </div>
+                <button type="submit">Complete Purchase</button>
+                <!-- No option to extend checkout time -->
+            </form>
+        </section>
+        
+        <!-- Auto-playing news ticker -->
+        <section>
+            <h2>News Ticker</h2>
+            <div class="news-ticker" style="overflow: hidden; white-space: nowrap;">
+                <span style="display: inline-block; animation: scroll 10s linear infinite;">
+                    Breaking News: Important headline... Another story... More news...
+                </span>
+            </div>
+        </section>
+        
+        <!-- Redirect timer -->
+        <section>
+            <h2>Redirect Notice</h2>
+            <p>You will be redirected in <span class="redirect-countdown">10</span> seconds.</p>
+            <!-- No cancel option -->
+        </section>
+    </main>
+    
+    <style>
+        @keyframes scroll {
+            from { transform: translateX(100%); }
+            to { transform: translateX(-100%); }
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!-- EXPECTED: modal-accessibility check should FAIL -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Modal Accessibility Issues Test</title>
+    <style>
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 400px;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Modal Dialog Issues</h1>
+        
+        <!-- Modal without role="dialog" -->
+        <div class="modal-overlay">
+            <div class="modal-content">
+                <h2>Modal Without Role</h2>
+                <p>This modal has no role="dialog" attribute.</p>
+                <button>Close</button>
+            </div>
+        </div>
+        
+        <!-- Dialog without aria-modal -->
+        <div role="dialog" class="modal-content">
+            <h2>Dialog Without aria-modal</h2>
+            <p>Missing aria-modal="true" to indicate modal behavior.</p>
+            <button>Close</button>
+        </div>
+        
+        <!-- Dialog without accessible name -->
+        <div role="dialog" aria-modal="true" class="modal-content">
+            <h2>Unlabeled Dialog</h2>
+            <p>No aria-label or aria-labelledby.</p>
+            <button>Close</button>
+        </div>
+        
+        <!-- alertdialog without description -->
+        <div role="alertdialog" aria-modal="true" aria-label="Alert">
+            <p>Alert content without aria-describedby.</p>
+            <button>OK</button>
+        </div>
+        
+        <!-- Dialog with wrong aria-labelledby reference -->
+        <div role="dialog" aria-modal="true" aria-labelledby="wrong-id">
+            <h2 id="dialog-title">Dialog Title</h2>
+            <p>aria-labelledby references wrong ID.</p>
+            <button>Close</button>
+        </div>
+        
+        <!-- Nested dialogs (problematic) -->
+        <div role="dialog" aria-modal="true" aria-label="Outer Dialog">
+            <h2>Outer Dialog</h2>
+            <div role="dialog" aria-modal="true" aria-label="Inner Dialog">
+                <h3>Inner Dialog</h3>
+                <p>Nested modal dialogs are problematic.</p>
+                <button>Close Inner</button>
+            </div>
+            <button>Close Outer</button>
+        </div>
+        
+        <!-- Dialog opened without focus management -->
+        <div role="dialog" aria-modal="true" aria-label="Focus Issues">
+            <h2>Focus Management Missing</h2>
+            <p>When opened, focus should move to dialog.</p>
+            <p>When closed, focus should return to trigger.</p>
+            <input type="text" placeholder="Should auto-focus">
+            <button>Close</button>
+        </div>
+        
+        <!-- Custom modal using div without any ARIA -->
+        <div class="custom-modal" style="position: fixed; background: white; padding: 20px;">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <div class="modal-body">
+                <h2>Custom Modal</h2>
+                <p>No ARIA attributes at all.</p>
+                <button onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

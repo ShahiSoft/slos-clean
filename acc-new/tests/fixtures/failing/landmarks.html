@@ -1,0 +1,79 @@
+<!-- EXPECTED: landmark-role check should FAIL -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Landmark Issues Test</title>
+</head>
+<body>
+    <!-- Multiple nav without labels (can't distinguish) -->
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+        </ul>
+    </nav>
+    
+    <nav>
+        <ul>
+            <li><a href="/products">Products</a></li>
+            <li><a href="/services">Services</a></li>
+        </ul>
+    </nav>
+    
+    <!-- Multiple main landmarks (only one allowed) -->
+    <main>
+        <h1>Main Content Area 1</h1>
+        <p>This is content.</p>
+    </main>
+    
+    <main>
+        <h1>Main Content Area 2</h1>
+        <p>This is more content.</p>
+    </main>
+    
+    <!-- Form without accessible name used as landmark -->
+    <form role="search">
+        <input type="search">
+        <button type="submit">Search</button>
+    </form>
+    
+    <!-- Another search form without label -->
+    <form role="search">
+        <input type="search">
+        <button type="submit">Find</button>
+    </form>
+    
+    <!-- Multiple complementary without labels -->
+    <aside>
+        <h2>Sidebar 1</h2>
+        <p>First sidebar content</p>
+    </aside>
+    
+    <aside>
+        <h2>Sidebar 2</h2>
+        <p>Second sidebar content</p>
+    </aside>
+    
+    <!-- Region without accessible name -->
+    <section>
+        <h2>Section without proper landmark setup</h2>
+        <p>This section needs aria-labelledby or aria-label.</p>
+    </section>
+    
+    <!-- Page with no main landmark at all -->
+    <!-- (Comment: This whole page structure is problematic) -->
+    
+    <!-- Multiple banners -->
+    <header>Top header</header>
+    <div role="banner">Another banner</div>
+    
+    <!-- Multiple contentinfo -->
+    <footer>First footer</footer>
+    <footer>Second footer</footer>
+    
+    <!-- Role on wrong element -->
+    <span role="main">This shouldn't be a span</span>
+    <div role="navigation">Div with nav role - should use nav element</div>
+</body>
+</html>
