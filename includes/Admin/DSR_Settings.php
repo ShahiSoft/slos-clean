@@ -308,6 +308,9 @@ class DSR_Settings {
 		
 		?>
 		<div class="slos-settings-modern">
+			<p class="slos-section-description">
+				<?php esc_html_e( 'Configure DSR portal settings including SLA deadlines, data sources, and notification preferences. All changes take effect immediately after saving.', 'shahi-legalops-suite' ); ?>
+			</p>
 			<form method="post" action="options.php" class="slos-settings-form">
 				<?php settings_fields( 'slos_dsr_settings_group' ); ?>
 				
@@ -323,6 +326,7 @@ class DSR_Settings {
 								</h3>
 								<p><?php esc_html_e( 'Configure basic DSR portal appearance and behavior', 'shahi-legalops-suite' ); ?></p>
 							</div>
+							<p class="slos-widget-description"><?php esc_html_e( 'Customize the public-facing DSR submission form. These settings control what users see when requesting access to their data.', 'shahi-legalops-suite' ); ?></p>
 							<div class="slos-card-body">
 								<div class="slos-form-group">
 									<label for="form_title" class="slos-form-label">
@@ -373,6 +377,7 @@ class DSR_Settings {
 								</h3>
 								<p><?php esc_html_e( 'Set response deadlines in business days for each regulation', 'shahi-legalops-suite' ); ?></p>
 							</div>
+							<p class="slos-widget-description"><?php esc_html_e( 'Define regulatory compliance deadlines for each privacy framework. Requests approaching deadlines will trigger alerts and appear in the SLA Monitor.', 'shahi-legalops-suite' ); ?></p>
 							<div class="slos-card-body">
 								<div class="slos-sla-grid">
 									<?php
@@ -418,6 +423,7 @@ class DSR_Settings {
 								</h3>
 								<p><?php esc_html_e( 'Select which data sources to search for DSR processing', 'shahi-legalops-suite' ); ?></p>
 							</div>
+							<p class="slos-widget-description"><?php esc_html_e( 'Enable or disable data locations searched during request processing. Unchecked sources will be excluded from access, deletion, and portability operations.', 'shahi-legalops-suite' ); ?></p>
 							<div class="slos-card-body">
 								<div class="slos-checkbox-grid">
 									<?php
@@ -456,6 +462,7 @@ class DSR_Settings {
 								<span class="dashicons dashicons-email"></span>
 								<?php esc_html_e( 'Notifications', 'shahi-legalops-suite' ); ?>
 							</h4>
+							<p class="slos-widget-description"><?php esc_html_e( 'Control automated email alerts. Enable notifications to keep stakeholders informed of request progress and SLA concerns.', 'shahi-legalops-suite' ); ?></p>
 							<div class="slos-widget-body">
 								<label class="slos-toggle-item">
 									<input type="checkbox" 
@@ -492,6 +499,7 @@ class DSR_Settings {
 								<span class="dashicons dashicons-admin-tools"></span>
 								<?php esc_html_e( 'Advanced', 'shahi-legalops-suite' ); ?>
 							</h4>
+							<p class="slos-widget-description"><?php esc_html_e( 'Security and data retention options. Use caution—encryption and auto-deletion affect data recovery.', 'shahi-legalops-suite' ); ?></p>
 							<div class="slos-widget-body">
 								<label class="slos-toggle-item">
 									<input type="checkbox" 
@@ -531,6 +539,7 @@ class DSR_Settings {
 
 						<!-- Save Button Widget -->
 						<div class="slos-settings-widget slos-save-widget">
+							<p class="slos-widget-description"><?php esc_html_e( 'Review all settings before saving. Changes apply to all new and existing requests immediately.', 'shahi-legalops-suite' ); ?></p>
 							<button type="submit" class="slos-btn-save">
 								<span class="dashicons dashicons-yes"></span>
 								<?php esc_html_e( 'Save All Settings', 'shahi-legalops-suite' ); ?>
@@ -546,6 +555,7 @@ class DSR_Settings {
 								<span class="dashicons dashicons-info"></span>
 								<?php esc_html_e( 'System Info', 'shahi-legalops-suite' ); ?>
 							</h4>
+							<p class="slos-widget-description"><?php esc_html_e( 'Current DSR portal status and plugin version. Reference this information when reporting issues.', 'shahi-legalops-suite' ); ?></p>
 							<div class="slos-widget-body">
 								<div class="slos-info-item">
 									<span class="slos-info-label"><?php esc_html_e( 'Plugin Version', 'shahi-legalops-suite' ); ?></span>

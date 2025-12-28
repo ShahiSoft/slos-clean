@@ -209,11 +209,31 @@ class Document_Hub_Service
      */
     public function get_statistics()
     {
-        // Implement real stats here
+        global $wpdb;
+        $docs_table = $wpdb->prefix . 'slos_documents';
+        
+        // Count total generated documents (excluding not_generated status)
+        $total_generated = $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$docs_table} WHERE status != 'not_generated'"
+        );
+        
+        // Count documents that need attention (outdated)
+        $outdated_docs = $this->get_outdated_documents();
+        $needs_attention = count($outdated_docs);
+        
+        // Count up-to-date published documents
+        $up_to_date = $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$docs_table} WHERE status = 'published'"
+        ) - $needs_attention;
+        
+        if ($up_to_date < 0) {
+            $up_to_date = 0;
+        }
+        
         return array(
-            'total_generated' => 0,
-            'needs_attention' => 0,
-            'up_to_date' => 0,
+            'total_generated' => (int) $total_generated,
+            'needs_attention' => (int) $needs_attention,
+            'up_to_date' => (int) $up_to_date,
         );
     }
 
@@ -225,7 +245,27 @@ class Document_Hub_Service
      */
     public function get_outdated_documents()
     {
-        // Implement logic to find docs older than profile update
-        return array();
+        global $wpdb;
+        $docs_table = $wpdb->prefix . 'slos_documents';
+        
+        // Get profile last updated timestamp
+        $profile = $this->profile_repository->get_profile();
+        if (!$profile || empty($profile['updated_at'])) {
+            return array();
+        }
+        
+        $profile_updated = $profile['updated_at'];
+        
+        // Find documents generated before profile was last updated
+        $outdated = $wpdb->get_results($wpdb->prepare(
+            "SELECT id, doc_type, title, updated_at 
+             FROM {$docs_table} 
+             WHERE status != 'not_generated' 
+             AND (updated_at < %s OR updated_at IS NULL)
+             ORDER BY updated_at ASC",
+            $profile_updated
+        ));
+        
+        return $outdated ? $outdated : array();
     }
 }

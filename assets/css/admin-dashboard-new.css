@@ -306,6 +306,15 @@
 .shahi-v3-stat-sparkline {
     height: 30px;
     opacity: 0.5;
+    display: none;
+}
+
+.shahi-v3-stat-desc {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.55);
+    margin: 0.5rem 0 0 0;
+    line-height: 1.4;
+    font-weight: 400;
 }
 
 .shahi-v3-sparkline-svg {
@@ -970,4 +979,34 @@
     .shahi-v3-stat-number {
         font-size: 1.5rem;
     }
+}
+
+/* ============================================
+   SECTION & CARD INTRO TEXT
+   ============================================ */
+.shahi-v3-section-intro {
+    padding: 0 2rem;
+    margin-bottom: 1rem;
+}
+
+.shahi-v3-section-desc {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0;
+    max-width: 900px;
+}
+
+.shahi-v3-card-intro {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.55);
+    margin: 0 0 1.25rem 0;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Hide sparkline placeholders if any remain */
+.shahi-v3-stat-sparkline {
+    display: none;
 }

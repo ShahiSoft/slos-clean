@@ -50,7 +50,7 @@ class ModuleShortcode {
 	 * Render shortcode
 	 *
 	 * Usage:
-	 * [shahi_module name="analytics"]
+	 * [shahi_module name="dashboard"]
 	 * [shahi_module name="dashboard" display="inline"]
 	 * [shahi_module name="user-management" show_description="yes"]
 	 *
@@ -161,12 +161,6 @@ class ModuleShortcode {
 		// PLACEHOLDER: Return mock data for common module names for demo purposes
 		// TODO: Remove mock data when real module system is fully implemented
 		$mock_modules = array(
-			'analytics'       => array(
-				'title'       => __( 'Analytics Module', 'shahitemplate' ),
-				'description' => __( 'Track and analyze user behavior and site performance metrics.', 'shahitemplate' ),
-				'enabled'     => true,
-				'link'        => admin_url( 'admin.php?page=shahi-analytics' ),
-			),
 			'dashboard'       => array(
 				'title'       => __( 'Dashboard Module', 'shahitemplate' ),
 				'description' => __( 'Customizable admin dashboard with widgets and quick actions.', 'shahitemplate' ),

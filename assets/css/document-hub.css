@@ -679,6 +679,17 @@
 	font-size: 13px;
 	color: var(--slos-hub-text-muted);
 	margin-top: 4px;
+	display: block;
+	font-weight: 600;
+}
+
+.slos-hub-stats__desc {
+	font-size: 11px;
+	color: var(--slos-hub-text-muted);
+	margin-top: 8px;
+	display: block;
+	line-height: 1.4;
+	opacity: 0.8;
 }
 
 /* ==========================================================================
@@ -823,6 +834,8 @@
 	flex: 1;
 	padding: 20px;
 	overflow-y: auto;
+	max-height: calc(90vh - 140px); /* Account for header and footer */
+	min-height: 300px;
 }
 
 .slos-modal__loading {
@@ -930,6 +943,10 @@
 	font-size: 14px;
 	line-height: 1.6;
 	color: var(--slos-hub-text);
+	width: 100%;
+	max-width: 100%;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
 }
 
 .slos-hub-preview-content h1,

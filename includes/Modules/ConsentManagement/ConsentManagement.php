@@ -184,4 +184,16 @@ class ConsentManagement extends Module {
 	public function get_dependencies() {
 		return array();
 	}
+
+	/**
+	 * Get module settings URL
+	 *
+	 * Returns the admin URL for Consent Management settings (Banner Settings tab).
+	 *
+	 * @since 3.1.1
+	 * @return string Settings URL
+	 */
+	public function get_settings_url() {
+		return admin_url( 'admin.php?page=slos-compliance&tab=banner-settings' );
+	}
 }

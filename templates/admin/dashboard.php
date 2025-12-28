@@ -88,6 +88,11 @@ foreach ($modules_status as $module) {
     <!-- ═══════════════════════════════════════════════════════════════════════
          STATS GRID - 4 Metric Cards
          ═══════════════════════════════════════════════════════════════════════ -->
+    <div class="shahi-v3-section-intro">
+        <p class="shahi-v3-section-desc">
+            <?php echo esc_html__('Monitor your legal compliance system at a glance. These metrics help you track active modules, system events, performance health, and recent activity across your WordPress site.', 'shahi-legalops-suite'); ?>
+        </p>
+    </div>
     <div class="shahi-v3-stats-row">
         <?php foreach ($stats as $index => $stat): ?>
             <div class="shahi-v3-stat-card shahi-v3-stat-<?php echo esc_attr($stat['color']); ?>">
@@ -114,12 +119,9 @@ foreach ($modules_status as $module) {
                             <?php endif; ?>
                         <?php endif; ?>
                     </div>
-                </div>
-                <div class="shahi-v3-stat-sparkline">
-                    <!-- Placeholder for mini chart -->
-                    <svg viewBox="0 0 100 30" class="shahi-v3-sparkline-svg">
-                        <polyline points="0,25 20,20 40,15 60,18 80,10 100,12" fill="none" stroke="currentColor" stroke-width="2" />
-                    </svg>
+                    <?php if (isset($stat['description']) && $stat['description']): ?>
+                        <p class="shahi-v3-stat-desc"><?php echo esc_html($stat['description']); ?></p>
+                    <?php endif; ?>
                 </div>
             </div>
         <?php endforeach; ?>
@@ -149,6 +151,9 @@ foreach ($modules_status as $module) {
                     </a>
                 </div>
                 <div class="shahi-v3-card-body">
+                    <p class="shahi-v3-card-intro">
+                        <?php echo esc_html__('Enable the modules you need for GDPR, CCPA, and accessibility compliance. Each module handles a specific aspect of legal requirements for your website.', 'shahi-legalops-suite'); ?>
+                    </p>
                     <div class="shahi-v3-modules-grid">
                         <?php foreach ($modules_status as $module): ?>
                             <div class="shahi-v3-module-item <?php echo $module['enabled'] ? 'active' : 'inactive'; ?>">
@@ -189,6 +194,9 @@ foreach ($modules_status as $module) {
                     </div>
                 </div>
                 <div class="shahi-v3-card-body">
+                    <p class="shahi-v3-card-intro">
+                        <?php echo esc_html__('Jump directly to common tasks. Manage data subject requests, configure consent banners, generate legal documents, or adjust plugin settings with one click.', 'shahi-legalops-suite'); ?>
+                    </p>
                     <div class="shahi-v3-actions-grid">
                         <?php foreach ($quick_actions as $action): ?>
                             <a href="<?php echo esc_url($action['url']); ?>" class="shahi-v3-action-tile">
@@ -219,6 +227,9 @@ foreach ($modules_status as $module) {
                     </div>
                 </div>
                 <div class="shahi-v3-card-body">
+                    <p class="shahi-v3-card-intro">
+                        <?php echo esc_html__('Complete these steps to fully configure your legal compliance system. Each step ensures your website meets privacy regulations and accessibility standards.', 'shahi-legalops-suite'); ?>
+                    </p>
                     <!-- Circular Progress -->
                     <div class="shahi-v3-progress-circle-wrap">
                         <svg class="shahi-v3-progress-circle" viewBox="0 0 120 120">
@@ -252,7 +263,7 @@ foreach ($modules_status as $module) {
                                     <?php endif; ?>
                                 </div>
                                 <span class="shahi-v3-check-text"><?php echo esc_html($item['title']); ?></span>
-                                <a href="<?php echo esc_url($item['action_url']); ?>" class="shahi-v3-check-action">
+                                <a href="<?php echo esc_url($item['action_url']); ?>" class="shahi-v3-check-action <?php echo !empty($item['action_class']) ? esc_attr($item['action_class']) : ''; ?>">
                                     <span class="dashicons dashicons-arrow-right-alt2"></span>
                                 </a>
                             </div>
@@ -272,6 +283,9 @@ foreach ($modules_status as $module) {
                     </div>
                 </div>
                 <div class="shahi-v3-card-body">
+                    <p class="shahi-v3-card-intro">
+                        <?php echo esc_html__('Track compliance events including consent records, DSR submissions, document generations, and configuration changes for audit purposes.', 'shahi-legalops-suite'); ?>
+                    </p>
                     <?php if (!empty($recent_activity)): ?>
                         <div class="shahi-v3-activity-list">
                             <?php foreach (array_slice($recent_activity, 0, 6) as $activity): ?>
@@ -307,6 +321,9 @@ foreach ($modules_status as $module) {
                     </div>
                 </div>
                 <div class="shahi-v3-card-body">
+                    <p class="shahi-v3-card-intro">
+                        <?php echo esc_html__('Get help with setup, learn best practices for compliance, or contact our support team for assistance with complex configurations.', 'shahi-legalops-suite'); ?>
+                    </p>
                     <div class="shahi-v3-support-list">
                         <?php foreach (array_slice($support_links, 0, 4) as $link): ?>
                             <a href="<?php echo esc_url($link['url']); ?>" 

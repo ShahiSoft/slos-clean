@@ -99,6 +99,9 @@ $nonce      = $data['nonce'] ?? '';
 		<p class="slos-hub-subtitle">
 			<?php esc_html_e( 'Generate and manage your legal documents from your company profile.', 'shahi-legalops-suite' ); ?>
 		</p>
+		<p class="slos-section-description">
+			<?php esc_html_e( 'Auto-generate professional legal documents (Privacy Policy, Terms & Conditions, Cookie Policy, etc.) pre-filled with your company information. Documents sync with your Company Profile—when you update profile details, outdated documents show a warning prompting regeneration. Each document supports versioning, shortcodes for frontend display, and manual editing after generation.', 'shahi-legalops-suite' ); ?>
+		</p>
 	</div>
 
 	<?php
@@ -156,6 +159,9 @@ $nonce      = $data['nonce'] ?? '';
 	<?php endif; ?>
 
 	<!-- Category Filters -->
+	<p class="slos-widget-description" style="margin: 20px 0 16px;">
+		<?php esc_html_e( 'Filter documents by category (All, Privacy, Terms, Compliance). Categories organize documents by legal purpose. Export All downloads all generated documents as ZIP archive.', 'shahi-legalops-suite' ); ?>
+	</p>
 	<div class="slos-hub-filters">
 		<div class="slos-hub-filters__tabs">
 			<?php foreach ( $categories as $key => $label ) : ?>
@@ -175,7 +181,31 @@ $nonce      = $data['nonce'] ?? '';
 		</div>
 	</div>
 
+	<!-- Quick Stats Panel -->
+	<div class="slos-hub-stats" style="margin: 24px 0;">
+		<div class="slos-hub-stats__item">
+			<span class="slos-hub-stats__value"><?php echo esc_html( $statistics['total_generated'] ?? 0 ); ?></span>
+			<span class="slos-hub-stats__label"><?php esc_html_e( 'Documents Generated', 'shahi-legalops-suite' ); ?></span>
+			<span class="slos-hub-stats__desc"><?php esc_html_e( 'Total number of legal documents created from your profile. Includes drafts and published documents.', 'shahi-legalops-suite' ); ?></span>
+		</div>
+		<div class="slos-hub-stats__item">
+			<span class="slos-hub-stats__value"><?php echo esc_html( $profile['completeness'] ?? 0 ); ?>%</span>
+			<span class="slos-hub-stats__label"><?php esc_html_e( 'Profile Complete', 'shahi-legalops-suite' ); ?></span>
+			<span class="slos-hub-stats__desc"><?php esc_html_e( 'Your Company Profile completion percentage. 70%+ enables generation, 100% recommended for best quality.', 'shahi-legalops-suite' ); ?></span>
+		</div>
+		<div class="slos-hub-stats__item">
+			<span class="slos-hub-stats__value <?php echo ( $statistics['needs_attention'] ?? 0 ) > 0 ? 'slos-hub-stats__value--warning' : ''; ?>">
+				<?php echo esc_html( $statistics['needs_attention'] ?? 0 ); ?>
+			</span>
+			<span class="slos-hub-stats__label"><?php esc_html_e( 'Needs Attention', 'shahi-legalops-suite' ); ?></span>
+			<span class="slos-hub-stats__desc"><?php esc_html_e( 'Documents marked as outdated due to profile changes. Click Regenerate to update with current data.', 'shahi-legalops-suite' ); ?></span>
+		</div>
+	</div>
+
 	<!-- Document Cards Grid -->
+	<p class="slos-widget-description" style="margin: 20px 0 16px;">
+		<?php esc_html_e( 'Each card represents a legal document type. Not Generated = no document created yet. Draft = generated but not published. Published = live document. Outdated = profile changed since generation. Use Generate/Regenerate buttons to create or update documents. View opens preview modal, Edit opens WordPress editor.', 'shahi-legalops-suite' ); ?>
+	</p>
 	<div class="slos-hub-grid">
 		<?php if ( ! empty( $cards ) ) : ?>
 			<?php foreach ( $cards as $card ) : ?>
@@ -192,25 +222,10 @@ $nonce      = $data['nonce'] ?? '';
 		<?php endif; ?>
 	</div>
 
-	<!-- Quick Stats Panel -->
-	<div class="slos-hub-stats">
-		<div class="slos-hub-stats__item">
-			<span class="slos-hub-stats__value"><?php echo esc_html( $statistics['total_generated'] ?? 0 ); ?></span>
-			<span class="slos-hub-stats__label"><?php esc_html_e( 'Documents Generated', 'shahi-legalops-suite' ); ?></span>
-		</div>
-		<div class="slos-hub-stats__item">
-			<span class="slos-hub-stats__value"><?php echo esc_html( $profile['completeness'] ?? 0 ); ?>%</span>
-			<span class="slos-hub-stats__label"><?php esc_html_e( 'Profile Complete', 'shahi-legalops-suite' ); ?></span>
-		</div>
-		<div class="slos-hub-stats__item">
-			<span class="slos-hub-stats__value <?php echo ( $statistics['needs_attention'] ?? 0 ) > 0 ? 'slos-hub-stats__value--warning' : ''; ?>">
-				<?php echo esc_html( $statistics['needs_attention'] ?? 0 ); ?>
-			</span>
-			<span class="slos-hub-stats__label"><?php esc_html_e( 'Needs Attention', 'shahi-legalops-suite' ); ?></span>
-		</div>
-	</div>
-
 	<!-- Shortcode Reference -->
+	<p class="slos-widget-description" style="margin: 20px 0 16px;">
+		<?php esc_html_e( 'Shortcodes display documents on any page or post. Copy shortcode from card action buttons or use examples below. Format: [slos_legal_doc type="document_type"]. Documents must be generated and published before shortcodes display content.', 'shahi-legalops-suite' ); ?>
+	</p>
 	<div class="slos-hub-shortcodes">
 		<h3 class="slos-hub-shortcodes__title">
 			<span class="dashicons dashicons-shortcode"></span>

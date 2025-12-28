@@ -215,7 +215,7 @@
                             url: shahiDashboard.ajaxUrl,
                             type: 'POST',
                             data: {
-                                action: 'shahi_reset_onboarding',
+                                action: 'shahi_restart_onboarding',
                                 nonce: shahiDashboard.nonce
                             },
                             success: function() {

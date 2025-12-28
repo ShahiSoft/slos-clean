@@ -192,6 +192,9 @@ class DSRReports {
 		<div class="slos-reports-layout">
 			<!-- Date Range Selector -->
 			<div class="slos-date-range-card">
+				<p class="slos-section-description">
+					<?php esc_html_e( 'Select a date range to generate compliance reports. Use quick filters for common periods or set custom dates.', 'shahi-legalops-suite' ); ?>
+				</p>
 				<form method="get" action="" class="slos-date-range-form">
 					<input type="hidden" name="page" value="slos-requests" />
 					<input type="hidden" name="tab" value="reports" />
@@ -222,6 +225,9 @@ class DSRReports {
 				</form>
 				
 				<div class="slos-export-actions">
+					<p class="slos-export-description">
+						<?php esc_html_e( 'Export reports for auditors and stakeholders. CSV for data analysis, PDF for formal documentation.', 'shahi-legalops-suite' ); ?>
+					</p>
 					<a href="<?php echo esc_url( wp_nonce_url( add_query_arg( array( 'action' => 'export_csv', 'start_date' => $start_date, 'end_date' => $end_date ), admin_url( 'admin.php?page=slos-requests&tab=reports' ) ), 'slos_export_report' ) ); ?>" 
 					   class="slos-export-btn">
 						<span class="dashicons dashicons-media-spreadsheet"></span>
@@ -240,7 +246,11 @@ class DSRReports {
 			</div>
 
 			<!-- Hero Stats Row -->
-			<div class="slos-hero-stats">
+			<div class="slos-hero-stats-section">
+				<p class="slos-section-description">
+					<?php esc_html_e( 'Key performance metrics for the selected period. Green indicates improvement, red indicates areas needing attention.', 'shahi-legalops-suite' ); ?>
+				</p>
+				<div class="slos-hero-stats">
 				<div class="slos-hero-stat">
 					<div class="slos-hero-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
 						<span class="dashicons dashicons-list-view"></span>
@@ -284,40 +294,48 @@ class DSRReports {
 						<div class="slos-hero-change positive">-1.2h faster</div>
 					</div>
 				</div>
+				</div>
 			</div>
 
 			<!-- Visualization Grid -->
-			<div class="slos-viz-grid">
-				<div class="slos-viz-card slos-viz-large">
-					<h3 class="slos-viz-title">
-						<span class="dashicons dashicons-chart-line"></span>
-						<?php esc_html_e( 'Requests Trend', 'shahi-legalops-suite' ); ?>
-					</h3>
-					<div class="slos-viz-content">
-						<div class="slos-chart-placeholder">
-							<canvas id="slos-trend-chart"></canvas>
+			<div class="slos-viz-section">
+				<p class="slos-section-description">
+					<?php esc_html_e( 'Visual analytics showing request trends, type distribution, and status breakdown. Charts update based on selected date range.', 'shahi-legalops-suite' ); ?>
+				</p>
+				<div class="slos-viz-grid">
+					<div class="slos-viz-card slos-viz-large">
+						<h3 class="slos-viz-title">
+							<span class="dashicons dashicons-chart-line"></span>
+							<?php esc_html_e( 'Requests Trend', 'shahi-legalops-suite' ); ?>
+						</h3>
+						<p class="slos-viz-description"><?php esc_html_e( 'Weekly request volume over time. Identify patterns and seasonal trends in DSR submissions.', 'shahi-legalops-suite' ); ?></p>
+						<div class="slos-viz-content">
+							<div class="slos-chart-placeholder">
+								<canvas id="slos-trend-chart"></canvas>
+							</div>
+						</div>
+					</div>
+					
+					<div class="slos-viz-card">
+						<h3 class="slos-viz-title">
+							<span class="dashicons dashicons-chart-bar"></span>
+							<?php esc_html_e( 'By Type', 'shahi-legalops-suite' ); ?>
+						</h3>
+						<p class="slos-viz-description"><?php esc_html_e( 'Distribution by GDPR request type: Access, Erasure, Rectification, Portability, etc.', 'shahi-legalops-suite' ); ?></p>
+						<div class="slos-viz-content">
+							<?php $this->render_type_distribution( $report['by_type'] ?? array() ); ?>
 						</div>
 					</div>
 				</div>
-				
-				<div class="slos-viz-card">
-					<h3 class="slos-viz-title">
-						<span class="dashicons dashicons-chart-bar"></span>
-						<?php esc_html_e( 'By Type', 'shahi-legalops-suite' ); ?>
-					</h3>
-					<div class="slos-viz-content">
-						<?php $this->render_type_distribution( $report['by_type'] ?? array() ); ?>
-					</div>
-				</div>
-			</div>
 
-			<div class="slos-viz-grid">
-				<div class="slos-viz-card">
-					<h3 class="slos-viz-title">
-						<span class="dashicons dashicons-chart-pie"></span>
-						<?php esc_html_e( 'Status Distribution', 'shahi-legalops-suite' ); ?>
-					</h3>
-					<div class="slos-viz-content">
+				<div class="slos-viz-grid">
+					<div class="slos-viz-card">
+						<h3 class="slos-viz-title">
+							<span class="dashicons dashicons-chart-pie"></span>
+							<?php esc_html_e( 'Status Distribution', 'shahi-legalops-suite' ); ?>
+						</h3>
+						<p class="slos-viz-description"><?php esc_html_e( 'Current status breakdown. Monitor pending requests and completion rates.', 'shahi-legalops-suite' ); ?></p>
+						<div class="slos-viz-content">
 						<?php $this->render_status_distribution( $report['by_status'] ?? array() ); ?>
 					</div>
 				</div>
@@ -327,6 +345,7 @@ class DSRReports {
 						<span class="dashicons dashicons-location-alt"></span>
 						<?php esc_html_e( 'Top Sources', 'shahi-legalops-suite' ); ?>
 					</h3>
+					<p class="slos-viz-description"><?php esc_html_e( 'Most common submission channels. Optimize intake processes for high-volume sources.', 'shahi-legalops-suite' ); ?></p>
 					<div class="slos-viz-content">
 						<?php $this->render_top_sources(); ?>
 					</div>

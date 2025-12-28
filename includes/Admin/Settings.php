@@ -138,10 +138,6 @@ class Settings {
 				'title' => __( 'General', 'shahi-legalops-suite' ),
 				'icon'  => 'dashicons-admin-generic',
 			),
-			'analytics'     => array(
-				'title' => __( 'Analytics', 'shahi-legalops-suite' ),
-				'icon'  => 'dashicons-chart-line',
-			),
 			'notifications' => array(
 				'title' => __( 'Notifications', 'shahi-legalops-suite' ),
 				'icon'  => 'dashicons-email',

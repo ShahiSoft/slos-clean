@@ -682,6 +682,10 @@ $eea_countries = array_merge($eu_countries, array('IS', 'LI', 'NO'));
             <?php esc_html_e( 'Add Rule', 'shahi-legalops-suite' ); ?>
         </button>
     </div>
+    
+    <p class="slos-section-description">
+        <?php esc_html_e( 'Define region-specific consent requirements to comply with global privacy laws. Rules automatically detect visitor location and enforce appropriate consent mode (opt-in for GDPR/strict, opt-out for permissive). Configure frameworks like GDPR (EU), CCPA (California), LGPD (Brazil), and custom rules. Each rule can target countries or US states.', 'shahi-legalops-suite' ); ?>
+    </p>
 
     <?php if ( empty( $geo_rules ) ) : ?>
     <!-- Empty State - No Rules Configured -->

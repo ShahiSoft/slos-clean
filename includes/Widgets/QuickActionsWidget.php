@@ -59,7 +59,6 @@ class QuickActionsWidget extends \WP_Widget {
 		$show_dashboard = isset( $instance['show_dashboard'] ) ? (bool) $instance['show_dashboard'] : true;
 		$show_settings  = isset( $instance['show_settings'] ) ? (bool) $instance['show_settings'] : true;
 		$show_modules   = isset( $instance['show_modules'] ) ? (bool) $instance['show_modules'] : true;
-		$show_analytics = isset( $instance['show_analytics'] ) ? (bool) $instance['show_analytics'] : true;
 		$show_add_item  = isset( $instance['show_add_item'] ) ? (bool) $instance['show_add_item'] : false;
 
 		echo $args['before_widget'];
@@ -104,17 +103,6 @@ class QuickActionsWidget extends \WP_Widget {
 			echo '</li>';
 		}
 
-		// Analytics link
-		if ( $show_analytics ) {
-			$analytics_url = admin_url( 'admin.php?page=shahi-legalops-suite-analytics' );
-			echo '<li>';
-			echo '<a href="' . esc_url( $analytics_url ) . '" class="shahi-action-button">';
-			echo '<span class="dashicons dashicons-chart-line"></span> ';
-			echo esc_html__( 'Analytics', 'shahi-legalops-suite' );
-			echo '</a>';
-			echo '</li>';
-		}
-
 		// Add template item link
 		if ( $show_add_item ) {
 			$add_item_url = admin_url( 'post-new.php?post_type=shahi_legalops_suite_item' );
@@ -144,7 +132,6 @@ class QuickActionsWidget extends \WP_Widget {
 		$show_dashboard = isset( $instance['show_dashboard'] ) ? (bool) $instance['show_dashboard'] : true;
 		$show_settings  = isset( $instance['show_settings'] ) ? (bool) $instance['show_settings'] : true;
 		$show_modules   = isset( $instance['show_modules'] ) ? (bool) $instance['show_modules'] : true;
-		$show_analytics = isset( $instance['show_analytics'] ) ? (bool) $instance['show_analytics'] : true;
 		$show_add_item  = isset( $instance['show_add_item'] ) ? (bool) $instance['show_add_item'] : false;
 		?>
 		
@@ -186,15 +173,6 @@ class QuickActionsWidget extends \WP_Widget {
 		
 		<div class="shahi-widget-field">
 			<label>
-				<input type="checkbox" id="<?php echo esc_attr( $this->get_field_id( 'show_analytics' ) ); ?>" 
-						name="<?php echo esc_attr( $this->get_field_name( 'show_analytics' ) ); ?>" 
-						value="1" <?php checked( $show_analytics, true ); ?>>
-				<?php esc_html_e( 'Show Analytics Link', 'shahi-legalops-suite' ); ?>
-			</label>
-		</div>
-		
-		<div class="shahi-widget-field">
-			<label>
 				<input type="checkbox" id="<?php echo esc_attr( $this->get_field_id( 'show_add_item' ) ); ?>" 
 						name="<?php echo esc_attr( $this->get_field_name( 'show_add_item' ) ); ?>" 
 						value="1" <?php checked( $show_add_item, true ); ?>>
@@ -227,9 +205,6 @@ class QuickActionsWidget extends \WP_Widget {
 
 		$instance['show_modules'] = isset( $new_instance['show_modules'] ) ?
 			(bool) $new_instance['show_modules'] : false;
-
-		$instance['show_analytics'] = isset( $new_instance['show_analytics'] ) ?
-			(bool) $new_instance['show_analytics'] : false;
 
 		$instance['show_add_item'] = isset( $new_instance['show_add_item'] ) ?
 			(bool) $new_instance['show_add_item'] : false;

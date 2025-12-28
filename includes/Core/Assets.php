@@ -502,6 +502,7 @@ class Assets {
 				true
 			);
 
+			$this->localize_dashboard_script();
 		} elseif ( $this->is_modules_page( $hook ) ) {
 			$this->enqueue_script(
 				'shahi-admin-modules',
@@ -706,6 +707,7 @@ class Assets {
 			'shahi-admin-dashboard',
 			'shahiDashboard',
 			array(
+				'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
 				'nonce'        => Security::generate_nonce( 'shahi_dashboard' ),
 				'refreshNonce' => Security::generate_nonce( 'shahi_refresh_stats' ),
 				'i18n'         => array(

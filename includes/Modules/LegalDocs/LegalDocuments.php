@@ -166,4 +166,17 @@ class LegalDocuments extends Module
 
         $this->controller->enqueue_assets();
     }
+
+    /**
+     * Get module settings URL
+     *
+     * Returns the admin URL for Document Hub main page.
+     *
+     * @since 3.1.1
+     * @return string Settings URL
+     */
+    public function get_settings_url()
+    {
+        return admin_url('admin.php?page=slos-documents');
+    }
 }

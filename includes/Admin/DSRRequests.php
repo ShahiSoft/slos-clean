@@ -157,6 +157,9 @@ class DSRRequests {
         ?>
         <div class="slos-widget">
             <h3 class="slos-widget-title"><?php esc_html_e( 'Quick Actions', 'shahi-legalops-suite' ); ?></h3>
+            <p class="slos-widget-description">
+                <?php esc_html_e( 'Common DSR management operations. Create new requests, send bulk communications, or import/export data.', 'shahi-legalops-suite' ); ?>
+            </p>
             <div class="slos-widget-content">
                 <button class="slos-widget-btn">
                     <span class="dashicons dashicons-plus-alt2"></span>
@@ -186,6 +189,9 @@ class DSRRequests {
         ?>
         <div class="slos-widget">
             <h3 class="slos-widget-title"><?php esc_html_e( 'SLA Compliance', 'shahi-legalops-suite' ); ?></h3>
+            <p class="slos-widget-description">
+                <?php esc_html_e( 'Track compliance with regulatory deadlines. GDPR requires 30 days, CCPA 45 days response time.', 'shahi-legalops-suite' ); ?>
+            </p>
             <div class="slos-widget-content">
                 <div class="slos-sla-progress">
                     <div class="slos-progress-bar">
@@ -212,6 +218,9 @@ class DSRRequests {
         ?>
         <div class="slos-widget">
             <h3 class="slos-widget-title"><?php esc_html_e( 'Recent Activity', 'shahi-legalops-suite' ); ?></h3>
+            <p class="slos-widget-description">
+                <?php esc_html_e( 'Real-time feed of DSR status changes and new submissions. Stay informed of all request activity.', 'shahi-legalops-suite' ); ?>
+            </p>
             <div class="slos-widget-content">
                 <div class="slos-activity-feed">
                     <div class="slos-activity-item">
@@ -248,6 +257,9 @@ class DSRRequests {
         ?>
         <div class="slos-widget">
             <h3 class="slos-widget-title"><?php esc_html_e( 'By Regulation', 'shahi-legalops-suite' ); ?></h3>
+            <p class="slos-widget-description">
+                <?php esc_html_e( 'Distribution of requests by privacy regulation. Helps identify which frameworks apply most to your audience.', 'shahi-legalops-suite' ); ?>
+            </p>
             <div class="slos-widget-content">
                 <div class="slos-regulation-breakdown">
                     <div class="slos-regulation-item">
@@ -326,15 +338,23 @@ class DSRRequests {
             <!-- Main Content Column -->
             <div class="slos-requests-main">
                 <!-- Stats Cards Row -->
-                <div class="slos-stats-grid">
-                    <?php $this->render_stat_card( 'Total Requests', $stats['total'], '+8.5%', 'up', 'dashicons-list-view' ); ?>
-                    <?php $this->render_stat_card( 'Pending', $stats['pending'], '-2', 'down', 'dashicons-clock' ); ?>
-                    <?php $this->render_stat_card( 'Overdue', $stats['overdue'], 'HIGH', 'danger', 'dashicons-warning' ); ?>
-                    <?php $this->render_stat_card( 'Completed', $stats['completed'], '94.7%', 'success', 'dashicons-yes-alt' ); ?>
+                <div class="slos-stats-section">
+                    <p class="slos-section-description">
+                        <?php esc_html_e( 'Overview of all data subject requests. Click any card to filter the list below by that status.', 'shahi-legalops-suite' ); ?>
+                    </p>
+                    <div class="slos-stats-grid">
+                        <?php $this->render_stat_card( 'Total Requests', $stats['total'], '+8.5%', 'up', 'dashicons-list-view' ); ?>
+                        <?php $this->render_stat_card( 'Pending', $stats['pending'], '-2', 'down', 'dashicons-clock' ); ?>
+                        <?php $this->render_stat_card( 'Overdue', $stats['overdue'], 'HIGH', 'danger', 'dashicons-warning' ); ?>
+                        <?php $this->render_stat_card( 'Completed', $stats['completed'], '94.7%', 'success', 'dashicons-yes-alt' ); ?>
+                    </div>
                 </div>
 
                 <!-- Smart Filters -->
                 <div class="slos-filters-card">
+                    <p class="slos-section-description">
+                        <?php esc_html_e( 'Filter requests by status, type, or search by email/ID. Active filters appear as removable pills below.', 'shahi-legalops-suite' ); ?>
+                    </p>
                     <form method="get" action="" class="slos-filters-form">
                         <input type="hidden" name="page" value="slos-requests" />
                         <?php if ( isset( $_GET['tab'] ) ) : ?>

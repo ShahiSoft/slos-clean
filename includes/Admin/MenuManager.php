@@ -321,7 +321,6 @@ class MenuManager {
 		if ( $role ) {
 			$capabilities = array(
 				'manage_shahi_template',
-				'view_shahi_analytics',
 				'manage_shahi_modules',
 				'edit_shahi_settings',
 				'slos_manage_dsr',
@@ -348,7 +347,6 @@ class MenuManager {
 		if ( $role ) {
 			$capabilities = array(
 				'manage_shahi_template',
-				'view_shahi_analytics',
 				'manage_shahi_modules',
 				'edit_shahi_settings',
 				'slos_manage_dsr',
@@ -398,7 +396,6 @@ class MenuManager {
 		// Check if it's one of our pages
 		$valid_pages = array(
 			self::MENU_SLUG,
-			self::MENU_SLUG . '-analytics',
 			self::MENU_SLUG . '-modules',
 			self::MENU_SLUG . '-settings',
 			self::MENU_SLUG . '-support',

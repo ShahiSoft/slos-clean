@@ -302,8 +302,12 @@
                     doc_id: docId
                 },
                 success: function (response) {
+                    console.log('SLOS Hub View: Response received', response);
                     if (response.success) {
-                        $body.find('.slos-hub-preview-content').html(response.data.html);
+                        console.log('SLOS Hub View: Content length:', response.data.html ? response.data.html.length : 0);
+                        console.log('SLOS Hub View: Word count:', response.data.word_count);
+                        // Replace entire body content with preview content wrapper
+                        $body.html('<div class="slos-hub-preview-content">' + response.data.html + '</div>');
                         self.$viewModal.find('.slos-modal__title').text(response.data.title || slosHub.strings.documentPreview);
                         $editBtn.attr('href', slosHub.editUrl + '&id=' + docId);
                     } else {

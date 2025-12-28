@@ -457,6 +457,11 @@ $banner_settings = array(
 </style>
 
 <div class="slos-config-layout">
+    <!-- Section Description -->
+    <p class="slos-section-description" style="grid-column: 1 / -1;">
+        <?php esc_html_e( 'Design your cookie consent banner with live preview. Customize colors, text, and layout to match your brand. GDPR requires clear Accept/Reject options and links to privacy policy. The banner appears to visitors on first visit and can be reopened via the preferences link.', 'shahi-legalops-suite' ); ?>
+    </p>
+    
     <!-- Configuration Panel -->
     <div class="slos-config-panel">
         <!-- Position & Layout -->
@@ -465,6 +470,9 @@ $banner_settings = array(
                 <span class="dashicons dashicons-layout"></span>
                 <?php esc_html_e( 'Position & Layout', 'shahi-legalops-suite' ); ?>
             </div>
+            <p class="slos-widget-description">
+                <?php esc_html_e( 'Choose where and how the banner appears. Bottom-left box is recommended for minimal intrusion while maintaining visibility.', 'shahi-legalops-suite' ); ?>
+            </p>
 
             <div class="slos-form-group">
                 <label class="slos-form-label"><?php esc_html_e( 'Banner Position', 'shahi-legalops-suite' ); ?></label>
@@ -527,6 +535,9 @@ $banner_settings = array(
                 <span class="dashicons dashicons-art"></span>
                 <?php esc_html_e( 'Colors & Theme', 'shahi-legalops-suite' ); ?>
             </div>
+            <p class="slos-widget-description">
+                <?php esc_html_e( 'Match your brand colors. Ensure text color has sufficient contrast against background for accessibility (WCAG AA minimum 4.5:1 ratio).', 'shahi-legalops-suite' ); ?>
+            </p>
 
             <div class="slos-form-group">
                 <label class="slos-form-label"><?php esc_html_e( 'Primary Color', 'shahi-legalops-suite' ); ?></label>
@@ -559,6 +570,9 @@ $banner_settings = array(
                 <span class="dashicons dashicons-edit"></span>
                 <?php esc_html_e( 'Banner Text', 'shahi-legalops-suite' ); ?>
             </div>
+            <p class="slos-widget-description">
+                <?php esc_html_e( 'Write clear, non-technical language. Title should convey purpose. Message explains what cookies do. Button text must be actionable (Accept All, Reject All, Customize).', 'shahi-legalops-suite' ); ?>
+            </p>
 
             <div class="slos-form-group">
                 <label class="slos-form-label"><?php esc_html_e( 'Title', 'shahi-legalops-suite' ); ?></label>
@@ -592,6 +606,9 @@ $banner_settings = array(
                 <span class="dashicons dashicons-admin-generic"></span>
                 <?php esc_html_e( 'Behavior', 'shahi-legalops-suite' ); ?>
             </div>
+            <p class="slos-widget-description">
+                <?php esc_html_e( 'Configure user interaction options. Show Cookie Toggle adds a persistent icon for users to change preferences. Show Categories enables granular control per cookie type.', 'shahi-legalops-suite' ); ?>
+            </p>
 
             <div class="slos-toggle-row">
                 <div>

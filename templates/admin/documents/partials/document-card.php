@@ -80,6 +80,12 @@ $current_status = $status_config[ $status ] ?? $status_config['not_generated'];
 	<div class="slos-card__body">
 		<h3 class="slos-card__title"><?php echo esc_html( $card['title'] ?? '' ); ?></h3>
 		<p class="slos-card__desc"><?php echo esc_html( $card['description'] ?? '' ); ?></p>
+		
+		<?php if ( 'not_generated' === $status ) : ?>
+			<p class="slos-widget-description" style="margin-top: 12px; font-size: 12px;">
+				<?php esc_html_e( 'Generate this document from your Company Profile. Requires at least 70% profile completion. Document will include your company details, contact info, legal jurisdiction, and privacy practices.', 'shahi-legalops-suite' ); ?>
+			</p>
+		<?php endif; ?>
 
 		<?php if ( 'not_generated' !== $status ) : ?>
 			<div class="slos-card__meta">

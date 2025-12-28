@@ -413,6 +413,11 @@ $available_regions = array(
 </style>
 
 <div class="slos-records-container">
+    <!-- Section Description -->
+    <p class="slos-section-description">
+        <?php esc_html_e( 'Complete audit trail of all consent interactions on your site. This data serves as proof of consent for GDPR Article 7 compliance. Use filters to narrow results or search by user identifier. Export records for compliance audits and regulatory inquiries.', 'shahi-legalops-suite' ); ?>
+    </p>
+    
     <!-- Toolbar -->
     <div class="slos-records-toolbar">
         <div class="slos-filters-row">

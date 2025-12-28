@@ -1060,8 +1060,19 @@ class Document_Hub_Controller
             wp_send_json_error(array('message' => __('Document not found', 'shahi-legalops-suite')), 404);
         }
 
-        // Sanitize HTML content with wp_kses_post for security
-        $html_content = wp_kses_post($doc->content);
+        // Process content similar to how WordPress displays posts
+        // Apply shortcodes, autop, and other filters
+        $html_content = $doc->content;
+        
+        // Apply the_content filters (shortcodes, autop, etc.)
+        $html_content = apply_filters('the_content', $html_content);
+        
+        // Additional formatting for better display
+        $html_content = wpautop($html_content); // Convert line breaks to paragraphs
+        $html_content = do_shortcode($html_content); // Process shortcodes
+        
+        // Sanitize for security while preserving formatting
+        $html_content = wp_kses_post($html_content);
 
         // Calculate word count
         $word_count = str_word_count(wp_strip_all_tags($doc->content));
