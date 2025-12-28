@@ -133,25 +133,29 @@ class Plugin {
 
 		// Defer initialization of managers that register hooks in their constructors
 		// These will self-initialize when their hooks fire
-		add_action( 'init', function() {
-			// REST API
-			new \ShahiLegalopsSuite\API\RestAPI();
-			
-			// AJAX Handler
-			new \ShahiLegalopsSuite\Ajax\AjaxHandler();
-			
-			// Post Type Manager
-			new \ShahiLegalopsSuite\PostTypes\PostTypeManager();
-			
-			// Widget Manager
-			new \ShahiLegalopsSuite\Widgets\WidgetManager();
-			
-			// Shortcode Manager
-			new \ShahiLegalopsSuite\Shortcodes\ShortcodeManager();
-			
-			// Cron Manager
-			new Cron();
-		}, 5 );
+		add_action(
+			'init',
+			function () {
+				// REST API
+				new \ShahiLegalopsSuite\API\RestAPI();
+
+				// AJAX Handler
+				new \ShahiLegalopsSuite\Ajax\AjaxHandler();
+
+				// Post Type Manager
+				new \ShahiLegalopsSuite\PostTypes\PostTypeManager();
+
+				// Widget Manager
+				new \ShahiLegalopsSuite\Widgets\WidgetManager();
+
+				// Shortcode Manager
+				new \ShahiLegalopsSuite\Shortcodes\ShortcodeManager();
+
+				// Cron Manager
+				new Cron();
+			},
+			5
+		);
 
 		// Initialize Module Manager (singleton, can be called early)
 		\ShahiLegalopsSuite\Modules\ModuleManager::get_instance();
@@ -165,42 +169,72 @@ class Plugin {
 	 */
 	private function define_public_hooks() {
 		// Initialize DSR audit service (must be early to catch all events)
-		add_action( 'init', function() {
-			$audit_repository = new \ShahiLegalopsSuite\Database\Repositories\DSR_Audit_Log_Repository();
-			$audit_service    = new \ShahiLegalopsSuite\Services\DSR_Audit_Service( $audit_repository );
-			
-			// Hook into DSR lifecycle events for automatic logging
-			add_action( 'slos_dsr_submitted', function( $request_id, $data ) use ( $audit_service ) {
-				$audit_service->log_submission( $request_id, $data['email'] ?? '', $data['request_type'] ?? '' );
-			}, 10, 2 );
-			
-			add_action( 'slos_dsr_status_changed', function( $request_id, $old_status, $new_status ) use ( $audit_service ) {
-				$actor_id = get_current_user_id();
-				$audit_service->log_status_change( $request_id, $old_status, $new_status, $actor_id );
-			}, 10, 3 );
-		}, 8 ); // Priority 8 to run before other DSR services
-		
+		add_action(
+			'init',
+			function () {
+				$audit_repository = new \ShahiLegalopsSuite\Database\Repositories\DSR_Audit_Log_Repository();
+				$audit_service    = new \ShahiLegalopsSuite\Services\DSR_Audit_Service( $audit_repository );
+
+				// Hook into DSR lifecycle events for automatic logging
+				add_action(
+					'slos_dsr_submitted',
+					function ( $request_id, $data ) use ( $audit_service ) {
+						$audit_service->log_submission( $request_id, $data['email'] ?? '', $data['request_type'] ?? '' );
+					},
+					10,
+					2
+				);
+
+				add_action(
+					'slos_dsr_status_changed',
+					function ( $request_id, $old_status, $new_status ) use ( $audit_service ) {
+						$actor_id = get_current_user_id();
+						$audit_service->log_status_change( $request_id, $old_status, $new_status, $actor_id );
+					},
+					10,
+					3
+				);
+			},
+			8
+		); // Priority 8 to run before other DSR services
+
 		// Initialize DSR email notifications service
-		add_action( 'init', function() {
-			new \ShahiLegalopsSuite\Services\DSR_Email_Service();
-		}, 9 );
+		add_action(
+			'init',
+			function () {
+				new \ShahiLegalopsSuite\Services\DSR_Email_Service();
+			},
+			9
+		);
 
 		// Initialize DSR export service
-		add_action( 'init', function() {
-			$export_service = new \ShahiLegalopsSuite\Services\DSR_Export_Service();
-			// Register download handler
-			add_action( 'template_redirect', array( $export_service, 'handle_download_request' ), 1 );
-		}, 9 );
+		add_action(
+			'init',
+			function () {
+				$export_service = new \ShahiLegalopsSuite\Services\DSR_Export_Service();
+				// Register download handler
+				add_action( 'template_redirect', array( $export_service, 'handle_download_request' ), 1 );
+			},
+			9
+		);
 
 		// Initialize DSR erasure service
-		add_action( 'init', function() {
-			new \ShahiLegalopsSuite\Services\DSR_Erasure_Service();
-		}, 9 );
+		add_action(
+			'init',
+			function () {
+				new \ShahiLegalopsSuite\Services\DSR_Erasure_Service();
+			},
+			9
+		);
 
 		// Initialize DSR report service (compliance reporting with cron)
-		add_action( 'init', function() {
-			new \ShahiLegalopsSuite\Services\DSR_Report_Service();
-		}, 9 );
+		add_action(
+			'init',
+			function () {
+				new \ShahiLegalopsSuite\Services\DSR_Report_Service();
+			},
+			9
+		);
 
 		// Public assets (will be added in Phase 1.5)
 		// $assets = new Assets();
@@ -247,4 +281,3 @@ class Plugin {
 		return $this->loader;
 	}
 }
-

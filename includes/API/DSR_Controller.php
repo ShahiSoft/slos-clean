@@ -64,17 +64,17 @@ class DSR_Controller extends Base_REST_Controller {
 	 * Constructor
 	 *
 	 * @since 3.0.1
-	 * @param DSR_Service              $service        DSR service instance
-	 * @param DSR_Repository           $repository     DSR repository instance
-	 * @param DSR_Audit_Service        $audit_service  Audit service instance
+	 * @param DSR_Service       $service        DSR service instance
+	 * @param DSR_Repository    $repository     DSR repository instance
+	 * @param DSR_Audit_Service $audit_service  Audit service instance
 	 */
 	public function __construct( DSR_Service $service = null, DSR_Repository $repository = null, DSR_Audit_Service $audit_service = null ) {
-		$this->rest_base     = 'dsr';
-		$this->service       = $service ?? new DSR_Service();
-		$this->repository    = $repository ?? new DSR_Repository();
-		
+		$this->rest_base  = 'dsr';
+		$this->service    = $service ?? new DSR_Service();
+		$this->repository = $repository ?? new DSR_Repository();
+
 		if ( null === $audit_service ) {
-			$audit_repository = new DSR_Audit_Log_Repository();
+			$audit_repository    = new DSR_Audit_Log_Repository();
 			$this->audit_service = new DSR_Audit_Service( $audit_repository );
 		} else {
 			$this->audit_service = $audit_service;
@@ -338,7 +338,7 @@ class DSR_Controller extends Base_REST_Controller {
 				'callback'            => array( $this, 'execute_erasure' ),
 				'permission_callback' => array( $this, 'check_admin_permission' ),
 				'args'                => array(
-					'id' => array(
+					'id'      => array(
 						'description' => __( 'DSR request ID', 'shahi-legalops-suite' ),
 						'type'        => 'integer',
 						'required'    => true,
@@ -862,7 +862,7 @@ class DSR_Controller extends Base_REST_Controller {
 		// If dry-run, get preview
 		if ( $dry_run ) {
 			$erasure_service = new \ShahiLegalopsSuite\Services\DSR_Erasure_Service();
-			$preview = $erasure_service->get_erasure_preview( $id );
+			$preview         = $erasure_service->get_erasure_preview( $id );
 
 			if ( isset( $preview['error'] ) ) {
 				return $this->error_response(

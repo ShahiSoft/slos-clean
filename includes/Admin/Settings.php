@@ -197,109 +197,109 @@ class Settings {
 	private function get_default_settings() {
 		return array(
 			// General settings
-			'plugin_name'                => __( 'ShahiLegalopsSuite', 'shahi-legalops-suite' ),
-			'enable_debug'               => false,
-			'delete_data_on_uninstall'   => false,
+			'plugin_name'                    => __( 'ShahiLegalopsSuite', 'shahi-legalops-suite' ),
+			'enable_debug'                   => false,
+			'delete_data_on_uninstall'       => false,
 
 			// Privacy settings - Geolocation
-			'enable_geolocation_detection' => true,
-			'geolocation_provider'         => 'ipapi', // ipapi | ipinfo | ip-api
-			'geolocation_cache_ttl'        => 86400,
-			'geolocation_override_region'  => '', // '', 'EU','US-CA','US','BR','GLOBAL'
+			'enable_geolocation_detection'   => true,
+			'geolocation_provider'           => 'ipapi', // ipapi | ipinfo | ip-api
+			'geolocation_cache_ttl'          => 86400,
+			'geolocation_override_region'    => '', // '', 'EU','US-CA','US','BR','GLOBAL'
 
 			// Privacy settings - Consent Banner
-			'consent_banner_template'      => 'eu', // eu | ccpa | simple | advanced
-			'consent_banner_position'      => 'bottom', // bottom | top
-			'consent_banner_theme'         => 'light', // light | dark | auto
-			'consent_banner_primary_color' => '#4CAF50',
-			'consent_banner_accept_color'  => '#4CAF50',
-			'consent_banner_reject_color'  => '#f44336',
+			'consent_banner_template'        => 'eu', // eu | ccpa | simple | advanced
+			'consent_banner_position'        => 'bottom', // bottom | top
+			'consent_banner_theme'           => 'light', // light | dark | auto
+			'consent_banner_primary_color'   => '#4CAF50',
+			'consent_banner_accept_color'    => '#4CAF50',
+			'consent_banner_reject_color'    => '#f44336',
 
 			// Consent Banner - Behavior
-			'show_accept_selected'         => true,
-			'enable_reduced_motion'        => true,
-			'block_scripts_until_consent'  => true,
-			'banner_region_scope'          => 'GLOBAL', // '', 'EU','US-CA','US','BR','GLOBAL'
-			'reprompt_interval_days'       => 180,
-			'hide_banner_for_bots'         => true,
+			'show_accept_selected'           => true,
+			'enable_reduced_motion'          => true,
+			'block_scripts_until_consent'    => true,
+			'banner_region_scope'            => 'GLOBAL', // '', 'EU','US-CA','US','BR','GLOBAL'
+			'reprompt_interval_days'         => 180,
+			'hide_banner_for_bots'           => true,
 
 			// Privacy settings - Banner Text
-			'consent_banner_heading'       => __( 'We value your privacy', 'shahi-legalops-suite' ),
-			'consent_banner_message'       => __( 'We use cookies to enhance your browsing experience, serve personalized content, and analyze our traffic.', 'shahi-legalops-suite' ),
-			'consent_accept_button_text'   => __( 'Accept All', 'shahi-legalops-suite' ),
-			'consent_reject_button_text'   => __( 'Reject All', 'shahi-legalops-suite' ),
-			'consent_settings_button_text' => __( 'Cookie Settings', 'shahi-legalops-suite' ),
-			'consent_privacy_policy_text'  => __( 'Privacy Policy', 'shahi-legalops-suite' ),
-			'privacy_policy_url'           => '',
-			'learn_more_url'               => '',
+			'consent_banner_heading'         => __( 'We value your privacy', 'shahi-legalops-suite' ),
+			'consent_banner_message'         => __( 'We use cookies to enhance your browsing experience, serve personalized content, and analyze our traffic.', 'shahi-legalops-suite' ),
+			'consent_accept_button_text'     => __( 'Accept All', 'shahi-legalops-suite' ),
+			'consent_reject_button_text'     => __( 'Reject All', 'shahi-legalops-suite' ),
+			'consent_settings_button_text'   => __( 'Cookie Settings', 'shahi-legalops-suite' ),
+			'consent_privacy_policy_text'    => __( 'Privacy Policy', 'shahi-legalops-suite' ),
+			'privacy_policy_url'             => '',
+			'learn_more_url'                 => '',
 
 			// Privacy settings - Cookie Scanner
-			'cookie_scanner_auto_scan'     => true,
-			'cookie_scanner_frequency'     => 'daily', // daily | weekly | monthly
-			'cookie_scanner_last_run'      => '',
+			'cookie_scanner_auto_scan'       => true,
+			'cookie_scanner_frequency'       => 'daily', // daily | weekly | monthly
+			'cookie_scanner_last_run'        => '',
 
 			// Privacy settings - Data Retention
-			'consent_retention_days'       => 365, // GDPR recommends 12-24 months
-			'consent_log_retention_days'   => 365,
-			'auto_delete_expired'          => false,
+			'consent_retention_days'         => 365, // GDPR recommends 12-24 months
+			'consent_log_retention_days'     => 365,
+			'auto_delete_expired'            => false,
 
 			// Privacy settings - Additional Controls
-			'respect_dnt'                  => true,
-			'show_preferences_link'        => true,
-			'preferences_show_history'     => true,
-			'preferences_show_download'    => true,
+			'respect_dnt'                    => true,
+			'show_preferences_link'          => true,
+			'preferences_show_history'       => true,
+			'preferences_show_download'      => true,
 
 			// Export/Import settings
-			'slos_export_format'               => 'csv',
-			'slos_scheduled_exports_enabled'   => false,
-			'slos_export_frequency'            => 'weekly',
-			'slos_export_email_notification'   => false,
-			'slos_export_limit'                => 10000,
-			'slos_export_date_range'           => 'all',
+			'slos_export_format'             => 'csv',
+			'slos_scheduled_exports_enabled' => false,
+			'slos_export_frequency'          => 'weekly',
+			'slos_export_email_notification' => false,
+			'slos_export_limit'              => 10000,
+			'slos_export_date_range'         => 'all',
 
 			// Analytics settings
-			'enable_analytics'           => true,
-			'track_logged_in_users'      => true,
-			'analytics_retention_days'   => 90,
-			'anonymize_ip'               => true,
+			'enable_analytics'               => true,
+			'track_logged_in_users'          => true,
+			'analytics_retention_days'       => 90,
+			'anonymize_ip'                   => true,
 
 			// Notification settings
-			'enable_email_notifications' => true,
-			'notification_email'         => get_option( 'admin_email' ),
-			'notify_on_error'            => true,
-			'notify_on_module_change'    => false,
+			'enable_email_notifications'     => true,
+			'notification_email'             => get_option( 'admin_email' ),
+			'notify_on_error'                => true,
+			'notify_on_module_change'        => false,
 
 			// Performance settings
-			'enable_caching'             => true,
-			'cache_duration'             => 3600,
-			'enable_minification'        => true,
-			'lazy_load_assets'           => true,
+			'enable_caching'                 => true,
+			'cache_duration'                 => 3600,
+			'enable_minification'            => true,
+			'lazy_load_assets'               => true,
 
 			// Security settings
-			'enable_rate_limiting'       => true,
-			'ip_blacklist'               => '',
-			'file_upload_restrictions'   => true,
-			'two_factor_auth'            => false,
-			'activity_logging'           => true,
+			'enable_rate_limiting'           => true,
+			'ip_blacklist'                   => '',
+			'file_upload_restrictions'       => true,
+			'two_factor_auth'                => false,
+			'activity_logging'               => true,
 
 			// Advanced settings
-			'api_enabled'                => false,
-			'api_key'                    => '',
-			'rate_limit_enabled'         => true,
-			'rate_limit_requests'        => 100,
-			'rate_limit_window'          => 60,
+			'api_enabled'                    => false,
+			'api_key'                        => '',
+			'rate_limit_enabled'             => true,
+			'rate_limit_requests'            => 100,
+			'rate_limit_window'              => 60,
 
 			// Uninstall settings
-			'preserve_landing_pages'     => false,
-			'preserve_analytics_data'    => false,
-			'preserve_settings'          => false,
-			'preserve_user_capabilities' => false,
-			'complete_cleanup'           => true,
+			'preserve_landing_pages'         => false,
+			'preserve_analytics_data'        => false,
+			'preserve_settings'              => false,
+			'preserve_user_capabilities'     => false,
+			'complete_cleanup'               => true,
 
 			// License settings
-			'license_key'                => '',
-			'license_status'             => 'inactive',
-			'license_expires'            => '',
+			'license_key'                    => '',
+			'license_status'                 => 'inactive',
+			'license_expires'                => '',
 		);
 	}
 
@@ -339,105 +339,105 @@ class Settings {
 
 				// Update privacy settings
 				$settings['enable_geolocation_detection'] = isset( $_POST['enable_geolocation_detection'] );
-				if ( isset( $_POST['geolocation_provider'] ) ) {
-					$provider                        = sanitize_text_field( $_POST['geolocation_provider'] );
-					$allowed_providers               = array( 'ipapi', 'ipinfo', 'ip-api' );
-					$settings['geolocation_provider'] = in_array( $provider, $allowed_providers, true ) ? $provider : 'ipapi';
-				}
-				if ( isset( $_POST['geolocation_cache_ttl'] ) ) {
-					$ttl                             = absint( $_POST['geolocation_cache_ttl'] );
-					$settings['geolocation_cache_ttl'] = max( 60, min( 7 * 24 * 60 * 60, $ttl ) ); // 60s..7d
-				}
-				if ( isset( $_POST['geolocation_override_region'] ) ) {
-					$region                            = strtoupper( sanitize_text_field( $_POST['geolocation_override_region'] ) );
-					$allowed_regions                   = array( '', 'EU', 'US-CA', 'US', 'BR', 'GLOBAL' );
-					$settings['geolocation_override_region'] = in_array( $region, $allowed_regions, true ) ? $region : '';
-				}
+		if ( isset( $_POST['geolocation_provider'] ) ) {
+			$provider                         = sanitize_text_field( $_POST['geolocation_provider'] );
+			$allowed_providers                = array( 'ipapi', 'ipinfo', 'ip-api' );
+			$settings['geolocation_provider'] = in_array( $provider, $allowed_providers, true ) ? $provider : 'ipapi';
+		}
+		if ( isset( $_POST['geolocation_cache_ttl'] ) ) {
+			$ttl                               = absint( $_POST['geolocation_cache_ttl'] );
+			$settings['geolocation_cache_ttl'] = max( 60, min( 7 * 24 * 60 * 60, $ttl ) ); // 60s..7d
+		}
+		if ( isset( $_POST['geolocation_override_region'] ) ) {
+			$region                                  = strtoupper( sanitize_text_field( $_POST['geolocation_override_region'] ) );
+			$allowed_regions                         = array( '', 'EU', 'US-CA', 'US', 'BR', 'GLOBAL' );
+			$settings['geolocation_override_region'] = in_array( $region, $allowed_regions, true ) ? $region : '';
+		}
 
 				// Update consent banner settings
-				if ( isset( $_POST['consent_banner_template'] ) ) {
-					$template                          = sanitize_text_field( $_POST['consent_banner_template'] );
-					$allowed_templates                 = array( 'eu', 'ccpa', 'simple', 'advanced' );
-					$settings['consent_banner_template'] = in_array( $template, $allowed_templates, true ) ? $template : 'eu';
-				}
-				if ( isset( $_POST['consent_banner_position'] ) ) {
-					$position                          = sanitize_text_field( $_POST['consent_banner_position'] );
-					$allowed_positions                 = array( 'bottom', 'top' );
-					$settings['consent_banner_position'] = in_array( $position, $allowed_positions, true ) ? $position : 'bottom';
-				}
-				if ( isset( $_POST['consent_banner_theme'] ) ) {
-					$theme                          = sanitize_text_field( $_POST['consent_banner_theme'] );
-					$allowed_themes                 = array( 'light', 'dark', 'auto' );
-					$settings['consent_banner_theme'] = in_array( $theme, $allowed_themes, true ) ? $theme : 'light';
-				}
-				if ( isset( $_POST['consent_banner_primary_color'] ) ) {
-					$settings['consent_banner_primary_color'] = sanitize_hex_color( $_POST['consent_banner_primary_color'] );
-				}
-				if ( isset( $_POST['consent_banner_accept_color'] ) ) {
-					$settings['consent_banner_accept_color'] = sanitize_hex_color( $_POST['consent_banner_accept_color'] );
-				}
-				if ( isset( $_POST['consent_banner_reject_color'] ) ) {
-					$settings['consent_banner_reject_color'] = sanitize_hex_color( $_POST['consent_banner_reject_color'] );
-				}
+		if ( isset( $_POST['consent_banner_template'] ) ) {
+			$template                            = sanitize_text_field( $_POST['consent_banner_template'] );
+			$allowed_templates                   = array( 'eu', 'ccpa', 'simple', 'advanced' );
+			$settings['consent_banner_template'] = in_array( $template, $allowed_templates, true ) ? $template : 'eu';
+		}
+		if ( isset( $_POST['consent_banner_position'] ) ) {
+			$position                            = sanitize_text_field( $_POST['consent_banner_position'] );
+			$allowed_positions                   = array( 'bottom', 'top' );
+			$settings['consent_banner_position'] = in_array( $position, $allowed_positions, true ) ? $position : 'bottom';
+		}
+		if ( isset( $_POST['consent_banner_theme'] ) ) {
+			$theme                            = sanitize_text_field( $_POST['consent_banner_theme'] );
+			$allowed_themes                   = array( 'light', 'dark', 'auto' );
+			$settings['consent_banner_theme'] = in_array( $theme, $allowed_themes, true ) ? $theme : 'light';
+		}
+		if ( isset( $_POST['consent_banner_primary_color'] ) ) {
+			$settings['consent_banner_primary_color'] = sanitize_hex_color( $_POST['consent_banner_primary_color'] );
+		}
+		if ( isset( $_POST['consent_banner_accept_color'] ) ) {
+			$settings['consent_banner_accept_color'] = sanitize_hex_color( $_POST['consent_banner_accept_color'] );
+		}
+		if ( isset( $_POST['consent_banner_reject_color'] ) ) {
+			$settings['consent_banner_reject_color'] = sanitize_hex_color( $_POST['consent_banner_reject_color'] );
+		}
 
 				// Consent banner behavior
 				$settings['show_accept_selected']        = isset( $_POST['show_accept_selected'] );
 				$settings['enable_reduced_motion']       = isset( $_POST['enable_reduced_motion'] );
 				$settings['block_scripts_until_consent'] = isset( $_POST['block_scripts_until_consent'] );
-				if ( isset( $_POST['banner_region_scope'] ) ) {
-					$scope                         = strtoupper( sanitize_text_field( $_POST['banner_region_scope'] ) );
-					$allowed_regions               = array( '', 'EU', 'US-CA', 'US', 'BR', 'GLOBAL' );
-					$settings['banner_region_scope'] = in_array( $scope, $allowed_regions, true ) ? $scope : 'GLOBAL';
-				}
-				if ( isset( $_POST['reprompt_interval_days'] ) ) {
-					$days                             = absint( $_POST['reprompt_interval_days'] );
-					$settings['reprompt_interval_days'] = max( 7, min( 1095, $days ) ); // 1 week .. 3 years
-				}
+		if ( isset( $_POST['banner_region_scope'] ) ) {
+			$scope                           = strtoupper( sanitize_text_field( $_POST['banner_region_scope'] ) );
+			$allowed_regions                 = array( '', 'EU', 'US-CA', 'US', 'BR', 'GLOBAL' );
+			$settings['banner_region_scope'] = in_array( $scope, $allowed_regions, true ) ? $scope : 'GLOBAL';
+		}
+		if ( isset( $_POST['reprompt_interval_days'] ) ) {
+			$days                               = absint( $_POST['reprompt_interval_days'] );
+			$settings['reprompt_interval_days'] = max( 7, min( 1095, $days ) ); // 1 week .. 3 years
+		}
 				$settings['hide_banner_for_bots'] = isset( $_POST['hide_banner_for_bots'] );
 
 				// Update consent banner text
-				if ( isset( $_POST['consent_banner_heading'] ) ) {
-					$settings['consent_banner_heading'] = sanitize_text_field( $_POST['consent_banner_heading'] );
-				}
-				if ( isset( $_POST['consent_banner_message'] ) ) {
-					$settings['consent_banner_message'] = sanitize_textarea_field( $_POST['consent_banner_message'] );
-				}
-				if ( isset( $_POST['consent_accept_button_text'] ) ) {
-					$settings['consent_accept_button_text'] = sanitize_text_field( $_POST['consent_accept_button_text'] );
-				}
-				if ( isset( $_POST['consent_reject_button_text'] ) ) {
-					$settings['consent_reject_button_text'] = sanitize_text_field( $_POST['consent_reject_button_text'] );
-				}
-				if ( isset( $_POST['consent_settings_button_text'] ) ) {
-					$settings['consent_settings_button_text'] = sanitize_text_field( $_POST['consent_settings_button_text'] );
-				}
-				if ( isset( $_POST['consent_privacy_policy_text'] ) ) {
-					$settings['consent_privacy_policy_text'] = sanitize_text_field( $_POST['consent_privacy_policy_text'] );
-				}
-				if ( isset( $_POST['privacy_policy_url'] ) ) {
-					$settings['privacy_policy_url'] = esc_url_raw( $_POST['privacy_policy_url'] );
-				}
-				if ( isset( $_POST['learn_more_url'] ) ) {
-					$settings['learn_more_url'] = esc_url_raw( $_POST['learn_more_url'] );
-				}
+		if ( isset( $_POST['consent_banner_heading'] ) ) {
+			$settings['consent_banner_heading'] = sanitize_text_field( $_POST['consent_banner_heading'] );
+		}
+		if ( isset( $_POST['consent_banner_message'] ) ) {
+			$settings['consent_banner_message'] = sanitize_textarea_field( $_POST['consent_banner_message'] );
+		}
+		if ( isset( $_POST['consent_accept_button_text'] ) ) {
+			$settings['consent_accept_button_text'] = sanitize_text_field( $_POST['consent_accept_button_text'] );
+		}
+		if ( isset( $_POST['consent_reject_button_text'] ) ) {
+			$settings['consent_reject_button_text'] = sanitize_text_field( $_POST['consent_reject_button_text'] );
+		}
+		if ( isset( $_POST['consent_settings_button_text'] ) ) {
+			$settings['consent_settings_button_text'] = sanitize_text_field( $_POST['consent_settings_button_text'] );
+		}
+		if ( isset( $_POST['consent_privacy_policy_text'] ) ) {
+			$settings['consent_privacy_policy_text'] = sanitize_text_field( $_POST['consent_privacy_policy_text'] );
+		}
+		if ( isset( $_POST['privacy_policy_url'] ) ) {
+			$settings['privacy_policy_url'] = esc_url_raw( $_POST['privacy_policy_url'] );
+		}
+		if ( isset( $_POST['learn_more_url'] ) ) {
+			$settings['learn_more_url'] = esc_url_raw( $_POST['learn_more_url'] );
+		}
 
 				// Update cookie scanner settings
 				$settings['cookie_scanner_auto_scan'] = isset( $_POST['cookie_scanner_auto_scan'] );
-				if ( isset( $_POST['cookie_scanner_frequency'] ) ) {
-					$frequency                           = sanitize_text_field( $_POST['cookie_scanner_frequency'] );
-					$allowed_frequencies                 = array( 'daily', 'weekly', 'monthly' );
-					$settings['cookie_scanner_frequency'] = in_array( $frequency, $allowed_frequencies, true ) ? $frequency : 'daily';
-				}
+		if ( isset( $_POST['cookie_scanner_frequency'] ) ) {
+			$frequency                            = sanitize_text_field( $_POST['cookie_scanner_frequency'] );
+			$allowed_frequencies                  = array( 'daily', 'weekly', 'monthly' );
+			$settings['cookie_scanner_frequency'] = in_array( $frequency, $allowed_frequencies, true ) ? $frequency : 'daily';
+		}
 
 				// Update data retention settings
-				if ( isset( $_POST['consent_retention_days'] ) ) {
-					$days                            = absint( $_POST['consent_retention_days'] );
-					$settings['consent_retention_days'] = max( 30, min( 1095, $days ) ); // 30 days to 3 years
-				}
-				if ( isset( $_POST['consent_log_retention_days'] ) ) {
-					$days                                = absint( $_POST['consent_log_retention_days'] );
-					$settings['consent_log_retention_days'] = max( 30, min( 1095, $days ) ); // 30 days to 3 years
-				}
+		if ( isset( $_POST['consent_retention_days'] ) ) {
+			$days                               = absint( $_POST['consent_retention_days'] );
+			$settings['consent_retention_days'] = max( 30, min( 1095, $days ) ); // 30 days to 3 years
+		}
+		if ( isset( $_POST['consent_log_retention_days'] ) ) {
+			$days                                   = absint( $_POST['consent_log_retention_days'] );
+			$settings['consent_log_retention_days'] = max( 30, min( 1095, $days ) ); // 30 days to 3 years
+		}
 				$settings['auto_delete_expired'] = isset( $_POST['auto_delete_expired'] );
 
 				// Additional privacy controls
@@ -447,17 +447,17 @@ class Settings {
 				$settings['preferences_show_download'] = isset( $_POST['preferences_show_download'] );
 
 				// Update export/import settings
-				if ( isset( $_POST['slos_export_format'] ) ) {
-					$format                        = sanitize_text_field( $_POST['slos_export_format'] );
-					$allowed_formats               = array( 'csv', 'json', 'pdf' );
-					$settings['slos_export_format'] = in_array( $format, $allowed_formats, true ) ? $format : 'csv';
-				}
+		if ( isset( $_POST['slos_export_format'] ) ) {
+			$format                         = sanitize_text_field( $_POST['slos_export_format'] );
+			$allowed_formats                = array( 'csv', 'json', 'pdf' );
+			$settings['slos_export_format'] = in_array( $format, $allowed_formats, true ) ? $format : 'csv';
+		}
 				$settings['slos_scheduled_exports_enabled'] = isset( $_POST['slos_scheduled_exports_enabled'] );
-				if ( isset( $_POST['slos_export_frequency'] ) ) {
-					$frequency                         = sanitize_text_field( $_POST['slos_export_frequency'] );
-					$allowed_frequencies               = array( 'daily', 'weekly' );
-					$settings['slos_export_frequency'] = in_array( $frequency, $allowed_frequencies, true ) ? $frequency : 'weekly';
-				}
+		if ( isset( $_POST['slos_export_frequency'] ) ) {
+			$frequency                         = sanitize_text_field( $_POST['slos_export_frequency'] );
+			$allowed_frequencies               = array( 'daily', 'weekly' );
+			$settings['slos_export_frequency'] = in_array( $frequency, $allowed_frequencies, true ) ? $frequency : 'weekly';
+		}
 				$settings['slos_export_email_notification'] = isset( $_POST['slos_export_email_notification'] );
 
 		if ( isset( $_POST['plugin_name'] ) ) {
@@ -809,4 +809,3 @@ class Settings {
 		);
 	}
 }
-

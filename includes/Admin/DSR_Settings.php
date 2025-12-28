@@ -106,12 +106,12 @@ class DSR_Settings {
 		);
 
 		$regulations = array(
-			'GDPR'     => __( 'GDPR', 'shahi-legalops-suite' ),
-			'UK-GDPR'  => __( 'UK-GDPR', 'shahi-legalops-suite' ),
-			'CCPA'     => __( 'CCPA', 'shahi-legalops-suite' ),
-			'LGPD'     => __( 'LGPD (Brazil)', 'shahi-legalops-suite' ),
-			'PIPEDA'   => __( 'PIPEDA (Canada)', 'shahi-legalops-suite' ),
-			'POPIA'    => __( 'POPIA (South Africa)', 'shahi-legalops-suite' ),
+			'GDPR'    => __( 'GDPR', 'shahi-legalops-suite' ),
+			'UK-GDPR' => __( 'UK-GDPR', 'shahi-legalops-suite' ),
+			'CCPA'    => __( 'CCPA', 'shahi-legalops-suite' ),
+			'LGPD'    => __( 'LGPD (Brazil)', 'shahi-legalops-suite' ),
+			'PIPEDA'  => __( 'PIPEDA (Canada)', 'shahi-legalops-suite' ),
+			'POPIA'   => __( 'POPIA (South Africa)', 'shahi-legalops-suite' ),
 		);
 
 		foreach ( $regulations as $code => $label ) {
@@ -305,7 +305,7 @@ class DSR_Settings {
 	public function render_page_content(): void {
 		$settings = $this->get_settings();
 		$defaults = $this->get_sla_defaults();
-		
+
 		?>
 		<div class="slos-settings-modern">
 			<p class="slos-section-description">
@@ -333,11 +333,11 @@ class DSR_Settings {
 										<?php esc_html_e( 'Form Title', 'shahi-legalops-suite' ); ?>
 									</label>
 									<input type="text" 
-										   id="form_title" 
-										   name="<?php echo esc_attr( self::OPTION_KEY ); ?>[form_title]" 
-										   value="<?php echo esc_attr( $settings['form_title'] ?? 'Submit a Data Subject Request' ); ?>"
-										   class="slos-input"
-										   placeholder="<?php esc_attr_e( 'Submit a Data Subject Request', 'shahi-legalops-suite' ); ?>" />
+											id="form_title" 
+											name="<?php echo esc_attr( self::OPTION_KEY ); ?>[form_title]" 
+											value="<?php echo esc_attr( $settings['form_title'] ?? 'Submit a Data Subject Request' ); ?>"
+											class="slos-input"
+											placeholder="<?php esc_attr_e( 'Submit a Data Subject Request', 'shahi-legalops-suite' ); ?>" />
 								</div>
 								
 								<div class="slos-form-group">
@@ -345,10 +345,10 @@ class DSR_Settings {
 										<?php esc_html_e( 'Form Description', 'shahi-legalops-suite' ); ?>
 									</label>
 									<textarea id="form_description" 
-											  name="<?php echo esc_attr( self::OPTION_KEY ); ?>[form_description]" 
-											  class="slos-textarea"
-											  rows="3"
-											  placeholder="<?php esc_attr_e( 'Description shown above the form', 'shahi-legalops-suite' ); ?>"><?php echo esc_textarea( $settings['form_description'] ?? '' ); ?></textarea>
+												name="<?php echo esc_attr( self::OPTION_KEY ); ?>[form_description]" 
+												class="slos-textarea"
+												rows="3"
+												placeholder="<?php esc_attr_e( 'Description shown above the form', 'shahi-legalops-suite' ); ?>"><?php echo esc_textarea( $settings['form_description'] ?? '' ); ?></textarea>
 								</div>
 								
 								<div class="slos-form-group">
@@ -356,11 +356,11 @@ class DSR_Settings {
 										<?php esc_html_e( 'Privacy Policy URL', 'shahi-legalops-suite' ); ?>
 									</label>
 									<input type="url" 
-										   id="privacy_policy_url" 
-										   name="<?php echo esc_attr( self::OPTION_KEY ); ?>[privacy_policy_url]" 
-										   value="<?php echo esc_url( $settings['privacy_policy_url'] ?? home_url( '/privacy-policy/' ) ); ?>"
-										   class="slos-input"
-										   placeholder="<?php echo esc_attr( home_url( '/privacy-policy/' ) ); ?>" />
+											id="privacy_policy_url" 
+											name="<?php echo esc_attr( self::OPTION_KEY ); ?>[privacy_policy_url]" 
+											value="<?php echo esc_url( $settings['privacy_policy_url'] ?? home_url( '/privacy-policy/' ) ); ?>"
+											class="slos-input"
+											placeholder="<?php echo esc_attr( home_url( '/privacy-policy/' ) ); ?>" />
 									<p class="slos-help-text">
 										<?php esc_html_e( 'Link displayed in the DSR form footer', 'shahi-legalops-suite' ); ?>
 									</p>
@@ -382,18 +382,42 @@ class DSR_Settings {
 								<div class="slos-sla-grid">
 									<?php
 									$regulations = array(
-										'GDPR' => array( 'name' => 'GDPR', 'default' => 30, 'flag' => '🇪🇺' ),
-										'UK-GDPR' => array( 'name' => 'UK-GDPR', 'default' => 30, 'flag' => '🇬🇧' ),
-										'CCPA' => array( 'name' => 'CCPA', 'default' => 45, 'flag' => '🇺🇸' ),
-										'LGPD' => array( 'name' => 'LGPD', 'default' => 15, 'flag' => '🇧🇷' ),
-										'PIPEDA' => array( 'name' => 'PIPEDA', 'default' => 30, 'flag' => '🇨🇦' ),
-										'POPIA' => array( 'name' => 'POPIA', 'default' => 30, 'flag' => '🇿🇦' ),
+										'GDPR'    => array(
+											'name'    => 'GDPR',
+											'default' => 30,
+											'flag'    => '🇪🇺',
+										),
+										'UK-GDPR' => array(
+											'name'    => 'UK-GDPR',
+											'default' => 30,
+											'flag'    => '🇬🇧',
+										),
+										'CCPA'    => array(
+											'name'    => 'CCPA',
+											'default' => 45,
+											'flag'    => '🇺🇸',
+										),
+										'LGPD'    => array(
+											'name'    => 'LGPD',
+											'default' => 15,
+											'flag'    => '🇧🇷',
+										),
+										'PIPEDA'  => array(
+											'name'    => 'PIPEDA',
+											'default' => 30,
+											'flag'    => '🇨🇦',
+										),
+										'POPIA'   => array(
+											'name'    => 'POPIA',
+											'default' => 30,
+											'flag'    => '🇿🇦',
+										),
 									);
-									
+
 									foreach ( $regulations as $code => $info ) :
-										$key = 'sla_' . strtolower( str_replace( '-', '_', $code ) );
+										$key   = 'sla_' . strtolower( str_replace( '-', '_', $code ) );
 										$value = $settings[ $key ] ?? $info['default'];
-									?>
+										?>
 										<div class="slos-sla-item">
 											<div class="slos-sla-label">
 												<span class="slos-flag"><?php echo esc_html( $info['flag'] ); ?></span>
@@ -401,11 +425,11 @@ class DSR_Settings {
 											</div>
 											<div class="slos-sla-input">
 												<input type="number" 
-													   name="<?php echo esc_attr( self::OPTION_KEY ); ?>[<?php echo esc_attr( $key ); ?>]" 
-													   value="<?php echo esc_attr( $value ); ?>"
-													   class="slos-input-number"
-													   min="1"
-													   max="365" />
+														name="<?php echo esc_attr( self::OPTION_KEY ); ?>[<?php echo esc_attr( $key ); ?>]" 
+														value="<?php echo esc_attr( $value ); ?>"
+														class="slos-input-number"
+														min="1"
+														max="365" />
 												<span class="slos-input-suffix"><?php esc_html_e( 'days', 'shahi-legalops-suite' ); ?></span>
 											</div>
 										</div>
@@ -428,21 +452,36 @@ class DSR_Settings {
 								<div class="slos-checkbox-grid">
 									<?php
 									$sources = array(
-										'posts' => array( 'label' => 'Posts & Pages', 'icon' => 'dashicons-admin-post' ),
-										'users' => array( 'label' => 'User Accounts', 'icon' => 'dashicons-admin-users' ),
-										'comments' => array( 'label' => 'Comments', 'icon' => 'dashicons-admin-comments' ),
-										'forms' => array( 'label' => 'Form Submissions', 'icon' => 'dashicons-feedback' ),
-										'logs' => array( 'label' => 'Activity Logs', 'icon' => 'dashicons-list-view' ),
+										'posts'    => array(
+											'label' => 'Posts & Pages',
+											'icon'  => 'dashicons-admin-post',
+										),
+										'users'    => array(
+											'label' => 'User Accounts',
+											'icon'  => 'dashicons-admin-users',
+										),
+										'comments' => array(
+											'label' => 'Comments',
+											'icon'  => 'dashicons-admin-comments',
+										),
+										'forms'    => array(
+											'label' => 'Form Submissions',
+											'icon'  => 'dashicons-feedback',
+										),
+										'logs'     => array(
+											'label' => 'Activity Logs',
+											'icon'  => 'dashicons-list-view',
+										),
 									);
-									
+
 									foreach ( $sources as $key => $info ) :
 										$checked = ! empty( $settings[ 'source_' . $key ] );
-									?>
+										?>
 										<label class="slos-checkbox-card">
 											<input type="checkbox" 
-												   name="<?php echo esc_attr( self::OPTION_KEY ); ?>[source_<?php echo esc_attr( $key ); ?>]" 
-												   value="1"
-												   <?php checked( $checked ); ?> />
+													name="<?php echo esc_attr( self::OPTION_KEY ); ?>[source_<?php echo esc_attr( $key ); ?>]" 
+													value="1"
+													<?php checked( $checked ); ?> />
 											<div class="slos-checkbox-content">
 												<span class="dashicons <?php echo esc_attr( $info['icon'] ); ?>"></span>
 												<span class="slos-checkbox-label"><?php echo esc_html( $info['label'] ); ?></span>
@@ -466,27 +505,27 @@ class DSR_Settings {
 							<div class="slos-widget-body">
 								<label class="slos-toggle-item">
 									<input type="checkbox" 
-										   name="<?php echo esc_attr( self::OPTION_KEY ); ?>[notify_requester]" 
-										   value="1"
-										   <?php checked( ! empty( $settings['notify_requester'] ) ); ?> />
+											name="<?php echo esc_attr( self::OPTION_KEY ); ?>[notify_requester]" 
+											value="1"
+											<?php checked( ! empty( $settings['notify_requester'] ) ); ?> />
 									<span class="slos-toggle-slider"></span>
 									<span class="slos-toggle-label"><?php esc_html_e( 'Email requester on status changes', 'shahi-legalops-suite' ); ?></span>
 								</label>
 								
 								<label class="slos-toggle-item">
 									<input type="checkbox" 
-										   name="<?php echo esc_attr( self::OPTION_KEY ); ?>[notify_admin]" 
-										   value="1"
-										   <?php checked( ! empty( $settings['notify_admin'] ) ); ?> />
+											name="<?php echo esc_attr( self::OPTION_KEY ); ?>[notify_admin]" 
+											value="1"
+											<?php checked( ! empty( $settings['notify_admin'] ) ); ?> />
 									<span class="slos-toggle-slider"></span>
 									<span class="slos-toggle-label"><?php esc_html_e( 'Email admin on new requests', 'shahi-legalops-suite' ); ?></span>
 								</label>
 								
 								<label class="slos-toggle-item">
 									<input type="checkbox" 
-										   name="<?php echo esc_attr( self::OPTION_KEY ); ?>[notify_overdue]" 
-										   value="1"
-										   <?php checked( ! empty( $settings['notify_overdue'] ) ); ?> />
+											name="<?php echo esc_attr( self::OPTION_KEY ); ?>[notify_overdue]" 
+											value="1"
+											<?php checked( ! empty( $settings['notify_overdue'] ) ); ?> />
 									<span class="slos-toggle-slider"></span>
 									<span class="slos-toggle-label"><?php esc_html_e( 'Alert on SLA breaches', 'shahi-legalops-suite' ); ?></span>
 								</label>
@@ -503,18 +542,18 @@ class DSR_Settings {
 							<div class="slos-widget-body">
 								<label class="slos-toggle-item">
 									<input type="checkbox" 
-										   name="<?php echo esc_attr( self::OPTION_KEY ); ?>[require_identity_verification]" 
-										   value="1"
-										   <?php checked( ! empty( $settings['require_identity_verification'] ) ); ?> />
+											name="<?php echo esc_attr( self::OPTION_KEY ); ?>[require_identity_verification]" 
+											value="1"
+											<?php checked( ! empty( $settings['require_identity_verification'] ) ); ?> />
 									<span class="slos-toggle-slider"></span>
 									<span class="slos-toggle-label"><?php esc_html_e( 'Require ID verification', 'shahi-legalops-suite' ); ?></span>
 								</label>
 								
 								<label class="slos-toggle-item">
 									<input type="checkbox" 
-										   name="<?php echo esc_attr( self::OPTION_KEY ); ?>[enable_encryption]" 
-										   value="1"
-										   <?php checked( ! empty( $settings['enable_encryption'] ) ); ?> />
+											name="<?php echo esc_attr( self::OPTION_KEY ); ?>[enable_encryption]" 
+											value="1"
+											<?php checked( ! empty( $settings['enable_encryption'] ) ); ?> />
 									<span class="slos-toggle-slider"></span>
 									<span class="slos-toggle-label"><?php esc_html_e( 'Encrypt PII in database', 'shahi-legalops-suite' ); ?></span>
 								</label>
@@ -525,12 +564,12 @@ class DSR_Settings {
 									</label>
 									<div class="slos-input-with-suffix">
 										<input type="number" 
-											   id="auto_delete_days" 
-											   name="<?php echo esc_attr( self::OPTION_KEY ); ?>[auto_delete_days]" 
-											   value="<?php echo esc_attr( $settings['auto_delete_days'] ?? 365 ); ?>"
-											   class="slos-input-sm"
-											   min="0"
-											   max="3650" />
+												id="auto_delete_days" 
+												name="<?php echo esc_attr( self::OPTION_KEY ); ?>[auto_delete_days]" 
+												value="<?php echo esc_attr( $settings['auto_delete_days'] ?? 365 ); ?>"
+												class="slos-input-sm"
+												min="0"
+												max="3650" />
 										<span class="slos-suffix"><?php esc_html_e( 'days', 'shahi-legalops-suite' ); ?></span>
 									</div>
 								</div>
@@ -630,7 +669,7 @@ class DSR_Settings {
 	public function render_source_checkbox( array $args ): void {
 		$source   = $args['source'] ?? '';
 		$settings = $this->get_settings();
-		$checked  = isset( $settings[ 'sources' ][ $source ] ) ? (bool) $settings[ 'sources' ][ $source ] : true;
+		$checked  = isset( $settings['sources'][ $source ] ) ? (bool) $settings['sources'][ $source ] : true;
 
 		?>
 		<input 
@@ -791,12 +830,12 @@ class DSR_Settings {
 	 */
 	private function get_sla_defaults(): array {
 		return array(
-			'GDPR'     => 30,
-			'UK-GDPR'  => 30,
-			'CCPA'     => 45,
-			'LGPD'     => 15,
-			'PIPEDA'   => 30,
-			'POPIA'    => 30,
+			'GDPR'    => 30,
+			'UK-GDPR' => 30,
+			'CCPA'    => 45,
+			'LGPD'    => 15,
+			'PIPEDA'  => 30,
+			'POPIA'   => 30,
 		);
 	}
 

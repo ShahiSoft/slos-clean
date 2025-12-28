@@ -215,21 +215,21 @@ class ModuleDashboard {
 		// Calculate based on module status and health metrics
 		// For now, return a simple score based on enabled status
 		$module_manager = ModuleManager::get_instance();
-		$module = $module_manager->get_module( $module_slug );
-		
+		$module         = $module_manager->get_module( $module_slug );
+
 		if ( ! $module ) {
 			return 0;
 		}
-		
+
 		// Base score for enabled modules
 		$score = $module->is_enabled() ? 85 : 50;
-		
+
 		// Future: Add more sophisticated metrics
 		// - Configuration completeness
 		// - Error rates
 		// - Resource usage
 		// - User engagement
-		
+
 		return $score;
 	}
 
@@ -444,4 +444,3 @@ class ModuleDashboard {
 		update_option( 'shahi_module_last_used', $last_used );
 	}
 }
-

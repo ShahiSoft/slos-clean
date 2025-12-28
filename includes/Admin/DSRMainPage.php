@@ -208,11 +208,11 @@ class DSRMainPage {
 		$current_url = admin_url( 'admin.php?page=slos-requests' );
 
 		echo '<nav class="slos-modern-tabs" aria-label="' . esc_attr__( 'Secondary menu', 'shahi-legalops-suite' ) . '">';
-		
+
 		foreach ( $tabs as $tab_key => $tab_label ) {
 			$active_class = ( $this->current_tab === $tab_key ) ? 'active' : '';
 			$tab_url      = add_query_arg( 'tab', $tab_key, $current_url );
-			
+
 			printf(
 				'<a href="%s" class="slos-tab-link %s">%s</a>',
 				esc_url( $tab_url ),
@@ -220,7 +220,7 @@ class DSRMainPage {
 				esc_html( $tab_label )
 			);
 		}
-		
+
 		echo '</nav>';
 	}
 
@@ -286,10 +286,10 @@ class DSRMainPage {
 	 */
 	private function render_requests_tab() {
 		echo '<div class="slos-tab-pane slos-requests-pane">';
-		
+
 		// Use existing DSRRequests render logic
 		$this->requests_page->render_content();
-		
+
 		echo '</div>';
 	}
 
@@ -301,10 +301,10 @@ class DSRMainPage {
 	 */
 	private function render_reports_tab() {
 		echo '<div class="slos-tab-pane slos-reports-pane">';
-		
+
 		// Use existing DSRReports render logic
 		$this->reports_page->render_content();
-		
+
 		echo '</div>';
 	}
 
@@ -316,10 +316,10 @@ class DSRMainPage {
 	 */
 	private function render_settings_tab() {
 		echo '<div class="slos-tab-pane slos-settings-pane">';
-		
+
 		// Use existing DSR_Settings render logic
 		$this->settings_page->render_page_content();
-		
+
 		echo '</div>';
 	}
 }

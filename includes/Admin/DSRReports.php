@@ -65,7 +65,7 @@ class DSRReports {
 			echo '<p class="slos-no-data">' . esc_html__( 'No data available', 'shahi-legalops-suite' ) . '</p>';
 			return;
 		}
-		
+
 		echo '<div class="slos-bar-chart">';
 		$max = max( array_values( $by_type ) );
 		foreach ( $by_type as $type => $count ) {
@@ -89,16 +89,16 @@ class DSRReports {
 			echo '<p class="slos-no-data">' . esc_html__( 'No data available', 'shahi-legalops-suite' ) . '</p>';
 			return;
 		}
-		
+
 		$colors = array(
 			'pending_verification' => '#F59E0B',
-			'verified' => '#3B82F6',
-			'in_progress' => '#6366F1',
-			'on_hold' => '#EF4444',
-			'completed' => '#10B981',
-			'rejected' => '#6B7280',
+			'verified'             => '#3B82F6',
+			'in_progress'          => '#6366F1',
+			'on_hold'              => '#EF4444',
+			'completed'            => '#10B981',
+			'rejected'             => '#6B7280',
 		);
-		
+
 		echo '<div class="slos-donut-chart">';
 		foreach ( $by_status as $status => $count ) {
 			$color = $colors[ $status ] ?? '#6B7280';
@@ -117,11 +117,11 @@ class DSRReports {
 	private function render_top_sources() {
 		$sources = array(
 			'Website Form' => 127,
-			'Email' => 43,
-			'API' => 18,
-			'Phone' => 9,
+			'Email'        => 43,
+			'API'          => 18,
+			'Phone'        => 9,
 		);
-		
+
 		echo '<div class="slos-sources-list">';
 		foreach ( $sources as $source => $count ) {
 			echo '<div class="slos-source-item">';
@@ -170,23 +170,32 @@ class DSRReports {
 		$report = $this->get_report_service()->generate_report( $start_date, $end_date );
 
 		// Get summary metrics
-		$summary = wp_parse_args( (array) ( $report['summary'] ?? array() ), array(
-			'total_requests'  => 0,
-			'completed'       => 0,
-			'open'            => 0,
-			'completion_rate' => 0,
-		) );
+		$summary = wp_parse_args(
+			(array) ( $report['summary'] ?? array() ),
+			array(
+				'total_requests'  => 0,
+				'completed'       => 0,
+				'open'            => 0,
+				'completion_rate' => 0,
+			)
+		);
 
-		$performance = wp_parse_args( (array) ( $report['performance'] ?? array() ), array(
-			'avg_response_days' => 0,
-			'fastest_days'      => 0,
-			'slowest_days'      => 0,
-		) );
+		$performance = wp_parse_args(
+			(array) ( $report['performance'] ?? array() ),
+			array(
+				'avg_response_days' => 0,
+				'fastest_days'      => 0,
+				'slowest_days'      => 0,
+			)
+		);
 
-		$sla = wp_parse_args( (array) ( $report['sla'] ?? array() ), array(
-			'compliance_rate'  => 0,
-			'currently_overdue' => 0,
-		) );
+		$sla = wp_parse_args(
+			(array) ( $report['sla'] ?? array() ),
+			array(
+				'compliance_rate'   => 0,
+				'currently_overdue' => 0,
+			)
+		);
 
 		?>
 		<div class="slos-reports-layout">
@@ -228,13 +237,45 @@ class DSRReports {
 					<p class="slos-export-description">
 						<?php esc_html_e( 'Export reports for auditors and stakeholders. CSV for data analysis, PDF for formal documentation.', 'shahi-legalops-suite' ); ?>
 					</p>
-					<a href="<?php echo esc_url( wp_nonce_url( add_query_arg( array( 'action' => 'export_csv', 'start_date' => $start_date, 'end_date' => $end_date ), admin_url( 'admin.php?page=slos-requests&tab=reports' ) ), 'slos_export_report' ) ); ?>" 
-					   class="slos-export-btn">
+					<a href="
+					<?php
+					echo esc_url(
+						wp_nonce_url(
+							add_query_arg(
+								array(
+									'action'     => 'export_csv',
+									'start_date' => $start_date,
+									'end_date'   => $end_date,
+								),
+								admin_url( 'admin.php?page=slos-requests&tab=reports' )
+							),
+							'slos_export_report'
+						)
+					);
+					?>
+								" 
+						class="slos-export-btn">
 						<span class="dashicons dashicons-media-spreadsheet"></span>
 						CSV
 					</a>
-					<a href="<?php echo esc_url( wp_nonce_url( add_query_arg( array( 'action' => 'export_pdf', 'start_date' => $start_date, 'end_date' => $end_date ), admin_url( 'admin.php?page=slos-requests&tab=reports' ) ), 'slos_export_report' ) ); ?>" 
-					   class="slos-export-btn">
+					<a href="
+					<?php
+					echo esc_url(
+						wp_nonce_url(
+							add_query_arg(
+								array(
+									'action'     => 'export_pdf',
+									'start_date' => $start_date,
+									'end_date'   => $end_date,
+								),
+								admin_url( 'admin.php?page=slos-requests&tab=reports' )
+							),
+							'slos_export_report'
+						)
+					);
+					?>
+								" 
+						class="slos-export-btn">
 						<span class="dashicons dashicons-pdf"></span>
 						PDF
 					</a>
@@ -377,34 +418,46 @@ class DSRReports {
 		}
 
 		// Safe array access with defaults
-		$report = wp_parse_args( $report, array(
-			'summary'       => array(),
-			'by_type'       => array(),
-			'by_status'     => array(),
-			'by_regulation' => array(),
-			'performance'   => array(),
-			'sla'           => array(),
-		) );
+		$report = wp_parse_args(
+			$report,
+			array(
+				'summary'       => array(),
+				'by_type'       => array(),
+				'by_status'     => array(),
+				'by_regulation' => array(),
+				'performance'   => array(),
+				'sla'           => array(),
+			)
+		);
 
-		$summary = wp_parse_args( (array) ( $report['summary'] ?? array() ), array(
-			'total_requests'  => 0,
-			'completed'       => 0,
-			'open'            => 0,
-			'completion_rate' => 0,
-		) );
+		$summary = wp_parse_args(
+			(array) ( $report['summary'] ?? array() ),
+			array(
+				'total_requests'  => 0,
+				'completed'       => 0,
+				'open'            => 0,
+				'completion_rate' => 0,
+			)
+		);
 
-		$performance = wp_parse_args( (array) ( $report['performance'] ?? array() ), array(
-			'avg_response_days' => 0,
-			'fastest_days'      => 0,
-			'slowest_days'      => 0,
-		) );
+		$performance = wp_parse_args(
+			(array) ( $report['performance'] ?? array() ),
+			array(
+				'avg_response_days' => 0,
+				'fastest_days'      => 0,
+				'slowest_days'      => 0,
+			)
+		);
 
-		$sla = wp_parse_args( (array) ( $report['sla'] ?? array() ), array(
-			'total_completed'  => 0,
-			'sla_breaches'     => 0,
-			'compliance_rate'  => 0,
-			'currently_overdue' => 0,
-		) );
+		$sla = wp_parse_args(
+			(array) ( $report['sla'] ?? array() ),
+			array(
+				'total_completed'   => 0,
+				'sla_breaches'      => 0,
+				'compliance_rate'   => 0,
+				'currently_overdue' => 0,
+			)
+		);
 
 		?>
 		<!-- Summary Dashboard -->

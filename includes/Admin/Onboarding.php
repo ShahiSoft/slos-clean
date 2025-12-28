@@ -531,4 +531,3 @@ class Onboarding {
 		return (bool) get_option( self::OPTION_COMPLETED, false );
 	}
 }
-

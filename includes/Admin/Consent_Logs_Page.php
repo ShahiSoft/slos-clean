@@ -51,7 +51,7 @@ class Consent_Logs_Page {
 	 */
 	public function __construct() {
 		$this->audit_logger = new Consent_Audit_Logger();
-		
+
 		add_action( 'admin_menu', array( $this, 'add_menu_page' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 	}
@@ -100,10 +100,10 @@ class Consent_Logs_Page {
 			'slos-admin-consent-logs',
 			'slosLogsData',
 			array(
-				'ajaxUrl'   => admin_url( 'admin-ajax.php' ),
-				'restUrl'   => rest_url( 'slos/v1' ),
-				'nonce'     => wp_create_nonce( 'wp_rest' ),
-				'i18n'      => array(
+				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+				'restUrl' => rest_url( 'slos/v1' ),
+				'nonce'   => wp_create_nonce( 'wp_rest' ),
+				'i18n'    => array(
 					'no_logs_found'  => __( 'No logs found matching the current filters.', 'shahi-legalops-suite' ),
 					'view_details'   => __( 'View Details', 'shahi-legalops-suite' ),
 					'grant'          => __( 'Grant', 'shahi-legalops-suite' ),
@@ -160,7 +160,7 @@ class Consent_Logs_Page {
 	public function render_content() {
 		// Load template
 		$template_path = SHAHI_LEGALOPS_SUITE_PLUGIN_DIR . 'templates/admin/consent-logs.php';
-		
+
 		if ( file_exists( $template_path ) ) {
 			include $template_path;
 		} else {

@@ -66,7 +66,7 @@ class DSRRequestDetail {
 	 */
 	private function get_audit_service() {
 		if ( null === $this->audit_service ) {
-			$audit_repository = new DSR_Audit_Log_Repository();
+			$audit_repository    = new DSR_Audit_Log_Repository();
 			$this->audit_service = new DSR_Audit_Service( $audit_repository );
 		}
 		return $this->audit_service;
@@ -135,7 +135,7 @@ class DSRRequestDetail {
 		echo '<div class="inside">';
 
 		echo '<table class="form-table">';
-		
+
 		echo '<tr>';
 		echo '<th scope="row">' . esc_html__( 'Email', 'shahi-legalops-suite' ) . '</th>';
 		echo '<td>' . esc_html( $request->requester_email ?? '' ) . '</td>';
@@ -222,32 +222,32 @@ class DSRRequestDetail {
 	private function render_timeline_entry( array $entry ): void {
 		$action_class = sanitize_html_class( $entry['action'] ?? '' );
 		$icon         = $this->get_action_icon( $entry['action'] ?? '' );
-		
+
 		echo '<div class="timeline-entry" style="position: relative; padding: 15px 0; border-left: 2px solid #ddd;">';
-		
+
 		// Icon
 		echo '<div style="position: absolute; left: -11px; top: 15px; width: 20px; height: 20px; border-radius: 50%; background: #fff; border: 2px solid ' . esc_attr( $this->get_action_color( $entry['action'] ?? '' ) ) . '; display: flex; align-items: center; justify-content: center;">';
 		echo '<span class="dashicons ' . esc_attr( $icon ) . '" style="font-size: 12px; width: 12px; height: 12px; color: ' . esc_attr( $this->get_action_color( $entry['action'] ?? '' ) ) . ';"></span>';
 		echo '</div>';
-		
+
 		// Content
 		echo '<div style="margin-left: 20px;">';
 		echo '<div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 5px;">';
 		echo '<strong>' . esc_html( $entry['action_label'] ?? '' ) . '</strong>';
 		echo '<span style="font-size: 12px; color: #666;">' . esc_html( $this->format_relative_time( $entry['created_at'] ?? '' ) ) . '</span>';
 		echo '</div>';
-		
+
 		if ( ! empty( $entry['note'] ) ) {
 			echo '<p style="margin: 5px 0; color: #444;">' . esc_html( $entry['note'] ) . '</p>';
 		}
-		
+
 		if ( ! empty( $entry['actor_name'] ) ) {
 			echo '<div style="font-size: 12px; color: #666;">';
 			echo '<span class="dashicons dashicons-admin-users" style="font-size: 14px; vertical-align: middle;"></span> ';
 			echo esc_html( $entry['actor_name'] );
 			echo '</div>';
 		}
-		
+
 		// Metadata (if present)
 		if ( ! empty( $entry['metadata'] ) && is_array( $entry['metadata'] ) ) {
 			echo '<details style="margin-top: 8px; font-size: 12px;">';
@@ -257,7 +257,7 @@ class DSRRequestDetail {
 			echo '</pre>';
 			echo '</details>';
 		}
-		
+
 		echo '</div>'; // content
 		echo '</div>'; // .timeline-entry
 	}
@@ -473,15 +473,15 @@ class DSRRequestDetail {
 	 */
 	private function get_action_icon( string $action ): string {
 		$icons = array(
-			'submit'             => 'dashicons-edit',
-			'verify'             => 'dashicons-yes',
-			'status_change'      => 'dashicons-update',
-			'assign'             => 'dashicons-admin-users',
-			'note_added'         => 'dashicons-admin-comments',
-			'export_generated'   => 'dashicons-download',
-			'export_downloaded'  => 'dashicons-cloud-download',
-			'erasure_executed'   => 'dashicons-trash',
-			'erasure_preview'    => 'dashicons-visibility',
+			'submit'            => 'dashicons-edit',
+			'verify'            => 'dashicons-yes',
+			'status_change'     => 'dashicons-update',
+			'assign'            => 'dashicons-admin-users',
+			'note_added'        => 'dashicons-admin-comments',
+			'export_generated'  => 'dashicons-download',
+			'export_downloaded' => 'dashicons-cloud-download',
+			'erasure_executed'  => 'dashicons-trash',
+			'erasure_preview'   => 'dashicons-visibility',
 		);
 
 		return $icons[ $action ] ?? 'dashicons-marker';
@@ -495,15 +495,15 @@ class DSRRequestDetail {
 	 */
 	private function get_action_color( string $action ): string {
 		$colors = array(
-			'submit'             => '#0073aa',
-			'verify'             => '#46b450',
-			'status_change'      => '#f18500',
-			'assign'             => '#0073aa',
-			'note_added'         => '#666',
-			'export_generated'   => '#0073aa',
-			'export_downloaded'  => '#0073aa',
-			'erasure_executed'   => '#dc3232',
-			'erasure_preview'    => '#666',
+			'submit'            => '#0073aa',
+			'verify'            => '#46b450',
+			'status_change'     => '#f18500',
+			'assign'            => '#0073aa',
+			'note_added'        => '#666',
+			'export_generated'  => '#0073aa',
+			'export_downloaded' => '#0073aa',
+			'erasure_executed'  => '#dc3232',
+			'erasure_preview'   => '#666',
 		);
 
 		return $colors[ $action ] ?? '#666';

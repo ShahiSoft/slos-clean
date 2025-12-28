@@ -88,11 +88,11 @@ class Consent {
 
 		$filters = array(
 			'periods'  => array(
-				'today'      => __( 'Today', 'shahi-legalops-suite' ),
-				'7d'         => __( 'Last 7 days', 'shahi-legalops-suite' ),
-				'30d'        => __( 'Last 30 days', 'shahi-legalops-suite' ),
-				'quarter'    => __( 'Quarter to date', 'shahi-legalops-suite' ),
-				'year'       => __( 'Year to date', 'shahi-legalops-suite' ),
+				'today'   => __( 'Today', 'shahi-legalops-suite' ),
+				'7d'      => __( 'Last 7 days', 'shahi-legalops-suite' ),
+				'30d'     => __( 'Last 30 days', 'shahi-legalops-suite' ),
+				'quarter' => __( 'Quarter to date', 'shahi-legalops-suite' ),
+				'year'    => __( 'Year to date', 'shahi-legalops-suite' ),
 			),
 			'types'    => $allowed_types,
 			'statuses' => $allowed_statuses,

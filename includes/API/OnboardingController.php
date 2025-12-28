@@ -167,4 +167,3 @@ class OnboardingController {
 		return RestAPI::success( $status, 'Onboarding reset successfully' );
 	}
 }
-
