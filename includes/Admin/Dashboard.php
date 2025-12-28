@@ -252,16 +252,16 @@ class Dashboard {
 				'value'       => $this->get_total_events_count(),
 				'icon'        => 'dashicons-chart-line',
 				'color'       => 'success',
-				'trend'       => '+12%',
+				'trend'       => null,
 				'description' => __( 'Consent records, DSR requests, and system actions logged', 'shahi-legalops-suite' ),
 			),
 			array(
 				'title'       => __( 'Performance Score', 'shahi-legalops-suite' ),
-				'value'       => '98',
+				'value'       => $this->get_performance_score(),
 				'suffix'      => '%',
 				'icon'        => 'dashicons-performance',
 				'color'       => 'accent',
-				'trend'       => '+5%',
+				'trend'       => null,
 				'description' => __( 'Overall plugin health based on config and optimizations', 'shahi-legalops-suite' ),
 			),
 			array(
@@ -336,6 +336,59 @@ class Dashboard {
 		}
 
 		return human_time_diff( strtotime( $last_time ), current_time( 'timestamp' ) ) . ' ' . __( 'ago', 'shahi-legalops-suite' );
+	}
+
+	/**
+	 * Get performance score
+	 *
+	 * Calculate overall plugin health score based on:
+	 * - Active modules count
+	 * - Configuration completeness
+	 * - Database health
+	 *
+	 * @since 3.0.1
+	 * @return int Performance score (0-100)
+	 */
+	private function get_performance_score() {
+		$score = 0;
+		
+		// Factor 1: Active modules (max 40 points)
+		$module_manager = ModuleManager::get_instance();
+		$stats = $module_manager->get_statistics();
+		if ( $stats['total'] > 0 ) {
+			$enabled_ratio = $stats['enabled'] / $stats['total'];
+			$score += (int) ( $enabled_ratio * 40 );
+		}
+		
+		// Factor 2: Configuration completeness (max 30 points)
+		// Check if company profile is configured
+		$profile_repo = \ShahiLegalopsSuite\Database\Repositories\Company_Profile_Repository::get_instance();
+		$profile = $profile_repo->get_profile();
+		
+		// Check if profile has meaningful data (not just defaults)
+		$completion = $profile_repo->get_completion_percentage();
+		if ( $completion > 10 ) { // At least 10% configured
+			$score += 30;
+		}
+		
+		// Factor 3: Database health (max 30 points)
+		// Check if tables exist and have data
+		global $wpdb;
+		$tables = array(
+			$wpdb->prefix . 'slos_consents',
+			$wpdb->prefix . 'slos_dsr_requests',
+			$wpdb->prefix . 'slos_documents',
+		);
+		
+		$healthy_tables = 0;
+		foreach ( $tables as $table ) {
+			if ( QueryOptimizer::table_exists_cached( $table ) ) {
+				$healthy_tables++;
+			}
+		}
+		$score += (int) ( ( $healthy_tables / count( $tables ) ) * 30 );
+		
+		return min( 100, $score );
 	}
 
 	/**

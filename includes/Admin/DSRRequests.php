@@ -33,8 +33,8 @@ class DSRRequests {
             $pending = count( $repo->list_requests( array( 'status' => 'pending_verification' ), 1000 ) );
             $completed = count( $repo->list_requests( array( 'status' => 'completed' ), 1000 ) );
             
-            // Calculate overdue (simplified - should check SLA deadline)
-            $overdue = 3; // Placeholder
+            // Calculate overdue by checking SLA deadline
+            $overdue = $this->calculate_overdue_count( $repo );
             
             return array(
                 'total' => $total,
@@ -49,6 +49,43 @@ class DSRRequests {
                 'overdue' => 0,
                 'completed' => 0,
             );
+        }
+    }
+
+    /**
+     * Calculate overdue requests count
+     * 
+     * Checks requests against SLA deadline (typically 30 days from submission)
+     *
+     * @param DSR_Repository $repo Repository instance
+     * @return int Count of overdue requests
+     */
+    private function calculate_overdue_count( $repo ) {
+        try {
+            // Get all non-completed requests
+            $active_requests = $repo->list_requests( array(), 1000 );
+            $overdue_count = 0;
+            $sla_days = 30; // GDPR requires response within 30 days
+            
+            foreach ( $active_requests as $request ) {
+                // Skip completed or rejected requests
+                if ( in_array( $request->status, array( 'completed', 'rejected' ), true ) ) {
+                    continue;
+                }
+                
+                // Calculate days since submission
+                $submitted = strtotime( $request->submitted_at );
+                $now = current_time( 'timestamp' );
+                $days_elapsed = floor( ( $now - $submitted ) / DAY_IN_SECONDS );
+                
+                if ( $days_elapsed > $sla_days ) {
+                    $overdue_count++;
+                }
+            }
+            
+            return $overdue_count;
+        } catch ( \Throwable $e ) {
+            return 0;
         }
     }
 
@@ -343,10 +380,10 @@ class DSRRequests {
                         <?php esc_html_e( 'Overview of all data subject requests. Click any card to filter the list below by that status.', 'shahi-legalops-suite' ); ?>
                     </p>
                     <div class="slos-stats-grid">
-                        <?php $this->render_stat_card( 'Total Requests', $stats['total'], '+8.5%', 'up', 'dashicons-list-view' ); ?>
-                        <?php $this->render_stat_card( 'Pending', $stats['pending'], '-2', 'down', 'dashicons-clock' ); ?>
-                        <?php $this->render_stat_card( 'Overdue', $stats['overdue'], 'HIGH', 'danger', 'dashicons-warning' ); ?>
-                        <?php $this->render_stat_card( 'Completed', $stats['completed'], '94.7%', 'success', 'dashicons-yes-alt' ); ?>
+                        <?php $this->render_stat_card( 'Total Requests', $stats['total'], '', 'neutral', 'dashicons-list-view' ); ?>
+                        <?php $this->render_stat_card( 'Pending', $stats['pending'], '', 'neutral', 'dashicons-clock' ); ?>
+                        <?php $this->render_stat_card( 'Overdue', $stats['overdue'], $stats['overdue'] > 0 ? __( 'Attention', 'shahi-legalops-suite' ) : '', $stats['overdue'] > 0 ? 'danger' : 'neutral', 'dashicons-warning' ); ?>
+                        <?php $this->render_stat_card( 'Completed', $stats['completed'], '', 'neutral', 'dashicons-yes-alt' ); ?>
                     </div>
                 </div>
 
