@@ -2,13 +2,13 @@
 /**
  * Migration: Create wp_slos_vendors table
  *
- * @package     ShahiLegalopsSuite
+ * @package     ShahiLegalFlowSuite
  * @subpackage  Database\Migrations
  * @version     3.0.1
  * @since       3.0.1
  */
 
-namespace ShahiLegalopsSuite\Database\Migrations;
+namespace ShahiLegalFlowSuite\Database\Migrations;
 
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) {
