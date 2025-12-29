@@ -54,9 +54,5 @@ class AudioAccessibilityCheck extends AbstractCheck {
 
 		return $issues;
 	}
-
-	private function get_element_html( $node ) {
-		return $node->ownerDocument->saveHTML( $node );
-	}
 }
 

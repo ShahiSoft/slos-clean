@@ -378,6 +378,12 @@ class AccessibilitySettings {
 			'viewport'            => 'Viewport Configuration',
 			'touch-target'        => 'Touch Targets',
 			'touch-gesture'       => 'Touch Gestures',
+			// Phase 3: New Checkers (WCAG Coverage Enhancement)
+			'language-change'      => 'Language Changes',
+			'animation-pause'      => 'Animation Pause Controls',
+			'timing-control'       => 'Timing Controls',
+			'status-message'       => 'Status Messages',
+			'error-identification' => 'Error Identification',
 		);
 	}
 
@@ -408,6 +414,12 @@ class AccessibilitySettings {
 			'add_live_regions'        => 'Add Live Regions',
 			'fix_modal_dialogs'       => 'Fix Modal Dialogs',
 			'generate_transcripts'    => 'Generate Transcripts',
+			// Phase 3: New Auto-Fixers (WCAG Coverage Enhancement)
+			'fix_language_changes'     => 'Fix Language Changes',
+			'fix_animation_controls'   => 'Fix Animation Controls',
+			'fix_timing_controls'      => 'Fix Timing Controls',
+			'fix_status_messages'      => 'Fix Status Messages',
+			'fix_error_identification' => 'Fix Error Identification',
 		);
 	}
 }

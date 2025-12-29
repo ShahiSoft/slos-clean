@@ -1,0 +1,19 @@
+<!-- EXPECTED: custom-widget-keyboard check should FAIL -->
+<!-- Custom widgets without keyboard support -->
+<div>
+    <div role="button" onclick="handleClick()">
+        Custom button without keyboard support
+    </div>
+    
+    <div role="tab" class="tab" data-index="0">
+        Tab without tabindex
+    </div>
+    
+    <span role="checkbox" aria-checked="false" onclick="toggle()">
+        Checkbox without keyboard handler
+    </span>
+    
+    <div role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+        Slider without keyboard control
+    </div>
+</div>

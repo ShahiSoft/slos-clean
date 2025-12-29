@@ -22,7 +22,45 @@ class AccessibilityFixer {
 	}
 
 	public function enqueue_fix_assets() {
-		wp_enqueue_style( 'slos-a11y-fixes', plugin_dir_url( __FILE__ ) . '../../../../assets/css/slos-a11y-fixes.css', array(), '1.0.0' );
+		// Enqueue CSS first
+		wp_enqueue_style( 
+			'slos-a11y-fixes', 
+			plugin_dir_url( __FILE__ ) . '../../../../assets/css/slos-a11y-fixes.css', 
+			array(), 
+			'1.1.0' 
+		);
+
+		// Enqueue JavaScript (depends on no libraries - vanilla JS)
+		wp_enqueue_script(
+			'slos-a11y-fixes',
+			plugin_dir_url( __FILE__ ) . '../../../../assets/js/slos-a11y-fixes.js',
+			array(), // No dependencies - vanilla JavaScript
+			'1.0.0',
+			true // Load in footer
+		);
+
+		// Pass configuration to JavaScript
+		wp_localize_script(
+			'slos-a11y-fixes',
+			'slosa11yConfig',
+			array(
+				'ajaxUrl'  => admin_url( 'admin-ajax.php' ),
+				'nonce'    => wp_create_nonce( 'slos_a11y_nonce' ),
+				'i18n'     => array(
+					'pauseAnimation'    => __( 'Pause animation', 'shahi-legalflowsuite' ),
+					'playAnimation'     => __( 'Play animation', 'shahi-legalflowsuite' ),
+					'pauseCarousel'     => __( 'Pause carousel', 'shahi-legalflowsuite' ),
+					'playCarousel'      => __( 'Play carousel', 'shahi-legalflowsuite' ),
+					'extendTime'        => __( 'Extend time', 'shahi-legalflowsuite' ),
+					'cancelRefresh'     => __( 'Cancel refresh', 'shahi-legalflowsuite' ),
+					'dialogClosed'      => __( 'Dialog closed', 'shahi-legalflowsuite' ),
+					'animationPaused'   => __( 'Animation paused', 'shahi-legalflowsuite' ),
+					'animationResumed'  => __( 'Animation resumed', 'shahi-legalflowsuite' ),
+					'timerPaused'       => __( 'Timer paused', 'shahi-legalflowsuite' ),
+					'timerResumed'      => __( 'Timer resumed', 'shahi-legalflowsuite' ),
+				),
+			)
+		);
 
 		// Add body classes for CSS fixes
 		$classes = array();

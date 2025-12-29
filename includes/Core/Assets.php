@@ -251,6 +251,23 @@ class Assets {
 				array( 'shahi-components' ),
 				$this->version
 			);
+
+			// Auto-Fix Progress Popup CSS for Dashboard Fix All buttons
+			wp_enqueue_style(
+				'slos-autofix-progress',
+				$this->assets_url . 'css/slos-autofix-progress.css',
+				array(),
+				$this->version
+			);
+
+			// Chart.js for trends visualization
+			wp_enqueue_script(
+				'chartjs',
+				'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js',
+				array(),
+				'4.4.1',
+				false
+			);
 		} elseif ( $this->is_settings_page( $hook ) ) {
 			$this->enqueue_style(
 				'shahi-admin-settings',
@@ -267,6 +284,14 @@ class Assets {
 				'shahi-accessibility-scanner',
 				'css/accessibility-scanner/admin',
 				array( 'shahi-components' ),
+				$this->version
+			);
+
+			// Auto-Fix Progress Popup CSS
+			wp_enqueue_style(
+				'slos-autofix-progress',
+				$this->assets_url . 'css/slos-autofix-progress.css',
+				array(),
 				$this->version
 			);
 		} elseif ( $this->is_consent_page( $hook ) ) {
@@ -533,11 +558,21 @@ class Assets {
 				true
 			);
 
+			// Chart.js for trends visualization (must load before dashboard scripts)
+			wp_enqueue_script(
+				'chartjs',
+				'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js',
+				array(),
+				'4.4.1',
+				false
+			);
+
 			// Also add accessibility-specific scripts if needed
-			$this->enqueue_script(
+			// Force non-minified version (minified version doesn't exist yet)
+			wp_enqueue_script(
 				'slos-scanner-admin',
-				'js/slos-scanner-admin',
-				array( 'jquery' ),
+				$this->assets_url . 'js/slos-scanner-admin.js',
+				array( 'jquery', 'chartjs' ),
 				$this->version,
 				true
 			);
@@ -550,6 +585,19 @@ class Assets {
 					'nonce'    => wp_create_nonce( 'slos_scanner_nonce' ),
 				)
 			);
+
+			// Auto-Fix Progress Popup Assets for Dashboard Fix All buttons
+			// Force non-minified version (minified version doesn't exist yet)
+			wp_enqueue_script(
+				'slos-autofix-progress',
+				$this->assets_url . 'js/slos-autofix-progress.js',
+				array( 'jquery' ),
+				$this->version,
+				true
+			);
+
+			// Localize Auto-Fix Progress with fixer data
+			$this->localize_autofix_progress_script();
 		} elseif ( $this->is_settings_page( $hook ) ) {
 			$this->enqueue_script(
 				'shahi-admin-settings',
@@ -592,6 +640,37 @@ class Assets {
 			);
 
 			$this->localize_accessibility_scanner_script();
+
+			// Also add slos-scanner-admin for Fix All buttons
+			// Force non-minified version (minified version doesn't exist yet)
+			wp_enqueue_script(
+				'slos-scanner-admin',
+				$this->assets_url . 'js/slos-scanner-admin.js',
+				array( 'jquery' ),
+				$this->version,
+				true
+			);
+
+			wp_localize_script(
+				'slos-scanner-admin',
+				'slosScanner',
+				array(
+					'ajax_url' => admin_url( 'admin-ajax.php' ),
+					'nonce'    => wp_create_nonce( 'slos_scanner_nonce' ),
+				)
+			);
+
+			// Auto-Fix Progress Popup Assets
+			// Force non-minified version (minified version doesn't exist yet)
+			wp_enqueue_script(
+				'slos-autofix-progress',
+				$this->assets_url . 'js/slos-autofix-progress.js',
+				array( 'jquery' ),
+				$this->version,
+				true
+			);
+
+			$this->localize_autofix_progress_script();
 		}
 	}
 
@@ -1162,7 +1241,13 @@ class Assets {
 	 * @return bool True if accessibility scanner page, false otherwise.
 	 */
 	private function is_accessibility_scanner_page( $hook ) {
-		return strpos( $hook, 'shahi-accessibility' ) !== false;
+		// Check if we're on the accessibility page with tools/scanner tab
+		// The hook is like: shahi-legalflowsuite_page_slos-accessibility
+		if ( strpos( $hook, 'slos-accessibility' ) !== false ) {
+			$tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'tools';
+			return $tab === 'tools' || $tab === 'scanner';
+		}
+		return false;
 	}
 
 	/**     * Check if current page is the accessibility dashboard page.
@@ -1172,7 +1257,14 @@ class Assets {
 	 * @return bool True if accessibility dashboard page, false otherwise.
 	 */
 	private function is_accessibility_dashboard_page( $hook ) {
-		return strpos( $hook, 'slos-accessibility-dashboard' ) !== false;
+		// Check if we're on the main accessibility page with dashboard tab
+		// The hook is like: shahi-legalflowsuite_page_slos-accessibility
+		if ( strpos( $hook, 'slos-accessibility' ) !== false ) {
+			// Check if tab parameter is dashboard (or default to true for all accessibility pages)
+			$tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'tools';
+			return $tab === 'dashboard';
+		}
+		return false;
 	}
 
 	/**     * Localize script data for Accessibility Scanner.
@@ -1212,6 +1304,61 @@ class Assets {
 					'serious'  => __( 'Serious', 'shahi-legalflowsuite' ),
 					'moderate' => __( 'Moderate', 'shahi-legalflowsuite' ),
 					'minor'    => __( 'Minor', 'shahi-legalflowsuite' ),
+				),
+			)
+		);
+	}
+
+	/**
+	 * Localize script data for Auto-Fix Progress popup.
+	 *
+	 * @since 3.1.1
+	 * @return void
+	 */
+	private function localize_autofix_progress_script() {
+		// Get fixer list for JS
+		$fixers = array();
+		if ( class_exists( '\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry' ) ) {
+			\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::init();
+			$fixer_ids = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::get_all_fixer_ids();
+
+			foreach ( $fixer_ids as $id ) {
+				$fixer = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::get_fixer( $id );
+				if ( $fixer ) {
+					// Get ID and derive name from it (BaseFixer doesn't have get_name)
+					$fixer_id = $fixer->get_id();
+					// Convert ID like 'missing_alt' to 'Missing Alt'
+					$fixer_name = ucwords( str_replace( array( '-', '_' ), ' ', $fixer_id ) );
+					
+					// Get description safely
+					$description = '';
+					if ( method_exists( $fixer, 'get_description' ) ) {
+						$description = $fixer->get_description();
+					}
+					
+					$fixers[] = array(
+						'id'          => $fixer_id,
+						'name'        => $fixer_name,
+						'description' => $description,
+					);
+				}
+			}
+		}
+
+		wp_localize_script(
+			'slos-autofix-progress',
+			'slosautoFixConfig',
+			array(
+				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+				'nonce'   => wp_create_nonce( 'slos_autofix_nonce' ),
+				'fixers'  => $fixers,
+				'i18n'    => array(
+					'processing'  => __( 'Processing...', 'shahi-legalflowsuite' ),
+					'complete'    => __( 'Complete!', 'shahi-legalflowsuite' ),
+					'cancelled'   => __( 'Cancelled', 'shahi-legalflowsuite' ),
+					'error'       => __( 'Error', 'shahi-legalflowsuite' ),
+					'noIssues'    => __( 'No issues found', 'shahi-legalflowsuite' ),
+					'fixedIssues' => __( 'Fixed %d issue(s)', 'shahi-legalflowsuite' ),
 				),
 			)
 		);

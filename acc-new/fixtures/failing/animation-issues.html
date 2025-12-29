@@ -1,0 +1,28 @@
+<!-- EXPECTED: animation-pause check should FAIL -->
+<!-- Animations without pause controls -->
+<style>
+    .infinite-spin {
+        animation: spin 2s linear infinite;
+    }
+    .long-animation {
+        animation-duration: 10s;
+    }
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+</style>
+
+<div>
+    <div class="infinite-spin">
+        Spinning element without pause control
+    </div>
+    
+    <marquee>
+        Deprecated scrolling text element
+    </marquee>
+    
+    <div class="long-animation">
+        Long running animation
+    </div>
+</div>

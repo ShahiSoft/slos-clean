@@ -1,0 +1,24 @@
+<!-- EXPECTED: touch-gesture check should PASS -->
+<!-- Interactive elements with keyboard alternatives -->
+<div>
+    <div class="carousel">
+        <button aria-label="Previous">◀</button>
+        <img src="image1.jpg" alt="Image 1">
+        <img src="image2.jpg" alt="Image 2">
+        <img src="image3.jpg" alt="Image 3">
+        <button aria-label="Next">▶</button>
+    </div>
+    
+    <div class="slider">
+        <button>Previous Slide</button>
+        <div class="slide">Slide 1</div>
+        <div class="slide">Slide 2</div>
+        <button>Next Slide</button>
+    </div>
+    
+    <div class="zoom-control">
+        <button aria-label="Zoom In">+</button>
+        <img src="map.jpg" alt="Map">
+        <button aria-label="Zoom Out">-</button>
+    </div>
+</div>

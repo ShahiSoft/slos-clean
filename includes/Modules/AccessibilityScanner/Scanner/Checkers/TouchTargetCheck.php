@@ -237,10 +237,5 @@ class TouchTargetCheck extends AbstractCheck {
 			}
 		}
 	}
-
-	private function get_element_html( $node ) {
-		$html = $node->ownerDocument->saveHTML( $node );
-		return strlen( $html ) > 200 ? substr( $html, 0, 200 ) . '...' : $html;
-	}
 }
 

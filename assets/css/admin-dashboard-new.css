@@ -30,6 +30,7 @@
     justify-content: space-between;
     padding: 1rem 2rem;
     background: rgba(30, 41, 59, 0.8);
+    -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     position: sticky;
@@ -203,7 +204,8 @@
 .shahi-v3-stat-card {
     position: relative;
     background: rgba(30, 41, 59, 0.6);
-    backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 16px;
     padding: 1.5rem;
@@ -341,7 +343,8 @@
    ============================================ */
 .shahi-v3-card {
     background: rgba(30, 41, 59, 0.6);
-    backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 16px;
     margin-bottom: 1.5rem;

@@ -358,7 +358,7 @@ class StatusMessageCheck extends AbstractCheck {
 
 		foreach ( $progresses as $progress ) {
 			// Check for accessible name
-			$has_label = $this->has_accessible_name( $progress, $xpath );
+			$has_label = $this->element_has_accessible_name( $progress, $xpath );
 
 			if ( ! $has_label ) {
 				$issues[] = array(
@@ -378,7 +378,7 @@ class StatusMessageCheck extends AbstractCheck {
 	 * @param \DOMXPath   $xpath XPath object.
 	 * @return bool True if has accessible name.
 	 */
-	private function has_accessible_name( $element, $xpath ) {
+	private function element_has_accessible_name( $element, $xpath ) {
 		// Check aria-label
 		if ( $element->hasAttribute( 'aria-label' ) && trim( $element->getAttribute( 'aria-label' ) ) !== '' ) {
 			return true;
@@ -456,16 +456,5 @@ class StatusMessageCheck extends AbstractCheck {
 				break; // One issue per pattern
 			}
 		}
-	}
-
-	/**
-	 * Get element HTML for context
-	 *
-	 * @param \DOMNode $node DOM node.
-	 * @return string HTML string.
-	 */
-	private function get_element_html( $node ) {
-		$html = $node->ownerDocument->saveHTML( $node );
-		return strlen( $html ) > 150 ? substr( $html, 0, 150 ) . '...' : $html;
 	}
 }

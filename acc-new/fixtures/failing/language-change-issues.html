@@ -1,0 +1,18 @@
+<!-- EXPECTED: language-change check should FAIL -->
+<!-- Foreign language content without lang attribute -->
+<div>
+    <p>
+        This is English text.
+        <span>Esto es texto en español.</span>
+        Back to English.
+    </p>
+    
+    <blockquote>
+        Ein Zitat auf Deutsch ohne Sprachangabe.
+    </blockquote>
+    
+    <div>
+        <p>English paragraph</p>
+        <p>Ceci est un paragraphe en français</p>
+    </div>
+</div>

@@ -189,28 +189,6 @@ class LandmarkRoleCheck extends AbstractCheck {
 	}
 
 	/**
-	 * Check if element has an accessible name
-	 */
-	private function has_accessible_name( $element ) {
-		// aria-label
-		if ( $element->hasAttribute( 'aria-label' ) && trim( $element->getAttribute( 'aria-label' ) ) !== '' ) {
-			return true;
-		}
-
-		// aria-labelledby
-		if ( $element->hasAttribute( 'aria-labelledby' ) && trim( $element->getAttribute( 'aria-labelledby' ) ) !== '' ) {
-			return true;
-		}
-
-		// title (fallback)
-		if ( $element->hasAttribute( 'title' ) && trim( $element->getAttribute( 'title' ) ) !== '' ) {
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
 	 * Check for multiple main landmarks
 	 */
 	private function check_multiple_main( $counts, &$issues ) {
@@ -245,11 +223,6 @@ class LandmarkRoleCheck extends AbstractCheck {
 				);
 			}
 		}
-	}
-
-	private function get_element_html( $node ) {
-		$html = $node->ownerDocument->saveHTML( $node );
-		return strlen( $html ) > 150 ? substr( $html, 0, 150 ) . '...' : $html;
 	}
 }
 

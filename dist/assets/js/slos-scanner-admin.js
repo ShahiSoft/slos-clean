@@ -203,6 +203,107 @@ jQuery(document).ready(function($) {
         form.submit();
         form.remove();
     });
+
+    // ==========================================================================
+    // AUTO-FIX PROGRESS POPUP INTEGRATION
+    // ==========================================================================
+
+    /**
+     * Initialize Auto-Fix button handlers
+     * Supports multiple button types:
+     * - .slos-autofix-trigger: Generic trigger class
+     * - #slos-autofix-all-btn: Global auto-fix all button
+     * - .slos-fix-all-btn: Per-page "Fix All" button in dashboard
+     * - .slos-autofix-post-btn: Individual post fix button
+     */
+    function initAutoFixHandlers() {
+        // "Auto Fix All" / "Fix All" button handler - uses new progress modal
+        $(document).on('click', '.slos-autofix-trigger, #slos-autofix-all-btn, .slos-fix-all-btn, .slos-autofix-post-btn', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const $btn = $(this);
+            // Support both data-page-id and data-post-id attributes
+            const pageId = $btn.data('page-id') || $btn.data('post-id') || 0;
+            const $row = $btn.closest('.slos-page-row, tr');
+            
+            if (!pageId) {
+                alert('No page/post ID specified');
+                return;
+            }
+            
+            // Check if progress module is available
+            if (typeof window.SLOSAutoFixProgress === 'undefined') {
+                console.error('SLOSAutoFixProgress module not loaded');
+                alert('Auto-fix progress module not loaded. Please refresh the page.');
+                return;
+            }
+            
+            // Disable button while processing
+            $btn.prop('disabled', true);
+            
+            // Show the progress popup
+            window.SLOSAutoFixProgress.show({
+                pageId: pageId,
+                onComplete: function(results) {
+                    // Re-enable button
+                    $btn.prop('disabled', false);
+                    
+                    // Update UI based on results
+                    if (results.fixed > 0) {
+                        // Update button state temporarily
+                        const originalHtml = $btn.html();
+                        $btn.addClass('fixed').html('<span class="dashicons dashicons-yes"></span> Fixed!');
+                        
+                        // Update row if exists (dashboard page rows)
+                        if ($row.length) {
+                            // Try to update issues count
+                            const $issuesSpan = $row.find('.slos-page-issues, .slos-issue-count');
+                            if ($issuesSpan.length) {
+                                const currentCount = parseInt($issuesSpan.text()) || 0;
+                                const newCount = Math.max(0, currentCount - results.fixed);
+                                $issuesSpan.text(newCount);
+                                
+                                // Update priority badge if present
+                                const $badge = $row.find('.slos-priority-badge');
+                                if ($badge.length) {
+                                    if (newCount === 0) {
+                                        $badge.removeClass('high medium').addClass('low').text('Fixed');
+                                    } else if (newCount <= 2) {
+                                        $badge.removeClass('high medium').addClass('low').text('Low');
+                                    } else if (newCount <= 5) {
+                                        $badge.removeClass('high low').addClass('medium').text('Medium');
+                                    }
+                                }
+                            }
+                        }
+                        
+                        // Reset button after delay
+                        setTimeout(function() {
+                            $btn.removeClass('fixed').html(originalHtml);
+                        }, 3000);
+                    }
+                    
+                    // Show completion notification
+                    let message = 'Auto-fix complete! Fixed ' + results.fixed + ' issue(s).';
+                    if (results.errors > 0) {
+                        message += ' ' + results.errors + ' error(s) occurred.';
+                    }
+                    
+                    // Optional: Ask to refresh if fixes were applied
+                    if (results.fixed > 0) {
+                        setTimeout(function() {
+                            if (confirm(message + '\n\nWould you like to refresh the page to see updated results?')) {
+                                location.reload();
+                            }
+                        }, 500);
+                    }
+                }
+            });
+        });
+    }
+    
+    // Initialize auto-fix handlers
+    initAutoFixHandlers();
+
 });
-
-

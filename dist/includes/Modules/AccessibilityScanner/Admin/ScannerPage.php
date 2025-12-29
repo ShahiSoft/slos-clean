@@ -94,6 +94,70 @@ class ScannerPage {
 			array(),
 			SHAHI_LEGALFLOWSUITE_VERSION
 		);
+
+		// Auto-Fix Progress Popup Assets
+		wp_enqueue_style(
+			'slos-autofix-progress',
+			SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/css/slos-autofix-progress.css',
+			array(),
+			SHAHI_LEGALFLOWSUITE_VERSION
+		);
+
+		wp_enqueue_script(
+			'slos-autofix-progress',
+			SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/js/slos-autofix-progress.js',
+			array( 'jquery' ),
+			SHAHI_LEGALFLOWSUITE_VERSION,
+			true
+		);
+
+		// Localize Auto-Fix Progress with fixer data
+		wp_localize_script(
+			'slos-autofix-progress',
+			'slosautoFixConfig',
+			array(
+				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+				'nonce'   => wp_create_nonce( 'slos_autofix_nonce' ),
+				'fixers'  => $this->get_fixer_list_for_js(),
+				'i18n'    => array(
+					'processing'  => __( 'Processing...', 'shahi-legalflowsuite' ),
+					'complete'    => __( 'Complete!', 'shahi-legalflowsuite' ),
+					'cancelled'   => __( 'Cancelled', 'shahi-legalflowsuite' ),
+					'error'       => __( 'Error', 'shahi-legalflowsuite' ),
+					'noIssues'    => __( 'No issues found', 'shahi-legalflowsuite' ),
+					'fixedIssues' => __( 'Fixed %d issue(s)', 'shahi-legalflowsuite' ),
+				),
+			)
+		);
+	}
+
+	/**
+	 * Get list of fixers for JavaScript
+	 *
+	 * @since 3.2.0
+	 * @return array
+	 */
+	private function get_fixer_list_for_js() {
+		// Initialize registry if needed
+		if ( class_exists( '\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry' ) ) {
+			\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::init();
+			$fixer_ids = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::get_all_fixer_ids();
+			
+			$fixers = array();
+			foreach ( $fixer_ids as $id ) {
+				$fixer = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::get_fixer( $id );
+				if ( $fixer ) {
+					$fixers[] = array(
+						'id'          => $fixer->get_id(),
+						'name'        => $fixer->get_name(),
+						'description' => $fixer->get_description(),
+					);
+				}
+			}
+			return $fixers;
+		}
+		
+		return array();
 	}
 
 	/**

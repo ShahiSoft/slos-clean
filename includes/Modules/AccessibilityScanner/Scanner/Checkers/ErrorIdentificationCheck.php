@@ -309,7 +309,7 @@ class ErrorIdentificationCheck extends AbstractCheck {
 	 * @param \DOMElement $element Element to check.
 	 * @return bool True if hidden.
 	 */
-	private function is_hidden( $element ) {
+	private function element_is_hidden( $element ) {
 		$style = $element->getAttribute( 'style' );
 
 		if ( preg_match( '/display\s*:\s*none|visibility\s*:\s*hidden/i', $style ) ) {
@@ -400,7 +400,7 @@ class ErrorIdentificationCheck extends AbstractCheck {
 			$elements = $xpath->query( "//*[contains(@class, '$pattern') or contains(@id, '$pattern')]" );
 
 			foreach ( $elements as $element ) {
-				if ( $this->is_hidden( $element ) ) {
+				if ( $this->element_is_hidden( $element ) ) {
 					continue;
 				}
 
@@ -482,16 +482,5 @@ class ErrorIdentificationCheck extends AbstractCheck {
 				);
 			}
 		}
-	}
-
-	/**
-	 * Get element HTML for context
-	 *
-	 * @param \DOMNode $node DOM node.
-	 * @return string HTML string.
-	 */
-	private function get_element_html( $node ) {
-		$html = $node->ownerDocument->saveHTML( $node );
-		return strlen( $html ) > 150 ? substr( $html, 0, 150 ) . '...' : $html;
 	}
 }

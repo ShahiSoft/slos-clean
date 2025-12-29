@@ -1,0 +1,8 @@
+<!-- EXPECTED: focus-order check should FAIL -->
+<!-- Positive tabindex values that break natural tab order -->
+<div>
+    <button tabindex="10">Button 1 (tabindex 10)</button>
+    <input type="text" tabindex="5" placeholder="Input 1 (tabindex 5)">
+    <a href="#" tabindex="15">Link 1 (tabindex 15)</a>
+    <button tabindex="3">Button 2 (tabindex 3)</button>
+</div>

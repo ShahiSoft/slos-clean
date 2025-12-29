@@ -1,0 +1,23 @@
+<!-- EXPECTED: error-identification check should FAIL -->
+<!-- Form errors without proper identification -->
+<form>
+    <div>
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+        <span class="error">Invalid email format</span>
+    </div>
+    
+    <div>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+        <span class="error-message">Password too short</span>
+    </div>
+    
+    <div>
+        <label for="age">Age</label>
+        <input type="number" id="age" name="age" min="18">
+        <div class="validation-error">Must be 18 or older</div>
+    </div>
+    
+    <button type="submit">Submit</button>
+</form>

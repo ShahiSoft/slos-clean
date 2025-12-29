@@ -1,0 +1,10 @@
+<!-- EXPECTED: focus-order check should PASS -->
+<!-- Natural tab order or tabindex="0" only -->
+<div>
+    <button>Button 1 (natural order)</button>
+    <input type="text" placeholder="Input 1 (natural order)" aria-label="Input field">
+    <a href="#">Link 1 (natural order)</a>
+    <button tabindex="0">Button 2 (tabindex 0)</button>
+    <label for="notes">Notes</label>
+    <textarea id="notes" tabindex="0">Textarea (tabindex 0)</textarea>
+</div>

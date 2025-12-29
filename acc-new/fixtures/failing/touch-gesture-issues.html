@@ -1,0 +1,18 @@
+<!-- EXPECTED: touch-gesture check should FAIL -->
+<!-- Interactive elements that rely on touch gestures -->
+<div>
+    <div class="carousel" data-swipe="true" data-gesture="swipe">
+        <img src="image1.jpg" alt="Image 1">
+        <img src="image2.jpg" alt="Image 2">
+        <img src="image3.jpg" alt="Image 3">
+    </div>
+    
+    <div class="slider" ontouchstart="handleTouch()" data-touch-only="true">
+        <div class="slide">Slide 1</div>
+        <div class="slide">Slide 2</div>
+    </div>
+    
+    <div class="pinch-zoom" data-pinch="enabled">
+        <img src="map.jpg" alt="Map">
+    </div>
+</div>

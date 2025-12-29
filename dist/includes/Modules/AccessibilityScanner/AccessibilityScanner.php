@@ -80,6 +80,11 @@ use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Scanner\Checkers\EmptyTable
 use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Scanner\Checkers\ViewportCheck;
 use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Scanner\Checkers\TouchTargetCheck;
 use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Scanner\Checkers\TouchGestureCheck;
+use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Scanner\Checkers\LanguageChangeCheck;
+use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Scanner\Checkers\AnimationPauseCheck;
+use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Scanner\Checkers\TimingControlCheck;
+use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Scanner\Checkers\StatusMessageCheck;
+use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Scanner\Checkers\ErrorIdentificationCheck;
 use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Widget\AccessibilityWidget;
 use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Admin\ScannerPage;
 use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Admin\AccessibilityDashboard;
@@ -213,10 +218,12 @@ class AccessibilityScanner extends Module {
 		add_action( 'wp_ajax_slos_fix_all_issues', array( $this, 'ajax_fix_all_issues' ) );
 		add_action( 'wp_ajax_slos_toggle_autofix', array( $this, 'ajax_toggle_autofix' ) );
 		add_action( 'wp_ajax_slos_get_page_issues', array( $this, 'ajax_get_page_issues' ) );
+		add_action( 'wp_ajax_slos_get_page_fixable_issues', array( $this, 'ajax_get_page_fixable_issues' ) );
 		add_action( 'wp_ajax_slos_run_full_scan', array( $this, 'ajax_run_full_scan' ) );
 		add_action( 'wp_ajax_slos_consolidate_scan_results', array( $this, 'ajax_consolidate_scan_results' ) );
 		add_action( 'wp_ajax_slos_audit_media_library', array( $this, 'ajax_audit_media_library' ) );
 		add_action( 'wp_ajax_slos_publish_statement', array( $this, 'ajax_publish_statement' ) );
+		add_action( 'wp_ajax_slos_autofix_single', array( $this, 'ajax_autofix_single_fixer' ) );
 	}
 
 	/**
@@ -1029,6 +1036,11 @@ class AccessibilityScanner extends Module {
 			'viewport'            => ViewportCheck::class,
 			'touch-target'        => TouchTargetCheck::class,
 			'touch-gesture'       => TouchGestureCheck::class,
+			'language-change'     => LanguageChangeCheck::class,
+			'animation-pause'     => AnimationPauseCheck::class,
+			'timing-control'      => TimingControlCheck::class,
+			'status-message'      => StatusMessageCheck::class,
+			'error-identification' => ErrorIdentificationCheck::class,
 		);
 	}
 
@@ -1749,6 +1761,340 @@ class AccessibilityScanner extends Module {
 		update_option( 'slos_accessibility_issues_total', $total_critical + $total_warning );
 		update_option( 'slos_accessibility_score', $pages_scanned > 0 ? round( $total_score / $pages_scanned ) : 0 );
 		update_option( 'slos_accessibility_pages_scanned', $pages_scanned );
+	}
+
+	/**
+	 * AJAX: Get fixable issues for a page
+	 * Returns only the fixers that have issues on this page
+	 *
+	 * @since 3.2.0
+	 */
+	public function ajax_get_page_fixable_issues() {
+		check_ajax_referer( 'slos_autofix_nonce', 'nonce' );
+
+		if ( ! $this->user_can_manage_accessibility() ) {
+			wp_send_json_error( array( 'message' => 'Unauthorized' ) );
+		}
+
+		$page_id = intval( $_POST['page_id'] ?? 0 );
+
+		if ( empty( $page_id ) ) {
+			wp_send_json_error( array( 'message' => 'Missing page ID' ) );
+		}
+
+		// Get scan results for this page
+		$scan_results = get_post_meta( $page_id, '_slos_accessibility_scan_results', true );
+
+		if ( empty( $scan_results ) ) {
+			wp_send_json_success(
+				array(
+					'fixers' => array(),
+					'message' => 'No scan results found. Please scan this page first.',
+				)
+			);
+			return;
+		}
+
+		// Initialize fixer registry
+		if ( ! class_exists( '\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry' ) ) {
+			wp_send_json_error( array( 'message' => 'Fixer system not available' ) );
+		}
+
+		\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::init();
+
+		// Map check IDs to fixer IDs (some checks have corresponding fixers)
+		$check_to_fixer_map = $this->get_check_to_fixer_mapping();
+
+		// Collect fixers that have issues
+		$fixers_with_issues = array();
+		$seen_fixers        = array();
+
+		foreach ( $scan_results as $check_id => $check_result ) {
+			// Check if this check has fixable issues
+			if ( empty( $check_result['issues'] ) ) {
+				continue;
+			}
+
+			// Check if there's a corresponding fixer for this check
+			if ( isset( $check_to_fixer_map[ $check_id ] ) ) {
+				$fixer_id = $check_to_fixer_map[ $check_id ];
+
+				// Avoid duplicates
+				if ( in_array( $fixer_id, $seen_fixers, true ) ) {
+					continue;
+				}
+
+				$fixer = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::get_fixer( $fixer_id );
+
+				if ( $fixer ) {
+					$seen_fixers[]        = $fixer_id;
+					$fixers_with_issues[] = array(
+						'id'          => $fixer->get_id(),
+						'name'        => $this->get_fixer_name_from_id( $fixer->get_id() ),
+						'description' => $fixer->get_description(),
+						'status'      => 'pending',
+						'count'       => 0,
+						'message'     => '',
+					);
+				}
+			}
+		}
+
+		wp_send_json_success(
+			array(
+				'fixers'  => $fixers_with_issues,
+				'message' => count( $fixers_with_issues ) > 0 
+					? sprintf( 'Found %d fixer(s) with issues', count( $fixers_with_issues ) )
+					: 'No fixable issues found',
+			)
+		);
+	}
+
+	/**
+	 * Get mapping of checker IDs to fixer IDs
+	 * Not all checkers have corresponding fixers
+	 *
+	 * @since 3.2.0
+	 * @return array Associative array of checker_id => fixer_id
+	 */
+	private function get_check_to_fixer_mapping() {
+		// Return EXACT mapping based on what scan results use as keys
+		// and what FixerRegistry actually has registered
+		return array(
+			// Image-related checks (scan result keys => fixer IDs)
+			'missing-alt-text'    => 'missing-alt-text',
+			'empty-alt-text'      => 'empty-alt-text',
+			'redundant-alt'       => 'redundant-alt',
+			'alt-quality'         => 'alt-quality',
+			'decorative-image'    => 'decorative-image',
+			'complex-image'       => 'complex-image',
+			'svg-access'          => 'svg-access',
+			'bg-image'            => 'bg-image',
+			'logo-image'          => 'logo-image',
+			'image-map'           => 'image-map',
+
+			// Heading-related checks
+			'missing-h1'          => 'missing-h1',
+			'multiple-h1'         => 'multiple-h1',
+			'skipped-heading'     => 'skipped-heading',
+			'empty-heading'       => 'empty-heading',
+			'heading-length'      => 'heading-length',
+			'heading-unique'      => 'heading-unique',
+			'heading-visual'      => 'heading-visual',
+			'heading-nesting'     => 'heading-nesting',
+
+			// Form-related checks
+			'missing-label'       => 'missing-label',
+			'placeholder-label'   => 'placeholder-label',
+			'orphaned-label'      => 'orphaned-label',
+			'fieldset-legend'     => 'fieldset-legend',
+			'autocomplete'        => 'autocomplete',
+			'input-type'          => 'input-type',
+			'required-attr'       => 'required-attr',
+			'error-message'       => 'error-message',
+			'form-aria'           => 'form-aria',
+			'custom-control'      => 'custom-control',
+
+			// Link-related checks
+			'empty-link'          => 'empty-link',
+			'generic-link'        => 'generic-link',
+			'new-window'          => 'new-window',
+			'download-link'       => 'download-link',
+			'external-link'       => 'external-link',
+			'link-dest'           => 'link-dest',
+			'skip-link'           => 'skip-link',
+
+			// ARIA-related checks
+			'aria-role'           => 'aria-role',
+			'aria-attr'           => 'aria-attr',
+			'aria-state'          => 'aria-state',
+			'redundant-aria'      => 'redundant-aria',
+			'invalid-aria'        => 'invalid-aria',
+			'landmark-role'       => 'landmark-role',
+			'hidden-content'      => 'hidden-content',
+			'live-region'         => 'live-region',
+
+			// Table-related checks
+			'table-header'        => 'table-header',
+			'table-caption'       => 'table-caption',
+			'complex-table'       => 'complex-table',
+			'layout-table'        => 'layout-table',
+			'empty-cell'          => 'empty-cell',
+
+			// Keyboard & Interaction
+			'positive-tabindex'   => 'positive-tabindex',
+			'keyboard-trap'       => 'keyboard-trap',
+			'focus-order'         => 'focus-order',
+			'focus-indicator'     => 'focus-indicator',
+			'interactive-element' => 'interactive-element',
+			'modal-access'        => 'modal-access',
+			'widget-keyboard'     => 'widget-keyboard',
+
+			// Color & Contrast
+			'contrast'            => 'contrast',
+			'color-reliance'      => 'color-reliance',
+			'complex-contrast'    => 'complex-contrast',
+
+			// Mobile & Viewport
+			'touch-target'        => 'touch-target',
+			'touch-gesture'       => 'touch-gesture',
+			'viewport'            => 'viewport',
+
+			// Semantic & Structure
+			'semantic-html'       => 'semantic-html',
+			'page-structure'      => 'page-structure',
+
+			// Media & Other
+			'button-label'        => 'button-label',
+			'iframe-title'        => 'iframe-title',
+			'video-access'        => 'video-access',
+			'audio-access'        => 'audio-access',
+			'media-alt'           => 'media-alt',
+
+			// Advanced
+			'language-change'     => 'language-change',
+			'animation-pause'     => 'animation-pause',
+			'timing-control'      => 'timing-control',
+			'status-message'      => 'status-message',
+			'error-identification' => 'error-identification',
+
+			// Handle scan results that might use longer forms
+			'video-accessibility' => 'video-access',
+			'audio-accessibility' => 'audio-access',
+			'media-alternative'   => 'media-alt',
+		);
+	}
+
+	/**
+	 * Get user-friendly name from fixer ID
+	 *
+	 * @since 3.2.0
+	 * @param string $fixer_id Fixer ID
+	 * @return string User-friendly name
+	 */
+	private function get_fixer_name_from_id( $fixer_id ) {
+		// Convert fixer ID to readable name
+		$name = str_replace( array( '-', '_' ), ' ', $fixer_id );
+		$name = ucwords( $name );
+		return $name;
+	}
+
+	/**
+	 * AJAX: Run a single fixer for the auto-fix progress popup
+	 *
+	 * @since 3.2.0
+	 */
+	public function ajax_autofix_single_fixer() {
+		check_ajax_referer( 'slos_autofix_nonce', 'nonce' );
+
+		if ( ! $this->user_can_manage_accessibility() ) {
+			wp_send_json_error( array( 'message' => 'Unauthorized' ) );
+		}
+
+		$fixer_id = sanitize_text_field( $_POST['fixer_id'] ?? '' );
+		$page_id  = intval( $_POST['page_id'] ?? 0 );
+		$content  = wp_kses_post( $_POST['content'] ?? '' );
+
+		if ( empty( $fixer_id ) ) {
+			wp_send_json_error( array( 'message' => 'Missing fixer ID' ) );
+		}
+
+		// Initialize fixer registry
+		if ( ! class_exists( '\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry' ) ) {
+			wp_send_json(
+				array(
+					'skipped' => true,
+					'message' => 'Fixer system not available',
+				)
+			);
+			return;
+		}
+
+		\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::init();
+
+		// Get the fixer
+		$fixer = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::get_fixer( $fixer_id );
+
+		if ( ! $fixer ) {
+			wp_send_json(
+				array(
+					'skipped' => true,
+					'message' => 'Fixer not found',
+				)
+			);
+			return;
+		}
+
+		try {
+			// If page_id provided, get content from the post
+			if ( $page_id > 0 ) {
+				$post = get_post( $page_id );
+				if ( $post ) {
+					$content = $post->post_content;
+				}
+			}
+
+			// If no content, skip
+			if ( empty( $content ) ) {
+				wp_send_json(
+					array(
+						'skipped' => true,
+						'message' => 'No content to process',
+					)
+				);
+				return;
+			}
+
+			// Run the fixer
+			$result = $fixer->fix( $content );
+
+			// Check result
+			if ( is_array( $result ) && isset( $result['content'] ) ) {
+				$fixed_count    = $result['fixes_applied'] ?? 0;
+				$fixed_content  = $result['content'];
+				$content_changed = ( $fixed_content !== $content );
+
+				// If page_id provided and content changed, save the post
+				if ( $page_id > 0 && $content_changed && $fixed_count > 0 ) {
+					wp_update_post(
+						array(
+							'ID'           => $page_id,
+							'post_content' => $fixed_content,
+						)
+					);
+				}
+
+				if ( $fixed_count > 0 ) {
+					wp_send_json_success(
+						array(
+							'fixed_count'     => $fixed_count,
+							'content_changed' => $content_changed,
+						)
+					);
+				} else {
+					wp_send_json(
+						array(
+							'skipped' => true,
+							'message' => 'No issues found',
+						)
+					);
+				}
+			} else {
+				// Fixer returned unexpected format
+				wp_send_json(
+					array(
+						'skipped' => true,
+						'message' => 'No fixes applied',
+					)
+				);
+			}
+		} catch ( \Exception $e ) {
+			wp_send_json_error(
+				array(
+					'message' => $e->getMessage(),
+				)
+			);
+		}
 	}
 }
 

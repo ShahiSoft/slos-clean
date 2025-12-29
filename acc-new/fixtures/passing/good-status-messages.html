@@ -1,0 +1,23 @@
+<!-- EXPECTED: status-message check should PASS -->
+<!-- Status messages with proper ARIA live regions -->
+<div>
+    <div class="alert" role="alert">
+        Alert message with role
+    </div>
+    
+    <div class="notification" aria-live="polite">
+        Notification with aria-live
+    </div>
+    
+    <div class="toast" role="status" aria-live="polite">
+        Toast notification
+    </div>
+    
+    <div class="success-message" role="status">
+        Form submitted successfully
+    </div>
+    
+    <div id="loading-status" aria-live="assertive" aria-atomic="true">
+        Loading complete
+    </div>
+</div>

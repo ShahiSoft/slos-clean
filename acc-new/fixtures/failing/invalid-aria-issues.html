@@ -1,0 +1,26 @@
+<!-- EXPECTED: invalid-aria-combination check should FAIL -->
+<!-- Invalid ARIA attribute combinations -->
+<div>
+    <!-- aria-hidden on focusable element -->
+    <button aria-hidden="true" tabindex="0">
+        Hidden but focusable button
+    </button>
+    
+    <!-- role="presentation" with ARIA attributes -->
+    <div role="presentation" aria-label="Decorative item">
+        Presentational element with ARIA
+    </div>
+    
+    <!-- Invalid aria-labelledby reference -->
+    <input type="text" aria-labelledby="nonexistent-id">
+    
+    <!-- aria-required on non-input -->
+    <div aria-required="true">
+        Not a form element
+    </div>
+    
+    <!-- Contradictory aria-hidden and role -->
+    <nav aria-hidden="true">
+        <ul><li><a href="#">Hidden navigation</a></li></ul>
+    </nav>
+</div>

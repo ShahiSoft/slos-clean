@@ -72,7 +72,13 @@ use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\Fixers\{
 	PageStructureFixer,
 	VideoAccessibilityFixer,
 	AudioAccessibilityFixer,
-	MediaAlternativeFixer
+	MediaAlternativeFixer,
+	// Phase 3: New Fixer Classes
+	LanguageChangeFixer,
+	StatusMessageFixer,
+	ErrorIdentificationFixer,
+	AnimationPauseFixer,
+	TimingControlFixer
 };
 
 /**
@@ -216,6 +222,13 @@ class FixerRegistry {
 			'semantic-html'       => SemanticHtmlFixer::class,
 			'live-region'         => LiveRegionFixer::class,
 			'page-structure'      => PageStructureFixer::class,
+
+			// Phase 3: New Fixer Classes (WCAG Coverage Enhancement)
+			'language-change'       => LanguageChangeFixer::class,      // WCAG 3.1.2
+			'status-message'        => StatusMessageFixer::class,       // WCAG 4.1.3
+			'error-identification'  => ErrorIdentificationFixer::class, // WCAG 3.3.1
+			'animation-pause'       => AnimationPauseFixer::class,      // WCAG 2.2.2
+			'timing-control'        => TimingControlFixer::class,       // WCAG 2.2.1
 		);
 
 		// Register alias keys so fixer lookup works with both scanner IDs and legacy setting keys

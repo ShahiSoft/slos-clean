@@ -1656,92 +1656,10 @@ jQuery(document).ready(function($) {
     // FIX FUNCTIONALITY
     // =============================================
     
-    // Fix All Issues button
-    $('.slos-fix-all-btn').on('click', function() {
-        var $btn = $(this);
-        var postId = $btn.data('post-id');
-        var $row = $btn.closest('.slos-page-row');
-        
-        if (!postId) {
-            showFixNotification('error', '<?php echo esc_js(__('Invalid page ID', 'shahi-legalflowsuite')); ?>');
-            return;
-        }
-        
-        if (!confirm('<?php echo esc_js(__('This will attempt to automatically fix all accessibility issues on this page. The page content will be modified. Continue?', 'shahi-legalflowsuite')); ?>')) {
-            return;
-        }
-        
-        $btn.prop('disabled', true).addClass('fixing').html('<span class="dashicons dashicons-update slos-spin"></span> <?php echo esc_js(__('Fixing...', 'shahi-legalflowsuite')); ?>');
-        
-        $.ajax({
-            url: ajaxurl,
-            type: 'POST',
-            data: {
-                action: 'slos_fix_all_issues',
-                nonce: '<?php echo wp_create_nonce('slos_scanner_nonce'); ?>',
-                post_id: postId
-            },
-            success: function(response) {
-                if (response.success) {
-                    var data = response.data;
-                    var fixedCount = data.total_issues_fixed || 0;
-                    var manualRequired = data.manual_required || 0;
-                    var newIssues = data.new_issues_count || 0;
-                    var newScore = data.new_score || 0;
-                    
-                    // Update button
-                    if (fixedCount > 0) {
-                        $btn.removeClass('fixing').addClass('fixed').html('<span class="dashicons dashicons-yes"></span> <?php echo esc_js(__('Fixed!', 'shahi-legalflowsuite')); ?>');
-                    } else {
-                        $btn.removeClass('fixing').html('<span class="dashicons dashicons-warning"></span> <?php echo esc_js(__('Manual Fix Needed', 'shahi-legalflowsuite')); ?>');
-                    }
-                    
-                    // Update the issues count with new value from server
-                    var $issuesSpan = $row.find('.slos-page-issues');
-                    $issuesSpan.text(newIssues);
-                    
-                    // Update score
-                    var $scoreSpan = $row.find('.slos-page-score');
-                    $scoreSpan.text(newScore + '%');
-                    
-                    // Update priority badge
-                    var $badge = $row.find('.slos-priority-badge');
-                    if (newIssues === 0) {
-                        $badge.removeClass('high medium').addClass('low').text('<?php echo esc_js(__('Fixed', 'shahi-legalflowsuite')); ?>');
-                        setTimeout(function() { $row.fadeOut(1000); }, 2000);
-                    } else if (newIssues <= 2) {
-                        $badge.removeClass('high medium').addClass('low').text('<?php echo esc_js(__('Low', 'shahi-legalflowsuite')); ?>');
-                    } else if (newIssues <= 5) {
-                        $badge.removeClass('high low').addClass('medium').text('<?php echo esc_js(__('Medium', 'shahi-legalflowsuite')); ?>');
-                    }
-                    
-                    // Show detailed modal with fixed/failed/manual details
-                    var modalType = (fixedCount > 0 && manualRequired === 0) ? 'success' : ((fixedCount > 0 && manualRequired > 0) ? 'warning' : 'warning');
-                    showFixNotification(
-                        modalType, 
-                        data.message, 
-                        data.manual_fix_guidance || [],
-                        data.fixed_details || [],
-                        data.failed_details || []
-                    );
-                    
-                    // Reset button after delay
-                    setTimeout(function() {
-                        $btn.prop('disabled', false).removeClass('fixed').html('<span class="dashicons dashicons-admin-tools"></span> <?php echo esc_js(__('Fix All', 'shahi-legalflowsuite')); ?>');
-                    }, 3000);
-                    
-                } else {
-                    var errorMsg = response.data && response.data.message ? response.data.message : '<?php echo esc_js(__('Unknown error', 'shahi-legalflowsuite')); ?>';
-                    showFixNotification('error', errorMsg, response.data && response.data.guidance ? response.data.guidance : null, [], []);
-                    $btn.prop('disabled', false).removeClass('fixing').html('<span class="dashicons dashicons-admin-tools"></span> <?php echo esc_js(__('Fix All', 'shahi-legalflowsuite')); ?>');
-                }
-            },
-            error: function(xhr, status, error) {
-                showFixNotification('error', '<?php echo esc_js(__('Network error. Please try again.', 'shahi-legalflowsuite')); ?> (' + error + ')', [], [], []);
-                $btn.prop('disabled', false).removeClass('fixing').html('<span class="dashicons dashicons-admin-tools"></span> <?php echo esc_js(__('Fix All', 'shahi-legalflowsuite')); ?>');
-            }
-        });
-    });
+    // Fix All Issues button - Now handled by slos-scanner-admin.js via SLOSAutoFixProgress modal
+    // The handler in slos-scanner-admin.js listens for .slos-fix-all-btn clicks
+    // and triggers the modern SLOSAutoFixProgress modal with per-fixer progress tracking.
+    // The onComplete callback in that handler will update the UI similar to below.
     
     /**
      * Show Fix Results Modal - Centered popup with full details

@@ -401,15 +401,4 @@ class LanguageChangeCheck extends AbstractCheck {
 		}
 		return $text;
 	}
-
-	/**
-	 * Get element HTML for context
-	 *
-	 * @param \DOMNode $node DOM node.
-	 * @return string HTML string.
-	 */
-	private function get_element_html( $node ) {
-		$html = $node->ownerDocument->saveHTML( $node );
-		return strlen( $html ) > 150 ? substr( $html, 0, 150 ) . '...' : $html;
-	}
 }

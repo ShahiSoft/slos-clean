@@ -66,3 +66,534 @@ body.slos-fix-color-contrast h6 {
     color: #222 !important;
 }
 
+/* ============================================================
+   SLOS Phase 4: Advanced Accessibility Fix Styles
+   Version: 1.0.0
+   WCAG 2.1 AA Compliance
+   ============================================================ */
+
+/* ----------------------------------------------------------
+   4.1.1 Focus Visible Styles (WCAG 2.4.7)
+   ---------------------------------------------------------- */
+
+/* Focus-visible class for enhanced keyboard focus indicators */
+.slos-focus-visible:focus {
+    outline: 2px solid #005fcc !important;
+    outline-offset: 2px !important;
+}
+
+.slos-focus-visible:focus:not(:focus-visible) {
+    outline: none !important;
+}
+
+.slos-focus-visible:focus-visible {
+    outline: 2px solid #005fcc !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 4px rgba(0, 95, 204, 0.3) !important;
+}
+
+/* Elements with outline:none fixed */
+[data-slos-focus-fixed]:focus {
+    outline: 2px solid #005fcc !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 4px rgba(0, 95, 204, 0.3) !important;
+}
+
+/* ----------------------------------------------------------
+   4.1.2 Touch Target Styles (WCAG 2.5.5)
+   ---------------------------------------------------------- */
+
+/* Touch wrapper for checkboxes/radios */
+.slos-touch-wrapper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 8px;
+    cursor: pointer;
+}
+
+.slos-touch-wrapper:focus-within {
+    outline: 2px solid #005fcc;
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* Touch-fixed elements */
+[data-slos-touch-fixed] {
+    min-width: 44px !important;
+    min-height: 44px !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Spacing between adjacent touch targets */
+[data-slos-touch-fixed] + [data-slos-touch-fixed] {
+    margin-left: 8px;
+}
+
+/* Coarse pointer (touch) devices need larger targets */
+@media (pointer: coarse) {
+    [data-slos-touch-fixed],
+    .slos-touch-wrapper {
+        min-width: 48px !important;
+        min-height: 48px !important;
+    }
+}
+
+/* ----------------------------------------------------------
+   4.1.3 Animation Pause Button Styles (WCAG 2.2.2)
+   ---------------------------------------------------------- */
+
+/* Animation container wrapper */
+.slos-animation-container {
+    position: relative;
+    display: inline-block;
+}
+
+/* Pause/play button for animations */
+.slos-pause-animation,
+.slos-pause-marquee,
+.slos-carousel-pause {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 100;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 8px 12px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.75);
+    border: 2px solid #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.slos-pause-animation:hover,
+.slos-pause-marquee:hover,
+.slos-carousel-pause:hover {
+    background: rgba(0, 0, 0, 0.9);
+    transform: scale(1.05);
+}
+
+.slos-pause-animation:focus,
+.slos-pause-marquee:focus,
+.slos-carousel-pause:focus {
+    outline: 2px solid #005fcc;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(0, 95, 204, 0.5);
+}
+
+/* Paused state indicator */
+.slos-pause-animation[aria-pressed="true"],
+.slos-carousel-pause[aria-pressed="true"] {
+    background: rgba(0, 128, 0, 0.85);
+    border-color: #90EE90;
+}
+
+/* Carousel controls container */
+.slos-carousel-controls {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding: 8px;
+}
+
+/* Accessible marquee replacement */
+.slos-accessible-marquee {
+    position: relative;
+    overflow: hidden;
+    padding: 12px;
+    background: #f5f5f5;
+    border-radius: 4px;
+}
+
+.slos-accessible-marquee[data-paused="true"] > *:not(.slos-pause-marquee) {
+    animation-play-state: paused !important;
+}
+
+/* ----------------------------------------------------------
+   4.1.4 Timing Control UI Styles (WCAG 2.2.1)
+   ---------------------------------------------------------- */
+
+/* Timing warning banner */
+.slos-timing-warning {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 999999;
+    padding: 16px 24px;
+    background: #fff3cd;
+    border-bottom: 3px solid #ffc107;
+    color: #664d03;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.slos-timing-warning::before {
+    content: "⚠ ";
+    font-size: 1.2em;
+}
+
+/* Timing control buttons */
+.slos-timing-warning button,
+.slos-extend-time,
+.slos-extend-session,
+.slos-timer-pause,
+.slos-timer-add,
+.slos-pause-advance {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    background: #0d6efd;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.slos-timing-warning button:hover,
+.slos-extend-time:hover,
+.slos-extend-session:hover,
+.slos-timer-pause:hover,
+.slos-timer-add:hover,
+.slos-pause-advance:hover {
+    background: #0b5ed7;
+}
+
+.slos-timing-warning button:focus,
+.slos-extend-time:focus,
+.slos-extend-session:focus,
+.slos-timer-pause:focus,
+.slos-timer-add:focus,
+.slos-pause-advance:focus {
+    outline: 2px solid #005fcc;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(0, 95, 204, 0.3);
+}
+
+/* Cancel/dismiss button variant */
+.slos-cancel-refresh,
+.slos-notification-close {
+    background: #dc3545 !important;
+}
+
+.slos-cancel-refresh:hover,
+.slos-notification-close:hover {
+    background: #bb2d3b !important;
+}
+
+/* Timer controls group */
+.slos-timer-controls,
+.slos-timing-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-top: 8px;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+}
+
+.slos-timer-controls button,
+.slos-timing-controls button {
+    flex-shrink: 0;
+}
+
+/* Keep visible button */
+.slos-keep-visible {
+    background: #198754;
+}
+
+.slos-keep-visible:hover {
+    background: #157347;
+}
+
+/* ----------------------------------------------------------
+   4.1.5 Skip Link Styles (WCAG 2.4.1)
+   ---------------------------------------------------------- */
+
+/* Enhanced skip link - already defined above but enhanced here */
+.skip-link,
+.slos-skip-link,
+.slos-skip-iframe {
+    position: absolute;
+    top: -9999px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999999;
+    padding: 16px 24px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #0d6efd;
+    background: #fff;
+    border: 3px solid #0d6efd;
+    border-radius: 4px;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: top 0.1s ease;
+}
+
+.skip-link:focus,
+.slos-skip-link:focus,
+.slos-skip-iframe:focus {
+    top: 12px;
+    outline: none;
+}
+
+/* Screen reader only text */
+.screen-reader-text,
+.sr-only,
+.visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* Make screen reader text visible on focus for skip links */
+.screen-reader-text:focus,
+.sr-only:focus {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    clip: auto !important;
+    white-space: normal !important;
+}
+
+/* ----------------------------------------------------------
+   4.1.6 High Contrast Mode Support
+   ---------------------------------------------------------- */
+
+@media (prefers-contrast: high) {
+    .slos-focus-visible:focus,
+    [data-slos-focus-fixed]:focus {
+        outline: 3px solid currentColor !important;
+        outline-offset: 3px !important;
+        box-shadow: none !important;
+    }
+
+    .slos-pause-animation,
+    .slos-pause-marquee,
+    .slos-carousel-pause {
+        background: #000 !important;
+        border: 3px solid #fff !important;
+    }
+
+    .slos-timing-warning {
+        background: #fff !important;
+        color: #000 !important;
+        border-bottom: 4px solid #000 !important;
+    }
+
+    .slos-timing-warning button,
+    .slos-extend-time,
+    .slos-extend-session {
+        background: #000 !important;
+        color: #fff !important;
+        border: 2px solid #fff !important;
+    }
+
+    .skip-link:focus,
+    .slos-skip-link:focus {
+        background: #000 !important;
+        color: #fff !important;
+        border-color: #fff !important;
+    }
+}
+
+/* Windows High Contrast Mode */
+@media (forced-colors: active) {
+    .slos-focus-visible:focus,
+    [data-slos-focus-fixed]:focus {
+        outline: 3px solid CanvasText !important;
+    }
+
+    .slos-pause-animation,
+    .slos-carousel-pause,
+    .slos-timing-warning button {
+        forced-color-adjust: none;
+        background: Canvas !important;
+        color: CanvasText !important;
+        border: 2px solid CanvasText !important;
+    }
+}
+
+/* ----------------------------------------------------------
+   4.1.7 Prefers Reduced Motion (WCAG 2.3.3)
+   ---------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+    /* Disable all animations and transitions */
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    /* Stop animated GIFs (via JS replacement - CSS fallback) */
+    .slos-animation-container img[data-animated="true"],
+    .slos-animation-container [data-slos-animation-state] {
+        animation-play-state: paused !important;
+    }
+
+    /* Hide pause buttons when motion reduced */
+    .slos-pause-animation,
+    .slos-pause-marquee {
+        display: none !important;
+    }
+
+    /* Stop marquees/scrolling content */
+    .slos-accessible-marquee > *,
+    [data-pause-control] {
+        animation: none !important;
+        transform: none !important;
+    }
+
+    /* Disable carousel auto-play */
+    .slos-carousel-controls {
+        display: block !important;
+    }
+
+    /* Remove transition effects from buttons */
+    .slos-timing-warning button,
+    .slos-extend-time,
+    .slos-carousel-pause {
+        transition: none !important;
+    }
+}
+
+/* ----------------------------------------------------------
+   Error Identification Styles (WCAG 3.3.1)
+   ---------------------------------------------------------- */
+
+/* Error icon indicator */
+.slos-error-indicator {
+    color: #dc3545;
+    font-weight: bold;
+    margin-left: 4px;
+}
+
+/* Status icons for color reliance fix */
+.slos-status-icon {
+    display: inline-block;
+    margin-right: 4px;
+}
+
+/* Modal close button */
+.slos-modal-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 8px;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1;
+    color: #666;
+    background: transparent;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.slos-modal-close:hover {
+    color: #333;
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.slos-modal-close:focus {
+    outline: 2px solid #005fcc;
+    outline-offset: 2px;
+    border-color: #005fcc;
+}
+
+/* ----------------------------------------------------------
+   Form Error Styles
+   ---------------------------------------------------------- */
+
+/* Invalid input styling */
+[aria-invalid="true"] {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25) !important;
+}
+
+[aria-invalid="true"]:focus {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.25) !important;
+}
+
+/* Error message styling */
+[role="alert"] {
+    color: #842029;
+    background-color: #f8d7da;
+    border: 1px solid #f5c2c7;
+    border-radius: 4px;
+    padding: 12px 16px;
+    margin: 8px 0;
+}
+
+/* Error summary box */
+.error-summary,
+.validation-summary,
+.form-errors {
+    margin-bottom: 20px;
+    padding: 16px;
+    background: #f8d7da;
+    border: 2px solid #dc3545;
+    border-radius: 4px;
+}
+
+.error-summary h2,
+.validation-summary h2,
+.form-errors h2 {
+    margin-top: 0;
+    color: #842029;
+}
+
+.error-summary ul,
+.validation-summary ul,
+.form-errors ul {
+    margin-bottom: 0;
+    padding-left: 20px;
+}
+
+.error-summary a,
+.validation-summary a,
+.form-errors a {
+    color: #842029;
+    text-decoration: underline;
+}
+
+.error-summary a:hover,
+.validation-summary a:hover,
+.form-errors a:hover {
+    color: #5c0f17;
+}

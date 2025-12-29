@@ -3,7 +3,7 @@
  * Plugin Name: Shahi LegalFlowSuite
  * Plugin URI: https://shahisoft.com/shahi-legalflowsuite
  * Description: Professional legal operations and compliance management toolkit for WordPress. Manage GDPR/CCPA compliance, generate legal documents, handle data subject requests, and scan for accessibility issues.
- * Version: 3.3.0
+ * Version: 3.4.0
  * Author: ShahiSoft
  * Author URI: https://shahisoft.com
  * License: GPL-3.0+
@@ -27,7 +27,7 @@ if (!defined('WPINC')) {
 /**
  * Plugin Constants
  */
-define('SHAHI_LEGALFLOWSUITE_VERSION', '3.3.0');
+define('SHAHI_LEGALFLOWSUITE_VERSION', '3.4.0');
 define('SHAHI_LEGALFLOWSUITE_PATH', plugin_dir_path(__FILE__));
 define('SHAHI_LEGALFLOWSUITE_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('SHAHI_LEGALFLOWSUITE_PLUGIN_URL', plugin_dir_url(__FILE__));

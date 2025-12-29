@@ -1,0 +1,26 @@
+<!-- EXPECTED: custom-widget-keyboard check should PASS -->
+<!-- Custom widgets with proper keyboard support -->
+<div>
+    <div role="button" tabindex="0" onkeypress="handleKeyPress(event)" aria-label="Custom action button">
+        Custom button with keyboard support
+    </div>
+    
+    <!-- Proper tab structure with tablist parent -->
+    <div role="tablist">
+        <div role="tab" class="tab" tabindex="0" aria-selected="true" aria-label="First tab">
+            Accessible tab
+        </div>
+    </div>
+    
+    <span role="checkbox" aria-checked="false" tabindex="0" aria-label="Custom checkbox">
+        Accessible checkbox
+    </span>
+    
+    <div role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" tabindex="0" aria-label="Volume control">
+        Accessible slider
+    </div>
+    
+    <!-- Or just use native elements -->
+    <button>Native button</button>
+    <label><input type="checkbox"> Accept terms</label>
+</div>

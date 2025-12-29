@@ -199,10 +199,5 @@ class SkipLinkCheck extends AbstractCheck {
 
 		return null;
 	}
-
-	private function get_element_html( $node ) {
-		$html = $node->ownerDocument->saveHTML( $node );
-		return strlen( $html ) > 150 ? substr( $html, 0, 150 ) . '...' : $html;
-	}
 }
 

@@ -44,6 +44,7 @@ class Runner {
 			'migration_2025_12_20_vendors_table'         => 'Migration_2025_12_20_vendors_table',
 			'migration_2025_12_20_form_submissions_table' => 'Migration_2025_12_20_form_submissions_table',
 			'migration_2025_12_20_form_issues_table'     => 'Migration_2025_12_20_form_issues_table',
+			'migration_2025_12_29_accessibility_fix_history_table' => 'Migration_2025_12_29_accessibility_fix_history_table',
 			'Migration_Company_Profile'                  => 'Migration_Company_Profile',
 		);
 
@@ -81,6 +82,7 @@ class Runner {
 		// Reverse order to handle dependencies
 		$migrations = array(
 			'Migration_Company_Profile'                  => 'Migration_Company_Profile',
+			'migration_2025_12_29_accessibility_fix_history_table' => 'Migration_2025_12_29_accessibility_fix_history_table',
 			'migration_2025_12_20_form_issues_table'     => 'Migration_2025_12_20_form_issues_table',
 			'migration_2025_12_20_form_submissions_table' => 'Migration_2025_12_20_form_submissions_table',
 			'migration_2025_12_20_vendors_table'         => 'Migration_2025_12_20_vendors_table',
@@ -130,6 +132,7 @@ class Runner {
 			$wpdb->prefix . 'slos_vendors',
 			$wpdb->prefix . 'slos_form_submissions',
 			$wpdb->prefix . 'slos_form_issues',
+			$wpdb->prefix . 'slos_accessibility_fix_history',
 			$wpdb->prefix . 'slos_company_profile',
 		);
 
@@ -159,6 +162,7 @@ class Runner {
 			$wpdb->prefix . 'slos_vendors',
 			$wpdb->prefix . 'slos_form_submissions',
 			$wpdb->prefix . 'slos_form_issues',
+			$wpdb->prefix . 'slos_accessibility_fix_history',
 			$wpdb->prefix . 'slos_company_profile',
 		);
 

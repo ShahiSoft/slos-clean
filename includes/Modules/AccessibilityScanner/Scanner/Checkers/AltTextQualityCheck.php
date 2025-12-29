@@ -238,9 +238,9 @@ class AltTextQualityCheck extends AbstractCheck {
 		}
 	}
 
-	private function get_element_html( $node ) {
+	protected function get_element_html( $node, $max_length = 200 ) {
 		$html = $node->ownerDocument->saveHTML( $node );
-		return strlen( $html ) > 200 ? substr( $html, 0, 200 ) . '...' : $html;
+		return strlen( $html ) > $max_length ? substr( $html, 0, $max_length ) . '...' : $html;
 	}
 }
 

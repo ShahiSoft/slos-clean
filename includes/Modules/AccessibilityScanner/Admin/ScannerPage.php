@@ -94,6 +94,104 @@ class ScannerPage {
 			array(),
 			SHAHI_LEGALFLOWSUITE_VERSION
 		);
+
+		// Auto-Fix Progress Popup Assets
+		wp_enqueue_style(
+			'slos-autofix-progress',
+			SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/css/slos-autofix-progress.css',
+			array(),
+			SHAHI_LEGALFLOWSUITE_VERSION
+		);
+
+		wp_enqueue_script(
+			'slos-autofix-progress',
+			SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/js/slos-autofix-progress.js',
+			array( 'jquery' ),
+			SHAHI_LEGALFLOWSUITE_VERSION,
+			true
+		);
+
+		// Localize Auto-Fix Progress with fixer data
+		wp_localize_script(
+			'slos-autofix-progress',
+			'slosautoFixConfig',
+			array(
+				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+				'nonce'   => wp_create_nonce( 'slos_autofix_nonce' ),
+				'fixers'  => $this->get_fixer_list_for_js(),
+				'i18n'    => array(
+					'processing'  => __( 'Processing...', 'shahi-legalflowsuite' ),
+					'complete'    => __( 'Complete!', 'shahi-legalflowsuite' ),
+					'cancelled'   => __( 'Cancelled', 'shahi-legalflowsuite' ),
+					'error'       => __( 'Error', 'shahi-legalflowsuite' ),
+					'noIssues'    => __( 'No issues found', 'shahi-legalflowsuite' ),
+					'fixedIssues' => __( 'Fixed %d issue(s)', 'shahi-legalflowsuite' ),
+				),
+			)
+		);
+	}
+
+	/**
+	 * Get list of fixers for JavaScript
+	 *
+	 * @since 3.2.0
+	 * @return array
+	 */
+	private function get_fixer_list_for_js() {
+		// Since fixer classes don't exist yet, return hardcoded list of common fixers
+		// that match the most common accessibility issues found by the scanner
+		return array(
+			array(
+				'id'          => 'missing-alt-text',
+				'name'        => 'Missing Alt Text',
+				'description' => 'Add alternative text to images for screen readers',
+			),
+			array(
+				'id'          => 'button-label',
+				'name'        => 'Button Labels',
+				'description' => 'Add accessible labels to buttons and interactive elements',
+			),
+			array(
+				'id'          => 'form-label',
+				'name'        => 'Form Labels',
+				'description' => 'Associate labels with form inputs',
+			),
+			array(
+				'id'          => 'heading-structure',
+				'name'        => 'Heading Structure',
+				'description' => 'Fix heading hierarchy and structure',
+			),
+			array(
+				'id'          => 'link-text',
+				'name'        => 'Link Text',
+				'description' => 'Improve link text for better accessibility',
+			),
+			array(
+				'id'          => 'color-contrast',
+				'name'        => 'Color Contrast',
+				'description' => 'Fix color contrast issues for readability',
+			),
+			array(
+				'id'          => 'aria-labels',
+				'name'        => 'ARIA Labels',
+				'description' => 'Add ARIA labels and attributes for better semantics',
+			),
+			array(
+				'id'          => 'table-headers',
+				'name'        => 'Table Headers',
+				'description' => 'Add proper headers and structure to tables',
+			),
+			array(
+				'id'          => 'video-captions',
+				'name'        => 'Video Captions',
+				'description' => 'Add captions and transcripts to video content',
+			),
+			array(
+				'id'          => 'keyboard-access',
+				'name'        => 'Keyboard Access',
+				'description' => 'Ensure all interactive elements are keyboard accessible',
+			),
+		);
 	}
 
 	/**

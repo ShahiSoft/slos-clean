@@ -1,0 +1,747 @@
+/**
+ * SLOS Auto-Fix Progress Popup Styles
+ *
+ * Professional modal popup for displaying auto-fix progress.
+ * Matches the dark futuristic theme with glassmorphism effects.
+ *
+ * @package    ShahiLegalFlowSuite
+ * @subpackage Modules\AccessibilityScanner\Fixes
+ * @version    1.0.0
+ * @since      3.2.0
+ */
+
+/* ============================================================================
+   OVERLAY & MODAL CONTAINER
+   ========================================================================= */
+
+.slos-autofix-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.92);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100001;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    padding: 1.5rem;
+}
+
+.slos-autofix-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.slos-autofix-modal {
+    background: linear-gradient(145deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 16px;
+    box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(59, 130, 246, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    max-width: 580px;
+    width: 100%;
+    max-height: 85vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transform: scale(0.9) translateY(20px);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.slos-autofix-overlay.show .slos-autofix-modal {
+    transform: scale(1) translateY(0);
+}
+
+/* ============================================================================
+   MODAL HEADER
+   ========================================================================= */
+
+.slos-autofix-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+    background: linear-gradient(180deg, rgba(59, 130, 246, 0.05) 0%, transparent 100%);
+    flex-shrink: 0;
+}
+
+.slos-autofix-header-title {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+}
+
+.slos-autofix-icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+    border-radius: 12px;
+    color: #fff;
+    font-size: 20px;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.slos-autofix-icon .dashicons {
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+}
+
+.slos-autofix-header h2 {
+    margin: 0;
+    color: #f8fafc;
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+.slos-autofix-header-subtitle {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin-top: 2px;
+}
+
+.slos-autofix-close {
+    background: rgba(148, 163, 184, 0.1);
+    border: none;
+    color: #94a3b8;
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    transition: all 0.2s ease;
+    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slos-autofix-close:hover {
+    color: #f8fafc;
+    background: rgba(239, 68, 68, 0.2);
+}
+
+.slos-autofix-close:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* ============================================================================
+   PROGRESS SECTION
+   ========================================================================= */
+
+.slos-autofix-progress-section {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+    flex-shrink: 0;
+}
+
+.slos-autofix-progress-wrap {
+    position: relative;
+    width: 100%;
+    height: 10px;
+    background: rgba(148, 163, 184, 0.15);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+}
+
+.slos-autofix-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6 0%, #60a5fa 50%, #3b82f6 100%);
+    background-size: 200% 100%;
+    border-radius: 999px;
+    width: 0%;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
+}
+
+.slos-autofix-progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: slos-progress-shimmer 2s infinite;
+}
+
+@keyframes slos-progress-shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.slos-autofix-progress-text {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.875rem;
+}
+
+.slos-autofix-progress-percent {
+    color: #60a5fa;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.slos-autofix-progress-status {
+    color: #94a3b8;
+}
+
+/* Processing Animation */
+.slos-autofix-progress-wrap.processing .slos-autofix-progress-bar {
+    animation: slos-progress-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes slos-progress-pulse {
+    0%, 100% { box-shadow: 0 0 12px rgba(59, 130, 246, 0.4); }
+    50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.6); }
+}
+
+/* ============================================================================
+   FIXER LIST
+   ========================================================================= */
+
+.slos-autofix-fixer-section {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.slos-autofix-fixer-header {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #64748b;
+    background: rgba(30, 41, 59, 0.5);
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+    flex-shrink: 0;
+}
+
+.slos-autofix-fixer-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5rem 0;
+    max-height: 280px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
+}
+
+.slos-autofix-fixer-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.slos-autofix-fixer-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.slos-autofix-fixer-list::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.3);
+    border-radius: 3px;
+}
+
+.slos-autofix-fixer-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.5);
+}
+
+.slos-autofix-fixer-item {
+    display: flex;
+    align-items: center;
+    padding: 0.625rem 1.5rem;
+    gap: 0.875rem;
+    transition: background 0.2s ease;
+}
+
+.slos-autofix-fixer-item:hover {
+    background: rgba(59, 130, 246, 0.05);
+}
+
+.slos-autofix-fixer-item.active {
+    background: rgba(59, 130, 246, 0.1);
+}
+
+/* Status Icons */
+.slos-autofix-fixer-status {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    flex-shrink: 0;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.slos-autofix-fixer-status.pending {
+    background: rgba(148, 163, 184, 0.15);
+    color: #64748b;
+}
+
+.slos-autofix-fixer-status.pending::before {
+    content: '○';
+    font-size: 14px;
+}
+
+.slos-autofix-fixer-status.processing {
+    background: rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+    animation: slos-status-pulse 1s ease-in-out infinite;
+}
+
+.slos-autofix-fixer-status.processing::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: slos-spin 0.8s linear infinite;
+}
+
+@keyframes slos-spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes slos-status-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.slos-autofix-fixer-status.success {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+}
+
+.slos-autofix-fixer-status.success::before {
+    content: '✓';
+}
+
+.slos-autofix-fixer-status.error {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+.slos-autofix-fixer-status.error::before {
+    content: '✗';
+}
+
+.slos-autofix-fixer-status.skipped {
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+}
+
+.slos-autofix-fixer-status.skipped::before {
+    content: '—';
+}
+
+/* Fixer Info */
+.slos-autofix-fixer-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.slos-autofix-fixer-name {
+    color: #e2e8f0;
+    font-size: 0.875rem;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.slos-autofix-fixer-item.pending .slos-autofix-fixer-name {
+    color: #94a3b8;
+}
+
+.slos-autofix-fixer-desc {
+    font-size: 0.75rem;
+    color: #64748b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Fixer Count Badge */
+.slos-autofix-fixer-count {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.625rem;
+    border-radius: 999px;
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.slos-autofix-fixer-count.success {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+}
+
+.slos-autofix-fixer-count.error {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+.slos-autofix-fixer-count.skipped {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+}
+
+/* ============================================================================
+   SUMMARY SECTION
+   ========================================================================= */
+
+.slos-autofix-summary {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid rgba(148, 163, 184, 0.1);
+    background: rgba(30, 41, 59, 0.3);
+    flex-shrink: 0;
+}
+
+.slos-autofix-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+}
+
+.slos-autofix-stat {
+    text-align: center;
+    padding: 0.75rem 0.5rem;
+    background: rgba(15, 23, 42, 0.5);
+    border-radius: 10px;
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    transition: all 0.2s ease;
+}
+
+.slos-autofix-stat:hover {
+    border-color: rgba(148, 163, 184, 0.2);
+}
+
+.slos-autofix-stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+}
+
+.slos-autofix-stat.fixed .slos-autofix-stat-value {
+    color: #22c55e;
+}
+
+.slos-autofix-stat.errors .slos-autofix-stat-value {
+    color: #ef4444;
+}
+
+.slos-autofix-stat.skipped .slos-autofix-stat-value {
+    color: #f59e0b;
+}
+
+.slos-autofix-stat.pending .slos-autofix-stat-value {
+    color: #64748b;
+}
+
+.slos-autofix-stat-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* ============================================================================
+   ACTIONS SECTION
+   ========================================================================= */
+
+.slos-autofix-actions {
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    border-top: 1px solid rgba(148, 163, 184, 0.1);
+    flex-shrink: 0;
+}
+
+.slos-autofix-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 100px;
+}
+
+.slos-autofix-btn:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+.slos-autofix-btn-secondary {
+    background: rgba(148, 163, 184, 0.15);
+    color: #cbd5e1;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.slos-autofix-btn-secondary:hover {
+    background: rgba(148, 163, 184, 0.25);
+    color: #f8fafc;
+}
+
+.slos-autofix-btn-primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.slos-autofix-btn-primary:hover {
+    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+    transform: translateY(-1px);
+}
+
+.slos-autofix-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* Cancel button while processing */
+.slos-autofix-btn-cancel {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.slos-autofix-btn-cancel:hover {
+    background: rgba(239, 68, 68, 0.25);
+}
+
+/* ============================================================================
+   COMPLETION STATE
+   ========================================================================= */
+
+.slos-autofix-complete {
+    text-align: center;
+    padding: 1.5rem;
+}
+
+.slos-autofix-complete-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+}
+
+.slos-autofix-complete-icon.success {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+    box-shadow: 0 0 30px rgba(34, 197, 94, 0.2);
+}
+
+.slos-autofix-complete-icon.success::before {
+    content: '✓';
+}
+
+.slos-autofix-complete-icon.partial {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+    box-shadow: 0 0 30px rgba(245, 158, 11, 0.2);
+}
+
+.slos-autofix-complete-icon.partial::before {
+    content: '!';
+}
+
+.slos-autofix-complete-icon.error {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    box-shadow: 0 0 30px rgba(239, 68, 68, 0.2);
+}
+
+.slos-autofix-complete-icon.error::before {
+    content: '✗';
+}
+
+.slos-autofix-complete-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #f8fafc;
+    margin: 0 0 0.5rem;
+}
+
+.slos-autofix-complete-message {
+    color: #94a3b8;
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+/* ============================================================================
+   SCREEN READER ONLY
+   ========================================================================= */
+
+.slos-autofix-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Live region for announcements */
+.slos-autofix-live-region {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ============================================================================
+   REDUCED MOTION
+   ========================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+    .slos-autofix-overlay,
+    .slos-autofix-modal,
+    .slos-autofix-progress-bar,
+    .slos-autofix-fixer-status.processing,
+    .slos-autofix-btn {
+        transition: none;
+        animation: none;
+    }
+    
+    .slos-autofix-progress-bar::after {
+        animation: none;
+    }
+    
+    .slos-autofix-fixer-status.processing::before {
+        animation: none;
+    }
+}
+
+/* ============================================================================
+   HIGH CONTRAST MODE
+   ========================================================================= */
+
+@media (prefers-contrast: high), (forced-colors: active) {
+    .slos-autofix-modal {
+        border: 2px solid CanvasText;
+        background: Canvas;
+    }
+    
+    .slos-autofix-fixer-status {
+        border: 2px solid currentColor;
+    }
+    
+    .slos-autofix-btn {
+        border: 2px solid currentColor;
+    }
+    
+    .slos-autofix-progress-bar {
+        background: Highlight;
+    }
+}
+
+/* ============================================================================
+   RESPONSIVE
+   ========================================================================= */
+
+@media (max-width: 640px) {
+    .slos-autofix-overlay {
+        padding: 1rem;
+    }
+    
+    .slos-autofix-modal {
+        max-height: 90vh;
+    }
+    
+    .slos-autofix-header {
+        padding: 1rem;
+    }
+    
+    .slos-autofix-header h2 {
+        font-size: 1.1rem;
+    }
+    
+    .slos-autofix-icon {
+        width: 38px;
+        height: 38px;
+    }
+    
+    .slos-autofix-progress-section,
+    .slos-autofix-summary,
+    .slos-autofix-actions {
+        padding: 1rem;
+    }
+    
+    .slos-autofix-fixer-item {
+        padding: 0.5rem 1rem;
+    }
+    
+    .slos-autofix-fixer-list {
+        max-height: 200px;
+    }
+    
+    .slos-autofix-summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .slos-autofix-stat-value {
+        font-size: 1.25rem;
+    }
+    
+    .slos-autofix-actions {
+        flex-direction: column-reverse;
+    }
+    
+    .slos-autofix-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 400px) {
+    .slos-autofix-header-subtitle {
+        display: none;
+    }
+    
+    .slos-autofix-fixer-desc {
+        display: none;
+    }
+}
