@@ -224,6 +224,154 @@ $eea_countries = array_merge($eu_countries, array('IS', 'LI', 'NO'));
 
 <style>
 /* Geo Rules specific styles */
+
+/* Quick Presets */
+.slos-preset-section {
+    background: var(--slos-bg-card);
+    border: 1px solid var(--slos-border);
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.slos-preset-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 12px;
+}
+
+.slos-preset-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    background: var(--slos-bg-input);
+    border: 2px solid var(--slos-border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    width: 100%;
+}
+
+.slos-preset-btn:hover {
+    background: var(--slos-bg-card);
+    border-color: var(--slos-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+}
+
+.slos-preset-btn.slos-preset-active {
+    background: rgba(59, 130, 246, 0.08);
+    border-color: var(--slos-accent);
+}
+
+.slos-preset-btn.slos-preset-active:hover {
+    background: rgba(59, 130, 246, 0.12);
+}
+
+.slos-preset-icon {
+    font-size: 32px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.slos-preset-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.slos-preset-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--slos-text-primary);
+    margin-bottom: 4px;
+    line-height: 1.3;
+}
+
+.slos-preset-framework {
+    font-size: 12px;
+    color: var(--slos-text-muted);
+    line-height: 1.3;
+}
+
+.slos-preset-check {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--slos-accent);
+    color: white;
+    border-radius: 50%;
+}
+
+.slos-preset-check .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+.slos-preset-arrow {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--slos-text-muted);
+    transition: transform 0.2s;
+}
+
+.slos-preset-btn:hover .slos-preset-arrow {
+    transform: translateX(4px);
+    color: var(--slos-accent);
+}
+
+.slos-preset-arrow .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+/* Notifications */
+.slos-notification {
+    position: fixed;
+    top: 32px;
+    right: 20px;
+    padding: 14px 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    z-index: 999999;
+    opacity: 0;
+    transform: translateX(400px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 14px;
+    max-width: 400px;
+    border-left: 4px solid;
+}
+
+.slos-notification.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.slos-notification-success {
+    border-left-color: var(--slos-success, #10b981);
+    color: var(--slos-success, #10b981);
+}
+
+.slos-notification-error {
+    border-left-color: var(--slos-error, #ef4444);
+    color: var(--slos-error, #ef4444);
+}
+
+.slos-notification-warning {
+    border-left-color: var(--slos-warning, #f59e0b);
+    color: var(--slos-warning, #f59e0b);
+}
+
 .slos-geo-header {
     display: flex;
     align-items: center;
@@ -687,6 +835,79 @@ $eea_countries = array_merge($eu_countries, array('IS', 'LI', 'NO'));
         <?php esc_html_e( 'Define region-specific consent requirements to comply with global privacy laws. Rules automatically detect visitor location and enforce appropriate consent mode (opt-in for GDPR/strict, opt-out for permissive). Configure frameworks like GDPR (EU), CCPA (California), LGPD (Brazil), and custom rules. Each rule can target countries or US states.', 'shahi-legalflowsuite' ); ?>
     </p>
 
+    <!-- Quick Presets -->
+    <?php
+    require_once SLOS_PLUGIN_DIR . 'includes/Services/Geo_Rule_Matcher.php';
+    $matcher = new \SLOS\Services\Geo_Rule_Matcher();
+    $presets = $matcher->get_all_presets();
+    ?>
+
+    <div class="slos-preset-section" style="margin: 24px 0;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+            <h3 style="margin: 0; font-size: 15px; font-weight: 600; color: var(--slos-text-primary);">
+                <span class="dashicons dashicons-star-filled" style="font-size: 16px; width: 16px; height: 16px; margin-right: 4px; color: var(--slos-accent);"></span>
+                <?php esc_html_e( 'Quick Presets', 'shahi-legalflowsuite' ); ?>
+            </h3>
+            <span style="font-size: 13px; color: var(--slos-text-muted);">
+                <?php esc_html_e( 'One-click compliance for common jurisdictions', 'shahi-legalflowsuite' ); ?>
+            </span>
+        </div>
+
+        <div class="slos-preset-grid">
+            <?php
+            $preset_icons = array(
+                'EU'    => '🇪🇺',
+                'UK'    => '🇬🇧',
+                'US-CA' => '🇺🇸',
+                'BR'    => '🇧🇷',
+                'ROW'   => '🌍',
+            );
+
+            foreach ( $presets as $key => $preset ) :
+                $is_applied = $matcher->is_preset_applied( $key );
+                $active_class = $is_applied ? ' slos-preset-active' : '';
+                $icon = $preset_icons[ $key ] ?? '🌐';
+            ?>
+            <button
+                class="slos-preset-btn<?php echo esc_attr( $active_class ); ?>"
+                data-preset="<?php echo esc_attr( $key ); ?>"
+                data-applied="<?php echo $is_applied ? '1' : '0'; ?>"
+            >
+                <div class="slos-preset-icon"><?php echo $icon; ?></div>
+                <div class="slos-preset-info">
+                    <div class="slos-preset-label"><?php echo esc_html( $preset['label'] ); ?></div>
+                    <div class="slos-preset-framework"><?php echo esc_html( $preset['framework'] ); ?> • <?php echo esc_html( ucwords( str_replace( '-', ' ', $preset['consent_model'] ) ) ); ?></div>
+                </div>
+                <?php if ( $is_applied ) : ?>
+                <div class="slos-preset-check">
+                    <span class="dashicons dashicons-yes-alt"></span>
+                </div>
+                <?php else : ?>
+                <div class="slos-preset-arrow">
+                    <span class="dashicons dashicons-arrow-right-alt2"></span>
+                </div>
+                <?php endif; ?>
+            </button>
+            <?php endforeach; ?>
+        </div>
+
+        <div class="slos-preset-hint" style="margin-top: 12px; padding: 12px 16px; background: rgba(59, 130, 246, 0.08); border-radius: 8px; border-left: 3px solid var(--slos-accent);">
+            <p style="margin: 0; font-size: 13px; color: var(--slos-text-muted); line-height: 1.5;">
+                <strong style="color: var(--slos-text-primary);"><?php esc_html_e( 'Tip:', 'shahi-legalflowsuite' ); ?></strong>
+                <?php esc_html_e( 'Presets automatically configure countries, consent mode, banner template, and required legal documents. You can customize rules after applying a preset.', 'shahi-legalflowsuite' ); ?>
+            </p>
+        </div>
+    </div>
+
+    <!-- Active Rules Divider -->
+    <?php if ( ! empty( $geo_rules ) ) : ?>
+    <div style="margin: 32px 0; border-bottom: 1px solid var(--slos-border); padding-bottom: 8px;">
+        <h3 style="margin: 0; font-size: 15px; font-weight: 600; color: var(--slos-text-primary);">
+            <?php esc_html_e( 'Active Rules', 'shahi-legalflowsuite' ); ?>
+        </h3>
+    </div>
+    <?php endif; ?>
+
     <?php if ( empty( $geo_rules ) ) : ?>
     <!-- Empty State - No Rules Configured -->
     <div class="slos-card" style="margin-top: 24px; padding: 60px 40px; text-align: center;">
@@ -919,6 +1140,73 @@ jQuery(document).ready(function($) {
     const API_BASE = '<?php echo esc_js( rest_url( 'slos/v1' ) ); ?>';
     const NONCE = '<?php echo esc_js( wp_create_nonce( 'wp_rest' ) ); ?>';
     let editingRuleId = null;
+    
+    // Preset button click handler
+    $('.slos-preset-btn').on('click', function(e) {
+        e.preventDefault();
+        
+        const $btn = $(this);
+        const presetKey = $btn.data('preset');
+        const isApplied = $btn.data('applied') === 1 || $btn.data('applied') === '1';
+        
+        // Visual feedback
+        $btn.prop('disabled', true).css('opacity', '0.6');
+        
+        // Apply preset via REST API
+        $.ajax({
+            url: API_BASE + '/geo/presets/' + presetKey + '/apply',
+            method: 'POST',
+            headers: {
+                'X-WP-Nonce': NONCE
+            },
+            success: function(response) {
+                if (response.success) {
+                    // Show success message
+                    showNotification('success', response.data.message || '<?php echo esc_js( __( 'Preset applied successfully!', 'shahi-legalflowsuite' ) ); ?>');
+                    
+                    // Update button state
+                    $btn.addClass('slos-preset-active')
+                        .data('applied', 1)
+                        .attr('data-applied', '1');
+                    
+                    // Replace arrow with checkmark
+                    $btn.find('.slos-preset-arrow').replaceWith(
+                        '<div class="slos-preset-check"><span class="dashicons dashicons-yes-alt"></span></div>'
+                    );
+                    
+                    // Reload page after 1.5s to show new rule
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    showNotification('error', response.data?.message || '<?php echo esc_js( __( 'Failed to apply preset.', 'shahi-legalflowsuite' ) ); ?>');
+                    $btn.prop('disabled', false).css('opacity', '1');
+                }
+            },
+            error: function(xhr) {
+                const message = xhr.responseJSON?.message || '<?php echo esc_js( __( 'Error applying preset. Please try again.', 'shahi-legalflowsuite' ) ); ?>';
+                showNotification('error', message);
+                $btn.prop('disabled', false).css('opacity', '1');
+            }
+        });
+    });
+    
+    // Notification helper
+    function showNotification(type, message) {
+        const $notification = $('<div class="slos-notification slos-notification-' + type + '">' + message + '</div>');
+        $('body').append($notification);
+        
+        setTimeout(function() {
+            $notification.addClass('show');
+        }, 10);
+        
+        setTimeout(function() {
+            $notification.removeClass('show');
+            setTimeout(function() {
+                $notification.remove();
+            }, 300);
+        }, 3000);
+    }
     
     // Open add modal
     $('#add-rule, #add-first-rule').on('click', function() {

@@ -104,20 +104,24 @@ class Consent_Service extends Base_Service {
 
 		// Prepare consent data
 		$consent_data = array(
-			'user_id'      => $data['user_id'] ?? get_current_user_id(),
-			'type'         => $this->sanitize_string( $data['type'] ),
-			'status'       => $this->sanitize_string( $data['status'] ),
-			'ip_hash'      => $this->hash_ip( $data['ip_address'] ?? $this->get_user_ip() ),
-			'geo_rule_id'  => ! empty( $data['geo_rule_id'] ) ? absint( $data['geo_rule_id'] ) : null,
-			'country_code' => ! empty( $data['country_code'] ) ? strtoupper( $this->sanitize_string( $data['country_code'] ) ) : '',
-			'region'       => ! empty( $data['region'] ) ? strtoupper( $this->sanitize_string( $data['region'] ) ) : '',
-			'metadata'     => $this->prepare_metadata( array(
-				'user_agent'    => $data['user_agent'] ?? $this->get_user_agent(),
-				'consent_text'  => $data['consent_text'] ?? '',
-				'source'        => $data['source'] ?? 'website',
-				'language'      => $data['language'] ?? get_locale(),
-				'timestamp'     => current_time( 'mysql' ),
+			'user_id'        => $data['user_id'] ?? get_current_user_id(),
+			'type'           => $this->sanitize_string( $data['type'] ),
+			'status'         => $this->sanitize_string( $data['status'] ),
+			'ip_hash'        => $this->hash_ip( $data['ip_address'] ?? $this->get_user_ip() ),
+			'geo_rule_id'    => ! empty( $data['geo_rule_id'] ) ? absint( $data['geo_rule_id'] ) : null,
+			'country_code'   => ! empty( $data['country_code'] ) ? strtoupper( $this->sanitize_string( $data['country_code'] ) ) : '',
+			'region'         => ! empty( $data['region'] ) ? strtoupper( $this->sanitize_string( $data['region'] ) ) : '',
+			'metadata'       => $this->prepare_metadata( array(
+				'user_agent'      => $data['user_agent'] ?? $this->get_user_agent(),
+				'consent_text'    => $data['consent_text'] ?? '',
+				'source'          => $data['source'] ?? 'website',
+				'language'        => $data['language'] ?? get_locale(),
+				'timestamp'       => current_time( 'mysql' ),
+				'banner_version'  => $data['banner_version'] ?? $this->get_banner_version(),
+				'policy_version'  => $data['policy_version'] ?? $this->get_policy_version(),
 			) ),
+			'banner_version' => $data['banner_version'] ?? $this->get_banner_version(),
+			'policy_version' => $data['policy_version'] ?? $this->get_policy_version(),
 		);
 
 		// Merge additional metadata if provided
@@ -1040,4 +1044,338 @@ class Consent_Service extends Base_Service {
 
 		return isset( $stats['by_type'] ) ? $stats['by_type'] : array();
 	}
+
+	/**
+	 * Get current banner version
+	 *
+	 * Generates a version string based on banner configuration hash.
+	 *
+	 * @since 3.1.1
+	 * @return string Banner version string
+	 */
+	private function get_banner_version(): string {
+		$settings = get_option( 'shahi_legalflowsuite_settings', array() );
+		$banner_config = isset( $settings['consent_banner'] ) ? $settings['consent_banner'] : array();
+
+		if ( empty( $banner_config ) ) {
+			return 'default-1.0';
+		}
+
+		// Create version based on config hash
+		$config_string = wp_json_encode( $banner_config );
+		$version_hash = substr( md5( $config_string ), 0, 8 );
+
+		return 'banner-' . $version_hash;
+	}
+
+	/**
+	 * Get current policy version
+	 *
+	 * Gets version from legal pages or plugin version as fallback.
+	 *
+	 * @since 3.1.1
+	 * @return string Policy version string
+	 */
+	private function get_policy_version(): string {
+		$legal_pages = get_option( 'slos_legal_pages', array() );
+
+		// Try to get version from privacy policy metadata
+		if ( isset( $legal_pages['privacy_policy']['version'] ) ) {
+			return $legal_pages['privacy_policy']['version'];
+		}
+
+		// Fallback to plugin version
+		if ( defined( 'SHAHI_LEGALFLOWSUITE_VERSION' ) ) {
+			return 'v' . SHAHI_LEGALFLOWSUITE_VERSION;
+		}
+
+		return 'v1.0';
+	}
+
+	/**
+	 * Get time-series consent data
+	 *
+	 * Returns aggregated consent metrics over time for reporting and charts.
+	 * Supports daily, weekly, and monthly intervals.
+	 *
+	 * @since 3.1.1
+	 * @param array $args {
+	 *     Query arguments.
+	 *
+	 *     @type string $interval     Time interval: 'daily', 'weekly', 'monthly'. Default 'daily'.
+	 *     @type int    $days_back    Number of days to look back. Default 30.
+	 *     @type string $group_by     Grouping: 'status', 'type', 'region', 'none'. Default 'none'.
+	 *     @type string $status       Filter by status. Optional.
+	 *     @type string $type         Filter by type. Optional.
+	 *     @type string $country_code Filter by country. Optional.
+	 * }
+	 * @return array Time-series data with labels and values
+	 */
+	public function get_time_series( array $args = array() ): array {
+		global $wpdb;
+		$table = $wpdb->prefix . 'slos_consent';
+
+		// Parse arguments with defaults
+		$defaults = array(
+			'interval'     => 'daily',
+			'days_back'    => 30,
+			'group_by'     => 'none',
+			'status'       => '',
+			'type'         => '',
+			'country_code' => '',
+		);
+		$args = wp_parse_args( $args, $defaults );
+
+		// Validate interval
+		$allowed_intervals = array( 'daily', 'weekly', 'monthly' );
+		if ( ! in_array( $args['interval'], $allowed_intervals, true ) ) {
+			$args['interval'] = 'daily';
+		}
+
+		// Validate group_by
+		$allowed_groups = array( 'none', 'status', 'type', 'region' );
+		if ( ! in_array( $args['group_by'], $allowed_groups, true ) ) {
+			$args['group_by'] = 'none';
+		}
+
+		// Build date format based on interval
+		$date_format_map = array(
+			'daily'   => '%Y-%m-%d',
+			'weekly'  => '%Y-W%u',  // Year-Week number
+			'monthly' => '%Y-%m',
+		);
+		$date_format = $date_format_map[ $args['interval'] ];
+
+		// Calculate start date
+		$start_date = gmdate( 'Y-m-d H:i:s', strtotime( "-{$args['days_back']} days" ) );
+
+		// Build WHERE clause
+		$where_clauses = array( "created_at >= %s" );
+		$where_values  = array( $start_date );
+
+		if ( ! empty( $args['status'] ) ) {
+			$where_clauses[] = 'status = %s';
+			$where_values[]  = $args['status'];
+		}
+
+		if ( ! empty( $args['type'] ) ) {
+			$where_clauses[] = 'type = %s';
+			$where_values[]  = $args['type'];
+		}
+
+		if ( ! empty( $args['country_code'] ) ) {
+			$where_clauses[] = 'country_code = %s';
+			$where_values[]  = $args['country_code'];
+		}
+
+		$where_sql = implode( ' AND ', $where_clauses );
+
+		// Build SELECT and GROUP BY based on grouping
+		if ( 'none' === $args['group_by'] ) {
+			// Simple time-series aggregation
+			$query = "
+				SELECT 
+					DATE_FORMAT(created_at, '{$date_format}') as period,
+					COUNT(*) as count
+				FROM {$table}
+				WHERE {$where_sql}
+				GROUP BY period
+				ORDER BY period ASC
+			";
+		} else {
+			// Grouped time-series
+			$group_column = 'region' === $args['group_by'] ? 'country_code' : $args['group_by'];
+			$query = "
+				SELECT 
+					DATE_FORMAT(created_at, '{$date_format}') as period,
+					{$group_column} as group_value,
+					COUNT(*) as count
+				FROM {$table}
+				WHERE {$where_sql}
+				GROUP BY period, group_value
+				ORDER BY period ASC, group_value ASC
+			";
+		}
+
+		// Execute query
+		$results = $wpdb->get_results( $wpdb->prepare( $query, ...$where_values ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+
+		// Process results into chart-friendly format
+		if ( 'none' === $args['group_by'] ) {
+			return $this->format_simple_time_series( $results, $args );
+		} else {
+			return $this->format_grouped_time_series( $results, $args );
+		}
+	}
+
+	/**
+	 * Format simple time-series data
+	 *
+	 * @since 3.1.1
+	 * @param array $results Query results.
+	 * @param array $args    Query arguments.
+	 * @return array Formatted data
+	 */
+	private function format_simple_time_series( array $results, array $args ): array {
+		$labels = array();
+		$values = array();
+
+		foreach ( $results as $row ) {
+			$labels[] = $this->format_period_label( $row['period'], $args['interval'] );
+			$values[] = (int) $row['count'];
+		}
+
+		return array(
+			'labels'   => $labels,
+			'datasets' => array(
+				array(
+					'label' => __( 'Consents', 'shahi-legalflowsuite' ),
+					'data'  => $values,
+				),
+			),
+			'metadata' => array(
+				'interval'   => $args['interval'],
+				'days_back'  => $args['days_back'],
+				'total'      => array_sum( $values ),
+				'average'    => ! empty( $values ) ? round( array_sum( $values ) / count( $values ), 1 ) : 0,
+			),
+		);
+	}
+
+	/**
+	 * Format grouped time-series data
+	 *
+	 * @since 3.1.1
+	 * @param array $results Query results.
+	 * @param array $args    Query arguments.
+	 * @return array Formatted data
+	 */
+	private function format_grouped_time_series( array $results, array $args ): array {
+		$labels = array();
+		$groups = array();
+
+		// Collect all periods and groups
+		foreach ( $results as $row ) {
+			$period = $row['period'];
+			$group  = $row['group_value'] ?? __( 'Unknown', 'shahi-legalflowsuite' );
+			$count  = (int) $row['count'];
+
+			if ( ! in_array( $period, $labels, true ) ) {
+				$labels[] = $period;
+			}
+
+			if ( ! isset( $groups[ $group ] ) ) {
+				$groups[ $group ] = array();
+			}
+
+			$groups[ $group ][ $period ] = $count;
+		}
+
+		// Format labels
+		$formatted_labels = array_map(
+			function( $period ) use ( $args ) {
+				return $this->format_period_label( $period, $args['interval'] );
+			},
+			$labels
+		);
+
+		// Build datasets
+		$datasets = array();
+		foreach ( $groups as $group => $data ) {
+			$values = array();
+			foreach ( $labels as $period ) {
+				$values[] = $data[ $period ] ?? 0;
+			}
+
+			$datasets[] = array(
+				'label' => $this->format_group_label( $group, $args['group_by'] ),
+				'data'  => $values,
+			);
+		}
+
+		// Calculate metadata
+		$total_values = array();
+		foreach ( $datasets as $dataset ) {
+			$total_values[] = array_sum( $dataset['data'] );
+		}
+
+		return array(
+			'labels'   => $formatted_labels,
+			'datasets' => $datasets,
+			'metadata' => array(
+				'interval'  => $args['interval'],
+				'days_back' => $args['days_back'],
+				'group_by'  => $args['group_by'],
+				'total'     => array_sum( $total_values ),
+				'groups'    => count( $groups ),
+			),
+		);
+	}
+
+	/**
+	 * Format period label for display
+	 *
+	 * @since 3.1.1
+	 * @param string $period   Period string from query.
+	 * @param string $interval Interval type.
+	 * @return string Formatted label
+	 */
+	private function format_period_label( string $period, string $interval ): string {
+		if ( 'daily' === $interval ) {
+			return gmdate( 'M j', strtotime( $period ) );
+		}
+
+		if ( 'weekly' === $interval ) {
+			// Format: 2024-W01 -> Week 1, 2024
+			preg_match( '/(\d{4})-W(\d{2})/', $period, $matches );
+			if ( $matches ) {
+				return sprintf( __( 'Week %d, %d', 'shahi-legalflowsuite' ), (int) $matches[2], (int) $matches[1] );
+			}
+		}
+
+		if ( 'monthly' === $interval ) {
+			return gmdate( 'M Y', strtotime( $period . '-01' ) );
+		}
+
+		return $period;
+	}
+
+	/**
+	 * Format group label for display
+	 *
+	 * @since 3.1.1
+	 * @param string $group    Group value.
+	 * @param string $group_by Group type.
+	 * @return string Formatted label
+	 */
+	private function format_group_label( string $group, string $group_by ): string {
+		if ( 'status' === $group_by ) {
+			$status_labels = array(
+				'accepted'  => __( 'Accepted', 'shahi-legalflowsuite' ),
+				'granted'   => __( 'Granted', 'shahi-legalflowsuite' ),
+				'rejected'  => __( 'Rejected', 'shahi-legalflowsuite' ),
+				'withdrawn' => __( 'Withdrawn', 'shahi-legalflowsuite' ),
+			);
+			return $status_labels[ $group ] ?? ucfirst( $group );
+		}
+
+		if ( 'type' === $group_by ) {
+			$type_labels = array(
+				'necessary'    => __( 'Necessary', 'shahi-legalflowsuite' ),
+				'functional'   => __( 'Functional', 'shahi-legalflowsuite' ),
+				'analytics'    => __( 'Analytics', 'shahi-legalflowsuite' ),
+				'marketing'    => __( 'Marketing', 'shahi-legalflowsuite' ),
+				'preferences'  => __( 'Preferences', 'shahi-legalflowsuite' ),
+			);
+			return $type_labels[ $group ] ?? ucfirst( $group );
+		}
+
+		if ( 'region' === $group_by ) {
+			// Return country code as-is (could enhance with country names later)
+			return strtoupper( $group );
+		}
+
+		return $group;
+	}
 }
+

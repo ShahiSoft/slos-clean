@@ -13,11 +13,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// Get scanner service instance
+$scanner_service = new \ShahiLegalFlowSuite\Services\Cookie_Scanner_Service();
+
 // Get detected cookies from database
 $detected_cookies = get_option( 'slos_detected_cookies', array() );
 
 // Get last scan time
 $last_scan = get_option( 'slos_cookie_scan_time', null );
+
+// Get scan metadata
+$scan_meta = $scanner_service->get_scan_metadata();
 
 // Calculate statistics from actual data
 $cookie_stats = array(
@@ -53,6 +59,84 @@ foreach ( $detected_cookies as $cookie ) {
     align-items: center;
     justify-content: space-between;
     margin-bottom: 24px;
+}
+
+/* Last Scan Summary Card */
+.slos-scan-summary-card {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 20px;
+    align-items: center;
+}
+
+.slos-scan-summary-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--slos-primary), var(--slos-accent));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+}
+
+.slos-scan-summary-content {
+    display: grid;
+    gap: 4px;
+}
+
+.slos-scan-summary-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--slos-text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.slos-scan-summary-stats {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.slos-scan-summary-stat {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--slos-text-secondary);
+}
+
+.slos-scan-summary-stat .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: var(--slos-primary);
+}
+
+.slos-scan-summary-stat strong {
+    color: var(--slos-text-primary);
+    font-weight: 600;
+}
+
+.slos-scan-summary-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.slos-scan-summary-card.no-scan {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(239, 68, 68, 0.1) 100%);
+    border-color: rgba(245, 158, 11, 0.2);
+}
+
+.slos-scan-summary-card.no-scan .slos-scan-summary-icon {
+    background: linear-gradient(135deg, var(--slos-warning), var(--slos-error));
 }
 
 .slos-scanner-stats {
@@ -423,6 +507,82 @@ foreach ( $detected_cookies as $cookie ) {
     <p class="slos-section-description">
         <?php esc_html_e( 'Automatically detect and categorize cookies used on your website. GDPR and ePrivacy Directive require disclosure of all cookies in your consent banner. Uncategorized cookies need immediate attention—assign them to Necessary, Analytics, Marketing, or Preferences categories.', 'shahi-legalflowsuite' ); ?>
     </p>
+
+    <!-- Last Scan Summary Card -->
+    <?php if ( ! empty( $scan_meta ) && isset( $scan_meta['completed_at'] ) ) : ?>
+        <?php
+        $duration_text  = isset( $scan_meta['duration'] ) ? sprintf( __( '%d seconds', 'shahi-legalflowsuite' ), $scan_meta['duration'] ) : __( 'N/A', 'shahi-legalflowsuite' );
+        $pages_scanned  = $scan_meta['pages_scanned'] ?? 1;
+        $cookies_found  = $scan_meta['cookies_found'] ?? count( $detected_cookies );
+        $scan_type_text = ucfirst( $scan_meta['scan_type'] ?? 'manual' );
+        $coverage_text  = ucfirst( $scan_meta['coverage_level'] ?? 'basic' );
+        $scan_date      = date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), strtotime( $scan_meta['completed_at'] ) );
+        ?>
+        <div class="slos-scan-summary-card">
+            <div class="slos-scan-summary-icon">
+                <span class="dashicons dashicons-yes-alt"></span>
+            </div>
+            <div class="slos-scan-summary-content">
+                <div class="slos-scan-summary-title">
+                    <?php esc_html_e( 'Last Scan Summary', 'shahi-legalflowsuite' ); ?>
+                </div>
+                <div class="slos-scan-summary-stats">
+                    <span class="slos-scan-summary-stat">
+                        <span class="dashicons dashicons-calendar-alt"></span>
+                        <strong><?php echo esc_html( $scan_date ); ?></strong>
+                    </span>
+                    <span class="slos-scan-summary-stat">
+                        <span class="dashicons dashicons-admin-settings"></span>
+                        <?php echo esc_html( sprintf( __( '%d cookies found', 'shahi-legalflowsuite' ), $cookies_found ) ); ?>
+                    </span>
+                    <span class="slos-scan-summary-stat">
+                        <span class="dashicons dashicons-admin-page"></span>
+                        <?php echo esc_html( sprintf( _n( '%d page scanned', '%d pages scanned', $pages_scanned, 'shahi-legalflowsuite' ), $pages_scanned ) ); ?>
+                    </span>
+                    <span class="slos-scan-summary-stat">
+                        <span class="dashicons dashicons-clock"></span>
+                        <?php echo esc_html( $duration_text ); ?>
+                    </span>
+                    <span class="slos-scan-summary-stat">
+                        <span class="dashicons dashicons-networking"></span>
+                        <?php echo esc_html( sprintf( __( 'Type: %s', 'shahi-legalflowsuite' ), $scan_type_text ) ); ?>
+                    </span>
+                    <span class="slos-scan-summary-stat">
+                        <span class="dashicons dashicons-chart-area"></span>
+                        <?php echo esc_html( sprintf( __( 'Coverage: %s', 'shahi-legalflowsuite' ), $coverage_text ) ); ?>
+                    </span>
+                </div>
+            </div>
+            <div class="slos-scan-summary-actions">
+                <button class="slos-btn slos-btn-primary" id="rescan-now">
+                    <span class="dashicons dashicons-update"></span>
+                    <?php esc_html_e( 'Rescan Now', 'shahi-legalflowsuite' ); ?>
+                </button>
+            </div>
+        </div>
+    <?php else : ?>
+        <div class="slos-scan-summary-card no-scan">
+            <div class="slos-scan-summary-icon">
+                <span class="dashicons dashicons-warning"></span>
+            </div>
+            <div class="slos-scan-summary-content">
+                <div class="slos-scan-summary-title">
+                    <?php esc_html_e( 'No Scan Completed Yet', 'shahi-legalflowsuite' ); ?>
+                </div>
+                <div class="slos-scan-summary-stats">
+                    <span class="slos-scan-summary-stat">
+                        <?php esc_html_e( 'Run your first cookie scan to detect cookies used on your website. This helps ensure GDPR compliance by identifying all tracking technologies.', 'shahi-legalflowsuite' ); ?>
+                    </span>
+                </div>
+            </div>
+            <div class="slos-scan-summary-actions">
+                <button class="slos-btn slos-btn-primary" id="rescan-now">
+                    <span class="dashicons dashicons-search"></span>
+                    <?php esc_html_e( 'Run First Scan', 'shahi-legalflowsuite' ); ?>
+                </button>
+            </div>
+        </div>
+    <?php endif; ?>
     
     <!-- Header -->
     <div class="slos-scanner-header">
@@ -644,20 +804,40 @@ jQuery(document).ready(function($) {
         $('#visible-count').text(visible + ' <?php echo esc_js( __( 'of', 'shahi-legalflowsuite' ) ); ?> ' + total);
     }
 
-    // Run scan
-    $('#run-scan').on('click', function() {
+    // Run scan (works for both #run-scan and #rescan-now buttons)
+    $('#run-scan, #rescan-now').on('click', function() {
         const $btn = $(this);
         const $progress = $('#scan-progress');
         
         $btn.prop('disabled', true);
         $progress.addClass('active');
         
+        // Enhanced progress tracking with stages
         let progress = 0;
+        let stage = 0;
+        const stages = [
+            { end: 20, label: '<?php echo esc_js( __( 'Initializing scan...', 'shahi-legalflowsuite' ) ); ?>' },
+            { end: 40, label: '<?php echo esc_js( __( 'Requesting website...', 'shahi-legalflowsuite' ) ); ?>' },
+            { end: 60, label: '<?php echo esc_js( __( 'Detecting cookies...', 'shahi-legalflowsuite' ) ); ?>' },
+            { end: 80, label: '<?php echo esc_js( __( 'Classifying cookies...', 'shahi-legalflowsuite' ) ); ?>' },
+            { end: 95, label: '<?php echo esc_js( __( 'Finalizing...', 'shahi-legalflowsuite' ) ); ?>' }
+        ];
+        
         const progressInterval = setInterval(function() {
-            progress += Math.random() * 10;
-            if (progress > 90) progress = 90;
+            const currentStage = stages[stage];
+            progress += Math.random() * 3;
+            
+            if (progress >= currentStage.end && stage < stages.length - 1) {
+                stage++;
+                $progress.find('span').text(stages[stage].label);
+            }
+            
+            if (progress > 95) progress = 95;
             $progress.find('.slos-progress-bar-fill').css('width', progress + '%');
-        }, 200);
+        }, 150);
+        
+        // Update initial stage message
+        $progress.find('span').text(stages[0].label);
         
         $.ajax({
             url: API_BASE + '/cookies/scan',
@@ -668,6 +848,7 @@ jQuery(document).ready(function($) {
             success: function(response) {
                 clearInterval(progressInterval);
                 $progress.find('.slos-progress-bar-fill').css('width', '100%');
+                $progress.find('span').text('<?php echo esc_js( __( 'Scan complete!', 'shahi-legalflowsuite' ) ); ?>');
                 
                 setTimeout(function() {
                     $progress.removeClass('active');
@@ -675,7 +856,10 @@ jQuery(document).ready(function($) {
                     
                     const cookies = response.data || response || [];
                     if (cookies.length > 0) {
-                        alert('<?php echo esc_js( __( 'Scan complete!', 'shahi-legalflowsuite' ) ); ?> ' + cookies.length + ' <?php echo esc_js( __( 'cookies found.', 'shahi-legalflowsuite' ) ); ?>');
+                        // Show success message with cookie count
+                        const message = '<?php echo esc_js( __( 'Scan complete!', 'shahi-legalflowsuite' ) ); ?> ' + 
+                                      cookies.length + ' <?php echo esc_js( __( 'cookies found.', 'shahi-legalflowsuite' ) ); ?>';
+                        alert(message);
                         location.reload();
                     } else {
                         alert('<?php echo esc_js( __( 'Scan complete. No new cookies detected.', 'shahi-legalflowsuite' ) ); ?>');

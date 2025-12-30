@@ -21,9 +21,14 @@ foreach ( $stats['by_type'] as $type => $count ) {
 }
 
 // Prepare grade class
-$grade_class = 'grade-' . strtolower( $stats['grade'] );
+$grade_class = $stats['grade_class'] ?? 'grade-' . strtolower( $stats['grade'] );
 $circumference = 2 * M_PI * 65;
 $offset = $circumference - ( $stats['compliance_score'] / 100 ) * $circumference;
+
+// Get dimension labels and icons
+require_once SHAHI_LEGALFLOWSUITE_PATH . 'config/compliance-constants.php';
+$dimension_labels = slos_get_dimension_labels();
+$dimension_icons = slos_get_dimension_icons();
 ?>
 
 <!-- Section Description -->
@@ -89,17 +94,17 @@ $offset = $circumference - ( $stats['compliance_score'] / 100 ) * $circumference
 <div class="slos-two-col-grid">
     <!-- Main Column -->
     <div class="slos-main-column">
-        <!-- Compliance Health Score -->
+        <!-- Compliance Readiness Score -->
         <div class="slos-card">
             <div class="slos-card-header">
                 <h3>
                     <span class="dashicons dashicons-heart"></span>
-                    <?php esc_html_e( 'Compliance Health Score', 'shahi-legalflowsuite' ); ?>
+                    <?php esc_html_e( 'Compliance Readiness Score', 'shahi-legalflowsuite' ); ?>
                 </h3>
                 <span class="badge"><?php esc_html_e( 'Live', 'shahi-legalflowsuite' ); ?></span>
             </div>
             <p class="slos-widget-description">
-                <?php esc_html_e( 'Your overall privacy compliance rating based on consent acceptance rates. Score of 90%+ is excellent (Grade A). The gauge shows real-time compliance with GDPR, CCPA, LGPD, and ePrivacy requirements.', 'shahi-legalflowsuite' ); ?>
+                <?php esc_html_e( 'Multi-dimensional compliance configuration assessment. This score reflects how well your site is configured for privacy compliance across six key dimensions: cookies, legal docs, geo rules, consent data, scan freshness, and banner configuration.', 'shahi-legalflowsuite' ); ?>
             </p>
             <div class="slos-card-body">
                 <div class="slos-score-section">
@@ -123,7 +128,7 @@ $offset = $circumference - ( $stats['compliance_score'] / 100 ) * $circumference
                             </div>
                             <div class="slos-grade-text">
                                 <div class="grade-title"><?php echo esc_html( $stats['grade_text'] ); ?></div>
-                                <div class="grade-subtitle"><?php esc_html_e( 'Privacy Compliance Status', 'shahi-legalflowsuite' ); ?></div>
+                                <div class="grade-subtitle"><?php esc_html_e( 'Readiness Assessment', 'shahi-legalflowsuite' ); ?></div>
                             </div>
                         </div>
 
@@ -147,6 +152,99 @@ $offset = $circumference - ( $stats['compliance_score'] / 100 ) * $circumference
                         </div>
                     </div>
                 </div>
+
+                <!-- Dimension Breakdown -->
+                <div class="slos-dimensions-grid" style="margin-top: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
+                    <?php if ( ! empty( $stats['dimensions'] ) ) : ?>
+                        <?php foreach ( $stats['dimensions'] as $dimension_key => $dimension_data ) : 
+                            $dimension_score = $dimension_data['score'];
+                            $dimension_label = $dimension_labels[ $dimension_key ] ?? $dimension_key;
+                            $dimension_icon = $dimension_icons[ $dimension_key ] ?? 'dashicons-admin-generic';
+                            
+                            // Color based on score
+                            if ( $dimension_score >= 80 ) {
+                                $dim_color = 'var(--slos-success)';
+                            } elseif ( $dimension_score >= 60 ) {
+                                $dim_color = 'var(--slos-warning)';
+                            } else {
+                                $dim_color = 'var(--slos-error)';
+                            }
+                        ?>
+                            <div class="slos-dimension-card" style="padding: 12px; background: var(--slos-bg-input); border-radius: 8px; text-align: center;">
+                                <div style="font-size: 11px; color: var(--slos-text-muted); margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                                    <span class="dashicons <?php echo esc_attr( $dimension_icon ); ?>" style="font-size: 12px;"></span>
+                                    <?php echo esc_html( $dimension_label ); ?>
+                                </div>
+                                <div style="font-size: 24px; font-weight: 700; color: <?php echo esc_attr( $dim_color ); ?>;">
+                                    <?php echo esc_html( $dimension_score ); ?>%
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Disclaimer -->
+                <div class="slos-disclaimer" style="margin-top: 20px; padding: 12px; background: rgba(255, 193, 7, 0.1); border-left: 3px solid var(--slos-warning); border-radius: 4px;">
+                    <div style="display: flex; align-items: flex-start; gap: 8px;">
+                        <span class="dashicons dashicons-info" style="color: var(--slos-warning); margin-top: 2px;"></span>
+                        <div style="flex: 1; font-size: 13px; color: var(--slos-text-secondary);">
+                            <strong><?php esc_html_e( 'Note:', 'shahi-legalflowsuite' ); ?></strong>
+                            <?php esc_html_e( 'This Readiness Score reflects configuration completeness and is not a guarantee of legal compliance. Please consult with a legal professional for compliance advice.', 'shahi-legalflowsuite' ); ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Consent Trends Chart -->
+        <div class="slos-card" style="margin-top: 24px;">
+            <div class="slos-card-header">
+                <h3>
+                    <span class="dashicons dashicons-chart-line"></span>
+                    <?php esc_html_e( 'Consent Trends', 'shahi-legalflowsuite' ); ?>
+                </h3>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <select id="slos-chart-range" class="slos-select-small" style="font-size: 13px;">
+                        <option value="7"><?php esc_html_e( 'Last 7 Days', 'shahi-legalflowsuite' ); ?></option>
+                        <option value="30" selected><?php esc_html_e( 'Last 30 Days', 'shahi-legalflowsuite' ); ?></option>
+                        <option value="90"><?php esc_html_e( 'Last 90 Days', 'shahi-legalflowsuite' ); ?></option>
+                    </select>
+                    <select id="slos-chart-groupby" class="slos-select-small" style="font-size: 13px;">
+                        <option value="none"><?php esc_html_e( 'All Consents', 'shahi-legalflowsuite' ); ?></option>
+                        <option value="status"><?php esc_html_e( 'By Status', 'shahi-legalflowsuite' ); ?></option>
+                        <option value="type"><?php esc_html_e( 'By Type', 'shahi-legalflowsuite' ); ?></option>
+                        <option value="region"><?php esc_html_e( 'By Region', 'shahi-legalflowsuite' ); ?></option>
+                    </select>
+                </div>
+            </div>
+            <p class="slos-widget-description">
+                <?php esc_html_e( 'Time-series visualization of consent activity. Track daily patterns, compare acceptance rates, and analyze trends across different time periods and consent categories.', 'shahi-legalflowsuite' ); ?>
+            </p>
+            <div class="slos-card-body">
+                <?php if ( $stats['total'] > 0 ) : ?>
+                    <div style="position: relative; height: 320px; margin-bottom: 16px;">
+                        <canvas id="slos-consent-trends-chart"></canvas>
+                    </div>
+                    <div class="slos-chart-meta" style="display: flex; gap: 24px; padding: 12px; background: var(--slos-bg-input); border-radius: 6px; font-size: 13px;">
+                        <div>
+                            <span style="color: var(--slos-text-muted);"><?php esc_html_e( 'Total:', 'shahi-legalflowsuite' ); ?></span>
+                            <strong id="slos-chart-total"><?php echo esc_html( number_format( $stats['total'] ) ); ?></strong>
+                        </div>
+                        <div>
+                            <span style="color: var(--slos-text-muted);"><?php esc_html_e( 'Avg/Day:', 'shahi-legalflowsuite' ); ?></span>
+                            <strong id="slos-chart-average">-</strong>
+                        </div>
+                        <div>
+                            <span style="color: var(--slos-text-muted);"><?php esc_html_e( 'Interval:', 'shahi-legalflowsuite' ); ?></span>
+                            <strong id="slos-chart-interval"><?php esc_html_e( 'Daily', 'shahi-legalflowsuite' ); ?></strong>
+                        </div>
+                    </div>
+                <?php else : ?>
+                    <div class="slos-empty-state">
+                        <span class="dashicons dashicons-chart-line"></span>
+                        <p><?php esc_html_e( 'No consent data available yet. Chart will populate as users interact with your consent banner.', 'shahi-legalflowsuite' ); ?></p>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -258,14 +356,19 @@ $offset = $circumference - ( $stats['compliance_score'] / 100 ) * $circumference
                         <span><?php esc_html_e( 'Customize Banner', 'shahi-legalflowsuite' ); ?></span>
                         <span class="dashicons dashicons-arrow-right-alt2 arrow"></span>
                     </a>
-                    <button class="slos-quick-action" id="slos-export-csv" type="button">
+                    <button class="slos-quick-action" id="slos-export-csv-btn" type="button">
                         <span class="dashicons dashicons-download"></span>
-                        <span><?php esc_html_e( 'Export to CSV', 'shahi-legalflowsuite' ); ?></span>
+                        <span><?php esc_html_e( 'Export CSV', 'shahi-legalflowsuite' ); ?></span>
                         <span class="dashicons dashicons-arrow-right-alt2 arrow"></span>
                     </button>
-                    <button class="slos-quick-action" id="slos-send-report" type="button">
-                        <span class="dashicons dashicons-email-alt"></span>
-                        <span><?php esc_html_e( 'Email Report', 'shahi-legalflowsuite' ); ?></span>
+                    <button class="slos-quick-action" id="slos-export-pdf-btn" type="button">
+                        <span class="dashicons dashicons-media-document"></span>
+                        <span><?php esc_html_e( 'Export PDF Report', 'shahi-legalflowsuite' ); ?></span>
+                        <span class="dashicons dashicons-arrow-right-alt2 arrow"></span>
+                    </button>
+                    <button class="slos-quick-action" id="slos-export-audit-btn" type="button">
+                        <span class="dashicons dashicons-list-view"></span>
+                        <span><?php esc_html_e( 'Export Audit Log', 'shahi-legalflowsuite' ); ?></span>
                         <span class="dashicons dashicons-arrow-right-alt2 arrow"></span>
                     </button>
                 </div>
@@ -382,6 +485,116 @@ $offset = $circumference - ( $stats['compliance_score'] / 100 ) * $circumference
                 <?php endif; ?>
             </div>
         </div>
+
+        <!-- Legal Documents Status -->
+        <?php if ( ! empty( $stats['legal_docs'] ) ) : 
+            $legal_docs = $stats['legal_docs'];
+            $doc_percentage = $legal_docs['percentage'] ?? 0;
+            
+            // Determine status color
+            if ( $doc_percentage >= 100 ) {
+                $doc_status_color = 'var(--slos-success)';
+                $doc_status_text = __( 'Complete', 'shahi-legalflowsuite' );
+            } elseif ( $doc_percentage >= 66 ) {
+                $doc_status_color = 'var(--slos-warning)';
+                $doc_status_text = __( 'Partial', 'shahi-legalflowsuite' );
+            } else {
+                $doc_status_color = 'var(--slos-error)';
+                $doc_status_text = __( 'Incomplete', 'shahi-legalflowsuite' );
+            }
+        ?>
+        <div class="slos-card" style="margin-top: 24px;">
+            <div class="slos-card-header">
+                <h3>
+                    <span class="dashicons dashicons-media-document"></span>
+                    <?php esc_html_e( 'Legal Documents', 'shahi-legalflowsuite' ); ?>
+                </h3>
+                <a href="<?php echo esc_url( admin_url( 'admin.php?page=slos-document-hub' ) ); ?>" class="slos-btn-ghost" style="font-size: 12px;">
+                    <?php esc_html_e( 'Manage', 'shahi-legalflowsuite' ); ?>
+                    <span class="dashicons dashicons-arrow-right-alt2"></span>
+                </a>
+            </div>
+            <p class="slos-widget-description">
+                <?php esc_html_e( 'Status of core compliance documents. Keep Cookie Policy, Privacy Policy, and Accessibility Statement published and up-to-date with current site data.', 'shahi-legalflowsuite' ); ?>
+            </p>
+            <div class="slos-card-body">
+                <!-- Progress Summary -->
+                <div style="margin-bottom: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="font-size: 13px; color: var(--slos-text-secondary);">
+                            <?php 
+                            printf( 
+                                esc_html__( '%d of %d documents published', 'shahi-legalflowsuite' ),
+                                $legal_docs['published'] ?? 0,
+                                $legal_docs['total'] ?? 3
+                            );
+                            ?>
+                        </span>
+                        <span style="font-weight: 600; color: <?php echo esc_attr( $doc_status_color ); ?>;">
+                            <?php echo esc_html( $doc_status_text ); ?>
+                        </span>
+                    </div>
+                    <div class="slos-breakdown-bar">
+                        <div class="slos-breakdown-fill success" style="width: <?php echo esc_attr( $doc_percentage ); ?>%; background: <?php echo esc_attr( $doc_status_color ); ?>;"></div>
+                    </div>
+                </div>
+
+                <!-- Document List -->
+                <div class="slos-document-list">
+                    <?php if ( ! empty( $legal_docs['docs'] ) ) : ?>
+                        <?php foreach ( $legal_docs['docs'] as $doc_id => $doc ) : 
+                            $is_published = ( $doc['status'] ?? '' ) === 'published';
+                            $is_stale = $doc['stale'] ?? false;
+                            
+                            if ( $is_published && ! $is_stale ) {
+                                $icon_class = 'dashicons-yes-alt';
+                                $icon_color = 'var(--slos-success)';
+                                $status_label = __( 'Published', 'shahi-legalflowsuite' );
+                            } elseif ( $is_published && $is_stale ) {
+                                $icon_class = 'dashicons-warning';
+                                $icon_color = 'var(--slos-warning)';
+                                $status_label = __( 'Needs Update', 'shahi-legalflowsuite' );
+                            } else {
+                                $icon_class = 'dashicons-minus';
+                                $icon_color = 'var(--slos-text-muted)';
+                                $status_label = __( 'Not Generated', 'shahi-legalflowsuite' );
+                            }
+                        ?>
+                        <div class="slos-document-item" style="display: flex; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--slos-border);">
+                            <span class="dashicons <?php echo esc_attr( $icon_class ); ?>" style="color: <?php echo esc_attr( $icon_color ); ?>; margin-right: 8px;"></span>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 500; font-size: 13px;"><?php echo esc_html( $doc['title'] ?? ucfirst( str_replace( '-', ' ', $doc_id ) ) ); ?></div>
+                                <div style="font-size: 11px; color: var(--slos-text-muted);"><?php echo esc_html( $status_label ); ?></div>
+                            </div>
+                            <?php if ( $is_stale ) : ?>
+                                <span class="badge" style="background: var(--slos-warning); color: white; font-size: 10px; padding: 2px 6px; border-radius: 4px;">
+                                    <?php esc_html_e( 'Outdated', 'shahi-legalflowsuite' ); ?>
+                                </span>
+                            <?php endif; ?>
+                        </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Stale Warning -->
+                <?php if ( ! empty( $legal_docs['stale'] ) ) : ?>
+                    <div class="slos-disclaimer" style="margin-top: 12px; padding: 10px; background: rgba(255, 193, 7, 0.1); border-left: 3px solid var(--slos-warning); border-radius: 4px;">
+                        <div style="display: flex; align-items: flex-start; gap: 6px;">
+                            <span class="dashicons dashicons-info" style="color: var(--slos-warning); margin-top: 1px; font-size: 14px;"></span>
+                            <div style="flex: 1; font-size: 12px; color: var(--slos-text-secondary);">
+                                <?php 
+                                printf(
+                                    esc_html__( '%d document(s) need regeneration because cookie data has changed.', 'shahi-legalflowsuite' ),
+                                    $legal_docs['stale']
+                                );
+                                ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php endif; ?>
 
         <!-- Alerts -->
         <div class="slos-card" style="margin-top: 24px;">
@@ -515,6 +728,20 @@ jQuery(document).ready(function($) {
                 html += '<div style="padding: 12px; background: var(--slos-bg-input); border-radius: 8px;"><div style="font-size: 11px; color: var(--slos-text-muted); text-transform: uppercase;"><?php echo esc_js( __( 'Type', 'shahi-legalflowsuite' ) ); ?></div><div style="color: var(--slos-text-primary);">' + (data.type || 'N/A') + '</div></div>';
                 html += '<div style="padding: 12px; background: var(--slos-bg-input); border-radius: 8px;"><div style="font-size: 11px; color: var(--slos-text-muted); text-transform: uppercase;"><?php echo esc_js( __( 'Status', 'shahi-legalflowsuite' ) ); ?></div><div style="color: var(--slos-text-primary);">' + (data.status || 'N/A') + '</div></div>';
                 html += '<div style="padding: 12px; background: var(--slos-bg-input); border-radius: 8px;"><div style="font-size: 11px; color: var(--slos-text-muted); text-transform: uppercase;"><?php echo esc_js( __( 'Created', 'shahi-legalflowsuite' ) ); ?></div><div style="color: var(--slos-text-primary);">' + (data.created_at || 'N/A') + '</div></div>';
+                
+                // Version information (added in 3.1.1)
+                if (data.banner_version || data.policy_version) {
+                    html += '<div style="grid-column: 1 / -1; padding: 12px; background: var(--slos-bg-input); border-radius: 8px; border-left: 3px solid var(--slos-primary);">';
+                    html += '<div style="font-size: 11px; color: var(--slos-text-muted); text-transform: uppercase; margin-bottom: 8px;"><?php echo esc_js( __( 'Version Information', 'shahi-legalflowsuite' ) ); ?></div>';
+                    if (data.banner_version) {
+                        html += '<div style="display: flex; justify-content: space-between; margin-bottom: 4px;"><span style="color: var(--slos-text-muted);"><?php echo esc_js( __( 'Banner Version:', 'shahi-legalflowsuite' ) ); ?></span><span style="color: var(--slos-text-primary); font-family: monospace;">' + data.banner_version + '</span></div>';
+                    }
+                    if (data.policy_version) {
+                        html += '<div style="display: flex; justify-content: space-between;"><span style="color: var(--slos-text-muted);"><?php echo esc_js( __( 'Policy Version:', 'shahi-legalflowsuite' ) ); ?></span><span style="color: var(--slos-text-primary); font-family: monospace;">' + data.policy_version + '</span></div>';
+                    }
+                    html += '</div>';
+                }
+                
                 html += '</div>';
                 $('#consent-detail-content').html(html);
             },

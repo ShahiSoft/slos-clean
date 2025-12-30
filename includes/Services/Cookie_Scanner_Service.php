@@ -26,6 +26,12 @@ class Cookie_Scanner_Service extends Base_Service {
     private $option_key_inventory = 'slos_cookie_inventory';
 
     /**
+     * Option key for scan metadata
+     * @var string
+     */
+    private $option_key_scan_meta = 'slos_cookie_scan_meta';
+
+    /**
      * Get supported cookie categories
      *
      * @return array
@@ -206,6 +212,88 @@ class Cookie_Scanner_Service extends Base_Service {
             return 'marketing';
         }
         return 'functional';
+    }
+
+    /**
+     * Start a new scan and record metadata
+     *
+     * @since 3.1.1
+     * @param string $scan_type Type of scan: 'manual', 'auto', 'scheduled'
+     * @param array  $options   Scan options (e.g., pages_to_scan, coverage_level)
+     * @return bool Success
+     */
+    public function start_scan( string $scan_type = 'manual', array $options = array() ): bool {
+        $metadata = array(
+            'scan_type'      => $scan_type,
+            'started_at'     => current_time( 'mysql' ),
+            'completed_at'   => null,
+            'status'         => 'in_progress',
+            'pages_scanned'  => isset( $options['pages_to_scan'] ) ? count( $options['pages_to_scan'] ) : 1,
+            'coverage_level' => $options['coverage_level'] ?? 'basic',
+            'options'        => $options,
+        );
+
+        return update_option( $this->option_key_scan_meta, $metadata, false );
+    }
+
+    /**
+     * Complete a scan and update metadata
+     *
+     * @since 3.1.1
+     * @param array $results Scan results with cookie counts, errors, etc.
+     * @return bool Success
+     */
+    public function complete_scan( array $results = array() ): bool {
+        $metadata = $this->get_scan_metadata();
+
+        if ( empty( $metadata ) ) {
+            return false;
+        }
+
+        $started_at   = isset( $metadata['started_at'] ) ? strtotime( $metadata['started_at'] ) : time();
+        $completed_at = current_time( 'mysql' );
+        $duration     = time() - $started_at;
+
+        $metadata['completed_at']   = $completed_at;
+        $metadata['status']         = 'completed';
+        $metadata['duration']       = $duration;
+        $metadata['cookies_found']  = $results['cookies_found'] ?? 0;
+        $metadata['errors']         = $results['errors'] ?? array();
+        $metadata['results']        = $results;
+
+        // Update scan time option for backward compatibility
+        update_option( 'slos_cookie_scan_time', $completed_at, false );
+
+        $success = update_option( $this->option_key_scan_meta, $metadata, false );
+
+        // Fire action for document staleness detection
+        if ( $success ) {
+            $cookies = get_option( 'slos_cookie_inventory', array() );
+            do_action( 'slos_cookies_updated', $cookies );
+        }
+
+        return $success;
+    }
+
+    /**
+     * Get scan metadata
+     *
+     * @since 3.1.1
+     * @return array Scan metadata or empty array if none
+     */
+    public function get_scan_metadata(): array {
+        $metadata = get_option( $this->option_key_scan_meta, array() );
+        return is_array( $metadata ) ? $metadata : array();
+    }
+
+    /**
+     * Clear scan metadata
+     *
+     * @since 3.1.1
+     * @return bool Success
+     */
+    public function clear_scan_metadata(): bool {
+        return delete_option( $this->option_key_scan_meta );
     }
 
     /**

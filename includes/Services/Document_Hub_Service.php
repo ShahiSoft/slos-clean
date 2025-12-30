@@ -45,11 +45,15 @@ class Document_Hub_Service
      * Constructor
      *
      * @since 3.0.1
+     * @updated 3.1.1 - Added cookie staleness hook
      */
     public function __construct()
     {
         $this->doc_repository = new Legal_Doc_Repository();
         $this->profile_repository = Company_Profile_Repository::get_instance();
+
+        // Hook into cookie updates to mark documents stale
+        add_action( 'slos_cookies_updated', array( $this, 'mark_cookie_dependent_docs_stale' ) );
     }
 
     /**
@@ -414,4 +418,63 @@ class Document_Hub_Service
         
         return $outdated ? $outdated : array();
     }
-}
+
+    /**
+     * Mark cookie-dependent documents as stale
+     *
+     * Called when cookie data is updated via 'slos_cookies_updated' action.
+     *
+     * @since 3.1.1
+     * @param array $cookies Updated cookie data.
+     * @return void
+     */
+    public function mark_cookie_dependent_docs_stale( $cookies = array() ) {
+        // Documents that depend on cookie data
+        $cookie_dependent = array( 'cookie-policy', 'privacy-policy' );
+
+        foreach ( $cookie_dependent as $doc_type ) {
+            $doc = $this->doc_repository->find_by_type( $doc_type );
+            if ( $doc && $doc->id ) {
+                update_post_meta( $doc->id, '_slos_needs_regeneration', true );
+                update_post_meta( $doc->id, '_slos_stale_reason', 'cookie_data_changed' );
+                update_post_meta( $doc->id, '_slos_stale_timestamp', time() );
+            }
+        }
+    }
+
+    /**
+     * Clear staleness flag for a document
+     *
+     * Call after regenerating a document to mark it as fresh.
+     *
+     * @since 3.1.1
+     * @param int $doc_id Document post ID.
+     * @return void
+     */
+    public function clear_staleness( $doc_id ) {
+        delete_post_meta( $doc_id, '_slos_needs_regeneration' );
+        delete_post_meta( $doc_id, '_slos_stale_reason' );
+        delete_post_meta( $doc_id, '_slos_stale_timestamp' );
+    }
+
+    /**
+     * Check if document is stale
+     *
+     * @since 3.1.1
+     * @param int $doc_id Document post ID.
+     * @return bool True if document needs regeneration
+     */
+    public function is_document_stale( $doc_id ) {
+        return (bool) get_post_meta( $doc_id, '_slos_needs_regeneration', true );
+    }
+
+    /**
+     * Get staleness reason for document
+     *
+     * @since 3.1.1
+     * @param int $doc_id Document post ID.
+     * @return string Staleness reason or empty string
+     */
+    public function get_staleness_reason( $doc_id ) {
+        return get_post_meta( $doc_id, '_slos_stale_reason', true );
+    }

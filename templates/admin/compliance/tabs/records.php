@@ -745,7 +745,16 @@ jQuery(document).ready(function($) {
             headers: { 'X-WP-Nonce': NONCE },
             success: function(response) {
                 const data = response.data || response;
-                alert('<?php echo esc_js( __( 'Consent #', 'shahi-legalflowsuite' ) ); ?>' + id + '\n<?php echo esc_js( __( 'Type:', 'shahi-legalflowsuite' ) ); ?> ' + (data.type || 'N/A') + '\n<?php echo esc_js( __( 'Status:', 'shahi-legalflowsuite' ) ); ?> ' + (data.status || 'N/A'));
+                let details = '<?php echo esc_js( __( 'Consent #', 'shahi-legalflowsuite' ) ); ?>' + id + '\n';
+                details += '<?php echo esc_js( __( 'Type:', 'shahi-legalflowsuite' ) ); ?> ' + (data.type || 'N/A') + '\n';
+                details += '<?php echo esc_js( __( 'Status:', 'shahi-legalflowsuite' ) ); ?> ' + (data.status || 'N/A') + '\n';
+                if (data.banner_version) {
+                    details += '<?php echo esc_js( __( 'Banner Version:', 'shahi-legalflowsuite' ) ); ?> ' + data.banner_version + '\n';
+                }
+                if (data.policy_version) {
+                    details += '<?php echo esc_js( __( 'Policy Version:', 'shahi-legalflowsuite' ) ); ?> ' + data.policy_version + '\n';
+                }
+                alert(details);
             },
             error: function() {
                 alert('<?php echo esc_js( __( 'Error loading consent details.', 'shahi-legalflowsuite' ) ); ?>');

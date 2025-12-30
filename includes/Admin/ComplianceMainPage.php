@@ -16,6 +16,7 @@ namespace ShahiLegalFlowSuite\Admin;
 
 use ShahiLegalFlowSuite\Services\Consent_Service;
 use ShahiLegalFlowSuite\Services\Consent_Audit_Logger;
+use ShahiLegalFlowSuite\Services\Compliance_Score_Calculator;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -59,14 +60,22 @@ class ComplianceMainPage {
 	private $settings;
 
 	/**
+	 * Score calculator instance
+	 *
+	 * @var Compliance_Score_Calculator
+	 */
+	private $score_calculator;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 3.0.2
 	 */
 	public function __construct() {
-		$this->consent_service = new Consent_Service();
-		$this->audit_logger    = new Consent_Audit_Logger();
-		$this->settings        = new Settings();
+		$this->consent_service  = new Consent_Service();
+		$this->audit_logger     = new Consent_Audit_Logger();
+		$this->settings         = new Settings();
+		$this->score_calculator = new Compliance_Score_Calculator();
 	}
 
 	/**
@@ -108,6 +117,8 @@ class ComplianceMainPage {
 	 * Get dashboard statistics
 	 *
 	 * @since 3.0.3
+	 * @updated 3.1.0 - Added multi-dimensional readiness score
+	 * @updated 3.1.1 - Added legal documents status
 	 * @return array Dashboard stats
 	 */
 	private function get_dashboard_stats() {
@@ -119,39 +130,86 @@ class ComplianceMainPage {
 		$withdrawn = $stats['by_status']['withdrawn'] ?? 0;
 		$pending   = $stats['by_status']['pending'] ?? 0;
 
-		// Calculate compliance score (simplified)
-		$compliance_score = $total > 0 ? round( ( $accepted / $total ) * 100 ) : 100;
+		// Calculate multi-dimensional readiness score
+		$readiness = $this->score_calculator->calculate();
 
-		// Determine grade
-		if ( $compliance_score >= 90 ) {
-			$grade      = 'A';
-			$grade_text = __( 'Excellent', 'shahi-legalflowsuite' );
-		} elseif ( $compliance_score >= 80 ) {
-			$grade      = 'B';
-			$grade_text = __( 'Good', 'shahi-legalflowsuite' );
-		} elseif ( $compliance_score >= 70 ) {
-			$grade      = 'C';
-			$grade_text = __( 'Fair', 'shahi-legalflowsuite' );
-		} elseif ( $compliance_score >= 60 ) {
-			$grade      = 'D';
-			$grade_text = __( 'Needs Work', 'shahi-legalflowsuite' );
-		} else {
-			$grade      = 'F';
-			$grade_text = __( 'Critical', 'shahi-legalflowsuite' );
-		}
+		// Calculate legacy acceptance-based score for backward compatibility
+		$legacy_acceptance_score = $total > 0 ? round( ( $accepted / $total ) * 100 ) : 100;
+
+		// Get legal documents status
+		$legal_docs_stats = $this->get_legal_docs_stats();
 
 		return array(
+			// Consent activity metrics
 			'total'            => $total,
 			'accepted'         => $accepted,
 			'rejected'         => $rejected,
 			'withdrawn'        => $withdrawn,
 			'pending'          => $pending,
 			'by_type'          => $stats['by_type'] ?? array(),
-			'compliance_score' => $compliance_score,
-			'grade'            => $grade,
-			'grade_text'       => $grade_text,
 			'acceptance_rate'  => $total > 0 ? round( ( $accepted / $total ) * 100, 1 ) : 0,
 			'rejection_rate'   => $total > 0 ? round( ( $rejected / $total ) * 100, 1 ) : 0,
+
+			// Multi-dimensional readiness score (new)
+			'compliance_score' => $readiness['score'],
+			'grade'            => $readiness['grade'],
+			'grade_class'      => $readiness['grade_class'],
+			'grade_text'       => $readiness['label'],
+			'dimensions'       => $readiness['dimensions'],
+
+			// Legacy metrics
+			'legacy_acceptance_score' => $legacy_acceptance_score,
+
+			// Legal documents status (3.1.1)
+			'legal_docs' => $legal_docs_stats,
+		);
+	}
+
+	/**
+	 * Get legal documents statistics
+	 *
+	 * @since 3.1.1
+	 * @return array Legal documents stats
+	 */
+	private function get_legal_docs_stats() {
+		$hub_service = new \ShahiLegalFlowSuite\Services\Document_Hub_Service();
+		$cards = $hub_service->get_document_cards();
+
+		// Focus on core compliance documents
+		$required_docs = array( 'cookie-policy', 'privacy-policy', 'accessibility-statement' );
+		$total = count( $required_docs );
+		$published = 0;
+		$stale = 0;
+
+		$docs_status = array();
+
+		foreach ( $cards as $card ) {
+			if ( in_array( $card['id'], $required_docs, true ) ) {
+				$is_published = ( $card['status'] ?? 'not_generated' ) === 'published';
+				$is_stale = ! empty( $card['doc_id'] ) && get_post_meta( $card['doc_id'], '_slos_needs_regeneration', true );
+
+				if ( $is_published ) {
+					$published++;
+				}
+				if ( $is_stale ) {
+					$stale++;
+				}
+
+				$docs_status[ $card['id'] ] = array(
+					'status' => $card['status'],
+					'stale'  => $is_stale,
+					'title'  => $card['title'],
+				);
+			}
+		}
+
+		return array(
+			'total'      => $total,
+			'published'  => $published,
+			'stale'      => $stale,
+			'pending'    => $total - $published,
+			'percentage' => $total > 0 ? round( ( $published / $total ) * 100 ) : 0,
+			'docs'       => $docs_status,
 		);
 	}
 

@@ -271,6 +271,10 @@ class Placeholder_Mapper extends Base_Service {
 		$map['year']         = wp_date( 'Y' );
 		$map['current_date'] = wp_date( get_option( 'date_format' ) );
 
+		// Merge cookie placeholders
+		$cookie_placeholders = $this->get_cookie_placeholders();
+		$map = array_merge( $map, $cookie_placeholders );
+
 		/**
 		 * Filter placeholder map before use
 		 *
@@ -279,6 +283,148 @@ class Placeholder_Mapper extends Base_Service {
 		 * @param array $profile Company profile data.
 		 */
 		return apply_filters( 'slos_placeholder_map', $map, $profile );
+	}
+
+	/**
+	 * Get cookie data placeholders
+	 *
+	 * Provides dynamic cookie data from the cookie scanner for document templates.
+	 *
+	 * @since 3.1.1
+	 * @return array Cookie placeholder map
+	 */
+	protected function get_cookie_placeholders(): array {
+		// Get detected cookies from scanner
+		$inventory = get_option( 'slos_cookie_inventory', array() );
+		
+		// Fallback to legacy format if needed
+		if ( empty( $inventory ) ) {
+			$legacy_cookies = get_option( 'slos_detected_cookies', array() );
+			$inventory = $this->convert_legacy_cookies( $legacy_cookies );
+		}
+
+		// Get scan metadata
+		$scan_meta = get_option( 'slos_cookie_scan_meta', array() );
+		$last_scan_time = ! empty( $scan_meta['completed_at'] ) 
+			? wp_date( get_option( 'date_format' ), $scan_meta['completed_at'] )
+			: __( 'Never', 'shahi-legalflowsuite' );
+
+		// Group cookies by category
+		$by_category = array(
+			'necessary'  => array(),
+			'analytics'  => array(),
+			'marketing'  => array(),
+			'functional' => array(),
+			'uncategorized' => array(),
+		);
+
+		foreach ( $inventory as $cookie ) {
+			$category = $cookie['category'] ?? 'uncategorized';
+			if ( ! isset( $by_category[ $category ] ) ) {
+				$by_category[ $category ] = array();
+			}
+			$by_category[ $category ][] = $cookie;
+		}
+
+		// Build placeholder map
+		$placeholders = array(
+			'cookie_count'           => count( $inventory ),
+			'cookie_categories'      => implode( ', ', array_filter( array_keys( $by_category ), function( $cat ) use ( $by_category ) {
+				return ! empty( $by_category[ $cat ] );
+			} ) ),
+			'last_cookie_scan_date'  => $last_scan_time,
+			
+			// Category-specific HTML tables
+			'cookie_table_all'        => $this->render_cookie_table( $inventory, __( 'All Cookies', 'shahi-legalflowsuite' ) ),
+			'cookie_table_necessary'  => $this->render_cookie_table( $by_category['necessary'], __( 'Strictly Necessary Cookies', 'shahi-legalflowsuite' ) ),
+			'cookie_table_analytics'  => $this->render_cookie_table( $by_category['analytics'], __( 'Analytics Cookies', 'shahi-legalflowsuite' ) ),
+			'cookie_table_marketing'  => $this->render_cookie_table( $by_category['marketing'], __( 'Marketing Cookies', 'shahi-legalflowsuite' ) ),
+			'cookie_table_functional' => $this->render_cookie_table( $by_category['functional'], __( 'Functional Cookies', 'shahi-legalflowsuite' ) ),
+
+			// Category counts
+			'cookie_count_necessary'   => count( $by_category['necessary'] ),
+			'cookie_count_analytics'   => count( $by_category['analytics'] ),
+			'cookie_count_marketing'   => count( $by_category['marketing'] ),
+			'cookie_count_functional'  => count( $by_category['functional'] ),
+			'cookie_count_uncategorized' => count( $by_category['uncategorized'] ),
+		);
+
+		return $placeholders;
+	}
+
+	/**
+	 * Render cookie table HTML
+	 *
+	 * Generates a formatted HTML table for a list of cookies.
+	 *
+	 * @since 3.1.1
+	 * @param array  $cookies Cookie data array.
+	 * @param string $title   Optional table title.
+	 * @return string HTML table
+	 */
+	protected function render_cookie_table( array $cookies, string $title = '' ): string {
+		if ( empty( $cookies ) ) {
+			return '<p><em>' . esc_html__( 'No cookies in this category.', 'shahi-legalflowsuite' ) . '</em></p>';
+		}
+
+		$html = '';
+		
+		if ( ! empty( $title ) ) {
+			$html .= '<h3>' . esc_html( $title ) . '</h3>';
+		}
+
+		$html .= '<table class="slos-cookie-table" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">';
+		$html .= '<thead>';
+		$html .= '<tr style="background: #f5f5f5; border-bottom: 2px solid #ddd;">';
+		$html .= '<th style="padding: 12px; text-align: left; font-weight: 600;">' . esc_html__( 'Cookie Name', 'shahi-legalflowsuite' ) . '</th>';
+		$html .= '<th style="padding: 12px; text-align: left; font-weight: 600;">' . esc_html__( 'Purpose', 'shahi-legalflowsuite' ) . '</th>';
+		$html .= '<th style="padding: 12px; text-align: left; font-weight: 600;">' . esc_html__( 'Provider', 'shahi-legalflowsuite' ) . '</th>';
+		$html .= '<th style="padding: 12px; text-align: left; font-weight: 600;">' . esc_html__( 'Duration', 'shahi-legalflowsuite' ) . '</th>';
+		$html .= '</tr>';
+		$html .= '</thead>';
+		$html .= '<tbody>';
+
+		foreach ( $cookies as $cookie ) {
+			$name     = $cookie['name'] ?? __( 'Unknown', 'shahi-legalflowsuite' );
+			$purpose  = $cookie['purpose'] ?? $cookie['description'] ?? __( 'Not specified', 'shahi-legalflowsuite' );
+			$provider = $cookie['provider'] ?? $cookie['domain'] ?? __( 'Unknown', 'shahi-legalflowsuite' );
+			$duration = $cookie['duration'] ?? $cookie['expiry'] ?? __( 'Session', 'shahi-legalflowsuite' );
+
+			$html .= '<tr style="border-bottom: 1px solid #eee;">';
+			$html .= '<td style="padding: 10px;"><strong>' . esc_html( $name ) . '</strong></td>';
+			$html .= '<td style="padding: 10px;">' . esc_html( $purpose ) . '</td>';
+			$html .= '<td style="padding: 10px;">' . esc_html( $provider ) . '</td>';
+			$html .= '<td style="padding: 10px;">' . esc_html( $duration ) . '</td>';
+			$html .= '</tr>';
+		}
+
+		$html .= '</tbody>';
+		$html .= '</table>';
+
+		return $html;
+	}
+
+	/**
+	 * Convert legacy cookie format to inventory format
+	 *
+	 * @since 3.1.1
+	 * @param array $legacy_cookies Legacy cookies array.
+	 * @return array Inventory format
+	 */
+	protected function convert_legacy_cookies( array $legacy_cookies ): array {
+		$inventory = array();
+
+		foreach ( $legacy_cookies as $cookie_name => $data ) {
+			$inventory[] = array(
+				'name'     => $cookie_name,
+				'category' => $data['category'] ?? 'uncategorized',
+				'purpose'  => $data['purpose'] ?? '',
+				'provider' => $data['domain'] ?? '',
+				'duration' => $data['expiry'] ?? 'Session',
+			);
+		}
+
+		return $inventory;
 	}
 
 	/**

@@ -265,6 +265,58 @@ function enqueue_slos_cookie_scanner()
 add_action('wp_enqueue_scripts', 'enqueue_slos_cookie_scanner', 110);
 
 /**
+ * Enqueue Compliance Dashboard Assets (Admin)
+ */
+function enqueue_slos_compliance_dashboard_assets( $hook ) {
+	// Only load on compliance page
+	if ( 'toplevel_page_slos-compliance' !== $hook && 'shahi-legalflowsuite_page_slos-compliance' !== $hook ) {
+		return;
+	}
+
+	// Enqueue Chart.js for time-series visualization
+	wp_enqueue_script(
+		'chartjs',
+		'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js',
+		array(),
+		'4.4.1',
+		true
+	);
+
+	// Enqueue compliance charts script
+	wp_enqueue_script(
+		'slos-compliance-charts',
+		SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/js/compliance-charts.js',
+		array( 'jquery', 'chartjs' ),
+		SHAHI_LEGALFLOWSUITE_VERSION,
+		true
+	);
+
+	// Localize script with export endpoints
+	wp_localize_script(
+		'slos-compliance-charts',
+		'slosExport',
+		array(
+			'ajaxUrl'       => admin_url( 'admin-ajax.php' ),
+			'nonce'         => wp_create_nonce( 'slos_export_consents' ),
+			'exportCsvUrl'  => admin_url( 'admin-ajax.php?action=slos_export_consents_csv&nonce=' . wp_create_nonce( 'slos_export_consents' ) ),
+			'exportPdfUrl'  => admin_url( 'admin-ajax.php?action=slos_export_consents_pdf&nonce=' . wp_create_nonce( 'slos_export_consents' ) ),
+			'exportAuditUrl' => admin_url( 'admin-ajax.php?action=slos_export_audit_logs_csv&nonce=' . wp_create_nonce( 'slos_export_consents' ) ),
+		)
+	);
+}
+add_action( 'admin_enqueue_scripts', 'enqueue_slos_compliance_dashboard_assets' );
+
+/**
+ * Initialize Compliance Export AJAX Handlers
+ */
+function init_slos_compliance_export_ajax() {
+	require_once SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'includes/Ajax/Compliance_Export_Ajax.php';
+	$export_handler = new ShahiLegalFlowSuite\Ajax\Compliance_Export_Ajax();
+	$export_handler->register_actions();
+}
+add_action( 'admin_init', 'init_slos_compliance_export_ajax' );
+
+/**
  * Initialize Script Blocker
  */
 function init_slos_script_blocker()
