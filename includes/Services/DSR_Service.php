@@ -689,7 +689,7 @@ class DSR_Service extends Base_Service {
 	 * @param string $field Field name for error reporting
 	 * @return bool True if valid
 	 */
-	private function validate_email( string $email, string $field ): bool {
+	protected function validate_email( string $email, string $field = 'email' ): bool {
 		if ( empty( $email ) ) {
 			$this->add_validation_error( $field, 'Email is required' );
 			return false;
@@ -707,17 +707,110 @@ class DSR_Service extends Base_Service {
 	 * Validate value in allowed list
 	 *
 	 * @since 3.0.1
-	 * @param string $value Value to check
+	 * @param mixed  $value Value to check
 	 * @param array  $allowed Allowed values
-	 * @param string $field Field name for error reporting
+	 * @param string $field_name Field name for error reporting
 	 * @return bool True if valid
 	 */
-	private function validate_in_list( string $value, array $allowed, string $field ): bool {
+	protected function validate_in_list( $value, array $allowed, string $field_name ): bool {
 		if ( ! in_array( $value, $allowed, true ) ) {
-			$this->add_validation_error( $field, sprintf( 'Invalid %s. Allowed: %s', $field, implode( ', ', $allowed ) ) );
+			$this->add_validation_error( $field_name, sprintf( 'Invalid %s. Allowed: %s', $field_name, implode( ', ', $allowed ) ) );
 			return false;
 		}
 
 		return true;
+	}
+
+	/**
+	 * Get DSR statistics for Ops Dashboard
+	 *
+	 * Returns summary stats: open requests, SLA compliance, queue breakdown.
+	 *
+	 * @since 3.1.1 (Phase 2.1)
+	 * @return array DSR statistics
+	 */
+	public function get_ops_statistics(): array {
+		global $wpdb;
+		$table = $this->repository->get_full_table_name();
+
+		// Open requests (non-terminal statuses)
+		$open_statuses = array( 'pending_verification', 'verified', 'in_progress', 'on_hold' );
+		$placeholders = implode( ', ', array_fill( 0, count( $open_statuses ), '%s' ) );
+
+		//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$open_count = $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM {$table} WHERE status IN ({$placeholders})",
+			...$open_statuses
+		) );
+
+		// Total requests
+		$total_count = $wpdb->get_var( "SELECT COUNT(*) FROM {$table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+		// Completed requests
+		$completed_count = $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM {$table} WHERE status = %s",
+			'completed'
+		) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+		// SLA compliance: % of completed requests that met deadline
+		// Note: Table uses completed_date and due_date, not completed_at and sla_deadline
+		//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$sla_compliant = $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM {$table} WHERE status = %s AND completed_date IS NOT NULL AND completed_date <= due_date",
+			'completed'
+		) );
+
+		$sla_compliance_rate = $completed_count > 0 
+			? round( ( $sla_compliant / $completed_count ) * 100, 1 ) 
+			: 100;
+
+		// Queue breakdown by status
+		//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$queue_breakdown = $wpdb->get_results(
+			"SELECT status, COUNT(*) as count FROM {$table} GROUP BY status",
+			ARRAY_A
+		);
+
+		$by_status = array();
+		foreach ( $queue_breakdown as $row ) {
+			$by_status[ $row['status'] ] = (int) $row['count'];
+		}
+
+		// Requests by type (last 30 days)
+		// Note: Table uses request_date, not submitted_at
+		//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$by_type = $wpdb->get_results( $wpdb->prepare(
+			"SELECT request_type, COUNT(*) as count FROM {$table} 
+			WHERE request_date >= %s 
+			GROUP BY request_type",
+			gmdate( 'Y-m-d H:i:s', strtotime( '-30 days' ) )
+		), ARRAY_A );
+
+		$type_breakdown = array();
+		foreach ( $by_type as $row ) {
+			$type_breakdown[ $row['request_type'] ] = (int) $row['count'];
+		}
+
+		// Overdue requests (past SLA deadline, not completed/rejected)
+		// Note: Table uses due_date, not sla_deadline
+		//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$overdue = $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM {$table} 
+			WHERE status NOT IN (%s, %s) 
+			AND due_date < %s",
+			'completed',
+			'rejected',
+			current_time( 'mysql' )
+		) );
+
+		return array(
+			'open_requests'       => (int) $open_count,
+			'total_requests'      => (int) $total_count,
+			'completed_requests'  => (int) $completed_count,
+			'overdue_requests'    => (int) $overdue,
+			'sla_compliance_rate' => (float) $sla_compliance_rate,
+			'by_status'           => $by_status,
+			'by_type'             => $type_breakdown,
+		);
 	}
 }

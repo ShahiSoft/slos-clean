@@ -1377,5 +1377,71 @@ class Consent_Service extends Base_Service {
 
 		return $group;
 	}
-}
 
+	/**
+	 * Get consents by email address
+	 *
+	 * Retrieves all consent records associated with a given email address.
+	 * This includes consents for registered users (via user_id lookup) and
+	 * guest consents (via metadata email field).
+	 *
+	 * Used for DSR requests to display user's consent history.
+	 *
+	 * @since 3.1.1 Phase 2.2
+	 * @param string $email Email address to search for
+	 * @param array  $args  Optional query arguments
+	 * @return array {
+	 *     Array of consent records with enriched data
+	 *     
+	 *     @type int      $id           Consent ID
+	 *     @type int|null $user_id      WordPress user ID (null for guests)
+	 *     @type string   $type         Consent type
+	 *     @type string   $status       Consent status
+	 *     @type string   $created_at   Creation timestamp
+	 *     @type array    $metadata     Decoded metadata
+	 *     @type string   $user_name    User display name (if registered user)
+	 *     @type string   $user_email   User email
+	 * }
+	 */
+	public function get_by_email( string $email, array $args = array() ): array {
+		$this->clear_errors();
+
+		// Validate email
+		$email = sanitize_email( $email );
+		if ( empty( $email ) || ! is_email( $email ) ) {
+			$this->add_error( 'invalid_email', __( 'Invalid email address provided.', 'shahi-legalflowsuite' ) );
+			return array();
+		}
+
+		// Fetch raw consent records
+		$consents = $this->repository->find_by_email( $email, $args );
+
+		// Enrich with user data and decode metadata
+		$enriched = array();
+		foreach ( $consents as $consent ) {
+			$record = $consent;
+
+			// Decode metadata
+			if ( isset( $record['metadata'] ) && is_string( $record['metadata'] ) ) {
+				$record['metadata'] = json_decode( $record['metadata'], true ) ?: array();
+			}
+
+			// Add user data if user_id exists
+			if ( ! empty( $record['user_id'] ) ) {
+				$user = get_userdata( $record['user_id'] );
+				if ( $user ) {
+					$record['user_name'] = $user->display_name;
+					$record['user_email'] = $user->user_email;
+				}
+			} else {
+				// Guest consent - get email from metadata
+				$record['user_name'] = __( 'Guest', 'shahi-legalflowsuite' );
+				$record['user_email'] = $record['metadata']['email'] ?? $email;
+			}
+
+			$enriched[] = $record;
+		}
+
+		return $enriched;
+	}
+}

@@ -55,11 +55,12 @@ class ShortcodeManager {
 	private function init_shortcodes() {
 		// Register shortcode instances (keeping only module-related shortcodes for legal operations)
         $this->shortcodes = array(
-            'module'       => new ModuleShortcode(),
-            'dsr_form'     => new DSR_Form_Shortcode(),
-            'dsr_verify'   => new DSR_Verify_Shortcode(),
-            'dsr_status'   => new DSR_Status_Shortcode(),
-            'cookie_table' => new Cookie_Table_Shortcode(),
+            'module'            => new ModuleShortcode(),
+            'dsr_form'          => new DSR_Form_Shortcode(),
+            'dsr_verify'        => new DSR_Verify_Shortcode(),
+            'dsr_status'        => new DSR_Status_Shortcode(),
+            'cookie_table'      => new Cookie_Table_Shortcode(),
+            'embed_placeholder' => new Embed_Placeholder_Shortcode(),
         );
 		// Consent shortcodes are now registered by the ConsentManagement module
 	}

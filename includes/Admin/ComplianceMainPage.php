@@ -76,6 +76,46 @@ class ComplianceMainPage {
 		$this->audit_logger     = new Consent_Audit_Logger();
 		$this->settings         = new Settings();
 		$this->score_calculator = new Compliance_Score_Calculator();
+
+		// Enqueue config sync assets on compliance page
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_config_sync_assets' ) );
+	}
+
+	/**
+	 * Enqueue config sync assets
+	 *
+	 * @since 3.1.1
+	 * @param string $hook Current admin page hook
+	 * @return void
+	 */
+	public function enqueue_config_sync_assets( $hook ) {
+		// Only load on compliance page with config tab
+		if ( 'toplevel_page_slos-compliance' !== $hook ) {
+			return;
+		}
+
+		$current_tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'dashboard';
+		
+		if ( 'config' !== $current_tab ) {
+			return;
+		}
+
+		// Enqueue CSS
+		wp_enqueue_style(
+			'slos-config-sync',
+			SHAHI_LEGALFLOWSUITE_URL . 'assets/css/config-sync.css',
+			array(),
+			SHAHI_LEGALFLOWSUITE_VERSION
+		);
+
+		// Enqueue JavaScript
+		wp_enqueue_script(
+			'slos-config-sync',
+			SHAHI_LEGALFLOWSUITE_URL . 'assets/js/config-sync.js',
+			array( 'jquery', 'wp-api' ),
+			SHAHI_LEGALFLOWSUITE_VERSION,
+			true
+		);
 	}
 
 	/**
@@ -109,6 +149,10 @@ class ComplianceMainPage {
 			'geo'       => array(
 				'label' => __( 'Geo Rules', 'shahi-legalflowsuite' ),
 				'icon'  => 'dashicons-admin-site-alt3',
+			),
+			'config'    => array(
+				'label' => __( 'Config Sync', 'shahi-legalflowsuite' ),
+				'icon'  => 'dashicons-cloud',
 			),
 		);
 	}
@@ -214,6 +258,102 @@ class ComplianceMainPage {
 	}
 
 	/**
+	 * Get Operations Dashboard Statistics
+	 *
+	 * Aggregates data from all compliance modules:
+	 * - Consent statistics
+	 * - Cookie scanner status
+	 * - DSR queue metrics
+	 * - Accessibility issues
+	 * - Overall Ops Readiness Score
+	 *
+	 * @since 3.1.1 Phase 2.1
+	 * @return array {
+	 *     @type array  $consent       Consent module statistics
+	 *     @type array  $cookies       Cookie scanner statistics
+	 *     @type array  $dsr           DSR operations statistics
+	 *     @type array  $accessibility Accessibility scanner statistics
+	 *     @type int    $ops_score     Overall ops readiness score (0-100)
+	 *     @type string $ops_grade     Letter grade for ops readiness
+	 *     @type string $ops_label     Human-readable label
+	 *     @type array  $dimensions    All 8 dimension scores
+	 * }
+	 */
+	private function get_ops_dashboard_stats() {
+		// 1. Get Consent statistics (from existing method)
+		$consent_stats = $this->consent_service->get_statistics();
+		$consent_total = array_sum( $consent_stats['by_status'] ?? array() );
+
+		$consent = array(
+			'total_consents'   => $consent_total,
+			'accepted'         => $consent_stats['by_status']['accepted'] ?? 0,
+			'rejected'         => $consent_stats['by_status']['rejected'] ?? 0,
+			'withdrawn'        => $consent_stats['by_status']['withdrawn'] ?? 0,
+			'pending'          => $consent_stats['by_status']['pending'] ?? 0,
+			'acceptance_rate'  => $consent_total > 0 ? round( ( ( $consent_stats['by_status']['accepted'] ?? 0 ) / $consent_total ) * 100, 1 ) : 0,
+			'by_type'          => $consent_stats['by_type'] ?? array(),
+			'recent_consents'  => $consent_stats['recent_consents'] ?? array(),
+		);
+
+		// 2. Get Cookie scanner statistics
+		$cookie_inventory = get_option( 'slos_cookie_inventory', array() );
+		$detected_cookies = get_option( 'slos_detected_cookies', array() );
+		$cookies_data = ! empty( $cookie_inventory ) ? $cookie_inventory : $detected_cookies;
+		$cookie_scan_time = get_option( 'slos_cookie_scan_time', null );
+
+		$total_cookies = count( $cookies_data );
+		$categorized_cookies = 0;
+		$uncategorized_cookies = 0;
+
+		foreach ( $cookies_data as $cookie ) {
+			$category = isset( $cookie['category'] ) ? strtolower( $cookie['category'] ) : 'unknown';
+			$status   = isset( $cookie['status'] ) ? strtolower( $cookie['status'] ) : '';
+
+			if ( ! empty( $category ) && 'unknown' !== $category && 'uncategorized' !== $status ) {
+				$categorized_cookies++;
+			} else {
+				$uncategorized_cookies++;
+			}
+		}
+
+		$cookies = array(
+			'total_cookies'         => $total_cookies,
+			'categorized_cookies'   => $categorized_cookies,
+			'uncategorized_cookies' => $uncategorized_cookies,
+			'last_scan_time'        => $cookie_scan_time,
+			'categorization_rate'   => $total_cookies > 0 ? round( ( $categorized_cookies / $total_cookies ) * 100, 1 ) : 0,
+		);
+
+		// 3. Get DSR statistics
+		$dsr_service = new \ShahiLegalFlowSuite\Services\DSR_Service();
+		$dsr = $dsr_service->get_ops_statistics();
+
+		// 4. Get Accessibility statistics
+		$accessibility_scanner = new \ShahiLegalFlowSuite\Modules\AccessibilityScanner\AccessibilityScanner();
+		$accessibility = $accessibility_scanner->get_ops_statistics();
+
+		// 5. Get Consent UX Checker statistics (Phase 2.3)
+		$consent_ux_checker = new \ShahiLegalFlowSuite\Modules\AccessibilityScanner\ConsentUxChecker();
+		$consent_ux = $consent_ux_checker->get_summary_stats();
+
+		// 6. Calculate overall Ops Readiness Score
+		$ops_readiness = $this->score_calculator->calculate_ops_readiness();
+
+		return array(
+			'consent'       => $consent,
+			'cookies'       => $cookies,
+			'dsr'           => $dsr,
+			'accessibility' => $accessibility,
+			'consent_ux'    => $consent_ux,
+			'ops_score'     => $ops_readiness['score'],
+			'ops_grade'     => $ops_readiness['grade'],
+			'ops_grade_class' => $ops_readiness['grade_class'],
+			'ops_label'     => $ops_readiness['label'],
+			'dimensions'    => $ops_readiness['dimensions'],
+		);
+	}
+
+	/**
 	 * Get recent consent activity
 	 *
 	 * @since 3.0.3
@@ -247,6 +387,7 @@ class ComplianceMainPage {
 
 		// Gather data for templates
 		$stats           = $this->get_dashboard_stats();
+		$ops_stats       = $this->get_ops_dashboard_stats();
 		$recent_activity = $this->get_recent_activity( 10 );
 		$tabs            = $this->get_tabs();
 		$current_tab     = $this->current_tab;
@@ -289,6 +430,10 @@ class ComplianceMainPage {
 
 			case 'geo':
 				include SHAHI_LEGALFLOWSUITE_PATH . 'templates/admin/compliance/tabs/geo-rules.php';
+				break;
+
+			case 'config':
+				include SHAHI_LEGALFLOWSUITE_PATH . 'templates/admin/compliance/tabs/config-sync.php';
 				break;
 
 			default:

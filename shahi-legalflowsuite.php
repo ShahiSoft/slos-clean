@@ -3,7 +3,7 @@
  * Plugin Name: Shahi LegalFlowSuite
  * Plugin URI: https://shahisoft.com/shahi-legalflowsuite
  * Description: Professional legal operations and compliance management toolkit for WordPress. Manage GDPR/CCPA compliance, generate legal documents, handle data subject requests, and scan for accessibility issues.
- * Version: 3.4.0
+ * Version: 3.5.0
  * Author: ShahiSoft
  * Author URI: https://shahisoft.com
  * License: GPL-3.0+
@@ -27,7 +27,7 @@ if (!defined('WPINC')) {
 /**
  * Plugin Constants
  */
-define('SHAHI_LEGALFLOWSUITE_VERSION', '3.4.0');
+define('SHAHI_LEGALFLOWSUITE_VERSION', '3.5.0');
 define('SHAHI_LEGALFLOWSUITE_PATH', plugin_dir_path(__FILE__));
 define('SHAHI_LEGALFLOWSUITE_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('SHAHI_LEGALFLOWSUITE_PLUGIN_URL', plugin_dir_url(__FILE__));
@@ -164,6 +164,48 @@ function enqueue_slos_consent_banner()
 		'all'
 	);
 
+	// Enqueue Phase 1.4 UI enhancements stylesheet
+	wp_enqueue_style(
+		'slos-consent-ui-enhancements',
+		SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/css/consent-ui-enhancements.css',
+		array( 'slos-consent-banner' ),
+		SHAHI_LEGALFLOWSUITE_VERSION,
+		'all'
+	);
+	
+	// Phase 2.5.3: Export admin-configured colors as CSS variables in frontend
+	$primary_color = $banner_settings['primary_color'] ?? '#10b981';
+	$bg_color = $banner_settings['bg_color'] ?? '#ffffff';
+	$text_color = $banner_settings['text_color'] ?? '#111827';
+	
+	// Generate inline CSS with custom color variables
+	$custom_colors_css = "
+		/* Phase 2.5.3: Admin-configured banner colors */
+		:root {
+			--slos-banner-success: {$primary_color};
+			--slos-banner-success-hover: {$primary_color};
+			--slos-banner-bg: {$bg_color};
+			--slos-banner-text: {$text_color};
+		}
+		
+		/* Phase 4.4.3: Critical CSS for CLS prevention - inline for immediate paint */
+		#slos-consent-banner {
+			position: fixed;
+			bottom: 16px;
+			left: 16px;
+			right: 16px;
+			max-width: 560px;
+			z-index: 999999;
+			transform: translateY(calc(100% + 32px)) translateZ(0);
+			opacity: 0;
+			will-change: transform, opacity;
+			contain: layout style paint;
+		}
+	";
+	
+	// Add inline styles to override default CSS variables
+	wp_add_inline_style( 'slos-consent-banner', $custom_colors_css );
+
 	// Enqueue consent banner script
 	wp_enqueue_script(
 		'slos-consent-banner',
@@ -172,6 +214,35 @@ function enqueue_slos_consent_banner()
 		SHAHI_LEGALFLOWSUITE_VERSION,
 		true
 	);
+
+	// Enqueue Phase 1.4 placeholder blocking script
+	wp_enqueue_script(
+		'slos-consent-placeholders',
+		SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/js/consent-placeholders.js',
+		array( 'slos-consent-banner' ),
+		SHAHI_LEGALFLOWSUITE_VERSION,
+		true
+	);
+
+	// Get privacy policy URL from legal pages option (0.4.3)
+	$legal_pages = get_option( 'slos_legal_pages', array() );
+	$privacy_url = '';
+	if ( isset( $legal_pages['privacy_policy']['page_id'] ) ) {
+		$privacy_url = get_permalink( $legal_pages['privacy_policy']['page_id'] );
+		// Fallback if permalink fails
+		if ( ! $privacy_url ) {
+			$privacy_url = home_url( '/privacy-policy' );
+		}
+	} else {
+		// Fallback to common privacy policy URL
+		$privacy_url = home_url( '/privacy-policy' );
+	}
+
+	// Phase 1.4.3, 2.1.3, 2.5.3: Get banner settings for icon position, template, and colors
+	$banner_settings = get_option( 'slos_banner_settings', array() );
+	
+	// Phase 2.1.3: Admin-configured template takes precedence over geo-suggested template
+	$selected_template = $banner_settings['template'] ?? $suggested_tpl;
 
 	// Localize banner configuration
 	wp_localize_script(
@@ -187,11 +258,18 @@ function enqueue_slos_consent_banner()
 			'countryCode' => $country_code,
 			'geoRuleId' => $geo_rule_id,
 			'consentMode' => apply_filters('slos_consent_mode', $consent_mode), // Options: 'opt-in', 'opt-out', 'notice'
-			'template' => apply_filters('slos_consent_template', $suggested_tpl), // Options: 'eu', 'ccpa', 'simple', 'advanced'
+			'template' => apply_filters('slos_consent_template', $selected_template), // Phase 2.1.3: Options: 'eu', 'ccpa', 'simple', 'advanced'
 			'position' => apply_filters('slos_consent_position', 'bottom'), // Options: 'top', 'bottom'
 			'theme' => apply_filters('slos_consent_theme', 'light'), // Options: 'light', 'dark'
 			'reloadOnConsent' => apply_filters('slos_reload_on_consent', false),
-			'privacyLink' => apply_filters('slos_privacy_policy_url', home_url('/privacy-policy')),
+			'privacyUrl' => apply_filters('slos_privacy_policy_url', $banner_settings['privacy_url'] ?? $privacy_url), // Phase 2.3.1: Admin-configured privacy URL
+			'privacyLink' => apply_filters('slos_privacy_policy_url', $banner_settings['privacy_url'] ?? $privacy_url), // Backward compatibility
+			'learnMoreText' => $banner_settings['learn_more_text'] ?? __('Learn more', 'shahi-legalflowsuite'), // Phase 2.3.2: Learn more text
+			'consentExpiryDays' => absint($banner_settings['consent_expiry_days'] ?? 30), // Phase 2.3.3: Consent expiry days
+			'gracePeriodDays' => absint($banner_settings['grace_period_days'] ?? 0), // Phase 3.4.1: Grace period days
+			'iconPosition' => $banner_settings['icon_position'] ?? 'left', // Phase 1.4.3: Floating icon position
+			'policyVersion' => apply_filters('slos_policy_version', get_option('slos_policy_version', '1.0')), // Phase 3.1.1: Policy version for re-consent
+			'bannerVersion' => null, // Phase 3.1.2: Will be auto-generated by JS from config hash
 			'matchingRule' => $matching_rule ? array(
 				'id' => $matching_rule['id'] ?? null,
 				'name' => $matching_rule['name'] ?? '',
@@ -272,6 +350,15 @@ function enqueue_slos_compliance_dashboard_assets( $hook ) {
 	if ( 'toplevel_page_slos-compliance' !== $hook && 'shahi-legalflowsuite_page_slos-compliance' !== $hook ) {
 		return;
 	}
+
+	// Enqueue Operations Dashboard CSS (Phase 2.1)
+	wp_enqueue_style(
+		'slos-compliance-ops-dashboard',
+		SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/css/compliance-ops-dashboard.css',
+		array(),
+		SHAHI_LEGALFLOWSUITE_VERSION,
+		'all'
+	);
 
 	// Enqueue Chart.js for time-series visualization
 	wp_enqueue_script(

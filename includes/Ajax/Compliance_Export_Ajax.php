@@ -47,8 +47,8 @@ class Compliance_Export_Ajax {
 	 * @since 3.1.1
 	 */
 	public function __construct() {
-		require_once SLOS_PLUGIN_DIR . 'includes/Services/Consent_Service.php';
-		require_once SLOS_PLUGIN_DIR . 'includes/Services/Consent_Audit_Logger.php';
+		require_once SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'includes/Services/Consent_Service.php';
+		require_once SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'includes/Services/Consent_Audit_Logger.php';
 
 		$this->consent_service = new Consent_Service();
 		$this->audit_logger    = new Consent_Audit_Logger();

@@ -692,9 +692,9 @@ foreach ( $detected_cookies as $cookie ) {
                         <option value="unknown" <?php selected( $cookie['category'], 'unknown' ); ?>><?php esc_html_e( 'Unknown', 'shahi-legalflowsuite' ); ?></option>
                     </select>
                 </div>
-                <div class="slos-cookie-provider"><?php echo esc_html( $cookie['provider'] ); ?></div>
-                <div class="slos-cookie-duration"><?php echo esc_html( $cookie['duration'] ); ?></div>
-                <div class="slos-cookie-type"><?php echo esc_html( $cookie['type'] ); ?></div>
+                <div class="slos-cookie-provider"><?php echo esc_html( $cookie['provider'] ?? __( 'Unknown', 'shahi-legalflowsuite' ) ); ?></div>
+                <div class="slos-cookie-duration"><?php echo esc_html( $cookie['duration'] ?? __( 'Unknown', 'shahi-legalflowsuite' ) ); ?></div>
+                <div class="slos-cookie-type"><?php echo esc_html( $cookie['type'] ?? __( 'Unknown', 'shahi-legalflowsuite' ) ); ?></div>
                 <div>
                     <span class="slos-cookie-status <?php echo esc_attr( $cookie['status'] ); ?>">
                         <?php echo esc_html( ucfirst( $cookie['status'] ) ); ?>

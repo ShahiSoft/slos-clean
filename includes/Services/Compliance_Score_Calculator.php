@@ -114,6 +114,211 @@ class Compliance_Score_Calculator extends Base_Service {
 	}
 
 	/**
+	 * Calculate Operations Readiness Score
+	 *
+	 * Extends the compliance readiness score with DSR and Accessibility dimensions
+	 * for a comprehensive operational health score across 8 dimensions.
+	 *
+	 * @since 3.1.1 Phase 2.1
+	 * @param bool $use_cache Whether to use cached results
+	 * @return array {
+	 *     @type int    $score       Aggregate ops readiness score (0-100)
+	 *     @type string $grade       Letter grade (A-F)
+	 *     @type string $grade_class CSS class for grade
+	 *     @type string $label       Human-readable label
+	 *     @type array  $dimensions  Per-dimension scores and metadata
+	 * }
+	 */
+	public function calculate_ops_readiness( bool $use_cache = true ): array {
+		// Get existing 6 compliance dimensions
+		$compliance_result = $this->calculate( $use_cache );
+		$dimensions = $compliance_result['dimensions'];
+
+		// Add DSR dimension
+		$dimensions['dsr'] = $this->calculate_dsr_dimension();
+
+		// Add Accessibility dimension
+		$dimensions['accessibility'] = $this->calculate_accessibility_dimension();
+
+		// Define weights for 8 dimensions (total = 1.0)
+		$ops_weights = array(
+			SLOS_DIMENSION_COOKIES            => 0.20, // 20% - Cookie compliance
+			SLOS_DIMENSION_LEGAL_DOCS         => 0.20, // 20% - Legal documentation
+			SLOS_DIMENSION_GEO_RULES          => 0.10, // 10% - Geographic rules
+			SLOS_DIMENSION_CONSENT_METADATA   => 0.10, // 10% - Consent tracking
+			SLOS_DIMENSION_SCANNING_FRESHNESS => 0.05, // 5%  - Scan freshness
+			SLOS_DIMENSION_BANNER_CONFIG      => 0.05, // 5%  - Banner setup
+			'dsr'                             => 0.15, // 15% - DSR operations
+			'accessibility'                   => 0.15, // 15% - Accessibility compliance
+		);
+
+		// Calculate weighted aggregate
+		$aggregate = 0;
+
+		foreach ( $dimensions as $dimension => $data ) {
+			if ( isset( $ops_weights[ $dimension ] ) ) {
+				$aggregate += $data['score'] * $ops_weights[ $dimension ];
+			}
+		}
+
+		$ops_readiness_score = round( $aggregate );
+
+		// Map to grade
+		$grade_info = $this->map_score_to_grade( $ops_readiness_score );
+
+		return array(
+			'score'       => $ops_readiness_score,
+			'grade'       => $grade_info['grade'],
+			'grade_class' => $grade_info['class'],
+			'label'       => $grade_info['label'],
+			'dimensions'  => $dimensions,
+		);
+	}
+
+	/**
+	 * Calculate DSR (Data Subject Rights) dimension
+	 *
+	 * Evaluates DSR operational health based on:
+	 * - SLA compliance rate (70%)
+	 * - Overdue request penalty (30%)
+	 *
+	 * @since 3.1.1 Phase 2.1
+	 * @return array {
+	 *     @type int   $score   Dimension score (0-100)
+	 *     @type array $details Detailed breakdown
+	 * }
+	 */
+	private function calculate_dsr_dimension(): array {
+		// Get DSR statistics
+		$dsr_service = new DSR_Service();
+		$stats = $dsr_service->get_ops_statistics();
+
+		$score = 0;
+
+		// If no requests exist, give baseline score of 80 (ready but unproven)
+		if ( $stats['total_requests'] === 0 ) {
+			$score = 80;
+		} else {
+			// Base score from SLA compliance (70% weight)
+			$sla_score = $stats['sla_compliance_rate'];
+
+			// Calculate overdue penalty (30% weight)
+			// Each overdue request reduces score
+			$overdue_penalty = 0;
+			if ( $stats['overdue_requests'] > 0 ) {
+				// Penalty scales with percentage of open requests that are overdue
+				$overdue_rate = $stats['open_requests'] > 0
+					? ( $stats['overdue_requests'] / $stats['open_requests'] )
+					: 0;
+				$overdue_penalty = round( $overdue_rate * 30 ); // Max 30 point penalty
+			}
+
+			// Combine SLA score and overdue penalty
+			$score = round( ( $sla_score * 0.70 ) + ( ( 100 - $overdue_penalty ) * 0.30 ) );
+			$score = max( 0, min( 100, $score ) ); // Clamp to 0-100
+		}
+
+		return array(
+			'score'   => $score,
+			'details' => array(
+				'total_requests'       => $stats['total_requests'],
+				'open_requests'        => $stats['open_requests'],
+				'overdue_requests'     => $stats['overdue_requests'],
+				'sla_compliance_rate'  => $stats['sla_compliance_rate'],
+				'completed_requests'   => $stats['completed_requests'],
+				'by_status'            => $stats['by_status'],
+				'by_type'              => $stats['by_type'],
+			),
+		);
+	}
+
+	/**
+	 * Calculate Accessibility dimension
+	 *
+	 * Evaluates accessibility compliance based on:
+	 * - Accessibility score from scanner (60%)
+	 * - Issue severity distribution (40%)
+	 * - Scan freshness penalty
+	 *
+	 * @since 3.1.1 Phase 2.1
+	 * @return array {
+	 *     @type int   $score   Dimension score (0-100)
+	 *     @type array $details Detailed breakdown
+	 * }
+	 */
+	private function calculate_accessibility_dimension(): array {
+		// Get Accessibility statistics
+		$scanner = new \ShahiLegalFlowSuite\Modules\AccessibilityScanner\AccessibilityScanner();
+		$stats = $scanner->get_ops_statistics();
+
+		$score = 0;
+
+		// If never scanned, score is 0
+		if ( $stats['scan_freshness'] === 'never' ) {
+			$score = 0;
+		} else {
+			// Base score from accessibility scanner score (60% weight)
+			$base_score = $stats['accessibility_score'];
+
+			// Calculate issue severity penalty (40% weight)
+			$severity_score = 100;
+			if ( $stats['total_issues'] > 0 ) {
+				// Critical issues have highest impact
+				$critical_weight = 0.60; // 60% of severity weight
+				$warning_weight  = 0.30; // 30% of severity weight
+				$notice_weight   = 0.10; // 10% of severity weight
+
+				// Calculate penalty based on issue distribution
+				$critical_penalty = min( 100, $stats['critical_issues'] * 5 ); // 5 points per critical
+				$warning_penalty  = min( 50, $stats['warning_issues'] * 2 );   // 2 points per warning
+				$notice_penalty   = min( 20, $stats['notice_issues'] * 1 );    // 1 point per notice
+
+				$severity_score = 100 - (
+					( $critical_penalty * $critical_weight ) +
+					( $warning_penalty * $warning_weight ) +
+					( $notice_penalty * $notice_weight )
+				);
+				$severity_score = max( 0, $severity_score );
+			}
+
+			// Combine base score and severity score
+			$score = round( ( $base_score * 0.60 ) + ( $severity_score * 0.40 ) );
+
+			// Apply scan freshness penalty
+			switch ( $stats['scan_freshness'] ) {
+				case 'stale':
+					$score = round( $score * 0.85 ); // 15% penalty for stale scans
+					break;
+				case 'recent':
+					// No penalty
+					break;
+				case 'fresh':
+					// No penalty, best case
+					break;
+			}
+
+			$score = max( 0, min( 100, $score ) ); // Clamp to 0-100
+		}
+
+		return array(
+			'score'   => $score,
+			'details' => array(
+				'total_issues'         => $stats['total_issues'],
+				'critical_issues'      => $stats['critical_issues'],
+				'warning_issues'       => $stats['warning_issues'],
+				'notice_issues'        => $stats['notice_issues'],
+				'pages_scanned'        => $stats['pages_scanned'],
+				'accessibility_score'  => $stats['accessibility_score'],
+				'pass_rate'            => $stats['pass_rate'],
+				'last_scan_time'       => $stats['last_scan_time'],
+				'scan_freshness'       => $stats['scan_freshness'],
+				'hours_since_scan'     => $stats['hours_since_scan'],
+				'by_severity'          => $stats['by_severity'],
+			),
+		);
+	}
+
+	/**
 	 * Get score for a single dimension
 	 *
 	 * @since 3.1.0
@@ -142,6 +347,12 @@ class Compliance_Score_Calculator extends Base_Service {
 
 			case SLOS_DIMENSION_BANNER_CONFIG:
 				return $this->calculate_banner_config_dimension();
+
+			case 'dsr':
+				return $this->calculate_dsr_dimension();
+
+			case 'accessibility':
+				return $this->calculate_accessibility_dimension();
 
 			default:
 				return array(
@@ -295,8 +506,8 @@ class Compliance_Score_Calculator extends Base_Service {
 	 */
 	private function calculate_geo_rules_dimension(): array {
 		// Use Geo_Rule_Matcher for rule retrieval.
-		require_once SLOS_PLUGIN_DIR . 'includes/Services/Geo_Rule_Matcher.php';
-		$matcher   = new \SLOS\Services\Geo_Rule_Matcher();
+		require_once SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'includes/Services/Geo_Rule_Matcher.php';
+		$matcher   = new \ShahiLegalFlowSuite\Services\Geo_Rule_Matcher();
 		$geo_rules = $matcher->get_active_rules();
 
 		$score = 0;
@@ -571,6 +782,16 @@ class Compliance_Score_Calculator extends Base_Service {
 		global $wpdb;
 
 		$table = $wpdb->prefix . 'slos_consent';
+		
+		// Check if country_code column exists (migration may not have run yet)
+		$columns = $wpdb->get_results( "SHOW COLUMNS FROM {$table}" );
+		$column_names = array_map( function( $col ) { return $col->Field; }, $columns );
+		
+		if ( ! in_array( 'country_code', $column_names, true ) ) {
+			// Column doesn't exist yet, return empty array
+			return array();
+		}
+
 		$since = gmdate( 'Y-m-d H:i:s', current_time( 'timestamp' ) - ( $days * DAY_IN_SECONDS ) );
 
 		$results = $wpdb->get_col(
@@ -581,7 +802,7 @@ class Compliance_Score_Calculator extends Base_Service {
 		);
 
 		return $results ? $results : array();
-	}
+	}  
 
 	/**
 	 * Get recent consent records

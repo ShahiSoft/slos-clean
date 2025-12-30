@@ -13,6 +13,8 @@
 namespace ShahiLegalFlowSuite\Services;
 
 use ShahiLegalFlowSuite\Database\Repositories\DSR_Repository;
+use ShahiLegalFlowSuite\Services\Consent_Service;
+use ShahiLegalFlowSuite\Database\Repositories\Consent_Repository;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -35,6 +37,13 @@ class DSR_Export_Service {
     private $repository;
 
     /**
+     * Consent Service instance
+     *
+     * @var Consent_Service
+     */
+    private $consent_service;
+
+    /**
      * Maximum export file size (100MB)
      *
      * @var int
@@ -54,6 +63,20 @@ class DSR_Export_Service {
         
         // Hook into export generation action
         add_action( 'slos_dsr_export_ready', array( $this, 'process_export_generation' ), 10, 3 );
+    }
+
+    /**
+     * Get consent service instance (lazy initialization)
+     *
+     * @since 3.1.1
+     * @return Consent_Service
+     */
+    private function get_consent_service() {
+        if ( null === $this->consent_service ) {
+            $consent_repository      = new Consent_Repository();
+            $this->consent_service = new Consent_Service( $consent_repository );
+        }
+        return $this->consent_service;
     }
 
     /**
@@ -299,50 +322,68 @@ class DSR_Export_Service {
         global $wpdb;
 
         $data = array();
+        $email = $request->requester_email;
+
+        // Collect from new consent system (slos_consent table)
+        if ( ! empty( $email ) ) {
+            $consents = $this->get_consent_service()->get_by_email( $email );
+            
+            if ( ! empty( $consents ) ) {
+                $data['consent_records'] = array_map( function( $consent ) {
+                    return array(
+                        'id'         => $consent['id'] ?? 0,
+                        'type'       => $consent['type'] ?? '',
+                        'status'     => $consent['status'] ?? '',
+                        'user_name'  => $consent['user_name'] ?? '',
+                        'user_email' => $consent['user_email'] ?? '',
+                        'metadata'   => $consent['metadata'] ?? array(),
+                        'created_at' => $consent['created_at'] ?? '',
+                        'updated_at' => $consent['updated_at'] ?? '',
+                    );
+                }, $consents );
+            }
+        }
+
+        // Collect from legacy consent_logs table (if exists)
         $table = $wpdb->prefix . 'slos_consent_logs';
 
         // Check if table exists
-        if ( $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) !== $table ) {
-            return $data;
-        }
+        if ( $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) === $table ) {
+            $user_id = $request->user_id ?? null;
 
-        $user_id = $request->user_id ?? null;
-        $email   = $request->requester_email;
+            // Query consent logs
+            $where = array();
+            $values = array();
 
-        // Query consent logs
-        $where = array();
-        $values = array();
+            if ( $user_id ) {
+                $where[] = 'user_id = %d';
+                $values[] = $user_id;
+            }
 
-        if ( $user_id ) {
-            $where[] = 'user_id = %d';
-            $values[] = $user_id;
-        }
+            if ( $email ) {
+                $where[] = 'email = %s';
+                $values[] = $email;
+            }
 
-        if ( $email ) {
-            $where[] = 'email = %s';
-            $values[] = $email;
-        }
+            if ( ! empty( $where ) ) {
+                $where_sql = implode( ' OR ', $where );
+                $sql = "SELECT * FROM $table WHERE $where_sql ORDER BY created_at DESC";
 
-        if ( empty( $where ) ) {
-            return $data;
-        }
+                // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+                $results = $wpdb->get_results( $wpdb->prepare( $sql, $values ) );
 
-        $where_sql = implode( ' OR ', $where );
-        $sql = "SELECT * FROM $table WHERE $where_sql ORDER BY created_at DESC";
-
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-        $results = $wpdb->get_results( $wpdb->prepare( $sql, $values ) );
-
-        if ( ! empty( $results ) ) {
-            $data['consent_logs'] = array_map( function( $row ) {
-                return array(
-                    'id'          => $row->id,
-                    'action'      => $row->action ?? '',
-                    'preferences' => maybe_unserialize( $row->preferences ?? '' ),
-                    'created_at'  => $row->created_at ?? '',
-                    'ip_address'  => isset( $row->ip_address ) ? wp_privacy_anonymize_ip( $row->ip_address ) : '',
-                );
-            }, $results );
+                if ( ! empty( $results ) ) {
+                    $data['consent_logs'] = array_map( function( $row ) {
+                        return array(
+                            'id'          => $row->id,
+                            'action'      => $row->action ?? '',
+                            'preferences' => maybe_unserialize( $row->preferences ?? '' ),
+                            'created_at'  => $row->created_at ?? '',
+                            'ip_address'  => isset( $row->ip_address ) ? wp_privacy_anonymize_ip( $row->ip_address ) : '',
+                        );
+                    }, $results );
+                }
+            }
         }
 
         return $data;

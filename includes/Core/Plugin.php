@@ -125,6 +125,12 @@ class Plugin {
 		$this->loader->add_filter( 'submenu_file', $menu_manager, 'highlight_submenu' );
 		$this->loader->add_filter( 'admin_body_class', $menu_manager, 'add_body_classes' );
 
+		// Initialize Network Compliance Dashboard (multisite only)
+		if ( is_multisite() ) {
+			$network_dashboard = new \ShahiLegalFlowSuite\Admin\Network_Compliance_Dashboard();
+			$network_dashboard->init();
+		}
+
 		// Initialize Onboarding
 		$onboarding = new \ShahiLegalFlowSuite\Admin\Onboarding();
 		$this->loader->add_action( 'admin_footer', $onboarding, 'render_modal' );
@@ -159,6 +165,16 @@ class Plugin {
 
 		// Initialize Module Manager (singleton, can be called early)
 		\ShahiLegalFlowSuite\Modules\ModuleManager::get_instance();
+
+		// Initialize Consent UX Auto-Scanner (Phase 2.3)
+		add_action(
+			'init',
+			function () {
+				// Load the ConsentUxAutoScanner which has instantiation at end of file
+				require_once SHAHI_LEGALFLOWSUITE_PATH . 'includes/Modules/AccessibilityScanner/ConsentUxAutoScanner.php';
+			},
+			10
+		);
 	}
 
 	/**

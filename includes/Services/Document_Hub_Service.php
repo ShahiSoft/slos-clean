@@ -477,4 +477,4 @@ class Document_Hub_Service
      */
     public function get_staleness_reason( $doc_id ) {
         return get_post_meta( $doc_id, '_slos_stale_reason', true );
-    }
+    }}

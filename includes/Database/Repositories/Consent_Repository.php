@@ -276,4 +276,72 @@ class Consent_Repository extends Base_Repository {
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		return $this->wpdb->get_results( $sql, ARRAY_A );
 	}
-}
+
+	/**
+	 * Find consents by email
+	 *
+	 * Searches for consent records associated with an email address.
+	 * Looks up user by email and returns all consents for that user_id,
+	 * as well as guest consents where email is stored in metadata.
+	 *
+	 * @since 3.1.1 Phase 2.2
+	 * @param string $email Email address to search for
+	 * @param array  $args  Optional query arguments
+	 * @return array Array of consent records
+	 */
+	public function find_by_email( string $email, array $args = array() ): array {
+		global $wpdb;
+
+		// Sanitize email
+		$email = sanitize_email( $email );
+		if ( empty( $email ) ) {
+			return array();
+		}
+
+		$consents = array();
+
+		// 1. Find consents via user_id (registered users)
+		$user = get_user_by( 'email', $email );
+		if ( $user ) {
+			$consents = array_merge( $consents, $this->find_by_user( $user->ID, $args ) );
+		}
+
+		// 2. Find consents via metadata (guest consents with email stored)
+		// Look for email in JSON metadata field
+		$metadata_results = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT * FROM {$this->table} 
+				WHERE metadata LIKE %s 
+				ORDER BY created_at DESC",
+				'%' . $wpdb->esc_like( $email ) . '%'
+			),
+			ARRAY_A
+		);
+
+		// Verify email is actually in metadata (not just a substring match)
+		foreach ( $metadata_results as $record ) {
+			$metadata = isset( $record['metadata'] ) ? json_decode( $record['metadata'], true ) : array();
+			if ( is_array( $metadata ) && isset( $metadata['email'] ) && $metadata['email'] === $email ) {
+				// Check if this consent isn't already in our results (avoid duplicates)
+				$already_included = false;
+				foreach ( $consents as $existing ) {
+					if ( isset( $existing['id'] ) && $existing['id'] == $record['id'] ) {
+						$already_included = true;
+						break;
+					}
+				}
+				if ( ! $already_included ) {
+					$consents[] = $record;
+				}
+			}
+		}
+
+		// Sort by created_at DESC
+		usort( $consents, function( $a, $b ) {
+			$a_time = strtotime( $a['created_at'] ?? '' );
+			$b_time = strtotime( $b['created_at'] ?? '' );
+			return $b_time - $a_time;
+		});
+
+		return $consents;
+	}}

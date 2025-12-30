@@ -36,6 +36,351 @@ $dimension_icons = slos_get_dimension_icons();
 	<?php esc_html_e( 'Real-time overview of your privacy compliance status. Monitor consent metrics, review activity, and track compliance health across all supported regulations.', 'shahi-legalflowsuite' ); ?>
 </p>
 
+<!-- Operations Dashboard (Phase 2.1) -->
+<?php if ( ! empty( $ops_stats ) ) : ?>
+<div class="slos-ops-dashboard" style="margin-bottom: 32px;">
+	<div class="slos-card">
+		<div class="slos-card-header">
+			<h3>
+				<span class="dashicons dashicons-dashboard"></span>
+				<?php esc_html_e( 'Operations Dashboard', 'shahi-legalflowsuite' ); ?>
+			</h3>
+			<span class="badge badge-primary"><?php esc_html_e( 'Live', 'shahi-legalflowsuite' ); ?></span>
+		</div>
+		<p class="slos-widget-description">
+			<?php esc_html_e( 'Unified operations view aggregating metrics from all compliance modules: Consent Management, Cookie Scanner, Data Subject Rights (DSR), and Accessibility Compliance. Click any card to drill down into detailed module views.', 'shahi-legalflowsuite' ); ?>
+		</p>
+		<div class="slos-card-body">
+			<!-- Overall Ops Readiness Score -->
+			<div class="slos-ops-score-banner" style="padding: 20px; background: linear-gradient(135deg, var(--slos-primary-dark) 0%, var(--slos-primary) 100%); border-radius: 12px; margin-bottom: 24px;">
+				<div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+					<div style="flex: 1; min-width: 200px;">
+						<div style="font-size: 14px; color: rgba(255,255,255,0.9); font-weight: 500; margin-bottom: 8px;">
+							<?php esc_html_e( 'Overall Operations Readiness', 'shahi-legalflowsuite' ); ?>
+						</div>
+						<div style="font-size: 36px; font-weight: 700; color: white; line-height: 1; margin-bottom: 8px;">
+							<?php echo esc_html( $ops_stats['ops_score'] ); ?><span style="font-size: 20px; opacity: 0.8;">/100</span>
+						</div>
+						<div style="font-size: 13px; color: rgba(255,255,255,0.8);">
+							<?php 
+							/* translators: %s: Grade letter and label */
+							printf( esc_html__( 'Grade: %s - %s', 'shahi-legalflowsuite' ), 
+								'<strong>' . esc_html( $ops_stats['ops_grade'] ) . '</strong>',
+								esc_html( $ops_stats['ops_label'] )
+							);
+							?>
+						</div>
+					</div>
+					<div style="display: flex; gap: 12px; flex-wrap: wrap;">
+						<?php 
+						$ops_dimensions = $ops_stats['dimensions'] ?? array();
+						$ops_dimension_count = count( $ops_dimensions );
+						?>
+						<div class="slos-ops-metric">
+							<div style="font-size: 12px; color: rgba(255,255,255,0.8); margin-bottom: 4px;">
+								<?php esc_html_e( 'Dimensions', 'shahi-legalflowsuite' ); ?>
+							</div>
+							<div style="font-size: 24px; font-weight: 600; color: white;">
+								<?php echo esc_html( $ops_dimension_count ); ?>
+							</div>
+						</div>
+						<div class="slos-ops-metric">
+							<div style="font-size: 12px; color: rgba(255,255,255,0.8); margin-bottom: 4px;">
+								<?php esc_html_e( 'Modules Active', 'shahi-legalflowsuite' ); ?>
+							</div>
+							<div style="font-size: 24px; font-weight: 600; color: white;">
+								4
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Module Cards Grid -->
+			<div class="slos-ops-modules-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+				<!-- Consent Module Card -->
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=slos-compliance&tab=records' ) ); ?>" class="slos-ops-module-card" style="text-decoration: none; display: block;">
+					<div style="padding: 20px; background: var(--slos-bg-input); border-radius: 12px; border: 2px solid transparent; transition: all 0.3s ease; height: 100%;">
+						<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+							<div style="width: 40px; height: 40px; background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+								<span class="dashicons dashicons-shield-alt" style="color: white; font-size: 20px;"></span>
+							</div>
+							<div style="flex: 1;">
+								<h4 style="margin: 0; font-size: 16px; color: var(--slos-text-primary); font-weight: 600;">
+									<?php esc_html_e( 'Consent Management', 'shahi-legalflowsuite' ); ?>
+								</h4>
+								<div style="font-size: 11px; color: var(--slos-text-muted); margin-top: 2px;">
+									<?php esc_html_e( 'User consent tracking', 'shahi-legalflowsuite' ); ?>
+								</div>
+							</div>
+						</div>
+						<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+							<div>
+								<div style="font-size: 24px; font-weight: 700; color: var(--slos-text-primary);">
+									<?php echo esc_html( number_format( $ops_stats['consent']['total_consents'] ?? 0 ) ); ?>
+								</div>
+								<div style="font-size: 11px; color: var(--slos-text-muted);">
+									<?php esc_html_e( 'Total Consents', 'shahi-legalflowsuite' ); ?>
+								</div>
+							</div>
+							<div>
+								<div style="font-size: 24px; font-weight: 700; color: var(--slos-success);">
+									<?php echo esc_html( $ops_stats['consent']['acceptance_rate'] ?? 0 ); ?>%
+								</div>
+								<div style="font-size: 11px; color: var(--slos-text-muted);">
+									<?php esc_html_e( 'Acceptance Rate', 'shahi-legalflowsuite' ); ?>
+								</div>
+							</div>
+						</div>
+						<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--slos-border); font-size: 12px; color: var(--slos-primary); display: flex; align-items: center; gap: 4px;">
+							<?php esc_html_e( 'View Details', 'shahi-legalflowsuite' ); ?>
+							<span class="dashicons dashicons-arrow-right-alt" style="font-size: 14px;"></span>
+						</div>
+					</div>
+				</a>
+
+				<!-- Cookie Scanner Card -->
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=slos-compliance&tab=cookie-scanner' ) ); ?>" class="slos-ops-module-card" style="text-decoration: none; display: block;">
+					<div style="padding: 20px; background: var(--slos-bg-input); border-radius: 12px; border: 2px solid transparent; transition: all 0.3s ease; height: 100%;">
+						<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+							<div style="width: 40px; height: 40px; background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+								<span class="dashicons dashicons-food" style="color: white; font-size: 20px;"></span>
+							</div>
+							<div style="flex: 1;">
+								<h4 style="margin: 0; font-size: 16px; color: var(--slos-text-primary); font-weight: 600;">
+									<?php esc_html_e( 'Cookie Scanner', 'shahi-legalflowsuite' ); ?>
+								</h4>
+								<div style="font-size: 11px; color: var(--slos-text-muted); margin-top: 2px;">
+									<?php esc_html_e( 'Cookie inventory', 'shahi-legalflowsuite' ); ?>
+								</div>
+							</div>
+						</div>
+						<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+							<div>
+								<div style="font-size: 24px; font-weight: 700; color: var(--slos-text-primary);">
+									<?php echo esc_html( $ops_stats['cookies']['total_cookies'] ?? 0 ); ?>
+								</div>
+								<div style="font-size: 11px; color: var(--slos-text-muted);">
+									<?php esc_html_e( 'Total Cookies', 'shahi-legalflowsuite' ); ?>
+								</div>
+							</div>
+							<div>
+								<div style="font-size: 24px; font-weight: 700; color: var(--slos-success);">
+									<?php echo esc_html( $ops_stats['cookies']['categorization_rate'] ?? 0 ); ?>%
+								</div>
+								<div style="font-size: 11px; color: var(--slos-text-muted);">
+									<?php esc_html_e( 'Categorized', 'shahi-legalflowsuite' ); ?>
+								</div>
+							</div>
+						</div>
+						<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--slos-border); font-size: 12px; color: var(--slos-primary); display: flex; align-items: center; gap: 4px;">
+							<?php esc_html_e( 'View Scanner', 'shahi-legalflowsuite' ); ?>
+							<span class="dashicons dashicons-arrow-right-alt" style="font-size: 14px;"></span>
+						</div>
+					</div>
+				</a>
+
+				<!-- DSR Module Card -->
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=slos-dsr-requests' ) ); ?>" class="slos-ops-module-card" style="text-decoration: none; display: block;">
+					<div style="padding: 20px; background: var(--slos-bg-input); border-radius: 12px; border: 2px solid transparent; transition: all 0.3s ease; height: 100%;">
+						<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+							<div style="width: 40px; height: 40px; background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+								<span class="dashicons dashicons-admin-users" style="color: white; font-size: 20px;"></span>
+							</div>
+							<div style="flex: 1;">
+								<h4 style="margin: 0; font-size: 16px; color: var(--slos-text-primary); font-weight: 600;">
+									<?php esc_html_e( 'Data Subject Rights', 'shahi-legalflowsuite' ); ?>
+								</h4>
+								<div style="font-size: 11px; color: var(--slos-text-muted); margin-top: 2px;">
+									<?php esc_html_e( 'GDPR request queue', 'shahi-legalflowsuite' ); ?>
+								</div>
+							</div>
+						</div>
+						<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+							<div>
+								<div style="font-size: 24px; font-weight: 700; color: var(--slos-text-primary);">
+									<?php echo esc_html( $ops_stats['dsr']['open_requests'] ?? 0 ); ?>
+								</div>
+								<div style="font-size: 11px; color: var(--slos-text-muted);">
+									<?php esc_html_e( 'Open Requests', 'shahi-legalflowsuite' ); ?>
+								</div>
+							</div>
+							<div>
+								<?php 
+								$overdue = $ops_stats['dsr']['overdue_requests'] ?? 0;
+								$overdue_color = $overdue > 0 ? 'var(--slos-error)' : 'var(--slos-success)';
+								?>
+								<div style="font-size: 24px; font-weight: 700; color: <?php echo esc_attr( $overdue_color ); ?>;">
+									<?php echo esc_html( $overdue ); ?>
+								</div>
+								<div style="font-size: 11px; color: var(--slos-text-muted);">
+									<?php esc_html_e( 'Overdue', 'shahi-legalflowsuite' ); ?>
+								</div>
+							</div>
+						</div>
+						<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--slos-border);">
+							<div style="font-size: 11px; color: var(--slos-text-muted); margin-bottom: 4px;">
+								<?php esc_html_e( 'SLA Compliance', 'shahi-legalflowsuite' ); ?>
+							</div>
+							<div style="display: flex; align-items: center; gap: 8px;">
+								<div style="flex: 1; height: 6px; background: var(--slos-bg-secondary); border-radius: 3px; overflow: hidden;">
+									<div style="width: <?php echo esc_attr( $ops_stats['dsr']['sla_compliance_rate'] ?? 0 ); ?>%; height: 100%; background: var(--slos-success); transition: width 0.3s ease;"></div>
+								</div>
+								<div style="font-size: 13px; font-weight: 600; color: var(--slos-text-primary);">
+									<?php echo esc_html( round( $ops_stats['dsr']['sla_compliance_rate'] ?? 0 ) ); ?>%
+								</div>
+							</div>
+						</div>
+						<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--slos-border); font-size: 12px; color: var(--slos-primary); display: flex; align-items: center; gap: 4px;">
+							<?php esc_html_e( 'View Queue', 'shahi-legalflowsuite' ); ?>
+							<span class="dashicons dashicons-arrow-right-alt" style="font-size: 14px;"></span>
+						</div>
+					</div>
+				</a>
+
+				<!-- Accessibility Module Card -->
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=slos-accessibility' ) ); ?>" class="slos-ops-module-card" style="text-decoration: none; display: block;">
+					<div style="padding: 20px; background: var(--slos-bg-input); border-radius: 12px; border: 2px solid transparent; transition: all 0.3s ease; height: 100%;">
+						<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+							<div style="width: 40px; height: 40px; background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+								<span class="dashicons dashicons-universal-access-alt" style="color: white; font-size: 20px;"></span>
+							</div>
+							<div style="flex: 1;">
+								<h4 style="margin: 0; font-size: 16px; color: var(--slos-text-primary); font-weight: 600;">
+									<?php esc_html_e( 'Accessibility Scanner', 'shahi-legalflowsuite' ); ?>
+								</h4>
+								<div style="font-size: 11px; color: var(--slos-text-muted); margin-top: 2px;">
+									<?php esc_html_e( 'WCAG compliance', 'shahi-legalflowsuite' ); ?>
+								</div>
+							</div>
+						</div>
+						<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+							<div>
+								<?php 
+								$total_issues = $ops_stats['accessibility']['total_issues'] ?? 0;
+								$issue_color = $total_issues > 0 ? 'var(--slos-error)' : 'var(--slos-success)';
+								?>
+								<div style="font-size: 24px; font-weight: 700; color: <?php echo esc_attr( $issue_color ); ?>;">
+									<?php echo esc_html( $total_issues ); ?>
+								</div>
+								<div style="font-size: 11px; color: var(--slos-text-muted);">
+									<?php esc_html_e( 'Total Issues', 'shahi-legalflowsuite' ); ?>
+								</div>
+							</div>
+							<div>
+								<div style="font-size: 24px; font-weight: 700; color: var(--slos-text-primary);">
+									<?php echo esc_html( $ops_stats['accessibility']['pages_scanned'] ?? 0 ); ?>
+								</div>
+								<div style="font-size: 11px; color: var(--slos-text-muted);">
+									<?php esc_html_e( 'Pages Scanned', 'shahi-legalflowsuite' ); ?>
+								</div>
+							</div>
+						</div>
+						<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--slos-border);">
+							<?php 
+							$critical_issues = $ops_stats['accessibility']['critical_issues'] ?? 0;
+							if ( $critical_issues > 0 ) :
+							?>
+								<div style="padding: 6px 10px; background: rgba(244, 67, 54, 0.1); border-radius: 6px; font-size: 12px; color: var(--slos-error); display: flex; align-items: center; gap: 6px;">
+									<span class="dashicons dashicons-warning" style="font-size: 14px;"></span>
+									<?php 
+									/* translators: %d: Number of critical issues */
+									printf( esc_html__( '%d Critical Issues', 'shahi-legalflowsuite' ), $critical_issues );
+									?>
+								</div>
+							<?php else : ?>
+								<div style="padding: 6px 10px; background: rgba(76, 175, 80, 0.1); border-radius: 6px; font-size: 12px; color: var(--slos-success); display: flex; align-items: center; gap: 6px;">
+									<span class="dashicons dashicons-yes-alt" style="font-size: 14px;"></span>
+									<?php esc_html_e( 'No Critical Issues', 'shahi-legalflowsuite' ); ?>
+								</div>
+							<?php endif; ?>
+						</div>
+						<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--slos-border); font-size: 12px; color: var(--slos-primary); display: flex; align-items: center; gap: 4px;">
+							<?php esc_html_e( 'View Scanner', 'shahi-legalflowsuite' ); ?>
+							<span class="dashicons dashicons-arrow-right-alt" style="font-size: 14px;"></span>
+						</div>
+					</div>
+				</a>
+
+				<!-- Consent UX Health Card (Phase 2.3) -->
+				<?php if ( ! empty( $ops_stats['consent_ux'] ) ) : ?>
+				<div class="slos-ops-module-card" style="display: block;">
+					<div style="padding: 20px; background: var(--slos-bg-input); border: 2px solid var(--slos-border); border-radius: 12px; height: 100%;">
+						<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+							<div style="width: 40px; height: 40px; background: linear-gradient(135deg, #00BCD4 0%, #0097A7 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+								<span class="dashicons dashicons-visibility" style="color: white; font-size: 20px;"></span>
+							</div>
+							<div style="flex: 1;">
+								<h4 style="margin: 0; font-size: 16px; color: var(--slos-text-primary); font-weight: 600;">
+									<?php esc_html_e( 'Consent UX Health', 'shahi-legalflowsuite' ); ?>
+								</h4>
+								<div style="font-size: 11px; color: var(--slos-text-muted); margin-top: 2px;">
+									<?php esc_html_e( 'Legal pages accessibility', 'shahi-legalflowsuite' ); ?>
+								</div>
+							</div>
+						</div>
+						<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+							<div>
+								<?php 
+								$health_score = $ops_stats['consent_ux']['health_score'] ?? 0;
+								$score_color = $health_score >= 80 ? 'var(--slos-success)' : ( $health_score >= 50 ? 'var(--slos-warning)' : 'var(--slos-error)' );
+								?>
+								<div style="font-size: 24px; font-weight: 700; color: <?php echo esc_attr( $score_color ); ?>;">
+									<?php echo esc_html( $health_score ); ?><span style="font-size: 16px; opacity: 0.7;">/100</span>
+								</div>
+								<div style="font-size: 11px; color: var(--slos-text-muted);">
+									<?php esc_html_e( 'Health Score', 'shahi-legalflowsuite' ); ?>
+								</div>
+							</div>
+							<div>
+								<?php 
+								$ux_issues = $ops_stats['consent_ux']['total_issues'] ?? 0;
+								$ux_color = $ux_issues > 0 ? 'var(--slos-error)' : 'var(--slos-success)';
+								?>
+								<div style="font-size: 24px; font-weight: 700; color: <?php echo esc_attr( $ux_color ); ?>;">
+									<?php echo esc_html( $ux_issues ); ?>
+								</div>
+								<div style="font-size: 11px; color: var(--slos-text-muted);">
+									<?php esc_html_e( 'UX Issues', 'shahi-legalflowsuite' ); ?>
+								</div>
+							</div>
+						</div>
+						<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--slos-border);">
+							<?php 
+							$ux_critical = $ops_stats['consent_ux']['critical_issues'] ?? 0;
+							$ux_pages = $ops_stats['consent_ux']['total_pages'] ?? 0;
+							if ( $ux_critical > 0 ) :
+							?>
+								<div style="padding: 6px 10px; background: rgba(244, 67, 54, 0.1); border-radius: 6px; font-size: 12px; color: var(--slos-error); display: flex; align-items: center; gap: 6px;">
+									<span class="dashicons dashicons-warning" style="font-size: 14px;"></span>
+									<?php 
+									/* translators: %d: Number of critical UX issues */
+									printf( esc_html__( '%d Critical UX Issues', 'shahi-legalflowsuite' ), $ux_critical );
+									?>
+								</div>
+							<?php else : ?>
+								<div style="padding: 6px 10px; background: rgba(76, 175, 80, 0.1); border-radius: 6px; font-size: 12px; color: var(--slos-success); display: flex; align-items: center; gap: 6px;">
+									<span class="dashicons dashicons-yes-alt" style="font-size: 14px;"></span>
+									<?php 
+									/* translators: %d: Number of pages scanned */
+									printf( esc_html__( '%d Pages Scanned', 'shahi-legalflowsuite' ), $ux_pages );
+									?>
+								</div>
+							<?php endif; ?>
+						</div>
+						<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--slos-border); font-size: 12px; color: var(--slos-text-muted); display: flex; align-items: center; gap: 4px;">
+							<span class="dashicons dashicons-info-outline" style="font-size: 14px;"></span>
+							<?php esc_html_e( 'Auto-scans on page save', 'shahi-legalflowsuite' ); ?>
+						</div>
+					</div>
+				</div>
+				<?php endif; ?>
+			</div>
+		</div>
+	</div>
+</div>
+<?php endif; ?>
+
 <!-- Stats Grid -->
 <div class="slos-stats-grid">
     <div class="slos-stat-card accent">

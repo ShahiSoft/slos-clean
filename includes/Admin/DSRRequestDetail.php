@@ -16,6 +16,8 @@ namespace ShahiLegalFlowSuite\Admin;
 use ShahiLegalFlowSuite\Database\Repositories\DSR_Repository;
 use ShahiLegalFlowSuite\Services\DSR_Audit_Service;
 use ShahiLegalFlowSuite\Database\Repositories\DSR_Audit_Log_Repository;
+use ShahiLegalFlowSuite\Services\Consent_Service;
+use ShahiLegalFlowSuite\Database\Repositories\Consent_Repository;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -39,6 +41,13 @@ class DSRRequestDetail {
 	 * @var DSR_Audit_Service
 	 */
 	private $audit_service;
+
+	/**
+	 * Consent service
+	 *
+	 * @var Consent_Service
+	 */
+	private $consent_service;
 
 	/**
 	 * Constructor
@@ -70,6 +79,19 @@ class DSRRequestDetail {
 			$this->audit_service = new DSR_Audit_Service( $audit_repository );
 		}
 		return $this->audit_service;
+	}
+
+	/**
+	 * Get consent service instance (lazy initialization)
+	 *
+	 * @return Consent_Service
+	 */
+	private function get_consent_service() {
+		if ( null === $this->consent_service ) {
+			$consent_repository    = new Consent_Repository();
+			$this->consent_service = new Consent_Service( $consent_repository );
+		}
+		return $this->consent_service;
 	}
 
 	/**
@@ -109,6 +131,7 @@ class DSRRequestDetail {
 		// Left column: Request details
 		echo '<div>';
 		$this->render_request_details( $request );
+		$this->render_consent_history( $request );
 		$this->render_audit_timeline( $timeline );
 		echo '</div>';
 
@@ -184,6 +207,91 @@ class DSRRequestDetail {
 
 		echo '</div>'; // .inside
 		echo '</div>'; // .postbox
+	}
+
+	/**
+	 * Render consent history section
+	 *
+	 * @param object $request Request data
+	 * @return void
+	 */
+	private function render_consent_history( $request ): void {
+		echo '<div class="postbox" style="margin-top: 20px;">';
+		echo '<h2 class="hndle"><span>' . esc_html__( 'Consent History', 'shahi-legalflowsuite' ) . '</span></h2>';
+		echo '<div class="inside">';
+
+		// Fetch consents by email
+		$consents = $this->get_consent_service()->get_by_email( $request->requester_email ?? '' );
+
+		if ( empty( $consents ) ) {
+			echo '<p>' . esc_html__( 'No consent records found for this email address.', 'shahi-legalflowsuite' ) . '</p>';
+		} else {
+			echo '<div class="consent-timeline-container" style="position: relative; padding-left: 30px;">';
+
+			foreach ( $consents as $consent ) {
+				$this->render_consent_entry( $consent );
+			}
+
+			echo '</div>'; // .consent-timeline-container
+		}
+
+		echo '</div>'; // .inside
+		echo '</div>'; // .postbox
+	}
+
+	/**
+	 * Render single consent entry
+	 *
+	 * @param array $consent Consent record data
+	 * @return void
+	 */
+	private function render_consent_entry( array $consent ): void {
+		$status       = $consent['status'] ?? '';
+		$status_color = $status === 'accepted' ? '#46b450' : ( $status === 'rejected' ? '#dc3232' : '#f18500' );
+		$icon         = $status === 'accepted' ? 'dashicons-yes' : ( $status === 'rejected' ? 'dashicons-no' : 'dashicons-minus' );
+
+		echo '<div class="consent-entry" style="position: relative; padding: 15px 0; border-left: 2px solid #ddd;">';
+
+		// Icon
+		echo '<div style="position: absolute; left: -11px; top: 15px; width: 20px; height: 20px; border-radius: 50%; background: #fff; border: 2px solid ' . esc_attr( $status_color ) . '; display: flex; align-items: center; justify-content: center;">';
+		echo '<span class="dashicons ' . esc_attr( $icon ) . '" style="font-size: 12px; width: 12px; height: 12px; color: ' . esc_attr( $status_color ) . ';"></span>';
+		echo '</div>';
+
+		// Content
+		echo '<div style="margin-left: 20px;">';
+		echo '<div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 5px;">';
+		echo '<strong>' . esc_html( ucwords( str_replace( '_', ' ', $consent['type'] ?? '' ) ) ) . '</strong>';
+		echo '<span style="font-size: 12px; color: #666;">' . esc_html( $this->format_relative_time( $consent['created_at'] ?? '' ) ) . '</span>';
+		echo '</div>';
+
+		// Status badge
+		echo '<div style="margin: 5px 0;">';
+		echo '<span style="display: inline-block; padding: 2px 8px; background: ' . esc_attr( $status_color ) . '; color: white; border-radius: 3px; font-size: 11px; font-weight: 600;">' . esc_html( ucfirst( $status ) ) . '</span>';
+		echo '</div>';
+
+		// User info
+		if ( ! empty( $consent['user_name'] ) ) {
+			echo '<div style="font-size: 12px; color: #666; margin-top: 5px;">';
+			echo '<span class="dashicons dashicons-admin-users" style="font-size: 14px; vertical-align: middle;"></span> ';
+			echo esc_html( $consent['user_name'] );
+			if ( ! empty( $consent['user_email'] ) ) {
+				echo ' (' . esc_html( $consent['user_email'] ) . ')';
+			}
+			echo '</div>';
+		}
+
+		// Metadata (if present)
+		if ( ! empty( $consent['metadata'] ) && is_array( $consent['metadata'] ) ) {
+			echo '<details style="margin-top: 8px; font-size: 12px;">';
+			echo '<summary style="cursor: pointer; color: #0073aa;">' . esc_html__( 'View Metadata', 'shahi-legalflowsuite' ) . '</summary>';
+			echo '<pre style="background: #f5f5f5; padding: 8px; margin-top: 5px; border-radius: 3px; overflow-x: auto; font-size: 11px;">';
+			echo esc_html( wp_json_encode( $consent['metadata'], JSON_PRETTY_PRINT ) );
+			echo '</pre>';
+			echo '</details>';
+		}
+
+		echo '</div>'; // content
+		echo '</div>'; // .consent-entry
 	}
 
 	/**

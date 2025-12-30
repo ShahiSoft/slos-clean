@@ -2550,5 +2550,70 @@ class AccessibilityScanner extends Module {
 			error_log( sprintf( 'SLOS: Cleaned up %d old accessibility fix backups', $count ) );
 		}
 	}
+
+	/**
+	 * Get accessibility statistics for Ops Dashboard
+	 *
+	 * Returns summary stats: total issues, issue breakdown by severity, pages scanned, last scan time.
+	 *
+	 * @since 3.1.1 (Phase 2.1)
+	 * @return array Accessibility statistics
+	 */
+	public function get_ops_statistics(): array {
+		$total_issues    = (int) get_option( 'slos_accessibility_issues_total', 0 );
+		$critical_issues = (int) get_option( 'slos_accessibility_issues_critical', 0 );
+		$warning_issues  = (int) get_option( 'slos_accessibility_issues_warning', 0 );
+		$notice_issues   = (int) get_option( 'slos_accessibility_issues_notice', 0 );
+		$pages_scanned   = (int) get_option( 'slos_accessibility_pages_scanned', 0 );
+		$score           = (int) get_option( 'slos_accessibility_score', 0 );
+		$last_scan       = get_option( 'slos_last_scan_time', '' );
+
+		// Get scan statistics for more detailed breakdown
+		$scan_stats = get_option( 'slos_scan_statistics', array() );
+
+		// Calculate pass rate
+		$pass_rate = $total_issues > 0 && ! empty( $scan_stats['total_checks'] ) 
+			? round( ( ( $scan_stats['total_checks'] - $total_issues ) / $scan_stats['total_checks'] ) * 100, 1 )
+			: 100;
+
+		// Issue severity breakdown
+		$by_severity = array(
+			'critical' => $critical_issues,
+			'warning'  => $warning_issues,
+			'notice'   => $notice_issues,
+		);
+
+		// Calculate time since last scan
+		$last_scan_timestamp = ! empty( $last_scan ) ? strtotime( $last_scan ) : 0;
+		$hours_since_scan = $last_scan_timestamp > 0 
+			? round( ( time() - $last_scan_timestamp ) / 3600, 1 ) 
+			: null;
+
+		// Determine freshness status
+		$freshness = 'never';
+		if ( $hours_since_scan !== null ) {
+			if ( $hours_since_scan < 24 ) {
+				$freshness = 'fresh';
+			} elseif ( $hours_since_scan < 168 ) { // 7 days
+				$freshness = 'recent';
+			} else {
+				$freshness = 'stale';
+			}
+		}
+
+		return array(
+			'total_issues'    => $total_issues,
+			'critical_issues' => $critical_issues,
+			'warning_issues'  => $warning_issues,
+			'notice_issues'   => $notice_issues,
+			'pages_scanned'   => $pages_scanned,
+			'accessibility_score' => $score,
+			'pass_rate'       => (float) $pass_rate,
+			'last_scan_time'  => $last_scan,
+			'hours_since_scan' => $hours_since_scan,
+			'scan_freshness'  => $freshness,
+			'by_severity'     => $by_severity,
+		);
+	}
 }
 

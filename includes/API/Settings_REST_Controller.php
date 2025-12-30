@@ -168,24 +168,54 @@ class Settings_REST_Controller extends Base_REST_Controller {
 	 * Get default banner settings
 	 *
 	 * @since 3.0.3
+	 * @updated 3.1.1 - Added category descriptions and vendor support
 	 * @return array
 	 */
 	private function get_default_banner_settings() {
 		return array(
-			'position'        => 'bottom',
-			'layout'          => 'bar',
-			'bg_color'        => '#1a1a2e',
-			'text_color'      => '#ffffff',
-			'primary_color'   => '#3b82f6',
-			'title'           => __( 'We value your privacy', 'shahi-legalflowsuite' ),
-			'message'         => __( 'We use cookies to enhance your browsing experience, serve personalized content, and analyze our traffic. By clicking "Accept All", you consent to our use of cookies.', 'shahi-legalflowsuite' ),
-			'accept_text'     => __( 'Accept All', 'shahi-legalflowsuite' ),
-			'reject_text'     => __( 'Reject All', 'shahi-legalflowsuite' ),
-			'settings_text'   => __( 'Cookie Settings', 'shahi-legalflowsuite' ),
-			'show_reject'     => true,
-			'show_settings'   => true,
-			'auto_hide'       => false,
-			'blur_background' => false,
+			'template'          => 'eu', // Phase 2.1.2: Banner template (eu, ccpa, simple, advanced)
+			'position'          => 'bottom',
+			'layout'            => 'bar',
+			'bg_color'          => '#1a1a2e',
+			'text_color'        => '#ffffff',
+			'primary_color'     => '#3b82f6',
+			'title'             => __( 'We value your privacy', 'shahi-legalflowsuite' ),
+			'message'           => __( 'We use cookies to enhance your browsing experience, serve personalized content, and analyze our traffic. By clicking "Accept All", you consent to our use of cookies.', 'shahi-legalflowsuite' ),
+			'accept_text'       => __( 'Accept All', 'shahi-legalflowsuite' ),
+			'reject_text'       => __( 'Reject All', 'shahi-legalflowsuite' ),
+			'settings_text'     => __( 'Cookie Settings', 'shahi-legalflowsuite' ),
+			'icon_position'     => 'left', // Phase 1.4.3: Floating icon position (left or right)
+			'show_reject'       => true,
+			'show_settings'     => true,
+			'auto_hide'         => false,
+			'blur_background'   => false,
+			// Phase 1.4: Category descriptions
+			'show_descriptions' => true,
+			'category_descriptions' => array(
+				'necessary'   => __( 'Essential cookies required for the website to function. Cannot be disabled.', 'shahi-legalflowsuite' ),
+				'functional'  => __( 'Cookies that enhance functionality such as live chat, videos, and social media.', 'shahi-legalflowsuite' ),
+				'analytics'   => __( 'Cookies that help us understand how visitors interact with our website.', 'shahi-legalflowsuite' ),
+				'marketing'   => __( 'Cookies used for advertising and retargeting based on your interests.', 'shahi-legalflowsuite' ),
+				'preferences' => __( 'Cookies that remember your settings and preferences for a better experience.', 'shahi-legalflowsuite' ),
+			),
+			// Phase 1.4: Vendor/service transparency
+			'show_vendors'      => false,
+			'vendors'           => array(
+				'analytics'   => array(
+					array( 'name' => 'Google Analytics', 'purpose' => 'Website analytics' ),
+				),
+				'marketing'   => array(
+					array( 'name' => 'Facebook Pixel', 'purpose' => 'Ad targeting' ),
+					array( 'name' => 'Google Ads', 'purpose' => 'Advertisement' ),
+				),
+				'functional'  => array(),
+				'preferences' => array(),
+			),
+			// Phase 2.3: Privacy & Consent Expiry Settings
+			'privacy_url'       => '', // Phase 2.3.1: Privacy policy URL
+			'learn_more_text'   => __( 'Learn more', 'shahi-legalflowsuite' ), // Phase 2.3.2: Learn more link text
+			'consent_expiry_days' => 30, // Phase 2.3.3: Consent expiry in days (default 30)
+			'grace_period_days' => 0, // Phase 3.4.1: Re-consent grace period in days (default 0 = immediate)
 		);
 	}
 
@@ -229,20 +259,32 @@ class Settings_REST_Controller extends Base_REST_Controller {
 
 		// Sanitize and merge settings
 		$settings = array(
-			'position'        => isset( $params['position'] ) ? sanitize_text_field( $params['position'] ) : ( $current['position'] ?? $defaults['position'] ),
-			'layout'          => isset( $params['layout'] ) ? sanitize_text_field( $params['layout'] ) : ( $current['layout'] ?? $defaults['layout'] ),
-			'bg_color'        => isset( $params['bg_color'] ) ? sanitize_hex_color( $params['bg_color'] ) : ( $current['bg_color'] ?? $defaults['bg_color'] ),
-			'text_color'      => isset( $params['text_color'] ) ? sanitize_hex_color( $params['text_color'] ) : ( $current['text_color'] ?? $defaults['text_color'] ),
-			'primary_color'   => isset( $params['primary_color'] ) ? sanitize_hex_color( $params['primary_color'] ) : ( $current['primary_color'] ?? $defaults['primary_color'] ),
-			'title'           => isset( $params['title'] ) ? sanitize_text_field( $params['title'] ) : ( $current['title'] ?? $defaults['title'] ),
-			'message'         => isset( $params['message'] ) ? wp_kses_post( $params['message'] ) : ( $current['message'] ?? $defaults['message'] ),
-			'accept_text'     => isset( $params['accept_text'] ) ? sanitize_text_field( $params['accept_text'] ) : ( $current['accept_text'] ?? $defaults['accept_text'] ),
-			'reject_text'     => isset( $params['reject_text'] ) ? sanitize_text_field( $params['reject_text'] ) : ( $current['reject_text'] ?? $defaults['reject_text'] ),
-			'settings_text'   => isset( $params['settings_text'] ) ? sanitize_text_field( $params['settings_text'] ) : ( $current['settings_text'] ?? $defaults['settings_text'] ),
-			'show_reject'     => isset( $params['show_reject'] ) ? (bool) $params['show_reject'] : ( $current['show_reject'] ?? $defaults['show_reject'] ),
-			'show_settings'   => isset( $params['show_settings'] ) ? (bool) $params['show_settings'] : ( $current['show_settings'] ?? $defaults['show_settings'] ),
-			'auto_hide'       => isset( $params['auto_hide'] ) ? (bool) $params['auto_hide'] : ( $current['auto_hide'] ?? $defaults['auto_hide'] ),
-			'blur_background' => isset( $params['blur_background'] ) ? (bool) $params['blur_background'] : ( $current['blur_background'] ?? $defaults['blur_background'] ),
+			'template'              => isset( $params['template'] ) ? sanitize_text_field( $params['template'] ) : ( $current['template'] ?? $defaults['template'] ), // Phase 2.1.2: Template selection
+			'position'              => isset( $params['position'] ) ? sanitize_text_field( $params['position'] ) : ( $current['position'] ?? $defaults['position'] ),
+			'layout'                => isset( $params['layout'] ) ? sanitize_text_field( $params['layout'] ) : ( $current['layout'] ?? $defaults['layout'] ),
+			'bg_color'              => isset( $params['bg_color'] ) ? sanitize_hex_color( $params['bg_color'] ) : ( $current['bg_color'] ?? $defaults['bg_color'] ),
+			'text_color'            => isset( $params['text_color'] ) ? sanitize_hex_color( $params['text_color'] ) : ( $current['text_color'] ?? $defaults['text_color'] ),
+			'primary_color'         => isset( $params['primary_color'] ) ? sanitize_hex_color( $params['primary_color'] ) : ( $current['primary_color'] ?? $defaults['primary_color'] ),
+			'title'                 => isset( $params['title'] ) ? sanitize_text_field( $params['title'] ) : ( $current['title'] ?? $defaults['title'] ),
+			'message'               => isset( $params['message'] ) ? wp_kses_post( $params['message'] ) : ( $current['message'] ?? $defaults['message'] ),
+			'accept_text'           => isset( $params['accept_text'] ) ? sanitize_text_field( $params['accept_text'] ) : ( $current['accept_text'] ?? $defaults['accept_text'] ),
+			'reject_text'           => isset( $params['reject_text'] ) ? sanitize_text_field( $params['reject_text'] ) : ( $current['reject_text'] ?? $defaults['reject_text'] ),
+			'settings_text'         => isset( $params['settings_text'] ) ? sanitize_text_field( $params['settings_text'] ) : ( $current['settings_text'] ?? $defaults['settings_text'] ),
+			'icon_position'         => isset( $params['icon_position'] ) ? sanitize_text_field( $params['icon_position'] ) : ( $current['icon_position'] ?? $defaults['icon_position'] ?? 'left' ), // Phase 1.4.3: Icon position
+			'show_reject'           => isset( $params['show_reject'] ) ? (bool) $params['show_reject'] : ( $current['show_reject'] ?? $defaults['show_reject'] ),
+			'show_settings'         => isset( $params['show_settings'] ) ? (bool) $params['show_settings'] : ( $current['show_settings'] ?? $defaults['show_settings'] ),
+			'auto_hide'             => isset( $params['auto_hide'] ) ? (bool) $params['auto_hide'] : ( $current['auto_hide'] ?? $defaults['auto_hide'] ),
+			'blur_background'       => isset( $params['blur_background'] ) ? (bool) $params['blur_background'] : ( $current['blur_background'] ?? $defaults['blur_background'] ),
+			// Phase 1.4: Category descriptions and vendors
+			'show_descriptions'     => isset( $params['show_descriptions'] ) ? (bool) $params['show_descriptions'] : ( $current['show_descriptions'] ?? $defaults['show_descriptions'] ),
+			'category_descriptions' => isset( $params['category_descriptions'] ) ? $this->sanitize_descriptions( $params['category_descriptions'] ) : ( $current['category_descriptions'] ?? $defaults['category_descriptions'] ),
+			'show_vendors'          => isset( $params['show_vendors'] ) ? (bool) $params['show_vendors'] : ( $current['show_vendors'] ?? $defaults['show_vendors'] ),
+			'vendors'               => isset( $params['vendors'] ) ? $this->sanitize_vendors( $params['vendors'] ) : ( $current['vendors'] ?? $defaults['vendors'] ),
+			// Phase 2.3: Privacy & Consent Expiry Settings
+			'privacy_url'           => isset( $params['privacy_url'] ) ? esc_url_raw( $params['privacy_url'] ) : ( $current['privacy_url'] ?? $defaults['privacy_url'] ), // Phase 2.3.1: Privacy URL
+			'learn_more_text'       => isset( $params['learn_more_text'] ) ? sanitize_text_field( $params['learn_more_text'] ) : ( $current['learn_more_text'] ?? $defaults['learn_more_text'] ), // Phase 2.3.2: Learn more text
+			'consent_expiry_days'   => isset( $params['consent_expiry_days'] ) ? absint( $params['consent_expiry_days'] ) : ( $current['consent_expiry_days'] ?? $defaults['consent_expiry_days'] ), // Phase 2.3.3: Consent expiry days
+			'grace_period_days'     => isset( $params['grace_period_days'] ) ? absint( $params['grace_period_days'] ) : ( $current['grace_period_days'] ?? $defaults['grace_period_days'] ), // Phase 3.4.1: Grace period days
 		);
 
 		$updated = update_option( 'slos_banner_settings', $settings );
@@ -276,6 +318,72 @@ class Settings_REST_Controller extends Base_REST_Controller {
 			),
 			200
 		);
+	}
+
+	/**
+	 * Sanitize category descriptions
+	 *
+	 * @since 3.1.1
+	 * @param array $descriptions Category descriptions
+	 * @return array
+	 */
+	private function sanitize_descriptions( $descriptions ) {
+		if ( ! is_array( $descriptions ) ) {
+			return array();
+		}
+
+		$sanitized = array();
+		$allowed_categories = array( 'necessary', 'functional', 'analytics', 'marketing', 'preferences' );
+
+		foreach ( $descriptions as $category => $description ) {
+			if ( in_array( $category, $allowed_categories, true ) ) {
+				$sanitized[ $category ] = wp_kses_post( $description );
+			}
+		}
+
+		return $sanitized;
+	}
+
+	/**
+	 * Sanitize vendors data
+	 *
+	 * @since 3.1.1
+	 * @param array $vendors Vendors data
+	 * @return array
+	 */
+	private function sanitize_vendors( $vendors ) {
+		if ( ! is_array( $vendors ) ) {
+			return array();
+		}
+
+		$sanitized = array();
+		$allowed_categories = array( 'necessary', 'functional', 'analytics', 'marketing', 'preferences' );
+
+		foreach ( $vendors as $category => $vendor_list ) {
+			if ( ! in_array( $category, $allowed_categories, true ) ) {
+				continue;
+			}
+
+			if ( ! is_array( $vendor_list ) ) {
+				$sanitized[ $category ] = array();
+				continue;
+			}
+
+			$sanitized[ $category ] = array();
+
+			foreach ( $vendor_list as $vendor ) {
+				if ( ! is_array( $vendor ) ) {
+					continue;
+				}
+
+				$sanitized[ $category ][] = array(
+					'name'    => isset( $vendor['name'] ) ? sanitize_text_field( $vendor['name'] ) : '',
+					'purpose' => isset( $vendor['purpose'] ) ? sanitize_text_field( $vendor['purpose'] ) : '',
+				);
+			}
+		}
+
+		return $sanitized;
 	}
 
 	/**
