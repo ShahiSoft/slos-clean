@@ -1844,40 +1844,67 @@ class AccessibilityScanner extends Module {
 				array(
 					'fixers' => array(),
 					'message' => 'No scan results found. Please scan this page first.',
-					'use_all_fixers' => true, // Use all fixers as we can't determine specific ones
 				)
 			);
 			return;
 		}
 
-		// Count total issues
-		$total_issues = 0;
-		foreach ( $scan_results as $check_result ) {
-			if ( ! empty( $check_result['issues'] ) ) {
-				$total_issues += count( $check_result['issues'] );
+		// Initialize fixer registry
+		if ( ! class_exists( '\\ShahiLegalFlowSuite\\Modules\\AccessibilityScanner\\Fixes\\FixerRegistry' ) ) {
+			wp_send_json_error( array( 'message' => 'Fixer system not available' ) );
+		}
+
+		\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::init();
+
+		// Map check IDs to fixer IDs (some checks have corresponding fixers)
+		$check_to_fixer_map = $this->get_check_to_fixer_mapping();
+
+		// Collect fixers that have issues (for UI highlighting)
+		$fixers_with_issues = array();
+		$seen_fixers        = array();
+
+		foreach ( $scan_results as $check_id => $check_result ) {
+			// Check if this check has fixable issues
+			if ( empty( $check_result['issues'] ) ) {
+				continue;
+			}
+
+			// Check if there's a corresponding fixer for this check
+			if ( isset( $check_to_fixer_map[ $check_id ] ) ) {
+				$fixer_id = $check_to_fixer_map[ $check_id ];
+
+				// Avoid duplicates
+				if ( in_array( $fixer_id, $seen_fixers, true ) ) {
+					continue;
+				}
+
+				$fixer = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::get_fixer( $fixer_id );
+
+				if ( $fixer ) {
+					$seen_fixers[]        = $fixer_id;
+					$fixers_with_issues[] = array(
+						'id'          => $fixer->get_id(),
+						'name'        => $this->get_fixer_name_from_id( $fixer->get_id() ),
+						'description' => $fixer->get_description(),
+						'status'      => 'pending',
+						'count'       => 0,
+						'message'     => '',
+					);
+				}
 			}
 		}
 
-		// If page has issues, signal to use all fixers (fixer class instantiation not ready yet)
-		if ( $total_issues > 0 ) {
-			wp_send_json_success(
-				array(
-					'fixers'         => array(),
-					'message'        => sprintf( 'Found %d issue(s) on this page', $total_issues ),
-					'use_all_fixers' => true, // Signal to use all registered fixers
-					'issue_count'    => $total_issues,
-				)
-			);
-		} else {
-			// No issues found - show empty state
-			wp_send_json_success(
-				array(
-					'fixers'         => array(),
-					'message'        => 'No accessibility issues found',
-					'use_all_fixers' => false,
-				)
-			);
-		}
+		// Always instruct frontend to load ALL registered fixers, but also return the ones with detected issues
+		wp_send_json_success(
+			array(
+				'fixers'         => $fixers_with_issues, // for highlighting/ordering
+				'use_all_fixers' => true,                 // tell UI to run all available fixers
+				'issue_count'    => count( $fixers_with_issues ),
+				'message'        => count( $fixers_with_issues ) > 0
+					? sprintf( 'Found %d fixer(s) with issues', count( $fixers_with_issues ) )
+					: 'No fixable issues found',
+			)
+		);
 	}
 
 	/**
@@ -2029,7 +2056,26 @@ class AccessibilityScanner extends Module {
 			wp_send_json_error( array( 'message' => 'Missing fixer ID' ) );
 		}
 
-		// Initialize fixer registry
+		// Try new FixEngine first (v3.3.0+)
+		$fix_engine_bootstrap = SHAHI_LEGALFLOWSUITE_PLUGIN_PATH . 'includes/Modules/AccessibilityScanner/FixEngine/Bootstrap.php';
+		
+		if ( file_exists( $fix_engine_bootstrap ) ) {
+			require_once $fix_engine_bootstrap;
+			
+			if ( class_exists( '\ShahiLegalFlowSuite\Modules\AccessibilityScanner\FixEngine\Bootstrap' ) ) {
+				$engine = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\FixEngine\Bootstrap::get_engine();
+				$engine->initialize();
+				
+				$fixer = $engine->get_fixer( $fixer_id );
+				
+				if ( $fixer ) {
+					$this->handle_fix_engine_request( $engine, $fixer, $fixer_id, $page_id, $content );
+					return;
+				}
+			}
+		}
+
+		// Fallback to old FixerRegistry
 		if ( ! class_exists( '\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry' ) ) {
 			wp_send_json(
 				array(
@@ -2282,6 +2328,147 @@ class AccessibilityScanner extends Module {
 		);
 
 		return $tips[ $check_id ] ?? 'Review the issue details and consult WCAG guidelines for proper implementation.';
+	}
+
+	/**
+	 * Handle fix request using new FixEngine
+	 *
+	 * @since 3.3.0
+	 * @param object $engine The FixEngine instance
+	 * @param object $fixer The fixer instance
+	 * @param string $fixer_id The fixer ID
+	 * @param int    $page_id The page ID
+	 * @param string $content The content to fix
+	 */
+	private function handle_fix_engine_request( $engine, $fixer, $fixer_id, $page_id, $content ) {
+		try {
+			// If page_id provided, get content from the post
+			if ( $page_id > 0 ) {
+				$post = get_post( $page_id );
+				if ( $post ) {
+					$content = $post->post_content;
+				}
+			}
+
+			// If no content, skip
+			if ( empty( $content ) ) {
+				wp_send_json(
+					array(
+						'skipped' => true,
+						'message' => 'No content to process',
+					)
+				);
+				return;
+			}
+
+			// Get issue count before fix
+			$issues_before = null;
+			if ( $page_id > 0 ) {
+				$scan_results_before = get_post_meta( $page_id, '_slos_accessibility_scan_results', true );
+				if ( is_array( $scan_results_before ) ) {
+					$issues_before = 0;
+					foreach ( $scan_results_before as $result ) {
+						if ( isset( $result['issues'] ) && is_array( $result['issues'] ) ) {
+							$issues_before += count( $result['issues'] );
+						}
+					}
+				}
+			}
+
+			// Save content backup before fixing
+			if ( $page_id > 0 ) {
+				$this->save_content_backup( $page_id, $content );
+			}
+
+			// Run the fixer using new FixEngine
+			$result = $fixer->fix( $content, array( 'post_id' => $page_id ) );
+
+			// Process result (FixResult object)
+			$fixed_count    = $result->get_fixes_applied();
+			$fixed_content  = $result->get_fixed_content();
+			$content_changed = ( $fixed_content !== $content );
+
+			// Guardrail: Ensure we don't mark success if no fixes and no content change
+			if ( $fixed_count === 0 && ! $content_changed ) {
+				wp_send_json(
+					array(
+						'skipped' => true,
+						'message' => $result->get_message() ?: 'No issues found',
+					)
+				);
+				return;
+			}
+
+			// If page_id provided and content changed, save the post
+			if ( $page_id > 0 && $content_changed && $fixed_count > 0 ) {
+				wp_update_post(
+					array(
+						'ID'           => $page_id,
+						'post_content' => $fixed_content,
+					)
+				);
+
+				// Re-scan the post to get accurate results
+				if ( isset( $this->scanner ) && method_exists( $this->scanner, 'scan' ) ) {
+					$updated_post = get_post( $page_id );
+					$new_scan_results = $this->scanner->scan( $updated_post->post_content );
+					
+					// Get issue count after fix
+					$issues_after = 0;
+					if ( is_array( $new_scan_results ) ) {
+						foreach ( $new_scan_results as $scan_result ) {
+							if ( isset( $scan_result['issues'] ) && is_array( $scan_result['issues'] ) ) {
+								$issues_after += count( $scan_result['issues'] );
+							}
+						}
+					}
+
+					// Save fix history to database
+					$this->save_fix_history(
+						$page_id,
+						$fixer_id,
+						$fixed_count,
+						$content,
+						$fixed_content,
+						$issues_before,
+						$issues_after
+					);
+					
+					// Persist scan results and date to post meta
+					update_post_meta( $page_id, '_slos_accessibility_scan_results', $new_scan_results );
+					update_post_meta( $page_id, '_slos_accessibility_scan_date', current_time( 'mysql' ) );
+
+					// Reconsolidate all results to keep counts in sync
+					if ( method_exists( $this, 'consolidate_scan_results' ) ) {
+						$this->consolidate_scan_results();
+					}
+				}
+			}
+
+			if ( $fixed_count > 0 ) {
+				wp_send_json_success(
+					array(
+						'fixed_count'     => $fixed_count,
+						'content_changed' => $content_changed,
+						'fixer_name'      => $fixer->get_name(),
+						'details'         => $result->get_details(),
+					)
+				);
+			} else {
+				wp_send_json(
+					array(
+						'skipped' => true,
+						'message' => 'No issues found',
+					)
+				);
+			}
+		} catch ( \Exception $e ) {
+			wp_send_json_error(
+				array(
+					'message' => $e->getMessage(),
+				)
+			);
+		}
 	}
 
 	/**

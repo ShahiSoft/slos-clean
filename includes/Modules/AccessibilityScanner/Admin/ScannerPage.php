@@ -138,60 +138,49 @@ class ScannerPage {
 	 * @return array
 	 */
 	private function get_fixer_list_for_js() {
-		// Since fixer classes don't exist yet, return hardcoded list of common fixers
-		// that match the most common accessibility issues found by the scanner
-		return array(
-			array(
-				'id'          => 'missing-alt-text',
-				'name'        => 'Missing Alt Text',
-				'description' => 'Add alternative text to images for screen readers',
-			),
-			array(
-				'id'          => 'button-label',
-				'name'        => 'Button Labels',
-				'description' => 'Add accessible labels to buttons and interactive elements',
-			),
-			array(
-				'id'          => 'form-label',
-				'name'        => 'Form Labels',
-				'description' => 'Associate labels with form inputs',
-			),
-			array(
-				'id'          => 'heading-structure',
-				'name'        => 'Heading Structure',
-				'description' => 'Fix heading hierarchy and structure',
-			),
-			array(
-				'id'          => 'link-text',
-				'name'        => 'Link Text',
-				'description' => 'Improve link text for better accessibility',
-			),
-			array(
-				'id'          => 'color-contrast',
-				'name'        => 'Color Contrast',
-				'description' => 'Fix color contrast issues for readability',
-			),
-			array(
-				'id'          => 'aria-labels',
-				'name'        => 'ARIA Labels',
-				'description' => 'Add ARIA labels and attributes for better semantics',
-			),
-			array(
-				'id'          => 'table-headers',
-				'name'        => 'Table Headers',
-				'description' => 'Add proper headers and structure to tables',
-			),
-			array(
-				'id'          => 'video-captions',
-				'name'        => 'Video Captions',
-				'description' => 'Add captions and transcripts to video content',
-			),
-			array(
-				'id'          => 'keyboard-access',
-				'name'        => 'Keyboard Access',
-				'description' => 'Ensure all interactive elements are keyboard accessible',
-			),
-		);
+		// Try new FixEngine first (v3.3.0+)
+		$fix_engine_bootstrap = SHAHI_LEGALFLOWSUITE_PLUGIN_PATH . 'includes/Modules/AccessibilityScanner/FixEngine/Bootstrap.php';
+		
+		if ( file_exists( $fix_engine_bootstrap ) ) {
+			require_once $fix_engine_bootstrap;
+			
+			if ( class_exists( '\ShahiLegalFlowSuite\Modules\AccessibilityScanner\FixEngine\Bootstrap' ) ) {
+				$data = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\FixEngine\Bootstrap::get_scanner_data();
+				return $data['fixers'] ?? array();
+			}
+		}
+		
+		// Fallback to old FixerRegistry for backward compatibility
+		if ( class_exists( '\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry' ) ) {
+			\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::init();
+			$fixer_ids = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::get_all_fixer_ids();
+
+			$fixers = array();
+			foreach ( $fixer_ids as $id ) {
+				$fixer = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::get_fixer( $id );
+				if ( $fixer ) {
+					// Get ID and derive name from it (BaseFixer doesn't have get_name)
+					$fixer_id = $fixer->get_id();
+					$fixer_name = ucwords( str_replace( array( '-', '_' ), ' ', $fixer_id ) );
+					
+					// Get description safely
+					$description = '';
+					if ( method_exists( $fixer, 'get_description' ) ) {
+						$description = $fixer->get_description();
+					}
+					
+					$fixers[] = array(
+						'id'          => $fixer_id,
+						'name'        => $fixer_name,
+						'description' => $description,
+					);
+				}
+			}
+			return $fixers;
+		}
+
+		// Fallback: return empty array if registry not available
+		return array();
 	}
 
 	/**
