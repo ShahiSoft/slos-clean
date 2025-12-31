@@ -837,8 +837,8 @@ $eea_countries = array_merge($eu_countries, array('IS', 'LI', 'NO'));
 
     <!-- Quick Presets -->
     <?php
-    require_once SLOS_PLUGIN_DIR . 'includes/Services/Geo_Rule_Matcher.php';
-    $matcher = new \SLOS\Services\Geo_Rule_Matcher();
+    require_once SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'includes/Services/Geo_Rule_Matcher.php';
+    $matcher = new \ShahiLegalFlowSuite\Services\Geo_Rule_Matcher();
     $presets = $matcher->get_all_presets();
     ?>
 
@@ -1137,7 +1137,7 @@ $eea_countries = array_merge($eu_countries, array('IS', 'LI', 'NO'));
 
 <script>
 jQuery(document).ready(function($) {
-    const API_BASE = '<?php echo esc_js( rest_url( 'slos/v1' ) ); ?>';
+    const API_BASE = '<?php echo esc_js( rest_url( 'shahi-legalflowsuite/v1' ) ); ?>';
     const NONCE = '<?php echo esc_js( wp_create_nonce( 'wp_rest' ) ); ?>';
     let editingRuleId = null;
     

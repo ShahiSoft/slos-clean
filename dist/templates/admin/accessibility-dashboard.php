@@ -1576,7 +1576,13 @@ $widget_enabled = get_option('slos_widget_enabled', true);
                     <span class="dashicons dashicons-flag"></span>
                     <?php echo esc_html__('Pages Requiring Attention', 'shahi-legalflowsuite'); ?>
                 </h3>
-                <span class="badge"><?php echo esc_html(count($scan_results)); ?> <?php esc_html_e('pages', 'shahi-legalflowsuite'); ?></span>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <button type="button" class="slos-fix-history-btn" id="slos-fix-history-btn" title="<?php esc_attr_e('View fix history log', 'shahi-legalflowsuite'); ?>">
+                        <span class="dashicons dashicons-backup"></span>
+                        <?php esc_html_e('Fix History', 'shahi-legalflowsuite'); ?>
+                    </button>
+                    <span class="badge"><?php echo esc_html(count($scan_results)); ?> <?php esc_html_e('pages', 'shahi-legalflowsuite'); ?></span>
+                </div>
             </div>
             <div class="slos-card-body" style="padding: 0;">
                 <div class="slos-pages-attention">

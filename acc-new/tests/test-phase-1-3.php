@@ -14,8 +14,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	require_once __DIR__ . '/../../../wp-load.php';
 }
 
-require_once SLOS_PLUGIN_DIR . 'includes/Services/Consent_Service.php';
-require_once SLOS_PLUGIN_DIR . 'includes/Ajax/Compliance_Export_Ajax.php';
+require_once SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'includes/Services/Consent_Service.php';
+require_once SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'includes/Ajax/Compliance_Export_Ajax.php';
 
 use ShahiLegalFlowSuite\Services\Consent_Service;
 use ShahiLegalFlowSuite\Ajax\Compliance_Export_Ajax;
@@ -277,7 +277,7 @@ class Phase_13_Test_Suite {
 	private function test_pdf_export_generation() {
 		try {
 			// Test if dompdf is available
-			$dompdf_autoload = SLOS_PLUGIN_DIR . 'vendor/autoload.php';
+			$dompdf_autoload = SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'vendor/autoload.php';
 			$this->assert_true( file_exists( $dompdf_autoload ), 'Dompdf vendor autoload should exist' );
 
 			require_once $dompdf_autoload;

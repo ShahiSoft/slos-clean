@@ -1805,7 +1805,7 @@ class AccessibilityScanner extends Module {
 		// Map check IDs to fixer IDs (some checks have corresponding fixers)
 		$check_to_fixer_map = $this->get_check_to_fixer_mapping();
 
-		// Collect fixers that have issues
+		// Collect fixers that have issues (for UI highlighting)
 		$fixers_with_issues = array();
 		$seen_fixers        = array();
 
@@ -1840,10 +1840,14 @@ class AccessibilityScanner extends Module {
 			}
 		}
 
+
+		// Always instruct frontend to load ALL registered fixers, but also return the ones with detected issues
 		wp_send_json_success(
 			array(
-				'fixers'  => $fixers_with_issues,
-				'message' => count( $fixers_with_issues ) > 0 
+				'fixers'         => $fixers_with_issues, // for highlighting/ordering
+				'use_all_fixers' => true,                 // tell UI to run all available fixers
+				'issue_count'    => count( $fixers_with_issues ),
+				'message'        => count( $fixers_with_issues ) > 0
 					? sprintf( 'Found %d fixer(s) with issues', count( $fixers_with_issues ) )
 					: 'No fixable issues found',
 			)

@@ -116,6 +116,16 @@ class ComplianceMainPage {
 			SHAHI_LEGALFLOWSUITE_VERSION,
 			true
 		);
+
+		// Localize script with REST API settings
+		wp_localize_script(
+			'slos-config-sync',
+			'wpApiSettings',
+			array(
+				'root'  => esc_url_raw( rest_get_url_prefix() . '/' ),
+				'nonce' => wp_create_nonce( 'wp_rest' ),
+			)
+		);
 	}
 
 	/**

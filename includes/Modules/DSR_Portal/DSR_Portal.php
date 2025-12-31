@@ -229,7 +229,7 @@ class DSR_Portal extends Module {
 			'slosDSR',
 			array(
 				'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
-				'restUrl'      => rest_url( 'slos/v1/dsr' ),
+				'restUrl'      => rest_url( 'shahi-legalflowsuite/v1/dsr' ),
 				'nonce'        => wp_create_nonce( 'slos_dsr_nonce' ),
 				'dsr_form_url' => home_url( '/data-request/' ),
 				'i18n'         => array(
@@ -274,7 +274,7 @@ class DSR_Portal extends Module {
 			'slos-dsr-form',
 			'slosDSRForm',
 			array(
-				'restUrl' => rest_url( 'slos/v1/dsr' ),
+				'restUrl' => rest_url( 'shahi-legalflowsuite/v1/dsr' ),
 				'nonce'   => wp_create_nonce( 'wp_rest' ),
 			)
 		);

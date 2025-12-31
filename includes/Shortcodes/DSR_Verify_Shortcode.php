@@ -88,7 +88,7 @@ class DSR_Verify_Shortcode {
         }
 
         // Call public REST endpoint: GET /slos/v1/dsr/verify?token=...
-        $url      = add_query_arg( array( 'token' => rawurlencode( $token ) ), rest_url( 'slos/v1/dsr/verify' ) );
+        $url      = add_query_arg( array( 'token' => rawurlencode( $token ) ), rest_url( 'shahi-legalflowsuite/v1/dsr/verify' ) );
         $response = wp_remote_get( $url );
 
         if ( is_wp_error( $response ) ) {

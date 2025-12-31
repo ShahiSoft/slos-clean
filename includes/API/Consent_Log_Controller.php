@@ -46,7 +46,7 @@ class Consent_Log_Controller extends Base_REST_Controller {
 	 * @param Consent_Audit_Logger $audit_logger Audit logger instance
 	 */
 	public function __construct( Consent_Audit_Logger $audit_logger = null ) {
-		$this->namespace    = 'slos/v1';
+		$this->namespace    = 'shahi-legalflowsuite/v1';
 		$this->rest_base    = 'consents/logs';
 		$this->audit_logger = $audit_logger ?? new Consent_Audit_Logger();
 	}

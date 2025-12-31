@@ -80,6 +80,8 @@ class RestAPI {
 			'settings'   => new SettingsController(),
 			'onboarding' => new OnboardingController(),
 			'system'     => new SystemController(),
+			'geo'        => new Geo_REST_Controller(),
+			'config'     => new Config_REST_Controller(),
 		);
 		// Consent-related controllers are now registered by the ConsentManagement module
 	}

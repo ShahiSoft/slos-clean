@@ -2,7 +2,7 @@
  * Cookie Scanner Component
  *
  * Scans document cookies, localStorage, and sessionStorage to build an
- * inventory. Submits results to the REST API at /wp-json/slos/v1/cookies/report.
+ * inventory. Submits results to the REST API at /wp-json/shahi-legalflowsuite/v1/cookies/report.
  * Listens for consent updates to re-scan when preferences change.
  */
 (function () {
@@ -46,7 +46,7 @@
   }
 
   async function submitReport(payload) {
-    const apiBase = (window.slosConsentConfig && window.slosConsentConfig.apiUrl) || '/wp-json/slos/v1';
+    const apiBase = (window.slosConsentConfig && window.slosConsentConfig.apiUrl) || '/wp-json/shahi-legalflowsuite/v1';
     try {
       const res = await fetch(apiBase + '/cookies/report', {
         method: 'POST',

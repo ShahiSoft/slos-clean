@@ -184,7 +184,7 @@ class Consent_Preferences_Shortcode {
 			'slos-consent-preferences',
 			'slosConsentPrefs',
 			array(
-				'apiUrl'    => rest_url( 'slos/v1' ),
+				'apiUrl'    => rest_url( 'shahi-legalflowsuite/v1' ),
 				'nonce'     => wp_create_nonce( 'wp_rest' ),
 				'userId'    => $user_id,
 				'sessionId' => $user_id ? '' : ( session_id() ?? '' ),

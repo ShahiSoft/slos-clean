@@ -11,9 +11,15 @@
 (function($) {
     'use strict';
 
+    // Check if wpApiSettings is available
+    if (typeof window.wpApiSettings === 'undefined') {
+        console.error('Config Sync: wpApiSettings not loaded. REST API will not function.');
+        return;
+    }
+
     // REST API endpoint base
-    const API_BASE = window.wpApiSettings?.root + 'slos/v1/config';
-    const NONCE = window.wpApiSettings?.nonce;
+    const API_BASE = window.wpApiSettings.root + 'shahi-legalflowsuite/v1/config';
+    const NONCE = window.wpApiSettings.nonce;
 
     /**
      * Initialize config sync UI
@@ -34,8 +40,8 @@
             e.preventDefault();
 
             const $form = $(this);
-            const action = $('button[type="submit"]:focus', $form).val() || 
-                          $(e.originalEvent.submitter).val();
+            const $submitter = $(e.originalEvent.submitter);
+            const action = $submitter.attr('name') === 'action' ? $submitter.val() : 'export_file';
             
             const name = $('#slos-export-name').val().trim();
             const description = $('#slos-export-description').val().trim();
@@ -61,7 +67,6 @@
                 exportToJSON(name, description, options);
             }
         });
-    }
 
     /**
      * Export configuration to file
@@ -169,19 +174,29 @@
      * Bind import form interactions
      */
     function bindImportForm() {
-        $('#slos-validate-btn').on('click', validateConfig);
-        $('#slos-compare-btn').on('click', compareConfig);
+        $('#slos-validate-btn').on('click', function(e) {
+            e.preventDefault();
+            validateConfig();
+        });
+
+        $('#slos-compare-btn').on('click', function(e) {
+            e.preventDefault();
+            compareConfig();
+        });
+
         $('#slos-import-form').on('submit', function(e) {
             e.preventDefault();
             importConfig();
         });
 
         // Enable import button when file or JSON is provided
-        $('#slos-import-file, #slos-import-json').on('change input', function() {
-            const hasFile = $('#slos-import-file')[0].files.length > 0;
-            const hasJSON = $('#slos-import-json').val().trim().length > 0;
-            $('#slos-import-btn').prop('disabled', !hasFile && !hasJSON);
+        $('#slos-import-json').on('change input paste', function() {
+            const hasJSON = $(this).val().trim().length > 0;
+            $('#slos-import-btn').prop('disabled', !hasJSON);
         });
+
+        // Also trigger check on initial load
+        $('#slos-import-json').trigger('change');
     }
 
     /**
@@ -335,15 +350,19 @@
         
         if (jsonText) {
             try {
-                return JSON.parse(jsonText);
+                const profile = JSON.parse(jsonText);
+                // Basic validation
+                if (!profile || typeof profile !== 'object') {
+                    showStatus('#slos-import-status', 'error', 'Invalid configuration format.');
+                    return null;
+                }
+                return profile;
             } catch (e) {
-                showStatus('#slos-import-status', 'error', 'Invalid JSON format.');
+                showStatus('#slos-import-status', 'error', 'Invalid JSON format: ' + e.message);
                 return null;
             }
         }
 
-        // TODO: Handle file upload (requires reading file content)
-        // For now, prioritize JSON textarea
         return null;
     }
 
@@ -392,8 +411,10 @@
             if (files.length > 0) {
                 const file = files[0];
                 if (file.type === 'application/json' || file.name.endsWith('.json')) {
-                    $fileInput[0].files = files;
+                    // Process the file directly
                     handleFile(file);
+                    // Update file input display name
+                    $('#slos-file-info .filename').text(file.name);
                 } else {
                     showStatus('#slos-import-status', 'error', 'Please upload a JSON file.');
                 }
@@ -401,11 +422,12 @@
         });
 
         // Remove file
-        $removeBtn.on('click', function() {
+        $removeBtn.on('click', function(e) {
+            e.preventDefault();
             $fileInput.val('');
             $('.slos-upload-placeholder').show();
             $('#slos-file-info').hide();
-            $('#slos-import-btn').prop('disabled', true);
+            $('#slos-import-json').val('').trigger('change');
         });
     }
 
@@ -422,13 +444,13 @@
         reader.onload = function(e) {
             try {
                 const json = JSON.parse(e.target.result);
-                $('#slos-import-json').val(JSON.stringify(json, null, 2));
-                $('#slos-import-btn').prop('disabled', false);
+                $('#slos-import-json').val(JSON.stringify(json, null, 2)).trigger('change');
             } catch (error) {
-                showStatus('#slos-import-status', 'error', 'Invalid JSON file.');
+                showStatus('#slos-import-status', 'error', 'Invalid JSON file format.');
                 $('#slos-import-file').val('');
                 $('.slos-upload-placeholder').show();
                 $('#slos-file-info').hide();
+                $('#slos-import-json').val('').trigger('change');
             }
         };
         reader.readAsText(file);
@@ -457,16 +479,16 @@
                     xhr.setRequestHeader('X-WP-Nonce', NONCE);
                 },
                 success: function(profile) {
-                    $('#slos-import-json').val(JSON.stringify(profile, null, 2));
-                    $('#slos-import-btn').prop('disabled', false);
+                    $('#slos-import-json').val(JSON.stringify(profile, null, 2)).trigger('change');
                     
                     // Scroll to import section
                     $('html, body').animate({
                         scrollTop: $('#slos-import-form').offset().top - 100
                     }, 500);
                 },
-                error: function() {
-                    alert('Failed to load export.');
+                error: function(xhr) {
+                    const errorMsg = xhr.responseJSON?.message || 'Failed to load export.';
+                    showStatus('#slos-import-status', 'error', errorMsg);
                 }
             });
         });
@@ -482,11 +504,18 @@
                     xhr.setRequestHeader('X-WP-Nonce', NONCE);
                 },
                 success: function(profile) {
-                    $('#slos-import-json').val(JSON.stringify(profile, null, 2));
-                    compareConfig();
+                    $('#slos-import-json').val(JSON.stringify(profile, null, 2)).trigger('change');
+                    // Scroll to import section first
+                    $('html, body').animate({
+                        scrollTop: $('#slos-import-form').offset().top - 100
+                    }, 500, function() {
+                        // Then run comparison
+                        compareConfig();
+                    });
                 },
-                error: function() {
-                    alert('Failed to load export.');
+                error: function(xhr) {
+                    const errorMsg = xhr.responseJSON?.message || 'Failed to load export.';
+                    showStatus('#slos-import-status', 'error', errorMsg);
                 }
             });
         });
@@ -517,28 +546,34 @@
                             }
                         });
                     } else {
-                        alert(response.message || 'Failed to delete export.');
+                        showStatus('#slos-import-status', 'error', response.message || 'Failed to delete export.');
                     }
                 },
-                error: function() {
-                    alert('Failed to delete export.');
+                error: function(xhr) {
+                    const errorMsg = xhr.responseJSON?.message || 'Failed to delete export.';
+                    showStatus('#slos-import-status', 'error', errorMsg);
                 }
             });
         });
 
         // Refresh exports
-        $('#slos-refresh-exports').on('click', refreshExportsTable);
+        $('#slos-refresh-exports').on('click', function(e) {
+            e.preventDefault();
+            refreshExportsTable();
+        });
     }
 
     /**
      * Bind checkbox select all/none
      */
     function bindCheckboxActions() {
-        $('#slos-select-all').on('click', function() {
+        $('#slos-select-all').on('click', function(e) {
+            e.preventDefault();
             $('input[name="options[]"]').prop('checked', true);
         });
 
-        $('#slos-select-none').on('click', function() {
+        $('#slos-select-none').on('click', function(e) {
+            e.preventDefault();
             $('input[name="options[]"]').prop('checked', false);
         });
     }

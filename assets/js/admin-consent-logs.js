@@ -93,7 +93,7 @@
 			$('#slos-logs-pagination').hide();
 
 			wp.apiRequest({
-				path: '/slos/v1/consents/logs?' + $.param(params),
+				path: '/shahi-legalflowsuite/v1/consents/logs?' + $.param(params),
 				method: 'GET'
 			})
 			.done((data, status, xhr) => {
@@ -244,7 +244,7 @@
 		 */
 		viewLogDetails: function(logId) {
 			wp.apiRequest({
-				path: `/slos/v1/consents/logs/${logId}`,
+				path: `/shahi-legalflowsuite/v1/consents/logs/${logId}`,
 				method: 'GET'
 			})
 			.done((log) => {

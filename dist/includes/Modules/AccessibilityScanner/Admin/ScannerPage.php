@@ -147,10 +147,20 @@ class ScannerPage {
 			foreach ( $fixer_ids as $id ) {
 				$fixer = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::get_fixer( $id );
 				if ( $fixer ) {
+					// Get ID and derive name from it (BaseFixer doesn't have get_name)
+					$fixer_id = $fixer->get_id();
+					$fixer_name = ucwords( str_replace( array( '-', '_' ), ' ', $fixer_id ) );
+					
+					// Get description safely
+					$description = '';
+					if ( method_exists( $fixer, 'get_description' ) ) {
+						$description = $fixer->get_description();
+					}
+					
 					$fixers[] = array(
-						'id'          => $fixer->get_id(),
-						'name'        => $fixer->get_name(),
-						'description' => $fixer->get_description(),
+						'id'          => $fixer_id,
+						'name'        => $fixer_name,
+						'description' => $description,
 					);
 				}
 			}

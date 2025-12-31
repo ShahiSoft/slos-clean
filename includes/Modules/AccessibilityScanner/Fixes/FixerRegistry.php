@@ -134,6 +134,35 @@ class FixerRegistry {
 			return;
 		}
 
+		// Load grouped fixer files that contain multiple classes
+		$fixers_dir = __DIR__ . '/Fixers/';
+		$grouped_files = array(
+			'BaseFixer.php',
+			'LinkAndImageFixers.php',
+			'HeadingFixers.php',
+			'FormFixers.php',
+			'TableHeaderFixer.php',
+			'ContentFixers.php',
+			'InteractivityFixers.php',
+			'AriaAndSemanticFixers.php',
+			'MissingAltTextFixer.php',
+			'MissingFormLabelFixer.php',
+			'ButtonLabelFixer.php',
+			'VideoAccessibilityFixer.php',
+			'MediaAlternativeFixer.php',
+			'LanguageChangeFixer.php',
+			'StatusMessageFixer.php',
+			'ErrorIdentificationFixer.php',
+			'AnimationPauseFixer.php',
+			'TimingControlFixer.php',
+		);
+		foreach ( $grouped_files as $file ) {
+			$path = $fixers_dir . $file;
+			if ( file_exists( $path ) ) {
+				require_once $path;
+			}
+		}
+
 		self::$registry = array(
 			// Image Fixers - keys match scanner check IDs
 			'missing-alt-text'    => MissingAltTextFixer::class,

@@ -690,7 +690,7 @@ class DSR_Email_Service {
         }
 
         // Default to REST endpoint
-        return add_query_arg( array( 'token' => rawurlencode( $token ) ), rest_url( 'slos/v1/dsr/verify' ) );
+        return add_query_arg( array( 'token' => rawurlencode( $token ) ), rest_url( 'shahi-legalflowsuite/v1/dsr/verify' ) );
     }
 
     /**

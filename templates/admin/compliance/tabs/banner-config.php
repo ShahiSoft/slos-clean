@@ -13,23 +13,36 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Get current banner settings
-$banner_settings = array(
-    'position'        => 'bottom',
-    'layout'          => 'bar',
-    'theme'           => 'dark',
-    'primary_color'   => '#3b82f6',
-    'text_color'      => '#f8fafc',
-    'bg_color'        => '#0f172a',
-    'show_toggle'     => true,
-    'show_categories' => true,
-    'animation'       => 'slide',
-    'title'           => __( 'We value your privacy', 'shahi-legalflowsuite' ),
-    'message'         => __( 'We use cookies to enhance your browsing experience, serve personalized content, and analyze our traffic. By clicking "Accept All", you consent to our use of cookies.', 'shahi-legalflowsuite' ),
-    'accept_text'     => __( 'Accept All', 'shahi-legalflowsuite' ),
-    'reject_text'     => __( 'Reject All', 'shahi-legalflowsuite' ),
-    'settings_text'   => __( 'Cookie Settings', 'shahi-legalflowsuite' ),
+// Get current banner settings from database or use defaults
+$default_banner_settings = array(
+    'template'               => 'eu',
+    'position'               => 'bottom',
+    'layout'                 => 'box',
+    'theme'                  => 'dark',
+    'primary_color'          => '#10b981',
+    'text_color'             => '#ffffff',
+    'bg_color'               => '#1e293b',
+    'show_toggle'            => true,
+    'show_categories'        => true,
+    'icon_position'          => 'left',
+    'animation'              => 'slide',
+    'title'                  => __( 'We value your privacy', 'shahi-legalflowsuite' ),
+    'message'                => __( 'We use cookies to enhance your browsing experience, serve personalized content, and analyze our traffic. By clicking "Accept All", you consent to our use of cookies.', 'shahi-legalflowsuite' ),
+    'accept_text'            => __( 'Accept All', 'shahi-legalflowsuite' ),
+    'reject_text'            => __( 'Reject All', 'shahi-legalflowsuite' ),
+    'settings_text'          => __( 'Cookie Settings', 'shahi-legalflowsuite' ),
+    'privacy_url'            => '',
+    'learn_more_text'        => __( 'Learn more', 'shahi-legalflowsuite' ),
+    'consent_expiry_days'    => 30,
+    'grace_period_days'      => 0,
+    'category_descriptions'  => array(),
+    'vendors'                => array(),
 );
+
+$banner_settings = get_option( 'shahi_legalflowsuite_banner_settings', $default_banner_settings );
+
+// Merge with defaults to ensure all keys exist
+$banner_settings = array_merge( $default_banner_settings, $banner_settings );
 ?>
 
 <style>
@@ -434,6 +447,12 @@ $banner_settings = array(
     background: rgba(59, 130, 246, 0.05);
     border-left: 3px solid var(--slos-accent);
     border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.slos-geo-help.override-warning {
+    background: rgba(245, 158, 11, 0.1);
+    border-left-color: #f59e0b;
 }
 
 .slos-geo-help-text {
@@ -496,6 +515,8 @@ $banner_settings = array(
     animation: slideInUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     border: 1px solid rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    transition: all 0.3s ease;
 }
 
 .slos-banner-preview.bottom {
@@ -508,6 +529,55 @@ $banner_settings = array(
     animation: slideInDown 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.slos-banner-preview.center {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: fadeIn 0.35s ease;
+}
+
+/* Layout variations */
+.slos-banner-preview.layout-bar {
+    max-width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    border-radius: 0;
+    flex-direction: row;
+    align-items: center;
+    padding: 12px 24px;
+    gap: 16px;
+    transform: none;
+}
+
+.slos-banner-preview.layout-bar.center {
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.slos-banner-preview.layout-box {
+    max-width: 360px;
+    border-radius: 12px;
+}
+
+.slos-banner-preview.layout-popup {
+    max-width: 500px !important;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+}
+
+/* Device-specific adjustments */
+.device-mobile .slos-banner-preview {
+    left: 8px;
+    right: 8px;
+    max-width: calc(100% - 16px) !important;
+}
+
+.device-mobile .slos-banner-preview.layout-bar {
+    flex-direction: column;
+    align-items: stretch;
+}
+
 @keyframes slideInUp {
     from { transform: translateY(20px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
@@ -516,6 +586,11 @@ $banner_settings = array(
 @keyframes slideInDown {
     from { transform: translateY(-20px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translate(-50%, -50%) scale(0.95); }
+    to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 }
 
 .slos-banner-text {
@@ -1504,7 +1579,7 @@ $banner_settings = array(
 
 <script>
 jQuery(document).ready(function($) {
-    const API_BASE = '<?php echo esc_js( rest_url( 'slos/v1' ) ); ?>';
+    const API_BASE = '<?php echo esc_js( rest_url( 'shahi-legalflowsuite/v1' ) ); ?>';
     const NONCE = '<?php echo esc_js( wp_create_nonce( 'wp_rest' ) ); ?>';
     let hasUnsavedChanges = false;
     
@@ -1583,7 +1658,24 @@ jQuery(document).ready(function($) {
             isValid = false;
         }
         
+        // Validate privacy URL if provided
+        const privacyUrl = $('#privacy-url').val().trim();
+        if (privacyUrl && !isValidUrl(privacyUrl)) {
+            showToast('<?php echo esc_js( __( 'Invalid privacy policy URL. Please use a valid http:// or https:// URL.', 'shahi-legalflowsuite' ) ); ?>', 'error');
+            isValid = false;
+        }
+        
         return isValid;
+    }
+    
+    // URL validation helper
+    function isValidUrl(url) {
+        try {
+            const parsed = new URL(url);
+            return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+        } catch (e) {
+            return false;
+        }
     }
     
     // Phase 2.2: Category Details Management
@@ -1671,6 +1763,55 @@ jQuery(document).ready(function($) {
         if (settings.consent_expiry_days) {
             $('#consent-expiry-days').val(settings.consent_expiry_days);
         }
+        if (typeof settings.grace_period_days !== 'undefined') {
+            $('#grace-period-days').val(settings.grace_period_days);
+        }
+        
+        // Load toggles
+        if (typeof settings.show_toggle !== 'undefined') {
+            $('.slos-toggle[data-setting="show_toggle"]').toggleClass('active', settings.show_toggle);
+        }
+        if (typeof settings.show_categories !== 'undefined') {
+            $('.slos-toggle[data-setting="show_categories"]').toggleClass('active', settings.show_categories);
+        }
+        
+        // Load template, position, layout radio buttons
+        if (settings.template) {
+            $(`input[name="banner_template"][value="${settings.template}"]`).prop('checked', true).closest('.slos-radio-card').addClass('active').siblings().removeClass('active');
+        }
+        if (settings.position) {
+            $(`input[name="banner_position"][value="${settings.position}"]`).prop('checked', true).closest('.slos-radio-card').addClass('active').siblings().removeClass('active');
+        }
+        if (settings.layout) {
+            $(`input[name="banner_layout"][value="${settings.layout}"]`).prop('checked', true).closest('.slos-radio-card').addClass('active').siblings().removeClass('active');
+        }
+        if (settings.icon_position) {
+            $(`input[name="icon_position"][value="${settings.icon_position}"]`).prop('checked', true).closest('.slos-radio-card').addClass('active').siblings().removeClass('active');
+        }
+        
+        // Load colors
+        if (settings.primary_color) {
+            $('#primary-color').val(settings.primary_color);
+            $('#primary-color-hex').val(settings.primary_color);
+        }
+        if (settings.bg_color) {
+            $('#bg-color').val(settings.bg_color);
+            $('#bg-color-hex').val(settings.bg_color);
+        }
+        if (settings.text_color) {
+            $('#text-color').val(settings.text_color);
+            $('#text-color-hex').val(settings.text_color);
+        }
+        
+        // Load text fields
+        if (settings.title) $('#banner-title').val(settings.title);
+        if (settings.message) $('#banner-message').val(settings.message);
+        if (settings.accept_text) $('#accept-text').val(settings.accept_text);
+        if (settings.reject_text) $('#reject-text').val(settings.reject_text);
+        if (settings.settings_text) $('#settings-text').val(settings.settings_text);
+        
+        // Update preview after loading all settings
+        updatePreview();
     }
     
     // Track changes
@@ -1679,27 +1820,43 @@ jQuery(document).ready(function($) {
         $('#save-banner').addClass('has-changes');
     }
     
-    // Radio cards
+    // Radio cards - Enhanced to trigger both preview and geo preview
     $('.slos-radio-card').on('click', function() {
         const group = $(this).closest('.slos-radio-group');
         group.find('.slos-radio-card').removeClass('active');
         $(this).addClass('active');
         group.find('input[type="radio"]').prop('checked', false);
         $(this).find('input[type="radio"]').prop('checked', true);
-        updatePreview();
+        
+        // If this is a template change, update geo preview if region is selected
+        const $input = $(this).find('input[type="radio"]');
+        if ($input.attr('name') === 'banner_template') {
+            const currentRegion = $('#preview-region').val();
+            if (currentRegion && currentRegion !== 'default') {
+                updateGeoPreview(currentRegion);
+            } else {
+                updatePreview();
+            }
+        } else {
+            updatePreview();
+        }
+        
         markChanged();
     });
 
     // Toggle switches
     $('.slos-toggle').on('click', function() {
         $(this).toggleClass('active');
+        updatePreview();
         markChanged();
     });
 
-    // Color pickers
-    $('.slos-color-input').on('input', function() {
+    // Color pickers - sync color input to hex input
+    $('.slos-color-input').on('input change', function() {
         const hex = $(this).val();
-        $(this).siblings('.slos-color-hex').val(hex);
+        const fieldId = $(this).attr('id');
+        $('#' + fieldId + '-hex').val(hex);
+        clearError($('#' + fieldId + '-hex'));
         updatePreview();
         markChanged();
     });
@@ -1708,6 +1865,7 @@ jQuery(document).ready(function($) {
     $('.slos-color-hex').on('input', function() {
         const $field = $(this);
         let hex = $field.val();
+        const colorFieldId = $field.data('field');
         
         // Auto-prepend # if missing
         if (!/^#/.test(hex) && hex.length > 0) {
@@ -1718,36 +1876,69 @@ jQuery(document).ready(function($) {
         // Validate and update
         if (validateHexColor(hex)) {
             clearError($field);
-            $field.siblings('.slos-color-input').val(hex);
+            $('#' + colorFieldId).val(hex);
             updatePreview();
+            markChanged();
         } else if (hex.length >= 7) {
             // Only show error after user has typed enough
             showError($field, '<?php echo esc_js( __( 'Invalid hex color format. Use #RRGGBB', 'shahi-legalflowsuite' ) ); ?>');
+        } else {
+            markChanged();
         }
-        
-        markChanged();
     });
 
-    // Text inputs
-    $('#banner-title, #banner-message, #accept-text, #reject-text, #settings-text').on('input', function() {
+    // Text inputs - add privacy URL with validation
+    $('#banner-title, #banner-message, #accept-text, #reject-text, #settings-text, #learn-more-text').on('input', function() {
         updatePreview();
         markChanged();
     });
+    
+    // Privacy URL validation
+    $('#privacy-url').on('blur', function() {
+        const url = $(this).val().trim();
+        if (url && !isValidUrl(url)) {
+            showToast('<?php echo esc_js( __( 'Please enter a valid URL starting with http:// or https://', 'shahi-legalflowsuite' ) ); ?>', 'error');
+        }
+        markChanged();
+    });
+    
+    // Consent expiry validation
+    $('#consent-expiry-days').on('change', function() {
+        let val = parseInt($(this).val());
+        if (val < 1) $(this).val(1);
+        if (val > 365) $(this).val(365);
+        markChanged();
+    });
+    
+    // Grace period change
+    $('#grace-period-days').on('change', function() {
+        markChanged();
+    });
 
-    // Device preview
+    // Device preview - Enhanced with proper scaling and positioning
     $('.slos-preview-btn').on('click', function() {
         $('.slos-preview-btn').removeClass('active');
         $(this).addClass('active');
         const device = $(this).data('device');
-        const window = $('#preview-window');
+        const $window = $('#preview-window');
+        const $banner = $('#banner-preview');
+        
+        // Remove existing device classes
+        $window.removeClass('device-mobile device-tablet device-desktop');
         
         if (device === 'mobile') {
-            window.css({ 'max-width': '375px', 'margin': '0 auto' });
+            $window.addClass('device-mobile').css({ 'max-width': '375px', 'margin': '0 auto', 'min-height': '600px' });
+            $banner.css({ 'max-width': '100%', 'left': '8px', 'right': '8px' });
         } else if (device === 'tablet') {
-            window.css({ 'max-width': '768px', 'margin': '0 auto' });
+            $window.addClass('device-tablet').css({ 'max-width': '768px', 'margin': '0 auto', 'min-height': '500px' });
+            $banner.css({ 'max-width': '360px', 'left': '16px', 'right': 'auto' });
         } else {
-            window.css({ 'max-width': 'none', 'margin': '0' });
+            $window.addClass('device-desktop').css({ 'max-width': 'none', 'margin': '0', 'min-height': '400px' });
+            $banner.css({ 'max-width': '360px', 'left': '16px', 'right': 'auto' });
         }
+        
+        // Trigger layout update
+        updatePreview();
     });
 
     // Phase 2.4.2: Geo region preview selector
@@ -1757,10 +1948,24 @@ jQuery(document).ready(function($) {
     });
 
     function updatePreview() {
+        const $banner = $('#banner-preview');
+        
         // Update position
         const position = $('input[name="banner_position"]:checked').val() || 'bottom';
-        const banner = $('#banner-preview');
-        banner.removeClass('top bottom center').addClass(position);
+        $banner.removeClass('top bottom center').addClass(position);
+        
+        // Update layout class for styling differences
+        const layout = $('input[name="banner_layout"]:checked').val() || 'box';
+        $banner.removeClass('layout-bar layout-box layout-popup').addClass('layout-' + layout);
+        
+        // Adjust banner width based on layout
+        if (layout === 'bar') {
+            $banner.css({ 'max-width': '100%', 'left': '0', 'right': '0' });
+        } else if (layout === 'box') {
+            $banner.css({ 'max-width': '360px', 'left': '16px', 'right': 'auto' });
+        } else if (layout === 'popup') {
+            $banner.css({ 'max-width': '500px', 'left': '50%', 'transform': 'translateX(-50%)', 'right': 'auto' });
+        }
 
         // Phase 2.5.1 & 2.5.2: Update colors via CSS variables for consistency with frontend
         updatePreviewColors();
@@ -1769,9 +1974,12 @@ jQuery(document).ready(function($) {
         const template = $('input[name="banner_template"]:checked').val() || 'eu';
         updateTemplatePreview(template);
 
-        // Update text
-        $('#preview-title').text($('#banner-title').val() || '<?php echo esc_js( __( 'Cookie Consent', 'shahi-legalflowsuite' ) ); ?>');
-        $('#preview-message').text($('#banner-message').val() || '<?php echo esc_js( __( 'We use cookies to enhance your experience.', 'shahi-legalflowsuite' ) ); ?>');
+        // Update text content
+        const title = $('#banner-title').val() || '<?php echo esc_js( __( 'We value your privacy', 'shahi-legalflowsuite' ) ); ?>';
+        const message = $('#banner-message').val() || '<?php echo esc_js( __( 'We use cookies to enhance your experience.', 'shahi-legalflowsuite' ) ); ?>';
+        
+        $('#preview-title').text(title);
+        $('#preview-message').text(message);
         $('#preview-accept').text($('#accept-text').val() || '<?php echo esc_js( __( 'Accept All', 'shahi-legalflowsuite' ) ); ?>');
         $('#preview-reject').text($('#reject-text').val() || '<?php echo esc_js( __( 'Reject All', 'shahi-legalflowsuite' ) ); ?>');
         $('#preview-settings').text($('#settings-text').val() || '<?php echo esc_js( __( 'Customize', 'shahi-legalflowsuite' ) ); ?>');
@@ -1835,31 +2043,38 @@ jQuery(document).ready(function($) {
         // Determine suggested template based on region
         let suggestedTemplate = adminTemplate;
         let previewMessage = '';
+        let previewTitle = '';
         
         switch(region) {
             case 'EU':
                 suggestedTemplate = 'eu';
-                previewMessage = '<?php echo esc_js( __( 'We use cookies to enhance your browsing experience. You can accept all cookies or customize your preferences below.', 'shahi-legalflowsuite' ) ); ?>';
+                previewTitle = '<?php echo esc_js( __( 'We value your privacy', 'shahi-legalflowsuite' ) ); ?>';
+                previewMessage = '<?php echo esc_js( __( 'We use cookies to enhance your browsing experience. You can accept all cookies or customize your preferences below. Learn more in our privacy policy.', 'shahi-legalflowsuite' ) ); ?>';
                 break;
             case 'US-CA':
                 suggestedTemplate = 'ccpa';
-                previewMessage = '<?php echo esc_js( __( 'We use cookies to personalize content and ads. California residents have the right to opt-out of the sale of personal information.', 'shahi-legalflowsuite' ) ); ?>';
+                previewTitle = '<?php echo esc_js( __( 'Your Privacy Choices', 'shahi-legalflowsuite' ) ); ?>';
+                previewMessage = '<?php echo esc_js( __( 'We use cookies to personalize content and ads. California residents have the right to opt-out of the sale of personal information under CCPA.', 'shahi-legalflowsuite' ) ); ?>';
                 break;
             case 'BR':
                 suggestedTemplate = 'eu'; // Brazil LGPD uses EU-style consent
-                previewMessage = '<?php echo esc_js( __( 'We use cookies to improve your experience. Click "Accept All" to consent or customize your preferences.', 'shahi-legalflowsuite' ) ); ?>';
+                previewTitle = '<?php echo esc_js( __( 'Sua privacidade é importante', 'shahi-legalflowsuite' ) ); ?>';
+                previewMessage = '<?php echo esc_js( __( 'Usamos cookies para melhorar sua experiência. Clique em "Aceitar Todos" para consentir ou personalize suas preferências.', 'shahi-legalflowsuite' ) ); ?>';
                 break;
             case 'UK':
                 suggestedTemplate = 'eu'; // UK uses GDPR-style consent
-                previewMessage = '<?php echo esc_js( __( 'We use cookies to enhance your experience. Accept all cookies or manage your preferences below.', 'shahi-legalflowsuite' ) ); ?>';
+                previewTitle = '<?php echo esc_js( __( 'Cookie Notice', 'shahi-legalflowsuite' ) ); ?>';
+                previewMessage = '<?php echo esc_js( __( 'We use cookies to enhance your experience. Accept all cookies or manage your preferences below in accordance with UK GDPR.', 'shahi-legalflowsuite' ) ); ?>';
                 break;
             case 'ROW':
                 suggestedTemplate = 'simple';
+                previewTitle = '<?php echo esc_js( __( 'Cookie Notice', 'shahi-legalflowsuite' ) ); ?>';
                 previewMessage = '<?php echo esc_js( __( 'This website uses cookies to improve your experience. By continuing to use this site, you agree to our use of cookies.', 'shahi-legalflowsuite' ) ); ?>';
                 break;
             case 'default':
             default:
                 // Use admin-selected template
+                previewTitle = $('#banner-title').val() || '<?php echo esc_js( __( 'We value your privacy', 'shahi-legalflowsuite' ) ); ?>';
                 previewMessage = $('#banner-message').val() || '<?php echo esc_js( __( 'We use cookies to enhance your experience.', 'shahi-legalflowsuite' ) ); ?>';
                 break;
         }
@@ -1868,25 +2083,52 @@ jQuery(document).ready(function($) {
         // Otherwise show the region-suggested template
         const displayTemplate = (region === 'default') ? adminTemplate : suggestedTemplate;
         
-        // Update preview message to show region-specific wording
-        if (region !== 'default' && !$('#banner-message').val()) {
+        // Update preview with region-specific content
+        if (region !== 'default') {
+            // Override preview text with region-specific text
+            $('#preview-title').text(previewTitle);
             $('#preview-message').text(previewMessage);
         } else {
-            // Use admin's custom message if provided
+            // Use admin's custom content
+            $('#preview-title').text($('#banner-title').val() || previewTitle);
             $('#preview-message').text($('#banner-message').val() || previewMessage);
         }
         
-        // Update template preview
+        // Update template preview to show appropriate buttons
         updateTemplatePreview(displayTemplate);
         
         // Add visual indicator if admin template differs from geo suggestion
         const $banner = $('#banner-preview');
+        const $geoHelp = $('.slos-geo-help-text');
+        
         if (region !== 'default' && adminTemplate !== suggestedTemplate) {
             $banner.addClass('admin-override');
-            // Could add a badge or indicator here
+            $('.slos-geo-help').addClass('override-warning');
+            $geoHelp.html(
+                '<strong><?php echo esc_js( __( 'Note:', 'shahi-legalflowsuite' ) ); ?></strong> ' +
+                '<?php echo esc_js( __( 'Your admin template selection', 'shahi-legalflowsuite' ) ); ?> (<strong>' + adminTemplate.toUpperCase() + '</strong>) ' +
+                '<?php echo esc_js( __( 'will override the region-suggested template', 'shahi-legalflowsuite' ) ); ?> (<strong>' + suggestedTemplate.toUpperCase() + '</strong>) ' +
+                '<?php echo esc_js( __( 'for visitors from', 'shahi-legalflowsuite' ) ); ?> <strong>' + region + '</strong>.'
+            );
+        } else if (region !== 'default') {
+            $banner.removeClass('admin-override');
+            $('.slos-geo-help').removeClass('override-warning');
+            $geoHelp.html(
+                '<strong><?php echo esc_js( __( 'Preview Tip:', 'shahi-legalflowsuite' ) ); ?></strong> ' +
+                '<?php echo esc_js( __( 'Showing how the banner appears to visitors from', 'shahi-legalflowsuite' ) ); ?> <strong>' + region + '</strong>. ' +
+                '<?php echo esc_js( __( 'The', 'shahi-legalflowsuite' ) ); ?> <strong>' + displayTemplate.toUpperCase() + '</strong> <?php echo esc_js( __( 'template is used for this region.', 'shahi-legalflowsuite' ) ); ?>'
+            );
         } else {
             $banner.removeClass('admin-override');
+            $('.slos-geo-help').removeClass('override-warning');
+            $geoHelp.html(
+                '<strong><?php echo esc_js( __( 'Preview Tip:', 'shahi-legalflowsuite' ) ); ?></strong> ' +
+                '<?php echo esc_js( __( 'Select a region to preview how the banner appears to visitors from different locations. The system automatically suggests templates based on visitor region.', 'shahi-legalflowsuite' ) ); ?>'
+            );
         }
+        
+        // Update colors to match current settings
+        updatePreviewColors();
     }
     
     // Phase 2.5.1 & 2.5.2: Update preview colors using CSS variables
@@ -1957,9 +2199,9 @@ jQuery(document).ready(function($) {
         });
         
         return {
-            template: $('input[name="banner_template"]:checked').val() || 'eu', // Phase 2.1.2: Template selection
+            template: $('input[name="banner_template"]:checked').val() || 'eu',
             position: $('input[name="banner_position"]:checked').val() || 'bottom',
-            layout: $('input[name="banner_layout"]:checked').val() || 'bar',
+            layout: $('input[name="banner_layout"]:checked').val() || 'box',
             bg_color: $('#bg-color').val(),
             text_color: $('#text-color').val(),
             primary_color: $('#primary-color').val(),
@@ -1968,17 +2210,15 @@ jQuery(document).ready(function($) {
             accept_text: $('#accept-text').val(),
             reject_text: $('#reject-text').val(),
             settings_text: $('#settings-text').val(),
-            icon_position: $('input[name="icon_position"]:checked').val() || 'left', // Phase 1.4.3: Icon position config
-            show_reject: $('.slos-toggle[data-option="show_reject"]').hasClass('active'),
-            show_settings: $('.slos-toggle[data-option="show_settings"]').hasClass('active'),
-            auto_hide: $('.slos-toggle[data-option="auto_hide"]').hasClass('active'),
-            blur_background: $('.slos-toggle[data-option="blur_background"]').hasClass('active'),
-            category_descriptions: categoryDescriptions, // Phase 2.2.4: Category descriptions
-            vendors: vendors, // Phase 2.2.4: Vendor lists
-            privacy_url: $('#privacy-url').val().trim(), // Phase 2.3.1: Privacy policy URL
-            learn_more_text: $('#learn-more-text').val().trim(), // Phase 2.3.2: Learn more link text
-            consent_expiry_days: parseInt($('#consent-expiry-days').val()) || 30, // Phase 2.3.3: Consent expiry days
-            grace_period_days: parseInt($('#grace-period-days').val()) || 0 // Phase 3.4.1: Grace period days
+            icon_position: $('input[name="icon_position"]:checked').val() || 'left',
+            show_toggle: $('.slos-toggle[data-setting="show_toggle"]').hasClass('active'),
+            show_categories: $('.slos-toggle[data-setting="show_categories"]').hasClass('active'),
+            category_descriptions: categoryDescriptions,
+            vendors: vendors,
+            privacy_url: $('#privacy-url').val().trim(),
+            learn_more_text: $('#learn-more-text').val().trim(),
+            consent_expiry_days: parseInt($('#consent-expiry-days').val()) || 30,
+            grace_period_days: parseInt($('#grace-period-days').val()) || 0
         };
     }
 

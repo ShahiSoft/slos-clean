@@ -379,7 +379,7 @@
             // Get REST URL from localized data or construct it
             var restUrl = typeof slosAcceptance !== 'undefined' 
                 ? slosAcceptance.restUrl 
-                : '/wp-json/slos/v1/acceptance/check';
+                : '/wp-json/shahi-legalflowsuite/v1/acceptance/check';
 
             $.ajax({
                 url: restUrl,
@@ -403,7 +403,7 @@
             var data = {
                 documents: documents,
                 displayType: 'modal',
-                restUrl: '/wp-json/slos/v1/acceptance',
+                restUrl: '/wp-json/shahi-legalflowsuite/v1/acceptance',
                 nonce: typeof slosAcceptance !== 'undefined' ? slosAcceptance.nonce : '',
                 strings: {
                     accepting: 'Recording acceptance...',

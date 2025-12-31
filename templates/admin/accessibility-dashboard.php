@@ -1159,6 +1159,197 @@ $widget_enabled = get_option('slos_widget_enabled', true);
     white-space: nowrap;
 }
 
+/* Fix History Button */
+.slos-fix-history-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.slos-fix-history-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
+}
+
+.slos-fix-history-btn .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* Fix History Modal */
+.slos-fix-history-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 100003;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.slos-fix-history-modal {
+    background: #1e293b;
+    border: 1px solid #475569;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 900px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+}
+
+.slos-fix-history-header {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.slos-fix-history-header h2 {
+    margin: 0;
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+    flex: 1;
+}
+
+.slos-fix-history-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+    transition: background 0.2s;
+}
+
+.slos-fix-history-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.slos-fix-history-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+}
+
+.slos-fix-history-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.slos-fix-history-table th,
+.slos-fix-history-table td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid #334155;
+}
+
+.slos-fix-history-table th {
+    background: #0f172a;
+    color: #94a3b8;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.slos-fix-history-table td {
+    color: #f8fafc;
+    font-size: 13px;
+}
+
+.slos-fix-history-table tbody tr:hover {
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.slos-fix-history-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: #64748b;
+}
+
+.slos-fix-history-empty .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.slos-fix-history-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #22c55e;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 12px;
+    min-width: 20px;
+}
+
+.slos-fix-history-page-link {
+    color: #3b82f6;
+    text-decoration: none;
+}
+
+.slos-fix-history-page-link:hover {
+    text-decoration: underline;
+}
+
+.slos-fix-history-footer {
+    padding: 16px 24px;
+    border-top: 1px solid #334155;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.slos-fix-history-pagination {
+    display: flex;
+    gap: 8px;
+}
+
+.slos-fix-history-pagination button {
+    padding: 8px 16px;
+    background: #334155;
+    color: #f8fafc;
+    border: 1px solid #475569;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s;
+}
+
+.slos-fix-history-pagination button:hover:not(:disabled) {
+    background: #475569;
+}
+
+.slos-fix-history-pagination button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .slos-rollback-btn:hover {
     transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
@@ -1680,7 +1871,13 @@ $widget_enabled = get_option('slos_widget_enabled', true);
                     <span class="dashicons dashicons-flag"></span>
                     <?php echo esc_html__('Pages Requiring Attention', 'shahi-legalflowsuite'); ?>
                 </h3>
-                <span class="badge"><?php echo esc_html(count($scan_results)); ?> <?php esc_html_e('pages', 'shahi-legalflowsuite'); ?></span>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <button type="button" class="slos-fix-history-btn" id="slos-fix-history-btn" title="<?php esc_attr_e('View fix history log', 'shahi-legalflowsuite'); ?>">
+                        <span class="dashicons dashicons-backup"></span>
+                        <?php esc_html_e('Fix History', 'shahi-legalflowsuite'); ?>
+                    </button>
+                    <span class="badge"><?php echo esc_html(count($scan_results)); ?> <?php esc_html_e('pages', 'shahi-legalflowsuite'); ?></span>
+                </div>
             </div>
             <div class="slos-card-body" style="padding: 0;">
                 <div class="slos-pages-attention">
@@ -1747,6 +1944,36 @@ $widget_enabled = get_option('slos_widget_enabled', true);
             </div>
         </div>
         
+    </div>
+</div>
+
+<!-- Fix History Modal -->
+<div class="slos-fix-history-modal-overlay" id="slos-fix-history-modal" style="display: none;">
+    <div class="slos-fix-history-modal">
+        <div class="slos-fix-history-header">
+            <span class="dashicons dashicons-backup" style="font-size: 28px; width: 28px; height: 28px;"></span>
+            <h2><?php esc_html_e('Accessibility Fix History', 'shahi-legalflowsuite'); ?></h2>
+            <button type="button" class="slos-fix-history-close" id="slos-fix-history-close">&times;</button>
+        </div>
+        <div class="slos-fix-history-body" id="slos-fix-history-body">
+            <div class="slos-fix-history-loading" style="text-align: center; padding: 40px;">
+                <span class="spinner is-active" style="float: none;"></span>
+                <p><?php esc_html_e('Loading fix history...', 'shahi-legalflowsuite'); ?></p>
+            </div>
+        </div>
+        <div class="slos-fix-history-footer">
+            <span id="slos-fix-history-info" style="color: #94a3b8; font-size: 12px;"></span>
+            <div class="slos-fix-history-pagination">
+                <button type="button" id="slos-fix-history-prev" disabled>
+                    <span class="dashicons dashicons-arrow-left-alt2" style="vertical-align: middle;"></span>
+                    <?php esc_html_e('Previous', 'shahi-legalflowsuite'); ?>
+                </button>
+                <button type="button" id="slos-fix-history-next">
+                    <?php esc_html_e('Next', 'shahi-legalflowsuite'); ?>
+                    <span class="dashicons dashicons-arrow-right-alt2" style="vertical-align: middle;"></span>
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -2526,6 +2753,138 @@ jQuery(document).ready(function($) {
         var div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
+    }
+    
+    // =============================================
+    // FIX HISTORY MODAL FUNCTIONALITY
+    // =============================================
+    
+    var fixHistoryState = {
+        offset: 0,
+        limit: 20,
+        total: 0
+    };
+    
+    // Open Fix History Modal
+    $('#slos-fix-history-btn').on('click', function() {
+        fixHistoryState.offset = 0;
+        $('#slos-fix-history-modal').fadeIn(200);
+        loadFixHistory();
+    });
+    
+    // Close Fix History Modal
+    $('#slos-fix-history-close, #slos-fix-history-modal').on('click', function(e) {
+        if (e.target === this) {
+            $('#slos-fix-history-modal').fadeOut(200);
+        }
+    });
+    
+    // Pagination
+    $('#slos-fix-history-prev').on('click', function() {
+        if (fixHistoryState.offset > 0) {
+            fixHistoryState.offset = Math.max(0, fixHistoryState.offset - fixHistoryState.limit);
+            loadFixHistory();
+        }
+    });
+    
+    $('#slos-fix-history-next').on('click', function() {
+        if (fixHistoryState.offset + fixHistoryState.limit < fixHistoryState.total) {
+            fixHistoryState.offset += fixHistoryState.limit;
+            loadFixHistory();
+        }
+    });
+    
+    // Load Fix History via AJAX
+    function loadFixHistory(postId) {
+        var $body = $('#slos-fix-history-body');
+        $body.html('<div style="text-align:center;padding:40px;"><span class="spinner is-active" style="float:none;"></span><p><?php echo esc_js(__("Loading fix history...", "shahi-legalflowsuite")); ?></p></div>');
+        
+        $.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'slos_get_fix_history',
+                nonce: '<?php echo wp_create_nonce("slos_scanner_nonce"); ?>',
+                post_id: postId || 0,
+                limit: fixHistoryState.limit,
+                offset: fixHistoryState.offset
+            },
+            success: function(response) {
+                if (response.success && response.data) {
+                    fixHistoryState.total = response.data.total;
+                    renderFixHistory(response.data.history);
+                    updatePagination();
+                } else {
+                    var msg = response.data && response.data.message ? response.data.message : '<?php echo esc_js(__("Failed to load fix history.", "shahi-legalflowsuite")); ?>';
+                    $body.html('<div class="slos-fix-history-empty"><span class="dashicons dashicons-warning"></span><p>' + escapeHtml(msg) + '</p></div>');
+                }
+            },
+            error: function() {
+                $body.html('<div class="slos-fix-history-empty"><span class="dashicons dashicons-warning"></span><p><?php echo esc_js(__("Error loading fix history.", "shahi-legalflowsuite")); ?></p></div>');
+            }
+        });
+    }
+    
+    // Render Fix History Table
+    function renderFixHistory(history) {
+        var $body = $('#slos-fix-history-body');
+        
+        if (!history || history.length === 0) {
+            $body.html('<div class="slos-fix-history-empty"><span class="dashicons dashicons-backup"></span><p><?php echo esc_js(__("No fix history yet. Run auto-fix on some pages to see the history here.", "shahi-legalflowsuite")); ?></p></div>');
+            return;
+        }
+        
+        var html = '<table class="slos-fix-history-table">';
+        html += '<thead><tr>';
+        html += '<th><?php echo esc_js(__("Date", "shahi-legalflowsuite")); ?></th>';
+        html += '<th><?php echo esc_js(__("Page", "shahi-legalflowsuite")); ?></th>';
+        html += '<th><?php echo esc_js(__("Fixer", "shahi-legalflowsuite")); ?></th>';
+        html += '<th><?php echo esc_js(__("Fixes", "shahi-legalflowsuite")); ?></th>';
+        html += '<th><?php echo esc_js(__("Issues Before/After", "shahi-legalflowsuite")); ?></th>';
+        html += '<th><?php echo esc_js(__("User", "shahi-legalflowsuite")); ?></th>';
+        html += '</tr></thead><tbody>';
+        
+        for (var i = 0; i < history.length; i++) {
+            var item = history[i];
+            var issueChange = '';
+            if (item.issues_before !== null && item.issues_after !== null) {
+                var diff = item.issues_before - item.issues_after;
+                var color = diff > 0 ? '#22c55e' : (diff < 0 ? '#ef4444' : '#64748b');
+                issueChange = item.issues_before + ' → ' + item.issues_after;
+                if (diff > 0) {
+                    issueChange += ' <span style="color:' + color + ';">(-' + diff + ')</span>';
+                }
+            } else {
+                issueChange = '—';
+            }
+            
+            html += '<tr>';
+            html += '<td title="' + escapeHtml(item.created_at) + '">' + escapeHtml(item.created_at_human) + '</td>';
+            html += '<td><a href="<?php echo admin_url("post.php?action=edit&post="); ?>' + item.post_id + '" class="slos-fix-history-page-link">' + escapeHtml(item.post_title) + '</a></td>';
+            html += '<td>' + escapeHtml(item.fixer_name) + '</td>';
+            html += '<td><span class="slos-fix-history-count">' + item.fixed_count + '</span></td>';
+            html += '<td>' + issueChange + '</td>';
+            html += '<td>' + escapeHtml(item.user_name) + '</td>';
+            html += '</tr>';
+        }
+        
+        html += '</tbody></table>';
+        $body.html(html);
+    }
+    
+    // Update Pagination Buttons
+    function updatePagination() {
+        var start = fixHistoryState.offset + 1;
+        var end = Math.min(fixHistoryState.offset + fixHistoryState.limit, fixHistoryState.total);
+        
+        if (fixHistoryState.total === 0) {
+            $('#slos-fix-history-info').text('');
+        } else {
+            $('#slos-fix-history-info').text('<?php echo esc_js(__("Showing", "shahi-legalflowsuite")); ?> ' + start + '-' + end + ' <?php echo esc_js(__("of", "shahi-legalflowsuite")); ?> ' + fixHistoryState.total);
+        }
+        
+        $('#slos-fix-history-prev').prop('disabled', fixHistoryState.offset === 0);
+        $('#slos-fix-history-next').prop('disabled', fixHistoryState.offset + fixHistoryState.limit >= fixHistoryState.total);
     }
 });
 </script>

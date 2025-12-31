@@ -221,7 +221,7 @@ class Compliance_Export_Ajax {
 		$stats = $this->gather_consent_statistics( $days_back );
 
 		// Generate PDF using existing dompdf library
-		require_once SLOS_PLUGIN_DIR . 'vendor/autoload.php';
+		require_once SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'vendor/autoload.php';
 
 		$dompdf = new \Dompdf\Dompdf();
 		$html = $this->generate_pdf_html( $stats, $days_back );

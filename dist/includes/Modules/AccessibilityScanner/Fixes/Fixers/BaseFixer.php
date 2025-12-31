@@ -26,6 +26,16 @@ abstract class BaseFixer {
 	abstract public function get_description();
 
 	/**
+	 * Get human-readable name for this fixer.
+	 * Default implementation derives from ID.
+	 *
+	 * @return string
+	 */
+	public function get_name() {
+		return ucwords( str_replace( array( '-', '_' ), ' ', $this->get_id() ) );
+	}
+
+	/**
 	 * Apply fix to content
 	 */
 	abstract public function fix( $content );

@@ -101,7 +101,7 @@ class Consent_Logs_Page {
 			'slosLogsData',
 			array(
 				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-				'restUrl' => rest_url( 'slos/v1' ),
+				'restUrl' => rest_url( 'shahi-legalflowsuite/v1' ),
 				'nonce'   => wp_create_nonce( 'wp_rest' ),
 				'i18n'    => array(
 					'no_logs_found'  => __( 'No logs found matching the current filters.', 'shahi-legalflowsuite' ),

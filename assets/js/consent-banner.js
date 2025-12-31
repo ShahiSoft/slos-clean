@@ -23,7 +23,7 @@
          */
         constructor() {
             this.config = window.slosConsentConfig || {};
-            this.apiUrl = this.config.apiUrl || '/wp-json/slos/v1/consents';
+            this.apiUrl = this.config.apiUrl || '/wp-json/shahi-legalflowsuite/v1/consents';
             this.routes = this.config.routes || {};
             this.userId = this.config.userId || 0;
             this.region = this.config.region || null;
@@ -108,7 +108,7 @@
 
                 // Phase 4.1.1: Frontend geo detection fallback (if backend didn't detect)
                 if (!this.region) {
-                    const geoUrl = (this.routes && this.routes.geo) || (this.config.apiUrl ? this.config.apiUrl.replace('/consents', '') + '/geo/region' : '/wp-json/slos/v1/geo/region');
+                    const geoUrl = (this.routes && this.routes.geo) || (this.config.apiUrl ? this.config.apiUrl.replace('/consents', '') + '/geo/region' : '/wp-json/shahi-legalflowsuite/v1/geo/region');
                     const resp = await fetch(geoUrl, { headers: { 'Accept': 'application/json' } });
                     const payload = await resp.json();
                     if (payload && payload.data && payload.data.region) {

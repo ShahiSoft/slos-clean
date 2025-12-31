@@ -433,7 +433,7 @@ class Geo_Rule_Matcher {
 	 * @return array Preset configurations.
 	 */
 	private function load_presets(): array {
-		$config_path = SLOS_PLUGIN_DIR . 'config/geo-presets.php';
+		$config_path = SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'config/geo-presets.php';
 
 		if ( ! file_exists( $config_path ) ) {
 			return array();

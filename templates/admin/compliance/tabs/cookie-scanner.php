@@ -752,7 +752,7 @@ foreach ( $detected_cookies as $cookie ) {
 
 <script>
 jQuery(document).ready(function($) {
-    const API_BASE = '<?php echo esc_js( rest_url( 'slos/v1' ) ); ?>';
+    const API_BASE = '<?php echo esc_js( rest_url( 'shahi-legalflowsuite/v1' ) ); ?>';
     const NONCE = '<?php echo esc_js( wp_create_nonce( 'wp_rest' ) ); ?>';
     
     // Category filter

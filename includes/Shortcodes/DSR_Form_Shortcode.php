@@ -97,7 +97,7 @@ class DSR_Form_Shortcode {
 		ob_start();
 		?>
 		<div class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>" 
-			data-api-url="<?php echo esc_url( rest_url( 'slos/v1/dsr' ) ); ?>"
+			data-api-url="<?php echo esc_url( rest_url( 'shahi-legalflowsuite/v1/dsr' ) ); ?>"
 			data-nonce="<?php echo esc_attr( wp_create_nonce( 'wp_rest' ) ); ?>"
 			data-show-upload="<?php echo esc_attr( $atts['show_upload'] ); ?>"
 			data-default-regulation="<?php echo esc_attr( $atts['default_regulation'] ); ?>"
@@ -360,7 +360,7 @@ class DSR_Form_Shortcode {
 			'slosDsrForm',
 			array(
 				'ajaxUrl'         => admin_url( 'admin-ajax.php' ),
-				'restUrl'         => rest_url( 'slos/v1/dsr' ),
+				'restUrl'         => rest_url( 'shahi-legalflowsuite/v1/dsr' ),
 				'nonce'           => wp_create_nonce( 'wp_rest' ),
 				'requestTypes'    => $this->get_request_types(),
 				'regulations'     => $this->get_regulations(),

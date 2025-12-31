@@ -411,15 +411,23 @@
                 success: function(response) {
                     clearTimeout(timeoutId);
                     
-                    if (response.success && response.data && response.data.fixers) {
-                        const fixers = response.data.fixers;
+                    if (response.success && response.data) {
+                        const data = response.data;
                         
-                        // If we got fixers with issues, use them
-                        if (fixers.length > 0) {
-                            console.log('SLOSAutoFixProgress: Found ' + fixers.length + ' fixers with issues');
-                            callback(fixers);
-                        } else {
-                            // No fixers with issues - show empty state
+                        // Backend indicates to run all fixers; merge to show full list while keeping highlights
+                        if (data.use_all_fixers === true) {
+                            console.log('SLOSAutoFixProgress: Backend signaled to use all fixers (' + (data.issue_count || 0) + ' issues found)');
+                            const merged = self.mergeFixers(self.getDefaultFixers(), data.fixers || []);
+                            callback(merged);
+                        }
+                        // Specific fixers returned; merge with registry to display everything
+                        else if (data.fixers && data.fixers.length > 0) {
+                            console.log('SLOSAutoFixProgress: Using ' + data.fixers.length + ' specific fixers');
+                            const merged = self.mergeFixers(self.getDefaultFixers(), data.fixers);
+                            callback(merged);
+                        }
+                        // No fixers and no signal to use all = no issues
+                        else {
                             console.log('SLOSAutoFixProgress: No fixable issues found');
                             callback([]);
                         }
@@ -583,6 +591,34 @@
 
             // Fallback: Generate generic list
             return [];
+        },
+
+        /**
+         * Merge backend-provided fixers (with issues) with the full registry list.
+         * Keeps backend list order first, then appends remaining fixers.
+         */
+        mergeFixers: function(allFixers, fixersWithIssues) {
+            if (!Array.isArray(allFixers)) allFixers = [];
+            if (!Array.isArray(fixersWithIssues)) fixersWithIssues = [];
+
+            const byId = {};
+            const merged = [];
+
+            // First, add the fixers that have issues (preserve any status fields they may carry)
+            fixersWithIssues.forEach(function(fixer) {
+                if (!fixer || !fixer.id) return;
+                byId[fixer.id] = true;
+                merged.push(Object.assign({ status: 'pending', count: 0, message: '' }, fixer));
+            });
+
+            // Then append the remaining fixers from the full list
+            allFixers.forEach(function(fixer) {
+                if (!fixer || !fixer.id) return;
+                if (byId[fixer.id]) return; // avoid duplicates
+                merged.push(Object.assign({ status: 'pending', count: 0, message: '' }, fixer));
+            });
+
+            return merged;
         },
 
         /**

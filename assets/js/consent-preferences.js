@@ -24,7 +24,7 @@
 		 */
 		constructor() {
 			this.config = window.slosConsentPrefs || {};
-			this.api = this.config.apiUrl || '/wp-json/slos/v1';
+			this.api = this.config.apiUrl || '/wp-json/shahi-legalflowsuite/v1';
 			this.userId = this.config.userId || 0;
 			this.sessionId = this.config.sessionId || '';
 			this.isLoggedIn = this.config.isLoggedIn || false;

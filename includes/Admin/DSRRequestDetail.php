@@ -496,7 +496,7 @@ class DSRRequestDetail {
 				return;
 			}
 
-			fetch('<?php echo esc_url( rest_url( 'slos/v1/dsr/' ) ); ?>' + requestId + '/status', {
+			fetch('<?php echo esc_url( rest_url( 'shahi-legalflowsuite/v1/dsr/' ) ); ?>' + requestId + '/status', {
 				method: 'PUT',
 				headers: {
 					'Content-Type': 'application/json',
@@ -532,7 +532,7 @@ class DSRRequestDetail {
 				return;
 			}
 
-			fetch('<?php echo esc_url( rest_url( 'slos/v1/dsr/' ) ); ?>' + requestId, {
+			fetch('<?php echo esc_url( rest_url( 'shahi-legalflowsuite/v1/dsr/' ) ); ?>' + requestId, {
 				method: 'DELETE',
 				headers: {
 					'X-WP-Nonce': '<?php echo esc_js( wp_create_nonce( 'wp_rest' ) ); ?>'

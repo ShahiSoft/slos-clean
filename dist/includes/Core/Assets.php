@@ -1307,10 +1307,9 @@ class Assets {
 			foreach ( $fixer_ids as $id ) {
 				$fixer = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::get_fixer( $id );
 				if ( $fixer ) {
-					// Get ID and derive name from it (BaseFixer doesn't have get_name)
-					$fixer_id = $fixer->get_id();
-					// Convert ID like 'missing_alt' to 'Missing Alt'
-					$fixer_name = ucwords( str_replace( array( '-', '_' ), ' ', $fixer_id ) );
+					// Use registry key as ID (not $fixer->get_id() which may differ)
+					// Convert ID like 'missing-alt' to 'Missing Alt'
+					$fixer_name = ucwords( str_replace( array( '-', '_' ), ' ', $id ) );
 					
 					// Get description safely
 					$description = '';
@@ -1319,7 +1318,7 @@ class Assets {
 					}
 					
 					$fixers[] = array(
-						'id'          => $fixer_id,
+						'id'          => $id,  // Use registry key, NOT $fixer->get_id()
 						'name'        => $fixer_name,
 						'description' => $description,
 					);

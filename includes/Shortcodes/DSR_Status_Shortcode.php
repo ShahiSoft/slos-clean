@@ -138,7 +138,7 @@ class DSR_Status_Shortcode {
             'slos-dsr-status',
             'slosDsrStatus',
             array(
-                'apiUrl'   => rest_url( 'slos/v1/dsr/status' ),
+                'apiUrl'   => rest_url( 'shahi-legalflowsuite/v1/dsr/status' ),
                 'nonce'    => wp_create_nonce( 'wp_rest' ),
                 'i18n'     => array(
                     'error'            => __( 'Error', 'shahi-legalflowsuite' ),

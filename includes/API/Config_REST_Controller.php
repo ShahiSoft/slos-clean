@@ -138,8 +138,12 @@ class Config_REST_Controller extends Base_REST_Controller {
 					'permission_callback' => array( $this, 'check_admin_permission' ),
 					'args'                => array(
 						'filename' => array(
-							'required' => true,
+							'required' => false,
 							'type'     => 'string',
+						),
+						'profile' => array(
+							'required' => false,
+							'type'     => 'object',
 						),
 					),
 				),
@@ -366,6 +370,16 @@ class Config_REST_Controller extends Base_REST_Controller {
 	 */
 	public function compare_configs( WP_REST_Request $request ) {
 		$filename = $request->get_param( 'filename' );
+		$profile = $request->get_param( 'profile' );
+
+		// Require either filename or profile
+		if ( empty( $filename ) && empty( $profile ) ) {
+			return new WP_Error(
+				'missing_parameter',
+				__( 'Either filename or profile parameter is required', 'shahi-legalflowsuite' ),
+				array( 'status' => 400 )
+			);
+		}
 
 		// Get current config
 		$current_profile = $this->sync_service->export_config();
@@ -374,27 +388,35 @@ class Config_REST_Controller extends Base_REST_Controller {
 			return $current_profile;
 		}
 
-		// Get imported config
-		$upload_dir     = wp_upload_dir();
-		$filepath       = trailingslashit( $upload_dir['basedir'] ) . 'slos-exports/' . basename( $filename );
-		$imported_json  = file_get_contents( $filepath );
+		// Get imported config from filename or profile
+		$imported_profile = null;
 
-		if ( false === $imported_json ) {
-			return new WP_Error(
-				'file_read_failed',
-				__( 'Failed to read import file', 'shahi-legalflowsuite' ),
-				array( 'status' => 500 )
-			);
-		}
+		if ( ! empty( $filename ) ) {
+			// Load from file
+			$upload_dir     = wp_upload_dir();
+			$filepath       = trailingslashit( $upload_dir['basedir'] ) . 'slos-exports/' . basename( $filename );
+			$imported_json  = file_get_contents( $filepath );
 
-		$imported_profile = json_decode( $imported_json, true );
+			if ( false === $imported_json ) {
+				return new WP_Error(
+					'file_read_failed',
+					__( 'Failed to read import file', 'shahi-legalflowsuite' ),
+					array( 'status' => 500 )
+				);
+			}
 
-		if ( null === $imported_profile ) {
-			return new WP_Error(
-				'json_parse_failed',
-				__( 'Failed to parse import file', 'shahi-legalflowsuite' ),
-				array( 'status' => 400 )
-			);
+			$imported_profile = json_decode( $imported_json, true );
+
+			if ( null === $imported_profile ) {
+				return new WP_Error(
+					'json_parse_failed',
+					__( 'Failed to parse import file', 'shahi-legalflowsuite' ),
+					array( 'status' => 400 )
+				);
+			}
+		} else {
+			// Use provided profile directly
+			$imported_profile = $profile;
 		}
 
 		$diff = $this->sync_service->compare_configs( $current_profile, $imported_profile );

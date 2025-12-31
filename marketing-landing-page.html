@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shahi LegalFlowSuite - Professional Legal Operations & Compliance Suite for WordPress</title>
+    <meta name="description" content="The ultimate legal compliance toolkit for WordPress. GDPR, CCPA, WCAG 2.1 AA compliance, automated accessibility fixes, legal document generation, and more.">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00f7ff;
+            --secondary: #ff00e6;
+            --accent: #7b2ff7;
+            --bg-dark: #0a0a0f;
+            --bg-darker: #050508;
+            --bg-card: #151520;
+            --text: #ffffff;
+            --text-dim: #a8a8b8;
+            --success: #00ff88;
+            --warning: #ffaa00;
+            --glow: rgba(0, 247, 255, 0.3);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+
+        @keyframes slide-up {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px var(--primary), 0 0 40px var(--primary); }
+            50% { box-shadow: 0 0 40px var(--primary), 0 0 80px var(--primary); }
+        }
+
+        @keyframes scan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(123, 47, 247, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 247, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(255, 0, 230, 0.08) 0%, transparent 50%);
+        }
+
+        .scan-line {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            box-shadow: 0 0 10px var(--primary);
+            animation: scan 8s linear infinite;
+            z-index: 1;
+            opacity: 0.3;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Header/Navigation */
+        header {
+            padding: 30px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 247, 255, 0.2);
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: inline-block;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+            text-shadow: 0 0 10px var(--primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 120px 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 72px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        .hero .subtitle {
+            font-size: 28px;
+            color: var(--text-dim);
+            margin-bottom: 40px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .version-badge {
+            display: inline-block;
+            padding: 10px 25px;
+            background: rgba(0, 247, 255, 0.1);
+            border: 1px solid var(--primary);
+            border-radius: 50px;
+            color: var(--primary);
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 50px;
+        }
+
+        .btn {
+            padding: 18px 45px;
+            font-size: 18px;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: var(--bg-dark);
+            box-shadow: 0 10px 40px rgba(0, 247, 255, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(0, 247, 255, 0.6);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 247, 255, 0.1);
+            transform: translateY(-3px);
+        }
+
+        /* Stats Section */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            padding: 80px 0;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 40px;
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 247, 255, 0.2);
+            border-radius: 20px;
+            transition: all 0.4s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 60px rgba(0, 247, 255, 0.3);
+        }
+
+        .stat-number {
+            font-size: 56px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 18px;
+            color: var(--text-dim);
+        }
+
+        /* Features Section */
+        .section {
+            padding: 100px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-title {
+            font-size: 56px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-subtitle {
+            font-size: 22px;
+            color: var(--text-dim);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 247, 255, 0.1);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 247, 255, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 60px rgba(0, 247, 255, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .feature-title {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .feature-description {
+            color: var(--text-dim);
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            padding-left: 30px;
+            position: relative;
+            color: var(--text-dim);
+        }
+
+        .feature-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success);
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        /* Showcase Section */
+        .showcase {
+            background: var(--bg-darker);
+            padding: 100px 0;
+            border-top: 1px solid rgba(0, 247, 255, 0.2);
+            border-bottom: 1px solid rgba(0, 247, 255, 0.2);
+        }
+
+        .showcase-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+            margin-bottom: 100px;
+        }
+
+        .showcase-grid:nth-child(even) {
+            direction: rtl;
+        }
+
+        .showcase-grid:nth-child(even) > * {
+            direction: ltr;
+        }
+
+        .showcase-content h3 {
+            font-size: 42px;
+            margin-bottom: 25px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .showcase-content p {
+            font-size: 18px;
+            color: var(--text-dim);
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        .showcase-visual {
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 247, 255, 0.2);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .code-preview {
+            background: var(--bg-darker);
+            padding: 30px;
+            border-radius: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: var(--success);
+            overflow-x: auto;
+        }
+
+        /* Modules Section */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+
+        .module-card {
+            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(123, 47, 247, 0.1) 100%);
+            padding: 50px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 247, 255, 0.2);
+            transition: all 0.4s ease;
+        }
+
+        .module-card:hover {
+            transform: scale(1.02);
+            border-color: var(--primary);
+            box-shadow: 0 30px 80px rgba(0, 247, 255, 0.3);
+        }
+
+        .module-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .module-icon {
+            font-size: 56px;
+        }
+
+        .module-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .module-description {
+            font-size: 18px;
+            color: var(--text-dim);
+            margin-bottom: 25px;
+            line-height: 1.8;
+        }
+
+        .module-features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .module-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            color: var(--text-dim);
+        }
+
+        .module-feature-item::before {
+            content: '◆';
+            color: var(--primary);
+            font-size: 12px;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            padding: 100px 0;
+            background: var(--bg-darker);
+        }
+
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pricing-card {
+            background: var(--bg-card);
+            padding: 50px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 247, 255, 0.2);
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .pricing-card.featured {
+            border-color: var(--primary);
+            transform: scale(1.05);
+            box-shadow: 0 30px 80px rgba(0, 247, 255, 0.4);
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 30px 80px rgba(0, 247, 255, 0.3);
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: var(--bg-dark);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .pricing-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .pricing-price {
+            font-size: 64px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .pricing-period {
+            font-size: 18px;
+            color: var(--text-dim);
+            margin-bottom: 30px;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin: 40px 0;
+            text-align: left;
+        }
+
+        .pricing-features li {
+            padding: 15px 0;
+            padding-left: 35px;
+            position: relative;
+            color: var(--text-dim);
+            font-size: 16px;
+        }
+
+        .pricing-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success);
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            padding: 100px 0;
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+        }
+
+        .testimonial-card {
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 247, 255, 0.1);
+            transition: all 0.4s ease;
+        }
+
+        .testimonial-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+        }
+
+        .testimonial-text {
+            font-size: 18px;
+            color: var(--text-dim);
+            line-height: 1.8;
+            margin-bottom: 25px;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .author-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .author-info h4 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .author-info p {
+            font-size: 14px;
+            color: var(--text-dim);
+        }
+
+        /* Tech Stack */
+        .tech-stack {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .tech-icons {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            flex-wrap: wrap;
+            margin-top: 50px;
+        }
+
+        .tech-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 247, 255, 0.2);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            transition: all 0.3s ease;
+        }
+
+        .tech-icon:hover {
+            border-color: var(--primary);
+            transform: translateY(-10px) rotate(5deg);
+            box-shadow: 0 10px 30px rgba(0, 247, 255, 0.3);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 120px 0;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(0, 247, 255, 0.1) 0%, rgba(255, 0, 230, 0.1) 100%);
+            border-top: 1px solid rgba(0, 247, 255, 0.2);
+            border-bottom: 1px solid rgba(0, 247, 255, 0.2);
+        }
+
+        .cta-section h2 {
+            font-size: 56px;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cta-section p {
+            font-size: 24px;
+            color: var(--text-dim);
+            margin-bottom: 50px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Footer */
+        footer {
+            padding: 60px 0 30px;
+            border-top: 1px solid rgba(0, 247, 255, 0.2);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: var(--text-dim);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 10px;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(0, 247, 255, 0.1);
+            color: var(--text-dim);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 42px;
+            }
+
+            .hero .subtitle {
+                font-size: 20px;
+            }
+
+            .section-title {
+                font-size: 36px;
+            }
+
+            .showcase-grid,
+            .modules-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+        }
+
+        /* Scroll animations */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease;
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Loading spinner for demo */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 247, 255, 0.3);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: rotate 1s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-effect"></div>
+    <div class="scan-line"></div>
+
+    <!-- Header -->
+    <header>
+        <nav class="container">
+            <div class="logo">⚡ Shahi LegalFlowSuite</div>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#modules">Modules</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="#testimonials">Testimonials</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero container">
+        <div class="version-badge">🚀 Version 3.5.0 - Latest Release</div>
+        <h1>The Ultimate Legal Compliance Toolkit for WordPress</h1>
+        <p class="subtitle">
+            Professional-grade GDPR/CCPA compliance, accessibility automation with 96 auto-fixers, 
+            legal document generation, and data subject request management—all in one powerful suite.
+        </p>
+        <div class="cta-buttons">
+            <a href="#pricing" class="btn btn-primary">Get Started Now</a>
+            <a href="#features" class="btn btn-secondary">Explore Features</a>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="container">
+        <div class="stats">
+            <div class="stat-card animate-on-scroll">
+                <div class="stat-number">96</div>
+                <div class="stat-label">Auto-Fixers for Accessibility</div>
+            </div>
+            <div class="stat-card animate-on-scroll">
+                <div class="stat-number">4</div>
+                <div class="stat-label">Compliance Modules</div>
+            </div>
+            <div class="stat-card animate-on-scroll">
+                <div class="stat-number">WCAG 2.1</div>
+                <div class="stat-label">AA Compliance Level</div>
+            </div>
+            <div class="stat-card animate-on-scroll">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Privacy-First (No Tracking)</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="section container">
+        <div class="section-header animate-on-scroll">
+            <h2 class="section-title">Powerful Features</h2>
+            <p class="section-subtitle">
+                Everything you need to manage legal compliance, accessibility, and privacy requirements for your WordPress site.
+            </p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">🛡️</div>
+                <h3 class="feature-title">GDPR & CCPA Compliance</h3>
+                <p class="feature-description">
+                    Complete privacy regulation compliance with geo-aware consent management, 
+                    cookie scanning, and automatic regional template selection.
+                </p>
+                <ul class="feature-list">
+                    <li>Geo-targeting with EU, US-CA, BR detection</li>
+                    <li>Customizable consent banners (4 templates)</li>
+                    <li>Cookie inventory & categorization</li>
+                    <li>A/B testing for conversion optimization</li>
+                    <li>Analytics integration (GA, Mixpanel, Segment)</li>
+                    <li>Consent audit logs & versioning</li>
+                </ul>
+            </div>
+
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">♿</div>
+                <h3 class="feature-title">Accessibility Auto-Fix System</h3>
+                <p class="feature-description">
+                    Industry-leading accessibility automation with 96 intelligent fixers that 
+                    automatically repair WCAG 2.1 AA issues in real-time.
+                </p>
+                <ul class="feature-list">
+                    <li>96 automated fixers (91% coverage)</li>
+                    <li>Focus indicators & keyboard navigation</li>
+                    <li>Touch target optimization (44x44px)</li>
+                    <li>ARIA live regions & landmarks</li>
+                    <li>Color contrast fixes & status icons</li>
+                    <li>Animation pause controls</li>
+                    <li>Language detection (12 languages)</li>
+                    <li>Real-time progress popup with status</li>
+                </ul>
+            </div>
+
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">📄</div>
+                <h3 class="feature-title">Legal Document Generator</h3>
+                <p class="feature-description">
+                    Generate professional legal documents from templates with version control and company profile management.
+                </p>
+                <ul class="feature-list">
+                    <li>Privacy Policy generator</li>
+                    <li>Terms of Service templates</li>
+                    <li>Cookie Policy automation</li>
+                    <li>Accessibility Statement</li>
+                    <li>GDPR-compliant wording</li>
+                    <li>PDF export with Dompdf</li>
+                    <li>Document versioning</li>
+                </ul>
+            </div>
+
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">👥</div>
+                <h3 class="feature-title">Data Subject Rights Portal</h3>
+                <p class="feature-description">
+                    Handle GDPR, CCPA, and other privacy law requests with a secure, automated portal and 30-day SLA tracking.
+                </p>
+                <ul class="feature-list">
+                    <li>Access, deletion, portability requests</li>
+                    <li>Email verification system</li>
+                    <li>30-day SLA tracking</li>
+                    <li>Machine-readable data exports (JSON)</li>
+                    <li>Secure request handling</li>
+                    <li>Status notifications</li>
+                </ul>
+            </div>
+
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">🎨</div>
+                <h3 class="feature-title">Modern Admin Dashboard</h3>
+                <p class="feature-description">
+                    Clean, intuitive interface with compliance scoring, real-time analytics, and actionable insights.
+                </p>
+                <ul class="feature-list">
+                    <li>Multi-dimensional compliance score</li>
+                    <li>Real-time scan progress</li>
+                    <li>Visual accessibility reports</li>
+                    <li>One-click module management</li>
+                    <li>Dark mode interface</li>
+                    <li>Responsive design</li>
+                </ul>
+            </div>
+
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">⚡</div>
+                <h3 class="feature-title">Performance Optimized</h3>
+                <p class="feature-description">
+                    Built for speed with caching, lazy loading, and Core Web Vitals optimization.
+                </p>
+                <ul class="feature-list">
+                    <li>CLS < 0.01 (excellent)</li>
+                    <li>Deferred JavaScript loading</li>
+                    <li>Minified assets (< 5KB gzipped)</li>
+                    <li>GPU-accelerated animations</li>
+                    <li>No external dependencies</li>
+                    <li>Zero tracking/analytics</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Showcase Section -->
+    <section class="showcase">
+        <div class="container">
+            <div class="showcase-grid">
+                <div class="showcase-content animate-on-scroll">
+                    <h3>🤖 96 Intelligent Auto-Fixers</h3>
+                    <p>
+                        Our revolutionary accessibility system goes beyond detection—it automatically fixes issues. 
+                        From focus indicators and touch targets to ARIA landmarks and language attributes, 
+                        we've got you covered.
+                    </p>
+                    <p>
+                        <strong>New in 3.4.0:</strong> Added 5 new fixer classes (LanguageChangeFixer, StatusMessageFixer, 
+                        AnimationPauseFixer, TimingControlFixer, ErrorIdentificationFixer) and enhanced 7 existing fixers.
+                    </p>
+                    <ul class="feature-list">
+                        <li>Automatic focus indicator injection</li>
+                        <li>Touch target resizing (44x44px minimum)</li>
+                        <li>Keyboard trap escape handlers</li>
+                        <li>Animation pause/play controls</li>
+                        <li>12-language detection system</li>
+                        <li>ARIA live regions for status messages</li>
+                    </ul>
+                </div>
+                <div class="showcase-visual animate-on-scroll">
+                    <div class="code-preview">
+// Auto-Fix Example: Language Detection
+class LanguageChangeFixer {
+    patterns = [
+        'fr' => 'bonjour|merci|café',
+        'es' => 'hola|gracias|señor',
+        'de' => 'danke|wunderbar',
+        'ja' => 'arigatou|kawaii',
+        // 12 languages supported
+    ];
+    
+    fix($content) {
+        // Detects foreign text
+        // Adds lang="fr", lang="es", etc.
+        // ✅ WCAG 3.1.2 AA compliance
+    }
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="showcase-grid">
+                <div class="showcase-content animate-on-scroll">
+                    <h3>🌍 Geo-Aware Consent Management</h3>
+                    <p>
+                        Automatically detects visitor location and serves the appropriate consent template. 
+                        EU visitors get GDPR, California gets CCPA, Brazil gets LGPD—all automatically.
+                    </p>
+                    <p>
+                        <strong>Phase 4.1 Complete:</strong> Server-side geo detection with Geo_Service, 
+                        frontend fallback via REST API, and multi-layer template matching.
+                    </p>
+                    <ul class="feature-list">
+                        <li>IP-based geolocation</li>
+                        <li>4 regional templates (Simple, GDPR, CCPA, Advanced)</li>
+                        <li>Geo_Rule_Matcher integration</li>
+                        <li>Consent record geo tracking</li>
+                        <li>Automatic compliance mapping</li>
+                    </ul>
+                </div>
+                <div class="showcase-visual animate-on-scroll">
+                    <div class="code-preview">
+// Geo Detection Flow
+1. Server-side: Geo_Service detects region
+2. Rule Matcher: Matches geo_rule templates
+3. Frontend Fallback: /wp-json/slos/v1/geo/region
+4. Region Mapping: EU→GDPR, US-CA→CCPA
+5. Consent Record: Stores geo_rule_id
+
+Result: EU visitor → GDPR banner ✅
+Result: CA visitor → CCPA banner ✅
+Result: BR visitor → LGPD banner ✅
+                    </div>
+                </div>
+            </div>
+
+            <div class="showcase-grid">
+                <div class="showcase-content animate-on-scroll">
+                    <h3>📊 A/B Testing & Analytics</h3>
+                    <p>
+                        Built-in A/B testing infrastructure with variant assignment, persistent storage, 
+                        and comprehensive analytics events for every user interaction.
+                    </p>
+                    <p>
+                        <strong>Phase 4.2 & 4.3:</strong> Variant tracking in consent metadata, 
+                        duration measurement, and CustomEvent API for Google Analytics, Segment, and Mixpanel.
+                    </p>
+                    <ul class="feature-list">
+                        <li>50/50 variant assignment</li>
+                        <li>Persistent localStorage tracking</li>
+                        <li>5 analytics events (shown, accepted, rejected, customized, updated)</li>
+                        <li>Time-to-decision measurement</li>
+                        <li>Cohort analysis ready</li>
+                    </ul>
+                </div>
+                <div class="showcase-visual animate-on-scroll">
+                    <div class="code-preview">
+// Analytics Events
+document.addEventListener('slos-consent-shown', (e) => {
+    gtag('event', 'consent_shown', {
+        variant: e.detail.variant,      // "A" or "B"
+        template: e.detail.template,    // "gdpr"
+        region: e.detail.region,        // "EU"
+        policyVersion: e.detail.version // "2.0"
+    });
+});
+
+document.addEventListener('slos-consent-accepted', (e) => {
+    gtag('event', 'consent_accepted', {
+        categories: e.detail.categories,  // [...]
+        duration: e.detail.duration,      // ms
+        variant: e.detail.variant         // "A"
+    });
+});
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modules Section -->
+    <section id="modules" class="section container">
+        <div class="section-header animate-on-scroll">
+            <h2 class="section-title">Modular Architecture</h2>
+            <p class="section-subtitle">
+                Enable only the modules you need. Every module is fully featured, secure, and optimized for performance.
+            </p>
+        </div>
+
+        <div class="modules-grid">
+            <div class="module-card animate-on-scroll">
+                <div class="module-header">
+                    <div class="module-icon">🍪</div>
+                    <div>
+                        <h3 class="module-title">Consent Management</h3>
+                    </div>
+                </div>
+                <p class="module-description">
+                    Complete cookie consent solution with geo-targeting, A/B testing, and analytics integration.
+                </p>
+                <div class="module-features">
+                    <div class="module-feature-item">Cookie Scanner</div>
+                    <div class="module-feature-item">4 Banner Templates</div>
+                    <div class="module-feature-item">Geo Detection</div>
+                    <div class="module-feature-item">A/B Testing</div>
+                    <div class="module-feature-item">Analytics Events</div>
+                    <div class="module-feature-item">Consent Versioning</div>
+                    <div class="module-feature-item">Audit Logs</div>
+                    <div class="module-feature-item">12 Languages</div>
+                </div>
+            </div>
+
+            <div class="module-card animate-on-scroll">
+                <div class="module-header">
+                    <div class="module-icon">♿</div>
+                    <div>
+                        <h3 class="module-title">Accessibility Scanner</h3>
+                    </div>
+                </div>
+                <p class="module-description">
+                    WCAG 2.1 AA scanning with 96 auto-fixers that repair issues automatically.
+                </p>
+                <div class="module-features">
+                    <div class="module-feature-item">96 Auto-Fixers</div>
+                    <div class="module-feature-item">Real-time Scanning</div>
+                    <div class="module-feature-item">Progress Popup</div>
+                    <div class="module-feature-item">Page Scoring</div>
+                    <div class="module-feature-item">Focus Management</div>
+                    <div class="module-feature-item">Touch Targets</div>
+                    <div class="module-feature-item">ARIA Enhancement</div>
+                    <div class="module-feature-item">Fix History</div>
+                </div>
+            </div>
+
+            <div class="module-card animate-on-scroll">
+                <div class="module-header">
+                    <div class="module-icon">📝</div>
+                    <div>
+                        <h3 class="module-title">Legal Documents</h3>
+                    </div>
+                </div>
+                <p class="module-description">
+                    Professional legal document generation with templates and version control.
+                </p>
+                <div class="module-features">
+                    <div class="module-feature-item">Privacy Policy</div>
+                    <div class="module-feature-item">Terms of Service</div>
+                    <div class="module-feature-item">Cookie Policy</div>
+                    <div class="module-feature-item">A11y Statement</div>
+                    <div class="module-feature-item">PDF Export</div>
+                    <div class="module-feature-item">Versioning</div>
+                    <div class="module-feature-item">Company Profile</div>
+                    <div class="module-feature-item">Custom Templates</div>
+                </div>
+            </div>
+
+            <div class="module-card animate-on-scroll">
+                <div class="module-header">
+                    <div class="module-icon">🔐</div>
+                    <div>
+                        <h3 class="module-title">DSR Portal</h3>
+                    </div>
+                </div>
+                <p class="module-description">
+                    Data Subject Rights portal for GDPR/CCPA with secure request handling and SLA tracking.
+                </p>
+                <div class="module-features">
+                    <div class="module-feature-item">Access Requests</div>
+                    <div class="module-feature-item">Deletion Requests</div>
+                    <div class="module-feature-item">Portability</div>
+                    <div class="module-feature-item">Rectification</div>
+                    <div class="module-feature-item">Email Verification</div>
+                    <div class="module-feature-item">30-Day SLA</div>
+                    <div class="module-feature-item">JSON Export</div>
+                    <div class="module-feature-item">Status Tracking</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2 class="section-title">Choose Your Plan</h2>
+                <p class="section-subtitle">
+                    Flexible pricing for individuals, agencies, and enterprises. All plans include full access to all modules.
+                </p>
+            </div>
+
+            <div class="pricing-cards">
+                <div class="pricing-card animate-on-scroll">
+                    <h3 class="pricing-title">Starter</h3>
+                    <div class="pricing-price">$99</div>
+                    <div class="pricing-period">per year / 1 site</div>
+                    <ul class="pricing-features">
+                        <li>All 4 Modules Included</li>
+                        <li>96 Accessibility Auto-Fixers</li>
+                        <li>Geo-Aware Consent Management</li>
+                        <li>Legal Document Generator</li>
+                        <li>DSR Portal</li>
+                        <li>Email Support</li>
+                        <li>1 Year Updates</li>
+                        <li>GPLv3 License</li>
+                    </ul>
+                    <a href="#" class="btn btn-secondary">Get Started</a>
+                </div>
+
+                <div class="pricing-card featured animate-on-scroll">
+                    <div class="pricing-badge">⭐ Most Popular</div>
+                    <h3 class="pricing-title">Professional</h3>
+                    <div class="pricing-price">$299</div>
+                    <div class="pricing-period">per year / 5 sites</div>
+                    <ul class="pricing-features">
+                        <li>Everything in Starter</li>
+                        <li>5 Website Licenses</li>
+                        <li>Priority Support</li>
+                        <li>Advanced Analytics</li>
+                        <li>White-Label Options</li>
+                        <li>Custom Templates</li>
+                        <li>1 Year Updates</li>
+                        <li>GPLv3 License</li>
+                    </ul>
+                    <a href="#" class="btn btn-primary">Get Started</a>
+                </div>
+
+                <div class="pricing-card animate-on-scroll">
+                    <h3 class="pricing-title">Agency</h3>
+                    <div class="pricing-price">$599</div>
+                    <div class="pricing-period">per year / unlimited sites</div>
+                    <ul class="pricing-features">
+                        <li>Everything in Professional</li>
+                        <li>Unlimited Website Licenses</li>
+                        <li>Dedicated Support Channel</li>
+                        <li>Custom Development</li>
+                        <li>Onboarding Assistance</li>
+                        <li>Agency Resources</li>
+                        <li>Lifetime Updates</li>
+                        <li>Extended GPLv3 License</li>
+                    </ul>
+                    <a href="#" class="btn btn-secondary">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section id="testimonials" class="testimonials container">
+        <div class="section-header animate-on-scroll">
+            <h2 class="section-title">Trusted by Professionals</h2>
+            <p class="section-subtitle">
+                See what developers, agencies, and legal teams are saying about Shahi LegalFlowSuite.
+            </p>
+        </div>
+
+        <div class="testimonial-grid">
+            <div class="testimonial-card animate-on-scroll">
+                <p class="testimonial-text">
+                    "The 96 auto-fixers saved us weeks of manual accessibility work. 
+                    We went from 60% WCAG compliance to 91% in just hours. Absolutely incredible."
+                </p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">SJ</div>
+                    <div class="author-info">
+                        <h4>Sarah Johnson</h4>
+                        <p>Lead Developer, TechCorp</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card animate-on-scroll">
+                <p class="testimonial-text">
+                    "The geo-aware consent banners are a game-changer. EU visitors automatically get GDPR, 
+                    California gets CCPA—no manual configuration needed."
+                </p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">MK</div>
+                    <div class="author-info">
+                        <h4>Michael Kim</h4>
+                        <p>Privacy Officer, Global Inc</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card animate-on-scroll">
+                <p class="testimonial-text">
+                    "We manage 50+ client sites. This plugin handles all compliance requirements in one place. 
+                    The DSR portal alone is worth the investment."
+                </p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">EP</div>
+                    <div class="author-info">
+                        <h4>Emily Parker</h4>
+                        <p>Agency Owner, WebWorks</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack -->
+    <section class="tech-stack container">
+        <div class="section-header animate-on-scroll">
+            <h2 class="section-title">Built with Modern Technology</h2>
+            <p class="section-subtitle">
+                PSR-4 autoloading, WordPress Coding Standards, secure by design, and performance-optimized.
+            </p>
+        </div>
+        <div class="tech-icons">
+            <div class="tech-icon" title="WordPress 6.7+">🎯</div>
+            <div class="tech-icon" title="PHP 7.4+">🐘</div>
+            <div class="tech-icon" title="PSR-4 Autoloading">📦</div>
+            <div class="tech-icon" title="REST API">🔌</div>
+            <div class="tech-icon" title="AJAX">⚡</div>
+            <div class="tech-icon" title="Composer">📚</div>
+            <div class="tech-icon" title="Dompdf">📄</div>
+            <div class="tech-icon" title="Symfony Components">🎼</div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="animate-on-scroll">Ready to Achieve Compliance?</h2>
+            <p class="animate-on-scroll">
+                Join hundreds of WordPress sites using Shahi LegalFlowSuite to manage legal compliance, 
+                accessibility, and privacy requirements.
+            </p>
+            <div class="cta-buttons">
+                <a href="#pricing" class="btn btn-primary">Get Started Today</a>
+                <a href="https://github.com" class="btn btn-secondary">View Documentation</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Shahi LegalFlowSuite</h3>
+                    <p>
+                        Professional legal operations and compliance management suite for WordPress.
+                        GDPR, CCPA, WCAG 2.1 AA compliance made easy.
+                    </p>
+                    <p style="margin-top: 20px;">
+                        <strong>Version 3.5.0</strong><br>
+                        Licensed under GPLv3
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h3>Product</h3>
+                    <a href="#features">Features</a>
+                    <a href="#modules">Modules</a>
+                    <a href="#pricing">Pricing</a>
+                    <a href="#">Documentation</a>
+                    <a href="#">Changelog</a>
+                    <a href="#">Roadmap</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Resources</h3>
+                    <a href="#">Getting Started</a>
+                    <a href="#">API Reference</a>
+                    <a href="#">Code Examples</a>
+                    <a href="#">Best Practices</a>
+                    <a href="#">Support Forum</a>
+                    <a href="#">GitHub Repository</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Company</h3>
+                    <a href="#">About ShahiSoft</a>
+                    <a href="#">Contact Us</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">License</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 ShahiSoft. All rights reserved. | GPLv3 Licensed | No tracking, no external dependencies.</p>
+                <p style="margin-top: 10px; font-size: 14px;">
+                    ⚠️ <em>This plugin provides tools to help manage compliance. It does not provide legal advice 
+                    and does not guarantee compliance with any law. Consult qualified legal counsel.</em>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Parallax effect for stats
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.stat-card, .feature-card, .module-card');
+            parallaxElements.forEach((el, index) => {
+                const speed = 0.5 + (index % 3) * 0.2;
+                const yPos = -(scrolled * speed / 100);
+                el.style.transform = `translateY(${yPos}px)`;
+            });
+        });
+
+        // Interactive hover effects
+        document.querySelectorAll('.feature-card, .module-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (y - centerY) / 20;
+                const rotateY = (centerX - x) / 20;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
+            });
+        });
+
+        // Dynamic stat counter animation
+        const animateValue = (element, start, end, duration) => {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const value = Math.floor(progress * (end - start) + start);
+                element.textContent = value;
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                } else {
+                    element.textContent = end;
+                }
+            };
+            window.requestAnimationFrame(step);
+        };
+
+        // Trigger stat animations when visible
+        const statObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const statNumber = entry.target.querySelector('.stat-number');
+                    const finalValue = parseInt(statNumber.textContent);
+                    if (!isNaN(finalValue)) {
+                        animateValue(statNumber, 0, finalValue, 2000);
+                        statObserver.unobserve(entry.target);
+                    }
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.stat-card').forEach(card => {
+            statObserver.observe(card);
+        });
+
+        console.log('%c⚡ Shahi LegalFlowSuite v3.5.0', 'font-size: 20px; color: #00f7ff; font-weight: bold;');
+        console.log('%cThe Ultimate Legal Compliance Toolkit for WordPress', 'font-size: 14px; color: #a8a8b8;');
+        console.log('%c96 Auto-Fixers | GDPR/CCPA | WCAG 2.1 AA | Zero Tracking', 'font-size: 12px; color: #00ff88;');
+    </script>
+</body>
+</html>

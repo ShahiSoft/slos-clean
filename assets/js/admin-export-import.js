@@ -51,7 +51,7 @@
             const format = $('#slos_export_format').val() || 'csv';
             
             // Build API URL
-            const apiUrl = window.shahiData?.restUrl || '/wp-json/slos/v1/consents/export/download';
+            const apiUrl = window.shahiData?.restUrl || '/wp-json/shahi-legalflowsuite/v1/consents/export/download';
             const exportUrl = `${apiUrl}?format=${format}&_wpnonce=${window.shahiData?.nonce || ''}`;
             
             // Create hidden iframe for download
@@ -189,7 +189,7 @@
                         slosExportImportI18n.importing.replace('%d', rows.length) + '</p></div>');
             
             // Build API URL
-            const apiUrl = (window.shahiData?.restUrl || '/wp-json/') + 'slos/v1/consents/export/import';
+            const apiUrl = (window.shahiData?.restUrl || '/wp-json/') + 'shahi-legalflowsuite/v1/consents/export/import';
             
             // Send import request
             $.ajax({

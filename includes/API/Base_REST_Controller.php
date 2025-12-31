@@ -38,7 +38,7 @@ abstract class Base_REST_Controller extends WP_REST_Controller {
 	 * @since 3.0.1
 	 * @var string
 	 */
-	protected $namespace = 'slos/v1';
+	protected $namespace = 'shahi-legalflowsuite/v1';
 
 	/**
 	 * Resource name
