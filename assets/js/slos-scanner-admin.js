@@ -296,34 +296,15 @@ jQuery(document).ready(function($) {
                     // Automatically rescan after fixes are applied
                     if (results.fixed > 0) {
                         setTimeout(function() {
-                            // Show brief notification
+                            // Backend already rescanned and consolidated results
                             alert('✓ Auto-Fix Complete!\n\n' + 
                                   'Fixed: ' + results.fixed + ' issue(s)\n' +
                                   (results.errors > 0 ? 'Errors: ' + results.errors + '\n' : '') +
                                   (results.skipped > 0 ? 'Skipped: ' + results.skipped + '\n' : '') +
-                                  '\nRescanning page to update results...');
+                                  '\nRefreshing page to show updated results...');
                             
-                            // Trigger rescan for this specific page
-                            $.ajax({
-                                url: slosScanner.ajax_url,
-                                type: 'POST',
-                                data: {
-                                    action: 'slos_scan_single_post',
-                                    nonce: slosScanner.nonce,
-                                    post_id: postId
-                                },
-                                success: function(response) {
-                                    if (response.success) {
-                                        // Reload to show fresh scan results
-                                        location.reload();
-                                    } else {
-                                        alert('Rescan failed. Please refresh the page manually.');
-                                    }
-                                },
-                                error: function() {
-                                    alert('Rescan failed. Please refresh the page manually.');
-                                }
-                            });
+                            // Reload to show fresh scan results (backend already updated)
+                            location.reload();
                         }, 500);
                     } else if (results.skipped > 0 && results.fixed === 0) {
                         // No issues were actually fixed

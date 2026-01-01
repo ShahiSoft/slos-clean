@@ -12,6 +12,7 @@ namespace ShahiLegalFlowSuite\Modules\AccessibilityScanner;
 
 use ShahiLegalFlowSuite\Modules\Module;
 use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Scanner\ScannerEngine;
+use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Services\BackupService;
 use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Scanner\Checkers\MissingAltTextCheck;
 use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Scanner\Checkers\EmptyAltTextCheck;
 use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Scanner\Checkers\MissingH1Check;
@@ -113,6 +114,13 @@ class AccessibilityScanner extends Module {
 	private $scanner;
 
 	/**
+	 * Backup Service Instance
+	 *
+	 * @var BackupService
+	 */
+	private $backup_service;
+
+	/**
 	 * Get module unique key
 	 *
 	 * @since 1.0.0
@@ -182,6 +190,7 @@ class AccessibilityScanner extends Module {
 	 */
 	public function init() {
 		$this->scanner = new ScannerEngine();
+		$this->backup_service = new BackupService();
 		$this->register_checks();
 
 		// Initialize Widget
@@ -2056,26 +2065,11 @@ class AccessibilityScanner extends Module {
 			wp_send_json_error( array( 'message' => 'Missing fixer ID' ) );
 		}
 
-		// Try new FixEngine first (v3.3.0+)
-		$fix_engine_bootstrap = SHAHI_LEGALFLOWSUITE_PLUGIN_PATH . 'includes/Modules/AccessibilityScanner/FixEngine/Bootstrap.php';
-		
-		if ( file_exists( $fix_engine_bootstrap ) ) {
-			require_once $fix_engine_bootstrap;
-			
-			if ( class_exists( '\ShahiLegalFlowSuite\Modules\AccessibilityScanner\FixEngine\Bootstrap' ) ) {
-				$engine = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\FixEngine\Bootstrap::get_engine();
-				$engine->initialize();
-				
-				$fixer = $engine->get_fixer( $fixer_id );
-				
-				if ( $fixer ) {
-					$this->handle_fix_engine_request( $engine, $fixer, $fixer_id, $page_id, $content );
-					return;
-				}
-			}
-		}
+		// Note: FixEngine temporarily disabled - use FixerRegistry
+		// The FixEngine uses PHP 7.4+ type hints which may not be compatible
+		// with all environments. We're using the stable FixerRegistry instead.
 
-		// Fallback to old FixerRegistry
+		// Use FixerRegistry
 		if ( ! class_exists( '\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry' ) ) {
 			wp_send_json(
 				array(
@@ -2260,7 +2254,7 @@ class AccessibilityScanner extends Module {
 
 		// Get scan results for this page
 		$scan_results = get_post_meta( $post_id, '_slos_accessibility_scan_results', true );
-		$scan_date    = get_post_meta( $post_id, '_slos_last_scan_date', true );
+		$scan_date    = get_post_meta( $post_id, '_slos_accessibility_scan_date', true );
 		$post         = get_post( $post_id );
 
 		if ( ! $post ) {
@@ -2475,31 +2469,51 @@ class AccessibilityScanner extends Module {
 	 * Save content backup before applying fixes
 	 *
 	 * @since 3.1.1
+	 * @deprecated 3.2.0 Use BackupService::save_backup() instead
 	 * @param int    $post_id Post ID
 	 * @param string $content Original content
 	 * @return bool True on success, false on failure
 	 */
 	private function save_content_backup( $post_id, $content ) {
-		$backup_key = '_slos_accessibility_content_backup';
+		_deprecated_function( __METHOD__, '3.2.0', 'BackupService::save_backup()' );
 		
-		// Save backup with timestamp
+		// Use BackupService for new backup system
+		$backup_id = $this->backup_service->save_backup( $post_id, $content );
+		
+		// Also maintain old post meta for backward compatibility during transition
+		$backup_key = '_slos_accessibility_content_backup';
 		$backup = array(
 			'content'    => $content,
 			'timestamp'  => current_time( 'timestamp' ),
 			'created_at' => current_time( 'mysql' ),
 		);
-
-		return update_post_meta( $post_id, $backup_key, $backup );
+		update_post_meta( $post_id, $backup_key, $backup );
+		
+		return (bool) $backup_id;
 	}
 
 	/**
 	 * Get content backup for rollback
 	 *
 	 * @since 3.1.1
+	 * @deprecated 3.2.0 Use BackupService::get_latest_backup() instead
 	 * @param int $post_id Post ID
 	 * @return array|false Backup data or false if not found
 	 */
 	private function get_content_backup( $post_id ) {
+		_deprecated_function( __METHOD__, '3.2.0', 'BackupService::get_latest_backup()' );
+		
+		// Try BackupService first (new system)
+		$backup = $this->backup_service->get_latest_backup( $post_id );
+		if ( $backup ) {
+			return array(
+				'content'    => $backup['original_content'],
+				'timestamp'  => strtotime( $backup['created_at'] ),
+				'created_at' => $backup['created_at'],
+			);
+		}
+		
+		// Fallback to post meta (old system)
 		$backup = get_post_meta( $post_id, '_slos_accessibility_content_backup', true );
 		
 		if ( empty( $backup ) || ! is_array( $backup ) ) {
@@ -2565,12 +2579,18 @@ class AccessibilityScanner extends Module {
 	 * Cleanup old backups (TTL mechanism)
 	 *
 	 * @since 3.1.1
+	 * @deprecated 3.2.0 Use BackupService::cleanup_old_backups() instead
 	 * @param int $ttl_days Number of days to keep backups (default 7)
 	 * @return int Number of backups cleaned up
 	 */
 	private function cleanup_old_backups( $ttl_days = 7 ) {
+		_deprecated_function( __METHOD__, '3.2.0', 'BackupService::cleanup_old_backups()' );
+		
+		// Use BackupService for database cleanup
+		$deleted = $this->backup_service->cleanup_old_backups( $ttl_days );
+		
+		// Also clean up old post meta backups for backward compatibility
 		global $wpdb;
-
 		$count = 0;
 		$ttl_timestamp = current_time( 'timestamp' ) - ( $ttl_days * DAY_IN_SECONDS );
 
@@ -2594,39 +2614,30 @@ class AccessibilityScanner extends Module {
 			}
 		}
 
-		return $count;
+		return $deleted + $count;
 	}
 
 	/**
 	 * Rollback post content to backup
 	 *
 	 * @since 3.1.1
+	 * @deprecated 3.2.0 Use BackupService::restore_backup() instead
 	 * @param int $post_id Post ID
 	 * @return bool|WP_Error True on success, WP_Error on failure
 	 */
 	private function rollback_content( $post_id ) {
-		$backup = $this->get_content_backup( $post_id );
-
-		if ( ! $backup ) {
-			return new \WP_Error( 'no_backup', 'No backup found for this post' );
+		_deprecated_function( __METHOD__, '3.2.0', 'BackupService::restore_backup()' );
+		
+		// Use BackupService to restore
+		$result = $this->backup_service->restore_backup( $post_id );
+		
+		if ( is_wp_error( $result ) ) {
+			return $result;
 		}
 
 		$post = get_post( $post_id );
 		if ( ! $post ) {
 			return new \WP_Error( 'post_not_found', 'Post not found' );
-		}
-
-		// Restore content
-		$result = wp_update_post(
-			array(
-				'ID'           => $post_id,
-				'post_content' => $backup['content'],
-			),
-			true
-		);
-
-		if ( is_wp_error( $result ) ) {
-			return $result;
 		}
 
 		// Re-scan after rollback
@@ -2641,10 +2652,7 @@ class AccessibilityScanner extends Module {
 			}
 		}
 
-		// Delete backup after successful rollback
-		$this->delete_content_backup( $post_id );
-
-		// Log rollback to history
+		// Log rollback to history (BackupService already handles backup tracking)
 		global $wpdb;
 		$table_name = $wpdb->prefix . 'slos_accessibility_fix_history';
 		
@@ -2714,12 +2722,14 @@ class AccessibilityScanner extends Module {
 			wp_send_json_error( array( 'message' => 'Invalid post ID' ) );
 		}
 
-		$backup = $this->get_content_backup( $post_id );
+		// Use BackupService directly
+		$has_backup = $this->backup_service->has_backup( $post_id );
+		$backup = $has_backup ? $this->backup_service->get_latest_backup( $post_id ) : null;
 
 		wp_send_json_success(
 			array(
-				'has_backup' => ! empty( $backup ),
-				'backup_date' => ! empty( $backup ) ? ( $backup['date'] ?? '' ) : '',
+				'has_backup' => $has_backup,
+				'backup_date' => $backup ? $backup['created_at'] : '',
 			)
 		);
 	}

@@ -1,0 +1,66 @@
+{
+    "name": "shahi/legalops-suite",
+    "description": "WordPress plugin for legal operations management with accessibility, consent management, DSR, and compliance modules",
+    "type": "wordpress-plugin",
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "Shahi Team",
+            "email": "support@shahilegalops.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.4",
+        "dompdf/dompdf": "^2.0",
+        "masterminds/html5": "^2.0",
+        "symfony/dom-crawler": "^5.0 || ^6.0",
+        "symfony/css-selector": "^5.0 || ^6.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0",
+        "yoast/phpunit-polyfills": "^1.0",
+        "brain/monkey": "^2.6",
+        "mockery/mockery": "^1.5",
+        "wp-phpunit/wp-phpunit": "^6.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "SLOSModules\\AccessibilityScanner\\": "includes/Modules/AccessibilityScanner/",
+            "SLOSModules\\ConsentManager\\": "includes/Modules/ConsentManager/",
+            "SLOSModules\\DSR\\": "includes/Modules/DSR/",
+            "SLOSModules\\Compliance\\": "includes/Modules/Compliance/",
+            "SLOS\\Core\\": "includes/Core/",
+            "SLOS\\Helpers\\": "includes/Helpers/",
+            "SLOS\\Services\\": "includes/Services/"
+        },
+        "classmap": [
+            "includes/"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true,
+        "platform": {
+            "php": "7.4"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test-coverage": "phpunit --coverage-html coverage",
+        "test-watch": "phpunit-watcher watch",
+        "lint": "phpcs --standard=WordPress includes/",
+        "lint-fix": "phpcbf --standard=WordPress includes/"
+    },
+    "scripts-descriptions": {
+        "test": "Run all PHPUnit tests",
+        "test-coverage": "Run tests with coverage report",
+        "test-watch": "Watch files and run tests on changes",
+        "lint": "Check code standards",
+        "lint-fix": "Automatically fix code standard violations"
+    }
+}

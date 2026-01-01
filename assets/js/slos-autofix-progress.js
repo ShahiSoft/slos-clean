@@ -57,6 +57,7 @@
             onComplete: null,
             rescanStats: null, // Store final rescan statistics
             elementErrors: [], // Store element-level errors
+            pageId: null, // Store page ID for localStorage persistence
         },
 
         /**
@@ -520,15 +521,8 @@
             // Announce
             this.announce('Auto-fix dialog closed.');
 
-            // Call onComplete callback
-            if (this.state.onComplete && !this.state.isCancelled) {
-                this.state.onComplete({
-                    fixed: this.state.fixedCount,
-                    errors: this.state.errorCount,
-                    skipped: this.state.skippedCount,
-                    cancelled: this.state.isCancelled,
-                });
-            }
+            // onComplete callback is handled by complete() method only
+            // to avoid duplicate calls and maintain proper separation of concerns
         },
 
         /**
@@ -537,6 +531,9 @@
         cancel: function() {
             this.state.isCancelled = true;
             this.state.isProcessing = false;
+
+            // Clear saved progress from localStorage
+            this.clearProgress(this.state.pageId);
 
             // Abort current XHR if exists
             if (this.state.currentXHR) {
@@ -592,6 +589,7 @@
             this.state.activeRequests = [];
             this.state.rescanStats = null;
             this.state.elementErrors = [];
+            this.state.pageId = null;
 
             // Reset UI
             this.elements.progressBar.style.width = '0%';
@@ -790,6 +788,7 @@
             this.state.isProcessing = true;
             
             const pageId = options.pageId || 0;
+            this.state.pageId = pageId; // Store for localStorage operations
             const content = options.content || '';
             let currentIndex = 0;
 
@@ -834,6 +833,9 @@
                             });
                         }
                     }
+
+                    // Save progress after each fixer completes
+                    self.saveProgress(pageId);
 
                     // Process next
                     currentIndex++;
@@ -938,6 +940,9 @@
         complete: function() {
             this.state.isProcessing = false;
             this.elements.progressWrap.classList.remove('processing');
+
+            // Clear saved progress from localStorage
+            this.clearProgress(this.state.pageId);
 
             // Update progress to 100%
             this.elements.progressBar.style.width = '100%';
@@ -1082,6 +1087,77 @@
             
             errorsHTML += '</ul>';
             errorContainer.innerHTML = errorsHTML;
+        },
+
+        /**
+         * Load saved progress from localStorage
+         */
+        loadProgress: function(pageId) {
+            if (!pageId) return null;
+
+            const storageKey = 'slos_autofix_progress_' + pageId;
+            const saved = localStorage.getItem(storageKey);
+            
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    
+                    // Validate data structure and timestamp (expire after 24 hours)
+                    if (data.inProgress && data.timestamp && (Date.now() - data.timestamp < 86400000)) {
+                        return data;
+                    } else {
+                        // Expired or invalid, clear it
+                        localStorage.removeItem(storageKey);
+                    }
+                } catch (e) {
+                    console.error('SLOSAutoFixProgress: Failed to load progress:', e);
+                    localStorage.removeItem(storageKey);
+                }
+            }
+            
+            return null;
+        },
+
+        /**
+         * Save current progress to localStorage
+         */
+        saveProgress: function(pageId) {
+            if (!pageId) return;
+
+            const data = {
+                inProgress: this.state.isProcessing,
+                totalFixers: this.state.totalFixers,
+                completedFixers: this.state.completedFixers,
+                fixedCount: this.state.fixedCount,
+                errorCount: this.state.errorCount,
+                skippedCount: this.state.skippedCount,
+                fixers: this.state.fixers,
+                timestamp: Date.now(),
+            };
+
+            const storageKey = 'slos_autofix_progress_' + pageId;
+            
+            try {
+                localStorage.setItem(storageKey, JSON.stringify(data));
+            } catch (e) {
+                // Handle localStorage quota exceeded or other errors
+                console.warn('SLOSAutoFixProgress: Failed to save progress:', e);
+            }
+        },
+
+        /**
+         * Clear saved progress from localStorage
+         */
+        clearProgress: function(pageId) {
+            if (!pageId) return;
+
+            const storageKey = 'slos_autofix_progress_' + pageId;
+            
+            try {
+                localStorage.removeItem(storageKey);
+            } catch (e) {
+                console.warn('SLOSAutoFixProgress: Failed to clear progress:', e);
+            }
         },
 
         /**

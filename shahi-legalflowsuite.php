@@ -417,3 +417,10 @@ function init_slos_script_blocker()
 	}
 }
 add_action('init', 'init_slos_script_blocker', 0);
+
+/**
+ * Register WP-CLI commands
+ */
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	require_once SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'includes/CLI/MigrationCommand.php';
+}
