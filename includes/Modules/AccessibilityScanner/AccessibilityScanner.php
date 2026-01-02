@@ -2065,32 +2065,21 @@ class AccessibilityScanner extends Module {
 			wp_send_json_error( array( 'message' => 'Missing fixer ID' ) );
 		}
 
-		// Use new FixEngine (PHP 8.3+ confirmed compatible)
-		// Activated: January 2, 2026 - Modern SOLID architecture with 31 optimized fixers
-		$fixer          = null;
-		$using_fallback = false;
+		// TEMPORARY: FixEngine disabled due to method signature mismatch
+		// All 31 fixers have apply_fix(string $content, array $options): FixResult
+		// But AbstractFixer expects apply_fix(): array
+		// This requires refactoring all fixer files
+		// For now, using stable FixerRegistry
+		
+		$fixer = null;
 
-		// Primary: Try FixEngine first
-		if ( class_exists( '\ShahiLegalFlowSuite\Modules\AccessibilityScanner\FixEngine\Bootstrap' ) ) {
-			try {
-				$engine = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\FixEngine\Bootstrap::get_engine();
-				$fixer  = $engine->get_fixer( $fixer_id );
-			} catch ( \Exception $e ) {
-				error_log( 'FixEngine error: ' . $e->getMessage() );
-				$using_fallback = true;
-			}
+		// Use FixerRegistry (stable, tested system)
+		if ( class_exists( '\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry' ) ) {
+			\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::init();
+			$fixer = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::get_fixer( $fixer_id );
 		}
 
-		// Fallback: Use legacy FixerRegistry for backward compatibility
-		if ( ! $fixer ) {
-			if ( class_exists( '\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry' ) ) {
-				\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::init();
-				$fixer          = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::get_fixer( $fixer_id );
-				$using_fallback = true;
-			}
-		}
-
-		// No fixer found in either system
+		// No fixer found
 		if ( ! $fixer ) {
 			wp_send_json(
 				array(

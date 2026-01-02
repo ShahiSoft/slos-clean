@@ -105,7 +105,11 @@ abstract class AbstractFixer implements FixerInterface {
 	/**
 	 * Apply the actual fix - implemented by subclasses
 	 *
-	 * @return array ['count' => int, 'items' => array]
+	 * Returns an array with:
+	 * - 'count' (int): Number of fixes applied
+	 * - 'items' (array): Optional details about what was fixed
+	 *
+	 * @return array{count: int, items?: array}
 	 */
 	abstract protected function apply_fix(): array;
 
