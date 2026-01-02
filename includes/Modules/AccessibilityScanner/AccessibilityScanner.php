@@ -2065,31 +2065,37 @@ class AccessibilityScanner extends Module {
 			wp_send_json_error( array( 'message' => 'Missing fixer ID' ) );
 		}
 
-		// Note: FixEngine temporarily disabled - use FixerRegistry
-		// The FixEngine uses PHP 7.4+ type hints which may not be compatible
-		// with all environments. We're using the stable FixerRegistry instead.
+		// Use new FixEngine (PHP 8.3+ confirmed compatible)
+		// Activated: January 2, 2026 - Modern SOLID architecture with 31 optimized fixers
+		$fixer          = null;
+		$using_fallback = false;
 
-		// Use FixerRegistry
-		if ( ! class_exists( '\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry' ) ) {
-			wp_send_json(
-				array(
-					'skipped' => true,
-					'message' => 'Fixer system not available',
-				)
-			);
-			return;
+		// Primary: Try FixEngine first
+		if ( class_exists( '\ShahiLegalFlowSuite\Modules\AccessibilityScanner\FixEngine\Bootstrap' ) ) {
+			try {
+				$engine = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\FixEngine\Bootstrap::get_engine();
+				$fixer  = $engine->get_fixer( $fixer_id );
+			} catch ( \Exception $e ) {
+				error_log( 'FixEngine error: ' . $e->getMessage() );
+				$using_fallback = true;
+			}
 		}
 
-		\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::init();
+		// Fallback: Use legacy FixerRegistry for backward compatibility
+		if ( ! $fixer ) {
+			if ( class_exists( '\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry' ) ) {
+				\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::init();
+				$fixer          = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::get_fixer( $fixer_id );
+				$using_fallback = true;
+			}
+		}
 
-		// Get the fixer
-		$fixer = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::get_fixer( $fixer_id );
-
+		// No fixer found in either system
 		if ( ! $fixer ) {
 			wp_send_json(
 				array(
 					'skipped' => true,
-					'message' => 'Fixer not found',
+					'message' => 'Fixer not found: ' . esc_html( $fixer_id ),
 				)
 			);
 			return;

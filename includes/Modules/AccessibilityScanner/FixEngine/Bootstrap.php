@@ -63,9 +63,20 @@ final class Bootstrap {
 	private static function load_dependencies(): void {
 		$base_dir = __DIR__;
 
+		// Load core interfaces and contracts first
+		$contract_files = [
+			'FixerInterface.php',
+		];
+
+		foreach ( $contract_files as $file ) {
+			$path = $base_dir . '/' . $file;
+			if ( file_exists( $path ) ) {
+				require_once $path;
+			}
+		}
+
 		// Load core classes
 		$core_files = [
-			'FixerInterface.php',
 			'FixResult.php',
 			'AbstractFixer.php',
 			'FixerCollection.php',
@@ -86,8 +97,10 @@ final class Bootstrap {
 		$fixers_dir = $base_dir . '/Fixers';
 		if ( is_dir( $fixers_dir ) ) {
 			$fixer_files = glob( $fixers_dir . '/*.php' );
-			foreach ( $fixer_files as $fixer_file ) {
-				require_once $fixer_file;
+			if ( is_array( $fixer_files ) ) {
+				foreach ( $fixer_files as $fixer_file ) {
+					require_once $fixer_file;
+				}
 			}
 		}
 	}
