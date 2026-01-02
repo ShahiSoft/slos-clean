@@ -138,19 +138,11 @@ class ScannerPage {
 	 * @return array
 	 */
 	private function get_fixer_list_for_js() {
-		// Try new FixEngine first (v3.3.0+)
-		$fix_engine_bootstrap = SHAHI_LEGALFLOWSUITE_PLUGIN_PATH . 'includes/Modules/AccessibilityScanner/FixEngine/Bootstrap.php';
+		// TEMPORARY: FixEngine disabled due to critical method signature mismatch
+		// All 31 fixers have incompatible signatures causing PHP Fatal Errors
+		// Using stable FixerRegistry until FixEngine is refactored
 		
-		if ( file_exists( $fix_engine_bootstrap ) ) {
-			require_once $fix_engine_bootstrap;
-			
-			if ( class_exists( '\ShahiLegalFlowSuite\Modules\AccessibilityScanner\FixEngine\Bootstrap' ) ) {
-				$data = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\FixEngine\Bootstrap::get_scanner_data();
-				return $data['fixers'] ?? array();
-			}
-		}
-		
-		// Fallback to old FixerRegistry for backward compatibility
+		// Use FixerRegistry
 		if ( class_exists( '\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry' ) ) {
 			\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::init();
 			$fixer_ids = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::get_all_fixer_ids();
