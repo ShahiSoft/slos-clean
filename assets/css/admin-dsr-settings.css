@@ -8,7 +8,7 @@
 .slos-dsr-settings h1 {
 	margin-bottom: 30px;
 	padding-bottom: 10px;
-	border-bottom: 2px solid #3b82f6;
+	border-bottom: 2px solid var(--slos-accent-primary, #6b8e4e);
 	color: #f8fafc;
 }
 
@@ -38,7 +38,7 @@
 	padding-top: 10px;
 	border-top: 1px solid #334155;
 	font-size: 14px;
-	color: #3b82f6;
+	color: var(--slos-accent-primary, #6b8e4e);
 	font-weight: 600;
 }
 
@@ -55,8 +55,8 @@
 .slos-dsr-settings input[type="text"]:focus,
 .slos-dsr-settings input[type="url"]:focus,
 .slos-dsr-settings input[type="number"]:focus {
-	border-color: #3b82f6;
-	box-shadow: 0 0 0 2px rgba(0, 115, 170, 0.1);
+	border-color: var(--slos-accent-primary, #6b8e4e);
+	box-shadow: 0 0 0 2px rgba(107, 142, 78, 0.2);
 	outline: none;
 }
 
@@ -82,8 +82,8 @@
 }
 
 .slos-dsr-settings textarea:focus {
-	border-color: #3b82f6;
-	box-shadow: 0 0 0 2px rgba(0, 115, 170, 0.1);
+	border-color: var(--slos-accent-primary, #6b8e4e);
+	box-shadow: 0 0 0 2px rgba(107, 142, 78, 0.2);
 	outline: none;
 }
 
@@ -128,8 +128,8 @@
 }
 
 .slos-dsr-settings .button-primary {
-	background-color: #3b82f6;
-	border-color: #2563eb;
+	background-color: var(--slos-accent-primary, #6b8e4e);
+	border-color: var(--slos-accent-active, #5c7a42);
 	color: white;
 	padding: 8px 20px;
 	cursor: pointer;
@@ -139,11 +139,11 @@
 }
 
 .slos-dsr-settings .button-primary:hover {
-	background-color: #2563eb;
+	background-color: var(--slos-accent-hover, #7a9d5d);
 }
 
 .slos-dsr-settings .button-primary:active {
-	background-color: #1d4ed8;
+	background-color: var(--slos-accent-active, #5c7a42);
 }
 
 /* Responsive */

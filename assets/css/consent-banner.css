@@ -23,9 +23,9 @@
     /* Border & Dividers */
     --slos-banner-border: #e5e7eb;
     
-    /* Accent / Primary Action (Blue) */
-    --slos-banner-accent: #3b82f6;
-    --slos-banner-accent-hover: #2563eb;
+    /* Accent / Primary Action (Olive) */
+    --slos-banner-accent: #6b8e4e;
+    --slos-banner-accent-hover: #7a9d5d;
     
     /* Success / Accept (Green) */
     --slos-banner-success: #10b981;
@@ -97,9 +97,9 @@
     /* Border & Dividers */
     --slos-banner-border: #374151;
     
-    /* Accent / Primary Action (Lighter Blue for dark bg) */
-    --slos-banner-accent: #60a5fa;
-    --slos-banner-accent-hover: #3b82f6;
+    /* Accent / Primary Action (Olive for dark bg) */
+    --slos-banner-accent: #8ba972;
+    --slos-banner-accent-hover: #6b8e4e;
     
     /* Success / Accept (Lighter Green for dark bg) */
     --slos-banner-success: #34d399;
@@ -127,8 +127,8 @@
     --slos-banner-border: #e5e7eb;
     
     /* Accent / Primary Action */
-    --slos-banner-accent: #3b82f6;
-    --slos-banner-accent-hover: #2563eb;
+    --slos-banner-accent: #6b8e4e;
+    --slos-banner-accent-hover: #7a9d5d;
     
     /* Success / Accept */
     --slos-banner-success: #10b981;
@@ -459,9 +459,9 @@
         /* Border & Dividers */
         --slos-banner-border: #374151;
         
-        /* Accent / Primary Action (Lighter Blue for dark bg) */
-        --slos-banner-accent: #60a5fa;
-        --slos-banner-accent-hover: #3b82f6;
+        /* Accent / Primary Action (Olive for dark bg) */
+        --slos-banner-accent: #8ba972;
+        --slos-banner-accent-hover: #6b8e4e;
         
         /* Success / Accept (Lighter Green for dark bg) */
         --slos-banner-success: #34d399;

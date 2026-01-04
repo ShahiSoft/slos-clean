@@ -30,20 +30,20 @@
          * Cache DOM elements
          */
         cacheDom() {
-            // V3 layout selectors
-            this.$grid = $('.shahi-v3-modules-grid');
-            this.$cards = $('.shahi-v3-module-card');
+            // Premium layout selectors
+            this.$grid = $('.shahi-modules-grid-premium');
+            this.$cards = $('.shahi-module-card-premium');
             this.$search = $('#shahi-module-search');
             this.$searchClear = $('.shahi-search-clear');
-            this.$filterBtns = $('.shahi-v3-filter-btn');
-            this.$viewBtns = $('.shahi-v3-view-btn');
+            this.$filterBtns = $('.shahi-filter-btn');
+            this.$viewBtns = $('.shahi-view-btn');
             this.$toggles = $('.shahi-module-toggle-input');
             this.$bulkEnable = $('.shahi-bulk-enable');
             this.$bulkDisable = $('.shahi-bulk-disable');
-            this.$emptyState = $('.shahi-v3-empty-state');
+            this.$emptyState = $('.shahi-empty-state');
             this.$loadingOverlay = $('.shahi-loading-overlay');
             this.$refreshBtn = $('[data-action="refresh"]');
-            this.$infoBtns = $('.shahi-v3-info-btn');
+            this.$infoBtns = $('.shahi-info-btn');
         },
 
         /**
@@ -132,7 +132,7 @@
             this.$refreshBtn.on('click', this.handleRefresh.bind(this));
             
             // Use event delegation for info buttons (more reliable)
-            $(document).on('click', '.shahi-v3-info-btn', this.handleInfoClick.bind(this));
+            $(document).on('click', '.shahi-info-btn', this.handleInfoClick.bind(this));
             
             // Card hover effect
             this.$cards.on('mouseenter', this.handleCardHover.bind(this));
@@ -176,8 +176,8 @@
             
             this.$cards.each((index, card) => {
                 const $card = $(card);
-                const title = $card.find('.shahi-v3-module-title').text().toLowerCase();
-                const description = $card.find('.shahi-v3-module-desc').text().toLowerCase();
+                const title = $card.find('.shahi-module-title').text().toLowerCase();
+                const description = $card.find('.shahi-module-description').text().toLowerCase();
                 const category = ($card.data('category') || '').toLowerCase();
                 
                 const matches = title.includes(query) || 
@@ -221,18 +221,18 @@
             e.stopPropagation();
             
             const $btn = $(e.currentTarget);
-            const $card = $btn.closest('.shahi-v3-module-card');
+            const $card = $btn.closest('.shahi-module-card-premium');
             const moduleSlug = $btn.data('module-slug') || $card.data('module');
-            const moduleName = $card.find('.shahi-v3-module-title').text();
+            const moduleName = $card.find('.shahi-module-title').text();
             const moduleCategory = $card.data('category') || 'compliance';
             const moduleStatus = $card.data('status');
-            const usageCount = $card.find('.shahi-v3-mini-stat-value').first().text() || '0';
-            const perfScore = $card.find('.shahi-v3-mini-stat-value').last().text() || '0%';
+            const usageCount = $card.find('.shahi-stat-value').first().text() || '0';
+            const perfScore = $card.find('.shahi-stat-value').last().text() || '0%';
             
             // Get detailed description from our descriptions object
             const moduleInfo = this.moduleDescriptions[moduleSlug] || {
                 title: moduleName,
-                shortDesc: $card.find('.shahi-v3-module-desc').text(),
+                shortDesc: $card.find('.shahi-module-description').text(),
                 fullDesc: 'This module extends the functionality of Shahi LegalFlowSuite.',
                 features: ['Module functionality as described above']
             };
@@ -410,7 +410,7 @@
          */
         handleToggle(e) {
             const $toggle = $(e.target);
-            const $card = $toggle.closest('.shahi-v3-module-card');
+            const $card = $toggle.closest('.shahi-module-card-premium');
             const moduleSlug = $toggle.data('module');
             const isEnabled = $toggle.is(':checked');
             
@@ -442,20 +442,20 @@
                         }
 
                         // Update toggle label text
-                        const $label = $card.find('.shahi-v3-toggle-label');
+                        const $label = $card.find('.shahi-toggle-label');
                         if ($label.length) {
                             $label.text(isEnabled ? (shahiModuleDashboard.i18n.enabledText || 'Enabled') : (shahiModuleDashboard.i18n.disabledText || 'Disabled'));
                         }
 
                         // Update status badge
-                        const $badge = $card.find('.shahi-v3-module-status-badge');
-                        if ($badge.length) {
+                        const $statusSpan = $card.find('.shahi-module-status-badge span');
+                        if ($statusSpan.length) {
                             if (isEnabled) {
-                                $badge.removeClass('inactive').addClass('active');
-                                $badge.find(':not(.shahi-v3-status-dot)').last().text(shahiModuleDashboard.i18n.activeText || 'Active');
+                                $statusSpan.removeClass('shahi-status-inactive').addClass('shahi-status-active');
+                                $statusSpan.contents().filter(function() { return this.nodeType === 3; }).last().replaceWith(shahiModuleDashboard.i18n.activeText || 'Active');
                             } else {
-                                $badge.removeClass('active').addClass('inactive');
-                                $badge.find(':not(.shahi-v3-status-dot)').last().text(shahiModuleDashboard.i18n.inactiveText || 'Inactive');
+                                $statusSpan.removeClass('shahi-status-active').addClass('shahi-status-inactive');
+                                $statusSpan.contents().filter(function() { return this.nodeType === 3; }).last().replaceWith(shahiModuleDashboard.i18n.inactiveText || 'Inactive');
                             }
                         }
 
@@ -620,18 +620,18 @@
             const inactive = total - active;
             const activationRate = total > 0 ? Math.round((active / total) * 100) : 0;
             
-            // Update stat cards (V3 layout uses .shahi-v3-stat-number)
-            $('.shahi-v3-stats-row .shahi-v3-stat-card:nth-child(1) .shahi-v3-stat-number').text(total);
-            $('.shahi-v3-stats-row .shahi-v3-stat-card:nth-child(2) .shahi-v3-stat-number').text(active);
-            $('.shahi-v3-stats-row .shahi-v3-stat-card:nth-child(3) .shahi-v3-stat-number').text(inactive);
+            // Update stat cards
+            $('.shahi-stats-row .shahi-stat-card:nth-child(1) .shahi-stat-number').text(total);
+            $('.shahi-stats-row .shahi-stat-card:nth-child(2) .shahi-stat-number').text(active);
+            $('.shahi-stats-row .shahi-stat-card:nth-child(3) .shahi-stat-number').text(inactive);
             
             // Update activation rate badge
-            $('.shahi-v3-stats-row .shahi-v3-stat-card:nth-child(2) .shahi-v3-stat-badge').text(activationRate + '%');
+            $('.shahi-stats-row .shahi-stat-card:nth-child(2) .shahi-trend-up').text(activationRate + '%');
             
-            // Update filter counts (V3 uses .shahi-v3-filter-btn)
-            $('.shahi-v3-filter-btn[data-filter="all"] .shahi-v3-filter-count').text(total);
-            $('.shahi-v3-filter-btn[data-filter="active"] .shahi-v3-filter-count').text(active);
-            $('.shahi-v3-filter-btn[data-filter="inactive"] .shahi-v3-filter-count').text(inactive);
+            // Update filter counts
+            $('.shahi-filter-btn[data-filter="all"] .shahi-filter-count').text(total);
+            $('.shahi-filter-btn[data-filter="active"] .shahi-filter-count').text(active);
+            $('.shahi-filter-btn[data-filter="inactive"] .shahi-filter-count').text(inactive);
         },
 
         /**
@@ -696,8 +696,8 @@
      * Initialize on document ready
      */
     $(document).ready(() => {
-        // Support both V3 layout and legacy layout
-        if ($('.shahi-modules-v3').length || $('.shahi-module-dashboard').length) {
+        // Support module dashboard layout
+        if ($('.shahi-module-dashboard').length || $('.shahi-modules-grid-premium').length) {
             ModuleDashboard.init();
         }
     });

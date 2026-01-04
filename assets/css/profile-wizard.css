@@ -15,9 +15,9 @@
 
 :root {
 	/* Colors - Primary */
-	--slos-wizard-primary: #3b82f6;
-	--slos-wizard-primary-hover: #2563eb;
-	--slos-wizard-primary-light: rgba(59, 130, 246, 0.1);
+	--slos-wizard-primary: var(--slos-accent-primary, #6b8e4e);
+	--slos-wizard-primary-hover: var(--slos-accent-hover, #7a9d5d);
+	--slos-wizard-primary-light: rgba(107, 142, 78, 0.1);
 	
 	/* Colors - Status */
 	--slos-wizard-success: #10b981;

@@ -56,13 +56,13 @@
 }
 
 .shahi-notice-info {
-    background: rgba(33, 150, 243, 0.1);
-    border: 1px solid rgba(33, 150, 243, 0.3);
-    color: #90caf9;
+    background: rgba(107, 142, 78, 0.1);
+    border: 1px solid rgba(107, 142, 78, 0.3);
+    color: var(--slos-accent-light, #8ba972);
 }
 
 .shahi-notice-info .dashicons {
-    color: #64b5f6;
+    color: var(--slos-accent-primary, #6b8e4e);
 }
 
 .shahi-setting-notice ul {
@@ -205,28 +205,28 @@
 }
 
 .shahi-alert-info {
-    background: rgba(59, 130, 246, 0.1);
-    border-left: 4px solid #2196f3;
-    color: #3b82f6;
+    background: rgba(107, 142, 78, 0.1);
+    border-left: 4px solid var(--slos-accent-primary, #6b8e4e);
+    color: var(--slos-accent-primary, #6b8e4e);
 }
 
 .shahi-alert-success {
-    background: rgba(34, 197, 94, 0.1);
-    border-left: 4px solid #4caf50;
-    color: #22c55e;
+    background: rgba(16, 185, 129, 0.1);
+    border-left: 4px solid var(--slos-success, #10b981);
+    color: var(--slos-success, #10b981);
 }
 
 .shahi-alert-warning {
-    background: var(--shahi-bg-secondary);
-    border-left: 4px solid #ff9800;
-    color: #f59e0b;
+    background: rgba(245, 158, 11, 0.1);
+    border-left: 4px solid var(--slos-warning, #f59e0b);
+    color: var(--slos-warning, #f59e0b);
 }
 
 .shahi-alert-danger,
 .shahi-alert-error {
-    background: var(--shahi-bg-secondary);
-    border-left: 4px solid #f44336;
-    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+    border-left: 4px solid var(--slos-error, #ef4444);
+    color: var(--slos-error, #ef4444);
 }
 
 .shahi-badge {
@@ -240,26 +240,26 @@
 }
 
 .shahi-badge-warning {
-    background: var(--shahi-bg-secondary);
-    color: #f59e0b;
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--slos-warning, #f59e0b);
 }
 
 .shahi-badge-success {
-    background: rgba(34, 197, 94, 0.1);
-    color: #22c55e;
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--slos-success, #10b981);
 }
 
 .shahi-badge-secondary {
-    background: rgba(100, 116, 139, 0.2);
-    color: #94a3b8;
+    background: rgba(148, 163, 184, 0.15);
+    color: var(--slos-text-tertiary, #94a3b8);
 }
 
 .shahi-text-danger {
-    color: #ef4444 !important;
+    color: var(--slos-error, #ef4444) !important;
 }
 
 .shahi-text-warning {
-    color: #f59e0b !important;
+    color: var(--slos-warning, #f59e0b) !important;
 }
 
 /* ============================================================================
@@ -307,8 +307,8 @@
 
 .shahi-textarea:focus {
     outline: none;
-    border-color: var(--shahi-primary);
-    box-shadow: 0 0 0 3px rgba(70, 130, 255, 0.1);
+    border-color: var(--slos-accent-primary, #6b8e4e);
+    box-shadow: 0 0 0 3px rgba(107, 142, 78, 0.2);
 }
 
 /* ============================================================================

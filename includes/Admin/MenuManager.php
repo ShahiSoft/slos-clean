@@ -466,9 +466,15 @@ class MenuManager {
 	 */
 	public function add_body_classes( $classes ) {
 		if ( $this->is_plugin_page() ) {
+			// Add plugin-specific class
 			$classes .= ' shahi-legalflowsuite-admin';
+			
+			// Add page-specific class
 			$page     = $this->get_current_page();
 			$classes .= ' shahi-page-' . str_replace( self::MENU_SLUG . '-', '', $page );
+			
+			// Add SLOS admin page class for background patterns (Phase 7)
+			$classes .= ' slos-admin-page';
 		}
 
 		return $classes;

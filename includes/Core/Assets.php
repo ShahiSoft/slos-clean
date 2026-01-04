@@ -156,24 +156,38 @@ class Assets {
 
 		$page_type = $this->get_current_page_type( $hook );
 
-		// Global admin styles (loaded on all plugin pages)
+		// Design System Foundation (loaded first - Phase 1)
 		$this->enqueue_style(
-			'shahi-admin-global',
-			'css/admin-global',
+			'slos-design-system',
+			'css/slos-design-system',
 			array(),
 			$this->version
 		);
 
-		// Inject active theme variables (Neon Aether by default)
-		try {
-			$theme_css = \ShahiLegalFlowSuite\Core\Theme_Manager::get_instance()->build_css_variables();
-			if ( ! empty( $theme_css ) ) {
-				wp_add_inline_style( 'shahi-admin-global', $theme_css );
-			}
-		} catch ( \Throwable $e ) {
-			// Fail-safe: do not break admin if theme injection fails
-			error_log( 'SLOS Theme variables injection failed: ' . $e->getMessage() );
-		}
+	// Component Library (depends on design system - Phase 1.3)
+	$this->enqueue_style(
+		'slos-components',
+		'css/slos-components',
+		array( 'slos-design-system' ),
+		$this->version
+	);
+
+	// Browser & Accessibility Enhancements (Phase 6 - Tasks 15 & 16)
+	// WCAG 2.1 AA compliance, keyboard navigation, cross-browser compatibility
+	$this->enqueue_style(
+		'slos-browser-a11y-enhancements',
+		'css/slos-browser-a11y-enhancements',
+		array( 'slos-design-system', 'slos-components' ),
+		$this->version
+	);
+
+	// Global admin styles (loaded on all plugin pages)
+	$this->enqueue_style(
+		'shahi-admin-global',
+		'css/admin-global',
+		array( 'slos-design-system', 'slos-components', 'slos-browser-a11y-enhancements' ),
+		$this->version
+	);
 
 		// Add inline CSS for admin menu highlighting
 		$this->add_admin_menu_style();

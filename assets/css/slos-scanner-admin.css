@@ -1,23 +1,353 @@
+/**
+ * Accessibility Scanner Admin Styles
+ * 
+ * Solid result panels with olive status colors
+ * Design system integrated, no glassmorphism
+ *
+ * @package    ShahiLegalFlowSuite
+ * @version    3.1.1
+ */
+
+/* ============================================================================
+   SCANNER CARDS - SOLID DESIGN
+   ========================================================================= */
+
 .slos-scanner-card, .slos-scanner-results-card {
-    background: var(--shahi-bg-card);
-    border: 1px solid #334155;
-    box-shadow: 0 1px 1px rgba(0,0,0,.04);
-    padding: 20px;
+    background: var(--slos-bg-secondary, #242b24);
+    border: 1px solid var(--slos-border-default, rgba(107, 142, 78, 0.2));
+    border-radius: var(--slos-radius-lg, 12px);
+    box-shadow: var(--slos-shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.4));
+    padding: var(--slos-space-lg, 20px);
     max-width: 800px;
+    transition: all 0.3s ease;
 }
+
+.slos-scanner-card:hover {
+    border-color: var(--slos-accent-primary, #6b8e4e);
+    box-shadow: var(--slos-shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.5));
+}
+
+/* ============================================================================
+   SCANNER CONTROLS
+   ========================================================================= */
 
 .slos-scanner-controls {
-    margin-top: 20px;
+    margin-top: var(--slos-space-lg, 20px);
     display: flex;
     align-items: center;
+    gap: var(--slos-space-md, 16px);
+    flex-wrap: wrap;
 }
 
+/* ============================================================================
+   ISSUE COUNT BADGES
+   ========================================================================= */
+
 .slos-issue-count {
-    background: #d63638;
-    color: #fff;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-weight: bold;
-    font-size: 12px;
+    background: var(--slos-error, #ef4444);
+    color: var(--slos-text-primary, #f8fafc);
+    padding: 4px 8px;
+    border-radius: var(--slos-radius-sm, 4px);
+    font-weight: var(--slos-font-semibold, 600);
+    font-size: var(--slos-text-xs, 12px);
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ============================================================================
+   SCANNER RESULTS - SOLID PANELS
+   ========================================================================= */
+
+.slos-scanner-results {
+    margin-top: var(--slos-space-xl, 32px);
+}
+
+.slos-result-panel {
+    background: var(--slos-bg-secondary, #242b24);
+    border: 1px solid var(--slos-border-default, rgba(107, 142, 78, 0.2));
+    border-radius: var(--slos-radius-lg, 12px);
+    padding: var(--slos-space-lg, 20px);
+    margin-bottom: var(--slos-space-md, 16px);
+    box-shadow: var(--slos-shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.3));
+}
+
+.slos-result-panel:hover {
+    border-color: var(--slos-accent-light, #8ba972);
+}
+
+.slos-result-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--slos-space-md, 16px);
+    padding-bottom: var(--slos-space-md, 16px);
+    border-bottom: 1px solid var(--slos-border-default, rgba(107, 142, 78, 0.2));
+}
+
+.slos-result-title {
+    font-size: var(--slos-text-lg, 18px);
+    font-weight: var(--slos-font-semibold, 600);
+    color: var(--slos-text-primary, #f8fafc);
+    margin: 0;
+}
+
+.slos-result-body {
+    color: var(--slos-text-secondary, #cbd5e1);
+    font-size: var(--slos-text-sm, 14px);
+    line-height: var(--slos-leading-relaxed, 1.75);
+}
+
+/* ============================================================================
+   STATUS BADGES - OLIVE THEME
+   ========================================================================= */
+
+.slos-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: var(--slos-radius-full, 20px);
+    font-size: var(--slos-text-xs, 12px);
+    font-weight: var(--slos-font-semibold, 600);
+    line-height: 1;
+}
+
+/* Critical - Red */
+.slos-status-badge--critical {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--slos-error, #ef4444);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Error - Orange */
+.slos-status-badge--error {
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--slos-warning, #f59e0b);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+/* Warning - Yellow */
+.slos-status-badge--warning {
+    background: rgba(234, 179, 8, 0.15);
+    color: #eab308;
+    border: 1px solid rgba(234, 179, 8, 0.3);
+}
+
+/* Notice - Olive */
+.slos-status-badge--notice {
+    background: rgba(107, 142, 78, 0.15);
+    color: var(--slos-accent-primary, #6b8e4e);
+    border: 1px solid var(--slos-accent-primary, #6b8e4e);
+}
+
+/* Success - Green */
+.slos-status-badge--success {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--slos-success, #10b981);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+/* Info - Light Olive */
+.slos-status-badge--info {
+    background: rgba(139, 167, 114, 0.15);
+    color: var(--slos-accent-light, #8ba972);
+    border: 1px solid rgba(139, 167, 114, 0.3);
+}
+
+/* ============================================================================
+   ISSUE LIST
+   ========================================================================= */
+
+.slos-issue-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.slos-issue-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--slos-space-md, 16px);
+    padding: var(--slos-space-md, 16px);
+    background: var(--slos-bg-tertiary, #2d342d);
+    border: 1px solid var(--slos-border-default, rgba(107, 142, 78, 0.2));
+    border-radius: var(--slos-radius-md, 8px);
+    margin-bottom: var(--slos-space-sm, 12px);
+    transition: all 0.2s ease;
+}
+
+.slos-issue-item:hover {
+    background: var(--slos-bg-elevated, #353e35);
+    border-color: var(--slos-accent-primary, #6b8e4e);
+}
+
+.slos-issue-icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.slos-issue-content {
+    flex: 1;
+}
+
+.slos-issue-message {
+    font-size: var(--slos-text-sm, 14px);
+    color: var(--slos-text-primary, #f8fafc);
+    margin: 0 0 var(--slos-space-xs, 8px) 0;
+    line-height: var(--slos-leading-normal, 1.5);
+}
+
+.slos-issue-details {
+    font-size: var(--slos-text-xs, 12px);
+    color: var(--slos-text-tertiary, #94a3b8);
+}
+
+.slos-issue-action {
+    flex-shrink: 0;
+    padding: 6px 12px;
+    background: var(--slos-accent-primary, #6b8e4e);
+    color: var(--slos-text-primary, #f8fafc);
+    border: none;
+    border-radius: var(--slos-radius-sm, 4px);
+    font-size: var(--slos-text-xs, 12px);
+    font-weight: var(--slos-font-medium, 500);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.slos-issue-action:hover {
+    background: var(--slos-accent-hover, #7a9d5d);
+    transform: translateY(-1px);
+}
+
+/* ============================================================================
+   SCAN PROGRESS
+   ========================================================================= */
+
+.slos-scan-progress {
+    margin: var(--slos-space-lg, 20px) 0;
+}
+
+.slos-progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(107, 142, 78, 0.15);
+    border-radius: var(--slos-radius-full, 20px);
+    overflow: hidden;
+    position: relative;
+}
+
+.slos-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--slos-accent-primary, #6b8e4e) 0%, var(--slos-accent-light, #8ba972) 100%);
+    border-radius: var(--slos-radius-full, 20px);
+    transition: width 0.3s ease;
+    position: relative;
+}
+
+.slos-progress-text {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--slos-space-xs, 8px);
+    font-size: var(--slos-text-sm, 14px);
+}
+
+.slos-progress-label {
+    color: var(--slos-text-secondary, #cbd5e1);
+}
+
+.slos-progress-percent {
+    color: var(--slos-accent-primary, #6b8e4e);
+    font-weight: var(--slos-font-semibold, 600);
+}
+
+/* ============================================================================
+   SUMMARY STATS
+   ========================================================================= */
+
+.slos-scan-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--slos-space-md, 16px);
+    margin: var(--slos-space-xl, 32px) 0;
+}
+
+.slos-summary-stat {
+    background: var(--slos-bg-tertiary, #2d342d);
+    border: 1px solid var(--slos-border-default, rgba(107, 142, 78, 0.2));
+    border-radius: var(--slos-radius-md, 8px);
+    padding: var(--slos-space-md, 16px);
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.slos-summary-stat:hover {
+    border-color: var(--slos-accent-primary, #6b8e4e);
+    transform: translateY(-2px);
+}
+
+.slos-summary-value {
+    font-size: var(--slos-text-3xl, 30px);
+    font-weight: var(--slos-font-bold, 700);
+    color: var(--slos-accent-primary, #6b8e4e);
+    line-height: 1;
+    margin-bottom: var(--slos-space-xs, 8px);
+}
+
+.slos-summary-label {
+    font-size: var(--slos-text-sm, 14px);
+    color: var(--slos-text-tertiary, #94a3b8);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Status-specific value colors */
+.slos-summary-stat--critical .slos-summary-value {
+    color: var(--slos-error, #ef4444);
+}
+
+.slos-summary-stat--warning .slos-summary-value {
+    color: var(--slos-warning, #f59e0b);
+}
+
+.slos-summary-stat--success .slos-summary-value {
+    color: var(--slos-success, #10b981);
+}
+
+/* ============================================================================
+   RESPONSIVE DESIGN
+   ========================================================================= */
+
+@media (max-width: 768px) {
+    .slos-scanner-card, .slos-scanner-results-card {
+        padding: var(--slos-space-md, 16px);
+    }
+    
+    .slos-scanner-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .slos-issue-item {
+        flex-direction: column;
+    }
+    
+    .slos-scan-summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .slos-scan-summary {
+        grid-template-columns: 1fr;
+    }
 }
 

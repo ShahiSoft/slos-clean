@@ -3,15 +3,15 @@
 	--slos-font-sans: "Sora", "DM Sans", "Segoe UI", sans-serif;
 	--slos-ink: var(--shahi-text-primary, #e5e7eb);
 	--slos-soft: var(--shahi-text-secondary, #cbd5e1);
-	--slos-plate: var(--shahi-bg-elevated, #252d50);
-	--slos-accent: var(--shahi-accent-primary, #60a5fa);
-	--slos-accent-soft: rgba(96, 165, 250, 0.15);
-	--slos-positive: var(--shahi-accent-success, #34d399);
-	--slos-positive-soft: rgba(52, 211, 153, 0.15);
-	--slos-warning: var(--shahi-accent-warning, #f59e0b);
+	--slos-plate: var(--shahi-bg-elevated, #353e35);
+	--slos-accent: var(--slos-accent-primary, #6b8e4e);
+	--slos-accent-soft: rgba(107, 142, 78, 0.15);
+	--slos-positive: var(--slos-success, #10b981);
+	--slos-positive-soft: rgba(16, 185, 129, 0.15);
+	--slos-warning: var(--slos-warning, #f59e0b);
 	--slos-warning-soft: rgba(245, 158, 11, 0.15);
 	--slos-neutral: var(--shahi-text-muted, #94a3b8);
-	--slos-border: var(--shahi-border-color, #3a4e5c);
+	--slos-border: var(--slos-border-default, rgba(107, 142, 78, 0.2));
 }
 
 .shahi-consent-page {
@@ -148,8 +148,8 @@
 }
 
 .stat-card.accent {
-	background: linear-gradient(135deg, rgba(147, 197, 253, 0.16), rgba(147, 197, 253, 0));
-	border-color: rgba(147, 197, 253, 0.4);
+	background: linear-gradient(135deg, rgba(107, 142, 78, 0.16), rgba(107, 142, 78, 0));
+	border-color: rgba(107, 142, 78, 0.4);
 }
 
 .stat-card.positive {
@@ -167,7 +167,7 @@
 	border-color: rgba(245, 158, 11, 0.35);
 }
 
-.stat-card .dot.live { background: #34d399; }
+.stat-card .dot.live { background: var(--slos-success, #10b981); }
 
 .slos-consent-panels {
 	display: grid;
@@ -373,7 +373,7 @@
 .shortcut:hover {
 	border-color: var(--slos-accent);
 	color: #fff;
-	box-shadow: 0 10px 30px rgba(147, 197, 253, 0.15);
+	box-shadow: 0 10px 30px rgba(107, 142, 78, 0.15);
 }
 
 @media (max-width: 1024px) {

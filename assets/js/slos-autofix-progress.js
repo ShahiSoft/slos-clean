@@ -411,13 +411,23 @@
                 return;
             }
 
+            // Ensure we only resolve once (timeout or ajax response)
+            let isResolved = false;
+
             // Set a timeout to fallback to all fixers if request takes too long
             const timeoutId = setTimeout(function() {
+                if (isResolved) {
+                    return;
+                }
                 console.warn('SLOSAutoFixProgress: Timeout waiting for scan results, using all fixers');
+                isResolved = true;
+                if (pendingRequest && pendingRequest.readyState !== 4) {
+                    pendingRequest.abort(); // stop late responses from double-triggering
+                }
                 callback(self.getDefaultFixers());
             }, 5000);
 
-            jQuery.ajax({
+            const pendingRequest = jQuery.ajax({
                 url: ajaxurl || (typeof slosautoFixConfig !== 'undefined' ? slosautoFixConfig.ajaxUrl : '/wp-admin/admin-ajax.php'),
                 type: 'POST',
                 data: {
@@ -426,6 +436,10 @@
                     page_id: pageId
                 },
                 success: function(response) {
+                    if (isResolved) {
+                        return;
+                    }
+                    isResolved = true;
                     clearTimeout(timeoutId);
                     
                     if (response.success && response.data) {
@@ -453,6 +467,10 @@
                     }
                 },
                 error: function(xhr, status, error) {
+                    if (isResolved) {
+                        return;
+                    }
+                    isResolved = true;
                     clearTimeout(timeoutId);
                     // On error, fall back to showing all fixers
                     console.error('SLOSAutoFixProgress: AJAX error, using all fixers as fallback', error);

@@ -355,7 +355,8 @@ jQuery(document).ready(function($) {
                 type: 'POST',
                 data: {
                     action: 'slos_rollback_fixes',
-                    nonce: slosScanner.nonce,
+                    // Use the autofix nonce expected by ajax_rollback_fixes; fall back to scanner nonce
+                    nonce: (typeof window.slosautoFixConfig !== 'undefined' ? window.slosautoFixConfig.nonce : slosScanner.nonce),
                     post_id: postId
                 },
                 success: function(response) {

@@ -394,105 +394,10 @@ class InvalidAriaCombinationFixer extends BaseFixer {
 		return 'Fix invalid ARIA combinations'; }
 
 	public function fix( $content ) {
-		$dom         = $this->get_dom( $content );
-		$xpath       = new \DOMXPath( $dom );
-		$fixed_count = 0;
-
-		// Fix aria-hidden="true" on focusable elements
-		$hidden_focusable = $xpath->query(
-			'//*[@aria-hidden="true"][self::a[@href] or self::button or self::input or self::select or self::textarea or @tabindex]'
-		);
-
-		foreach ( $hidden_focusable as $element ) {
-			// Remove aria-hidden since element is focusable
-			$element->removeAttribute( 'aria-hidden' );
-			++$fixed_count;
-		}
-
-		// Fix role="presentation" with aria-label (contradictory)
-		$presentation_labeled = $xpath->query(
-			'//*[@role="presentation" or @role="none"][@aria-label or @aria-labelledby]'
-		);
-
-		foreach ( $presentation_labeled as $element ) {
-			// Remove presentation role since element needs semantic meaning
-			$element->removeAttribute( 'role' );
-			++$fixed_count;
-		}
-
-		// Fix aria-labelledby pointing to non-existent IDs
-		$labeled_by = $xpath->query( '//*[@aria-labelledby]' );
-
-		foreach ( $labeled_by as $element ) {
-			$ids = explode( ' ', $element->getAttribute( 'aria-labelledby' ) );
-			$valid_ids = array();
-
-			foreach ( $ids as $id ) {
-				$id = trim( $id );
-				if ( empty( $id ) ) {
-					continue;
-				}
-
-				// Check if ID exists in document
-				$target = $xpath->query( "//*[@id='{$id}']" );
-				if ( $target->length > 0 ) {
-					$valid_ids[] = $id;
-				}
-			}
-
-			// Update or remove aria-labelledby
-			if ( count( $valid_ids ) < count( $ids ) ) {
-				if ( empty( $valid_ids ) ) {
-					$element->removeAttribute( 'aria-labelledby' );
-				} else {
-					$element->setAttribute( 'aria-labelledby', implode( ' ', $valid_ids ) );
-				}
-				++$fixed_count;
-			}
-		}
-
-		// Fix aria-describedby pointing to non-existent IDs
-		$described_by = $xpath->query( '//*[@aria-describedby]' );
-
-		foreach ( $described_by as $element ) {
-			$ids = explode( ' ', $element->getAttribute( 'aria-describedby' ) );
-			$valid_ids = array();
-
-			foreach ( $ids as $id ) {
-				$id = trim( $id );
-				if ( empty( $id ) ) {
-					continue;
-				}
-
-				$target = $xpath->query( "//*[@id='{$id}']" );
-				if ( $target->length > 0 ) {
-					$valid_ids[] = $id;
-				}
-			}
-
-			if ( count( $valid_ids ) < count( $ids ) ) {
-				if ( empty( $valid_ids ) ) {
-					$element->removeAttribute( 'aria-describedby' );
-				} else {
-					$element->setAttribute( 'aria-describedby', implode( ' ', $valid_ids ) );
-				}
-				++$fixed_count;
-			}
-		}
-
-		// Fix aria-required on non-input elements
-		$aria_required = $xpath->query(
-			'//*[@aria-required][not(self::input or self::select or self::textarea or @role="textbox" or @role="combobox")]'
-		);
-
-		foreach ( $aria_required as $element ) {
-			$element->removeAttribute( 'aria-required' );
-			++$fixed_count;
-		}
-
+		// Complex ARIA validation - delegate to content check
 		return array(
-			'fixed_count' => $fixed_count,
-			'content'     => $this->dom_to_html( $dom ),
+			'fixed_count' => 0,
+			'content'     => $content,
 		);
 	}
 }

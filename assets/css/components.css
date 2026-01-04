@@ -21,28 +21,26 @@
    =================================== */
 
 .shahi-card {
-    background: var(--shahi-bg-card);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--shahi-border-light);
-    border-radius: var(--shahi-radius-md);
-    padding: var(--shahi-space-md);
-    box-shadow: var(--shahi-shadow);
-    transition: var(--shahi-transition);
+    background: var(--slos-surface-secondary);
+    border: 1px solid var(--slos-border-primary);
+    border-radius: var(--slos-radius-lg);
+    padding: var(--slos-space-md);
+    box-shadow: var(--slos-shadow-sm);
+    transition: all 0.2s ease;
 }
 
 .shahi-card:hover {
-    border-color: var(--shahi-border-glow);
-    box-shadow: var(--shahi-shadow-lg);
+    border-color: var(--slos-accent-primary);
+    box-shadow: var(--slos-shadow-md);
     transform: translateY(-2px);
 }
 
 .shahi-card-elevated {
-    box-shadow: var(--shahi-shadow-lg);
+    box-shadow: var(--slos-shadow-md);
 }
 
 .shahi-card-elevated:hover {
-    box-shadow: var(--shahi-shadow-xl);
+    box-shadow: var(--slos-shadow-lg);
     transform: translateY(-4px);
 }
 
@@ -83,16 +81,16 @@
 
 /* Card Variants */
 .shahi-card-accent {
-    border: 2px solid var(--shahi-accent-primary);
-    box-shadow: 0 0 20px rgba(96, 165, 250, 0.2);
+    border: 2px solid var(--slos-accent-primary);
+    box-shadow: var(--slos-shadow-md);
 }
 
 .shahi-card-gradient {
     background: linear-gradient(135deg, 
-        rgba(96, 165, 250, 0.1) 0%, 
-        rgba(147, 197, 253, 0.1) 100%
+        rgba(107, 142, 78, 0.1) 0%, 
+        rgba(139, 169, 114, 0.1) 100%
     );
-    border: 1px solid rgba(96, 165, 250, 0.3);
+    border: 1px solid rgba(107, 142, 78, 0.3);
 }
 
 /* ===================================
@@ -102,17 +100,17 @@
 .shahi-button {
     display: inline-flex;
     align-items: center;
-    gap: var(--shahi-space-xs);
+    gap: var(--slos-space-xs);
     padding: 12px 24px;
-    font-family: var(--shahi-font-primary);
-    font-size: var(--shahi-font-size-sm);
+    font-family: var(--slos-font-family-primary);
+    font-size: var(--slos-font-size-sm);
     font-weight: 600;
     line-height: 1;
     text-decoration: none;
-    border-radius: var(--shahi-radius-md);
+    border-radius: var(--slos-radius-md);
     border: none;
     cursor: pointer;
-    transition: var(--shahi-transition);
+    transition: all 0.2s ease;
     white-space: nowrap;
     position: relative;
     overflow: hidden;
@@ -145,15 +143,15 @@
 
 /* Primary Button - Gradient */
 .shahi-button-primary {
-    background: var(--shahi-accent-gradient);
-    color: var(--shahi-text-inverse);
-    box-shadow: var(--shahi-shadow);
+    background: var(--slos-gradient-primary);
+    color: var(--slos-text-on-accent);
+    box-shadow: var(--slos-shadow-sm);
 }
 
 .shahi-button-primary:hover {
-    box-shadow: var(--shahi-shadow-lg);
+    box-shadow: var(--slos-shadow-md);
     transform: translateY(-2px);
-    color: var(--shahi-text-inverse);
+    color: var(--slos-text-on-accent);
 }
 
 .shahi-button-primary:active {
@@ -162,73 +160,73 @@
 
 /* Secondary Button */
 .shahi-button-secondary {
-    background: var(--shahi-bg-tertiary);
-    color: var(--shahi-text-primary);
-    border: 1px solid var(--shahi-border);
+    background: var(--slos-surface-tertiary);
+    color: var(--slos-text-primary);
+    border: 1px solid var(--slos-border-primary);
 }
 
 .shahi-button-secondary:hover {
-    background: var(--shahi-bg-secondary);
-    border-color: var(--shahi-accent-primary);
-    color: var(--shahi-accent-primary);
-    box-shadow: var(--shahi-shadow);
+    background: var(--slos-surface-secondary);
+    border-color: var(--slos-accent-primary);
+    color: var(--slos-accent-primary);
+    box-shadow: var(--slos-shadow-sm);
 }
 
 /* Outline Button */
 .shahi-button-outline {
     background: transparent;
-    color: var(--shahi-accent-primary);
-    border: 2px solid var(--shahi-accent-primary);
+    color: var(--slos-accent-primary);
+    border: 2px solid var(--slos-accent-primary);
 }
 
 .shahi-button-outline:hover {
-    background: var(--shahi-accent-primary);
-    color: var(--shahi-text-inverse);
-    box-shadow: var(--shahi-glow);
+    background: var(--slos-accent-primary);
+    color: var(--slos-text-on-accent);
+    box-shadow: var(--slos-shadow-md);
 }
 
 /* Ghost Button */
 .shahi-button-ghost {
     background: transparent;
-    color: var(--shahi-text-secondary);
+    color: var(--slos-text-secondary);
     border: none;
 }
 
 .shahi-button-ghost:hover {
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--shahi-accent-primary);
+    background: rgba(107, 142, 78, 0.1);
+    color: var(--slos-accent-primary);
 }
 
 /* Success, Warning, Error Variants */
 .shahi-button-success {
-    background: var(--shahi-accent-success);
+    background: var(--slos-success-primary);
     color: white;
 }
 
 .shahi-button-warning {
-    background: var(--shahi-accent-warning);
+    background: var(--slos-warning-primary);
     color: white;
 }
 
 .shahi-button-error {
-    background: var(--shahi-accent-error);
+    background: var(--slos-error-primary);
     color: white;
 }
 
 /* Button Sizes */
 .shahi-button-sm {
     padding: 8px 16px;
-    font-size: var(--shahi-font-size-xs);
+    font-size: var(--slos-font-size-xs);
 }
 
 .shahi-button-lg {
     padding: 16px 32px;
-    font-size: var(--shahi-font-size-base);
+    font-size: var(--slos-font-size-base);
 }
 
 .shahi-button-xl {
     padding: 20px 40px;
-    font-size: var(--shahi-font-size-lg);
+    font-size: var(--slos-font-size-lg);
 }
 
 /* Button States */
@@ -265,18 +263,18 @@
 .shahi-progress {
     width: 100%;
     height: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: var(--shahi-radius-full);
+    background: rgba(107, 142, 78, 0.1);
+    border-radius: var(--slos-radius-full);
     overflow: hidden;
     position: relative;
 }
 
 .shahi-progress-bar {
     height: 100%;
-    background: var(--shahi-accent-gradient);
-    border-radius: var(--shahi-radius-full);
+    background: var(--slos-gradient-primary);
+    border-radius: var(--slos-radius-full);
     transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: var(--shahi-glow);
+    box-shadow: var(--slos-shadow-sm);
     position: relative;
 }
 
@@ -353,10 +351,10 @@
     position: relative;
     width: 48px;
     height: 24px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: var(--shahi-radius-full);
-    transition: var(--shahi-transition);
-    border: 1px solid var(--shahi-border);
+    background: rgba(107, 142, 78, 0.2);
+    border-radius: var(--slos-radius-full);
+    transition: all 0.2s ease;
+    border: 1px solid var(--slos-border-primary);
 }
 
 .shahi-toggle-slider::before {
@@ -366,24 +364,24 @@
     left: 2px;
     width: 18px;
     height: 18px;
-    background: var(--shahi-text-muted);
+    background: var(--slos-text-muted);
     border-radius: 50%;
-    transition: var(--shahi-transition);
+    transition: all 0.2s ease;
 }
 
 .shahi-toggle-input:checked + .shahi-toggle-slider {
-    background: var(--shahi-accent-gradient);
-    border-color: var(--shahi-accent-primary);
-    box-shadow: var(--shahi-glow);
+    background: var(--slos-gradient-primary);
+    border-color: var(--slos-accent-primary);
+    box-shadow: var(--slos-shadow-sm);
 }
 
 .shahi-toggle-input:checked + .shahi-toggle-slider::before {
     left: 26px;
-    background: var(--shahi-bg-card);
+    background: var(--slos-surface-primary);
 }
 
 .shahi-toggle-input:focus + .shahi-toggle-slider {
-    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+    box-shadow: 0 0 0 3px rgba(107, 142, 78, 0.2);
 }
 
 .shahi-toggle-input:disabled + .shahi-toggle-slider {
@@ -392,9 +390,9 @@
 }
 
 .shahi-toggle-label {
-    margin-left: var(--shahi-space-sm);
-    color: var(--shahi-text-primary);
-    font-size: var(--shahi-font-size-sm);
+    margin-left: var(--slos-space-sm);
+    color: var(--slos-text-primary);
+    font-size: var(--slos-font-size-sm);
 }
 
 /* Toggle Sizes */
@@ -449,9 +447,9 @@
     z-index: var(--shahi-z-tooltip);
     opacity: 0;
     visibility: hidden;
-    transition: var(--shahi-transition);
-    border: 1px solid var(--shahi-border-glow);
-    box-shadow: var(--shahi-shadow-lg);
+    transition: all 0.2s ease;
+    border: 1px solid var(--slos-border-secondary);
+    box-shadow: var(--slos-shadow-lg);
     pointer-events: none;
 }
 
@@ -462,7 +460,7 @@
     left: 50%;
     transform: translateX(-50%);
     border: 5px solid transparent;
-    border-top-color: var(--shahi-bg-tertiary);
+    border-top-color: var(--slos-surface-tertiary);
 }
 
 .shahi-tooltip:hover .shahi-tooltip-content {
@@ -485,7 +483,7 @@
     top: auto;
     bottom: 100%;
     border-top-color: transparent;
-    border-bottom-color: var(--shahi-bg-tertiary);
+    border-bottom-color: var(--slos-surface-tertiary);
 }
 
 .shahi-tooltip-left .shahi-tooltip-content {
@@ -513,36 +511,36 @@
     align-items: center;
     gap: 4px;
     padding: 4px 10px;
-    font-size: var(--shahi-font-size-xs);
+    font-size: var(--slos-font-size-xs);
     font-weight: 600;
-    border-radius: var(--shahi-radius-sm);
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--shahi-text-primary);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--slos-radius-sm);
+    background: rgba(107, 142, 78, 0.15);
+    color: var(--slos-text-primary);
+    border: 1px solid rgba(107, 142, 78, 0.3);
 }
 
 .shahi-badge-primary {
-    background: rgba(96, 165, 250, 0.2);
-    color: var(--shahi-accent-primary);
-    border-color: var(--shahi-accent-primary);
+    background: rgba(107, 142, 78, 0.2);
+    color: var(--slos-accent-primary);
+    border-color: var(--slos-accent-primary);
 }
 
 .shahi-badge-success {
     background: rgba(16, 185, 129, 0.2);
-    color: var(--shahi-accent-success);
-    border-color: var(--shahi-accent-success);
+    color: var(--slos-success-primary);
+    border-color: var(--slos-success-primary);
 }
 
 .shahi-badge-warning {
     background: rgba(245, 158, 11, 0.2);
-    color: var(--shahi-accent-warning);
-    border-color: var(--shahi-accent-warning);
+    color: var(--slos-warning-primary);
+    border-color: var(--slos-warning-primary);
 }
 
 .shahi-badge-error {
     background: rgba(239, 68, 68, 0.2);
-    color: var(--shahi-accent-error);
-    border-color: var(--shahi-accent-error);
+    color: var(--slos-error-primary);
+    border-color: var(--slos-error-primary);
 }
 
 .shahi-badge-dot {
@@ -570,12 +568,12 @@
 .shahi-notification {
     display: flex;
     align-items: flex-start;
-    gap: var(--shahi-space-sm);
-    padding: var(--shahi-space-md);
-    border-radius: var(--shahi-radius-md);
-    background: var(--shahi-bg-card);
-    border: 1px solid var(--shahi-border);
-    box-shadow: var(--shahi-shadow-lg);
+    gap: var(--slos-space-sm);
+    padding: var(--slos-space-md);
+    border-radius: var(--slos-radius-md);
+    background: var(--slos-surface-secondary);
+    border: 1px solid var(--slos-border-primary);
+    box-shadow: var(--slos-shadow-lg);
     animation: shahi-slide-in-right 0.3s ease-out;
 }
 
@@ -594,15 +592,15 @@
 
 .shahi-notification-title {
     font-weight: 600;
-    color: var(--shahi-text-primary);
+    color: var(--slos-text-primary);
     margin: 0 0 4px 0;
-    font-size: var(--shahi-font-size-sm);
+    font-size: var(--slos-font-size-sm);
 }
 
 .shahi-notification-message {
-    color: var(--shahi-text-secondary);
+    color: var(--slos-text-secondary);
     margin: 0;
-    font-size: var(--shahi-font-size-sm);
+    font-size: var(--slos-font-size-sm);
     line-height: 1.5;
 }
 
@@ -613,50 +611,50 @@
     background: transparent;
     border: none;
     cursor: pointer;
-    color: var(--shahi-text-muted);
-    transition: var(--shahi-transition);
+    color: var(--slos-text-muted);
+    transition: all 0.2s ease;
     padding: 0;
 }
 
 .shahi-notification-close:hover {
-    color: var(--shahi-text-primary);
+    color: var(--slos-text-primary);
 }
 
 /* Notification Variants */
 .shahi-notification-success {
-    border-left: 4px solid var(--shahi-accent-success);
+    border-left: 4px solid var(--slos-success-primary);
     background: rgba(16, 185, 129, 0.1);
 }
 
 .shahi-notification-success .shahi-notification-icon {
-    color: var(--shahi-accent-success);
+    color: var(--slos-success-primary);
 }
 
 .shahi-notification-warning {
-    border-left: 4px solid var(--shahi-accent-warning);
+    border-left: 4px solid var(--slos-warning-primary);
     background: rgba(245, 158, 11, 0.1);
 }
 
 .shahi-notification-warning .shahi-notification-icon {
-    color: var(--shahi-accent-warning);
+    color: var(--slos-warning-primary);
 }
 
 .shahi-notification-error {
-    border-left: 4px solid var(--shahi-accent-error);
+    border-left: 4px solid var(--slos-error-primary);
     background: rgba(239, 68, 68, 0.1);
 }
 
 .shahi-notification-error .shahi-notification-icon {
-    color: var(--shahi-accent-error);
+    color: var(--slos-error-primary);
 }
 
 .shahi-notification-info {
-    border-left: 4px solid var(--shahi-accent-primary);
-    background: rgba(96, 165, 250, 0.1);
+    border-left: 4px solid var(--slos-accent-primary);
+    background: rgba(107, 142, 78, 0.1);
 }
 
 .shahi-notification-info .shahi-notification-icon {
-    color: var(--shahi-accent-primary);
+    color: var(--slos-accent-primary);
 }
 
 /* ===================================
@@ -664,15 +662,13 @@
    =================================== */
 
 .shahi-stat-card {
-    background: var(--shahi-bg-card);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--shahi-border-light);
-    border-radius: var(--shahi-radius-lg);
-    padding: var(--shahi-space-lg);
+    background: var(--slos-surface-secondary);
+    border: 1px solid var(--slos-border-primary);
+    border-radius: var(--slos-radius-lg);
+    padding: var(--slos-space-lg);
     position: relative;
     overflow: hidden;
-    transition: var(--shahi-transition);
+    transition: all 0.2s ease;
 }
 
 .shahi-stat-card::before {
@@ -682,25 +678,25 @@
     left: 0;
     width: 100%;
     height: 4px;
-    background: var(--shahi-accent-gradient);
+    background: var(--slos-gradient-primary);
 }
 
 .shahi-stat-card:hover {
     transform: translateY(-4px);
-    box-shadow: var(--shahi-shadow-xl);
-    border-color: var(--shahi-border-glow);
+    box-shadow: var(--slos-shadow-xl);
+    border-color: var(--slos-accent-primary);
 }
 
 .shahi-stat-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: var(--shahi-space-sm);
+    margin-bottom: var(--slos-space-sm);
 }
 
 .shahi-stat-label {
-    font-size: var(--shahi-font-size-sm);
-    color: var(--shahi-text-secondary);
+    font-size: var(--slos-font-size-sm);
+    color: var(--slos-text-secondary);
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -709,21 +705,21 @@
 .shahi-stat-icon {
     width: 40px;
     height: 40px;
-    border-radius: var(--shahi-radius-md);
-    background: rgba(96, 165, 250, 0.1);
+    border-radius: var(--slos-radius-md);
+    background: rgba(107, 142, 78, 0.15);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--shahi-accent-primary);
+    color: var(--slos-accent-primary);
 }
 
 .shahi-stat-value {
-    font-size: var(--shahi-font-size-4xl);
+    font-size: var(--slos-font-size-4xl);
     font-weight: 700;
-    color: var(--shahi-text-primary);
+    color: var(--slos-text-primary);
     margin: 0;
     line-height: 1.2;
-    background: var(--shahi-accent-gradient);
+    background: var(--slos-gradient-primary);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -733,16 +729,16 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    font-size: var(--shahi-font-size-sm);
-    margin-top: var(--shahi-space-sm);
+    font-size: var(--slos-font-size-sm);
+    margin-top: var(--slos-space-sm);
 }
 
 .shahi-stat-change-positive {
-    color: var(--shahi-accent-success);
+    color: var(--slos-success-primary);
 }
 
 .shahi-stat-change-negative {
-    color: var(--shahi-accent-error);
+    color: var(--slos-error-primary);
 }
 
 /* ===================================
@@ -752,24 +748,24 @@
 .shahi-input {
     width: 100%;
     padding: 12px 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--shahi-border);
-    border-radius: var(--shahi-radius-md);
-    color: var(--shahi-text-primary);
-    font-family: var(--shahi-font-primary);
-    font-size: var(--shahi-font-size-sm);
-    transition: var(--shahi-transition);
+    background: rgba(107, 142, 78, 0.05);
+    border: 1px solid var(--slos-border-primary);
+    border-radius: var(--slos-radius-md);
+    color: var(--slos-text-primary);
+    font-family: var(--slos-font-family-primary);
+    font-size: var(--slos-font-size-sm);
+    transition: all 0.2s ease;
 }
 
 .shahi-input::placeholder {
-    color: var(--shahi-text-muted);
+    color: var(--slos-text-muted);
 }
 
 .shahi-input:focus {
     outline: none;
-    border-color: var(--shahi-accent-primary);
-    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
-    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--slos-accent-primary);
+    box-shadow: 0 0 0 3px rgba(107, 142, 78, 0.15);
+    background: rgba(107, 142, 78, 0.08);
 }
 
 .shahi-input:disabled {
@@ -778,7 +774,7 @@
 }
 
 .shahi-input-error {
-    border-color: var(--shahi-accent-error);
+    border-color: var(--slos-error-primary);
 }
 
 .shahi-input-error:focus {
@@ -794,7 +790,7 @@
     top: 50%;
     left: 16px;
     transform: translateY(-50%);
-    color: var(--shahi-text-muted);
+    color: var(--slos-text-muted);
     pointer-events: none;
 }
 
@@ -809,8 +805,8 @@
 .shahi-spinner {
     width: 40px;
     height: 40px;
-    border: 3px solid rgba(96, 165, 250, 0.2);
-    border-top-color: var(--shahi-accent-primary);
+    border: 3px solid rgba(107, 142, 78, 0.2);
+    border-top-color: var(--slos-accent-primary);
     border-radius: 50%;
     animation: shahi-spin 0.8s linear infinite;
 }
@@ -833,20 +829,19 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(10, 14, 39, 0.9);
-    -webkit-backdrop-filter: blur(5px);
-    backdrop-filter: blur(5px);
+    background: var(--slos-surface-primary);
+    opacity: 0.98;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--shahi-space-md);
-    z-index: var(--shahi-z-modal);
+    gap: var(--slos-space-md);
+    z-index: var(--slos-z-modal);
 }
 
 .shahi-loading-text {
-    color: var(--shahi-text-secondary);
-    font-size: var(--shahi-font-size-base);
+    color: var(--slos-text-secondary);
+    font-size: var(--slos-font-size-base);
 }
 
 /* ===================================
@@ -855,21 +850,21 @@
 
 .shahi-divider {
     height: 1px;
-    background: var(--shahi-border-light);
-    margin: var(--shahi-space-md) 0;
+    background: var(--slos-border-secondary);
+    margin: var(--slos-space-md) 0;
 }
 
 .shahi-divider-vertical {
     width: 1px;
     height: auto;
-    background: var(--shahi-border-light);
-    margin: 0 var(--shahi-space-md);
+    background: var(--slos-border-secondary);
+    margin: 0 var(--slos-space-md);
 }
 
 .shahi-divider-gradient {
     background: linear-gradient(90deg, 
         transparent 0%, 
-        var(--shahi-accent-primary) 50%, 
+        var(--slos-accent-primary) 50%, 
         transparent 100%
     );
 }
@@ -880,15 +875,15 @@
 
 @media (max-width: 768px) {
     .shahi-stat-value {
-        font-size: var(--shahi-font-size-3xl);
+        font-size: var(--slos-font-size-3xl);
     }
     
     .shahi-card {
-        padding: var(--shahi-space-sm);
+        padding: var(--slos-space-sm);
     }
     
     .shahi-stat-card {
-        padding: var(--shahi-space-md);
+        padding: var(--slos-space-md);
     }
 }
 

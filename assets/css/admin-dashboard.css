@@ -22,13 +22,14 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: var(--shahi-space-lg, 32px);
-    padding: var(--shahi-space-md, 24px);
-    background: linear-gradient(135deg, rgba(96, 165, 250, 0.05) 0%, rgba(147, 197, 253, 0.05) 100%);
-    border: 1px solid var(--shahi-border, #334155);
-    border-radius: var(--shahi-radius-lg, 16px);
+    margin-bottom: var(--slos-space-lg);
+    padding: var(--slos-space-md);
+    background: var(--slos-surface-secondary);
+    border: 1px solid var(--slos-border-primary);
+    border-radius: var(--slos-radius-lg);
     position: relative;
     overflow: hidden;
+    box-shadow: var(--slos-shadow-sm);
 }
 
 .shahi-page-header::before {
@@ -38,7 +39,7 @@
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg, var(--shahi-accent-primary, #60a5fa) 0%, var(--shahi-accent-secondary, #93c5fd) 100%);
+    background: linear-gradient(90deg, var(--slos-accent-primary) 0%, var(--slos-accent-light) 100%);
 }
 
 .shahi-header-content {
@@ -57,10 +58,7 @@
 
 .shahi-page-title .dashicons {
     font-size: 32px;
-    background: linear-gradient(135deg, var(--shahi-accent-primary, #60a5fa) 0%, var(--shahi-accent-secondary, #93c5fd) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--slos-accent-primary);
 }
 
 .shahi-page-description {
@@ -123,15 +121,14 @@
 }
 
 .shahi-stat-card {
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
-    border: 1px solid var(--shahi-border, #334155);
-    border-radius: var(--shahi-radius-lg, 16px);
-    padding: var(--shahi-space-lg, 32px) var(--shahi-space-md, 24px);
+    background: var(--slos-surface-primary);
+    border: 1px solid var(--slos-border-primary);
+    border-radius: var(--slos-radius-lg);
+    padding: var(--slos-space-lg) var(--slos-space-md);
     position: relative;
     overflow: hidden;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
+    box-shadow: var(--slos-shadow-sm);
 }
 
 .shahi-stat-card::before {
@@ -141,7 +138,7 @@
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, var(--shahi-accent-primary, #60a5fa) 0%, var(--shahi-accent-secondary, #93c5fd) 100%);
+    background: linear-gradient(90deg, var(--slos-accent-primary) 0%, var(--slos-accent-light) 100%);
     opacity: 0.8;
 }
 
@@ -152,27 +149,27 @@
     right: -50px;
     width: 150px;
     height: 150px;
-    background: radial-gradient(circle, rgba(96, 165, 250, 0.1) 0%, transparent 70%);
+    background: radial-gradient(circle, var(--slos-accent-primary) 0%, transparent 70%);
+    opacity: 0.05;
     border-radius: 50%;
     transform: translateY(-50%);
     pointer-events: none;
 }
 
 .shahi-stat-card:hover {
-    border-color: var(--shahi-accent-primary, var(--shahi-accent-primary, #60a5fa));
+    border-color: var(--slos-accent-primary);
     transform: translateY(-6px) scale(1.02);
-    box-shadow: 0 12px 40px rgba(96, 165, 250, 0.25), 
-                0 0 30px rgba(147, 197, 253, 0.15);
+    box-shadow: var(--slos-shadow-md);
 }
 
 .shahi-stat-card:hover::before {
     opacity: 1;
-    box-shadow: 0 0 20px rgba(96, 165, 250, 0.6);
+    box-shadow: 0 0 20px var(--slos-accent-primary);
 }
 
 /* Stat Card Color Variants */
 .shahi-stat-primary::before {
-    background: linear-gradient(90deg, var(--shahi-accent-primary, #60a5fa) 0%, #0095ff 100%);
+    background: linear-gradient(90deg, var(--slos-accent-primary) 0%, var(--slos-accent-dark) 100%);
 }
 
 .shahi-stat-success::before {
@@ -180,7 +177,7 @@
 }
 
 .shahi-stat-accent::before {
-    background: linear-gradient(90deg, var(--shahi-accent-secondary, #93c5fd) 0%, #a855f7 100%);
+    background: linear-gradient(90deg, var(--slos-accent-light) 0%, var(--slos-accent-primary) 100%);
 }
 
 .shahi-stat-info::before {
@@ -193,17 +190,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: var(--shahi-radius-md, 12px);
+    border-radius: var(--slos-radius-md);
     font-size: 28px;
-    margin-bottom: var(--shahi-space-sm, 16px);
-    background: linear-gradient(135deg, rgba(96, 165, 250, 0.2) 0%, rgba(147, 197, 253, 0.2) 100%);
-    color: var(--shahi-accent-primary, #60a5fa);
+    margin-bottom: var(--slos-space-sm);
+    background: var(--slos-surface-secondary);
+    color: var(--slos-accent-primary);
     transition: all 0.3s ease;
 }
 
 .shahi-stat-card:hover .shahi-stat-icon {
     transform: scale(1.1) rotate(5deg);
-    box-shadow: 0 8px 24px rgba(96, 165, 250, 0.4);
+    box-shadow: var(--slos-shadow-md);
 }
 
 .shahi-stat-content {
@@ -230,10 +227,7 @@
 .shahi-stat-number {
     font-size: 36px;
     font-weight: 700;
-    background: linear-gradient(135deg, var(--shahi-accent-primary, #60a5fa) 0%, var(--shahi-accent-secondary, #93c5fd) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--slos-accent-primary);
     line-height: 1;
 }
 
@@ -274,27 +268,26 @@
    ========================================================================= */
 
 .shahi-card {
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
-    border: 1px solid var(--shahi-border, #334155);
-    border-radius: var(--shahi-radius-lg, 16px);
+    background: var(--slos-surface-primary);
+    border: 1px solid var(--slos-border-primary);
+    border-radius: var(--slos-radius-lg);
     overflow: hidden;
     transition: all 0.3s ease;
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
+    box-shadow: var(--slos-shadow-sm);
 }
 
 .shahi-card:hover {
-    border-color: rgba(96, 165, 250, 0.3);
-    box-shadow: 0 8px 32px rgba(96, 165, 250, 0.1);
+    border-color: var(--slos-accent-primary);
+    box-shadow: var(--slos-shadow-md);
 }
 
 .shahi-card-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--shahi-space-md, 24px);
-    border-bottom: 1px solid var(--shahi-border, #334155);
-    background: linear-gradient(135deg, rgba(96, 165, 250, 0.03) 0%, rgba(147, 197, 253, 0.03) 100%);
+    padding: var(--slos-space-md);
+    border-bottom: 1px solid var(--slos-border-primary);
+    background: var(--slos-surface-tertiary);
 }
 
 .shahi-card-title {
@@ -308,12 +301,12 @@
 }
 
 .shahi-card-title .dashicons {
-    color: var(--shahi-accent-primary, #60a5fa);
+    color: var(--slos-accent-primary);
     font-size: 22px;
 }
 
 .shahi-card-action {
-    color: var(--shahi-accent-primary, #60a5fa);
+    color: var(--slos-accent-primary);
     text-decoration: none;
     font-size: 13px;
     font-weight: 600;
@@ -324,9 +317,9 @@
 }
 
 .shahi-card-action:hover {
-    color: #ffffff;
-    background: rgba(96, 165, 250, 0.1);
-    border-color: rgba(96, 165, 250, 0.3);
+    color: var(--slos-text-primary);
+    background: var(--slos-surface-tertiary);
+    border-color: var(--slos-accent-primary);
 }
 
 .shahi-card-body {
@@ -350,12 +343,12 @@
 .shahi-quick-action {
     display: flex;
     flex-direction: column;
-    padding: var(--shahi-space-md, 24px);
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.6) 100%);
-    border: 1px solid var(--shahi-border, #334155);
-    border-radius: var(--shahi-radius-md, 12px);
+    padding: var(--slos-space-md);
+    background: var(--slos-surface-secondary);
+    border: 1px solid var(--slos-border-primary);
+    border-radius: var(--slos-radius-md);
     text-decoration: none;
-    color: var(--shahi-text-primary, #ffffff);
+    color: var(--slos-text-primary);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
@@ -368,15 +361,15 @@
     left: 0;
     width: 4px;
     height: 100%;
-    background: linear-gradient(180deg, var(--shahi-accent-primary, #60a5fa) 0%, var(--shahi-accent-secondary, #93c5fd) 100%);
+    background: linear-gradient(180deg, var(--slos-accent-primary) 0%, var(--slos-accent-light) 100%);
     opacity: 0;
     transition: opacity 0.3s ease;
 }
 
 .shahi-quick-action:hover {
     transform: translateY(-4px) scale(1.02);
-    border-color: var(--shahi-accent-primary, var(--shahi-accent-primary, #60a5fa));
-    box-shadow: 0 12px 32px rgba(96, 165, 250, 0.2);
+    border-color: var(--slos-accent-primary);
+    box-shadow: var(--slos-shadow-md);
 }
 
 .shahi-quick-action:hover::before {
@@ -400,8 +393,8 @@
 }
 
 .shahi-action-primary .shahi-action-icon {
-    background: linear-gradient(135deg, rgba(96, 165, 250, 0.2) 0%, rgba(0, 149, 255, 0.2) 100%);
-    color: var(--shahi-accent-primary, #60a5fa);
+    background: var(--slos-surface-tertiary);
+    color: var(--slos-accent-primary);
 }
 
 .shahi-action-success .shahi-action-icon {
@@ -410,8 +403,8 @@
 }
 
 .shahi-action-accent .shahi-action-icon {
-    background: linear-gradient(135deg, rgba(147, 197, 253, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
-    color: var(--shahi-accent-secondary, #93c5fd);
+    background: var(--slos-surface-tertiary);
+    color: var(--slos-accent-light);
 }
 
 .shahi-action-info .shahi-action-icon {
@@ -456,12 +449,12 @@
 }
 
 .shahi-activity-feed::-webkit-scrollbar-thumb {
-    background: rgba(96, 165, 250, 0.3);
+    background: var(--slos-accent-primary);
     border-radius: 10px;
 }
 
 .shahi-activity-feed::-webkit-scrollbar-thumb:hover {
-    background: rgba(96, 165, 250, 0.5);
+    background: var(--slos-accent-dark);
 }
 
 .shahi-activity-list {
@@ -486,7 +479,7 @@
     top: 0;
     bottom: 0;
     width: 3px;
-    background: linear-gradient(180deg, var(--shahi-accent-primary, #60a5fa) 0%, var(--shahi-accent-secondary, #93c5fd) 100%);
+    background: linear-gradient(180deg, var(--slos-accent-primary) 0%, var(--slos-accent-light) 100%);
     opacity: 0;
     transition: opacity 0.2s ease;
 }
@@ -496,7 +489,7 @@
 }
 
 .shahi-activity-item:hover {
-    background: rgba(96, 165, 250, 0.05);
+    background: var(--slos-surface-tertiary);
 }
 
 .shahi-activity-item:hover::before {
@@ -509,11 +502,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, rgba(96, 165, 250, 0.1) 0%, rgba(147, 197, 253, 0.1) 100%);
+    background: var(--slos-surface-tertiary);
     border-radius: 50%;
-    border: 1px solid rgba(96, 165, 250, 0.2);
+    border: 1px solid var(--slos-accent-primary);
     flex-shrink: 0;
-    color: var(--shahi-accent-primary, #60a5fa);
+    color: var(--slos-accent-primary);
     font-size: 18px;
 }
 
@@ -571,18 +564,18 @@
 .shahi-checklist-item {
     display: flex;
     align-items: center;
-    gap: var(--shahi-space-sm, 16px);
-    padding: var(--shahi-space-md, 24px);
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.3) 0%, rgba(15, 23, 42, 0.5) 100%);
-    border: 1px solid var(--shahi-border, #334155);
-    border-radius: var(--shahi-radius-md, 12px);
+    gap: var(--slos-space-sm);
+    padding: var(--slos-space-md);
+    background: var(--slos-surface-secondary);
+    border: 1px solid var(--slos-border-primary);
+    border-radius: var(--slos-radius-md);
     transition: all 0.3s ease;
     position: relative;
 }
 
 .shahi-checklist-item:hover {
-    border-color: rgba(96, 165, 250, 0.3);
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.5) 0%, rgba(15, 23, 42, 0.7) 100%);
+    border-color: var(--slos-accent-primary);
+    background: var(--slos-surface-tertiary);
 }
 
 .shahi-checklist-item.shahi-completed {
@@ -663,11 +656,11 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: var(--shahi-space-sm, 16px);
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.3) 0%, rgba(15, 23, 42, 0.5) 100%);
-    border: 1px solid var(--shahi-border, #334155);
-    border-radius: var(--shahi-radius-sm, 8px);
-    color: var(--shahi-text-primary, #ffffff);
+    padding: var(--slos-space-sm);
+    background: var(--slos-surface-secondary);
+    border: 1px solid var(--slos-border-primary);
+    border-radius: var(--slos-radius-sm);
+    color: var(--slos-text-primary);
     text-decoration: none;
     transition: all 0.3s ease;
     position: relative;
@@ -681,13 +674,13 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.1), transparent);
+    background: linear-gradient(90deg, transparent, var(--slos-surface-tertiary), transparent);
     transition: left 0.5s ease;
 }
 
 .shahi-resource-link:hover {
-    border-color: var(--shahi-accent-primary, var(--shahi-accent-primary, #60a5fa));
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.5) 0%, rgba(15, 23, 42, 0.7) 100%);
+    border-color: var(--slos-accent-primary);
+    background: var(--slos-surface-tertiary);
     transform: translateX(4px);
 }
 
@@ -697,7 +690,7 @@
 
 .shahi-resource-link .dashicons {
     font-size: 20px;
-    color: var(--shahi-accent-primary, #60a5fa);
+    color: var(--slos-accent-primary);
     flex-shrink: 0;
 }
 
@@ -736,16 +729,16 @@
 }
 
 .shahi-btn-secondary {
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
-    color: var(--shahi-text-primary, #ffffff);
-    border: 1px solid var(--shahi-border, #334155);
+    background: var(--slos-surface-secondary);
+    color: var(--slos-text-primary);
+    border: 1px solid var(--slos-border-primary);
 }
 
 .shahi-btn-secondary:hover {
-    background: linear-gradient(135deg, rgba(96, 165, 250, 0.15) 0%, rgba(147, 197, 253, 0.15) 100%);
-    border-color: var(--shahi-accent-primary, var(--shahi-accent-primary, #60a5fa));
+    background: var(--slos-surface-tertiary);
+    border-color: var(--slos-accent-primary);
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(96, 165, 250, 0.2);
+    box-shadow: var(--slos-shadow-md);
 }
 
 .shahi-btn .dashicons {
@@ -885,11 +878,11 @@
    ========================================================================= */
 
 .shahi-welcome-hero {
-    background: linear-gradient(135deg, rgba(96, 165, 250, 0.08) 0%, rgba(147, 197, 253, 0.08) 50%, rgba(96, 165, 250, 0.05) 100%);
-    border: 1px solid var(--shahi-border, #334155);
-    border-radius: var(--shahi-radius-lg, 16px);
-    padding: var(--shahi-space-xl, 40px) var(--shahi-space-lg, 32px);
-    margin-bottom: var(--shahi-space-lg, 32px);
+    background: var(--slos-surface-secondary);
+    border: 1px solid var(--slos-border-primary);
+    border-radius: var(--slos-radius-lg);
+    padding: var(--slos-space-xl) var(--slos-space-lg);
+    margin-bottom: var(--slos-space-lg);
     position: relative;
     overflow: hidden;
 }
@@ -901,7 +894,7 @@
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, var(--shahi-accent-primary, #60a5fa) 0%, var(--shahi-accent-secondary, #93c5fd) 50%, var(--shahi-accent-primary, #60a5fa) 100%);
+    background: linear-gradient(90deg, var(--slos-accent-primary) 0%, var(--slos-accent-light) 50%, var(--slos-accent-primary) 100%);
 }
 
 .shahi-welcome-hero::after {
@@ -911,7 +904,8 @@
     right: -100px;
     width: 300px;
     height: 300px;
-    background: radial-gradient(circle, rgba(147, 197, 253, 0.15) 0%, transparent 70%);
+    background: radial-gradient(circle, var(--slos-accent-primary) 0%, transparent 70%);
+    opacity: 0.08;
     border-radius: 50%;
     pointer-events: none;
 }
@@ -938,20 +932,20 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, rgba(96, 165, 250, 0.2) 0%, rgba(147, 197, 253, 0.2) 100%);
-    border: 2px solid rgba(96, 165, 250, 0.3);
-    border-radius: var(--shahi-radius-lg, 16px);
+    background: var(--slos-surface-tertiary);
+    border: 2px solid var(--slos-accent-primary);
+    border-radius: var(--slos-radius-lg);
     flex-shrink: 0;
-    box-shadow: 0 8px 32px rgba(96, 165, 250, 0.2);
+    box-shadow: var(--slos-shadow-md);
     animation: shahi-pulse-glow 3s ease-in-out infinite;
 }
 
 @keyframes shahi-pulse-glow {
     0%, 100% {
-        box-shadow: 0 8px 32px rgba(96, 165, 250, 0.2);
+        box-shadow: var(--slos-shadow-sm);
     }
     50% {
-        box-shadow: 0 8px 48px rgba(96, 165, 250, 0.4), 0 0 20px rgba(147, 197, 253, 0.3);
+        box-shadow: var(--slos-shadow-md);
     }
 }
 
@@ -973,10 +967,8 @@
 
 .shahi-brand-name {
     display: block;
-    background: linear-gradient(135deg, var(--shahi-accent-primary, #60a5fa) 0%, var(--shahi-accent-secondary, #93c5fd) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--slos-accent-primary);
+    font-weight: 700;
 }
 
 .shahi-hero-tagline {
@@ -1025,10 +1017,8 @@
 }
 
 .shahi-version-badge .shahi-meta-value {
-    background: linear-gradient(135deg, var(--shahi-accent-primary, #60a5fa) 0%, var(--shahi-accent-secondary, #93c5fd) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--slos-accent-primary);
+    font-weight: 700;
 }
 
 .shahi-status-badge {
@@ -1056,12 +1046,12 @@
 .shahi-info-bar {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--shahi-space-md, 24px);
-    padding: var(--shahi-space-md, 24px);
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.6) 100%);
-    border: 1px solid var(--shahi-border, #334155);
-    border-radius: var(--shahi-radius-md, 12px);
-    margin-bottom: var(--shahi-space-lg, 32px);
+    gap: var(--slos-space-md);
+    padding: var(--slos-space-md);
+    background: var(--slos-surface-secondary);
+    border: 1px solid var(--slos-border-primary);
+    border-radius: var(--slos-radius-md);
+    margin-bottom: var(--slos-space-lg);
 }
 
 .shahi-info-item {
@@ -1078,7 +1068,7 @@
 }
 
 .shahi-info-item .dashicons {
-    color: var(--shahi-accent-primary, #60a5fa);
+    color: var(--slos-accent-primary);
     font-size: 18px;
 }
 
@@ -1098,7 +1088,7 @@
 }
 
 a.shahi-info-value:hover {
-    color: var(--shahi-accent-primary, #60a5fa);
+    color: var(--slos-accent-primary);
 }
 
 a.shahi-info-value .dashicons {
@@ -1130,7 +1120,7 @@ a.shahi-info-value .dashicons {
 }
 
 .shahi-section-title .dashicons {
-    color: var(--shahi-accent-primary, #60a5fa);
+    color: var(--slos-accent-primary);
     font-size: 24px;
 }
 
@@ -1150,10 +1140,10 @@ a.shahi-info-value .dashicons {
 }
 
 .shahi-module-card {
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
-    border: 1px solid var(--shahi-border, #334155);
-    border-radius: var(--shahi-radius-lg, 16px);
-    padding: var(--shahi-space-md, 24px);
+    background: var(--slos-surface-primary);
+    border: 1px solid var(--slos-border-primary);
+    border-radius: var(--slos-radius-lg);
+    padding: var(--slos-space-md);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
@@ -1177,8 +1167,8 @@ a.shahi-info-value .dashicons {
 
 .shahi-module-card:hover {
     transform: translateY(-4px);
-    border-color: rgba(96, 165, 250, 0.3);
-    box-shadow: 0 12px 32px rgba(96, 165, 250, 0.15);
+    border-color: var(--slos-accent-primary);
+    box-shadow: var(--slos-shadow-md);
 }
 
 .shahi-module-header {
@@ -1194,9 +1184,9 @@ a.shahi-info-value .dashicons {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, rgba(96, 165, 250, 0.15) 0%, rgba(147, 197, 253, 0.15) 100%);
-    border-radius: var(--shahi-radius-md, 12px);
-    border: 1px solid rgba(96, 165, 250, 0.2);
+    background: var(--slos-surface-tertiary);
+    border-radius: var(--slos-radius-md);
+    border: 1px solid var(--slos-accent-primary);
 }
 
 .shahi-module-emoji {
@@ -1280,20 +1270,20 @@ a.shahi-info-value .dashicons {
 .shahi-support-card {
     display: flex;
     align-items: flex-start;
-    gap: var(--shahi-space-sm, 16px);
-    padding: var(--shahi-space-md, 24px);
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.6) 100%);
-    border: 1px solid var(--shahi-border, #334155);
-    border-radius: var(--shahi-radius-md, 12px);
+    gap: var(--slos-space-sm);
+    padding: var(--slos-space-md);
+    background: var(--slos-surface-secondary);
+    border: 1px solid var(--slos-border-primary);
+    border-radius: var(--slos-radius-md);
     text-decoration: none;
     transition: all 0.3s ease;
 }
 
 .shahi-support-card:hover {
     transform: translateY(-4px);
-    border-color: rgba(96, 165, 250, 0.4);
-    box-shadow: 0 8px 24px rgba(96, 165, 250, 0.15);
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
+    border-color: var(--slos-accent-primary);
+    box-shadow: var(--slos-shadow-md);
+    background: var(--slos-surface-tertiary);
 }
 
 .shahi-support-icon {
@@ -1302,14 +1292,14 @@ a.shahi-info-value .dashicons {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, rgba(96, 165, 250, 0.15) 0%, rgba(147, 197, 253, 0.15) 100%);
-    border-radius: var(--shahi-radius-sm, 8px);
+    background: var(--slos-surface-tertiary);
+    border-radius: var(--slos-radius-sm);
     flex-shrink: 0;
 }
 
 .shahi-support-icon .dashicons {
     font-size: 24px;
-    color: var(--shahi-accent-primary, #60a5fa);
+    color: var(--slos-accent-primary);
 }
 
 .shahi-support-content {
@@ -1345,11 +1335,11 @@ a.shahi-info-value .dashicons {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--shahi-space-md, 24px);
-    margin-top: var(--shahi-space-lg, 32px);
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.3) 0%, rgba(15, 23, 42, 0.4) 100%);
-    border: 1px solid var(--shahi-border, #334155);
-    border-radius: var(--shahi-radius-md, 12px);
+    padding: var(--slos-space-md);
+    margin-top: var(--slos-space-lg);
+    background: var(--slos-surface-secondary);
+    border: 1px solid var(--slos-border-primary);
+    border-radius: var(--slos-radius-md);
 }
 
 .shahi-footer-text {
@@ -1358,7 +1348,7 @@ a.shahi-info-value .dashicons {
 }
 
 .shahi-footer-text strong {
-    color: var(--shahi-accent-primary, #60a5fa);
+    color: var(--slos-accent-primary);
 }
 
 .shahi-footer-right {
@@ -1378,7 +1368,7 @@ a.shahi-info-value .dashicons {
 
 .shahi-footer-link {
     font-size: 13px;
-    color: var(--shahi-accent-primary, #60a5fa);
+    color: var(--slos-accent-primary);
     text-decoration: none;
     display: flex;
     align-items: center;
@@ -1387,7 +1377,7 @@ a.shahi-info-value .dashicons {
 }
 
 .shahi-footer-link:hover {
-    color: #ffffff;
+    color: var(--slos-text-primary);
 }
 
 .shahi-footer-link .dashicons {
@@ -1409,26 +1399,26 @@ a.shahi-info-value .dashicons {
 
 .shahi-btn-outline {
     background: transparent;
-    border: 2px solid rgba(96, 165, 250, 0.5);
-    color: var(--shahi-accent-primary, #60a5fa);
+    border: 2px solid var(--slos-accent-primary);
+    color: var(--slos-accent-primary);
 }
 
 .shahi-btn-outline:hover {
-    background: rgba(96, 165, 250, 0.1);
-    border-color: var(--shahi-accent-primary, #60a5fa);
-    color: #ffffff;
+    background: var(--slos-surface-tertiary);
+    border-color: var(--slos-accent-primary);
+    color: var(--slos-text-primary);
 }
 
 .shahi-btn-ghost {
     background: transparent;
     border: 1px solid transparent;
-    color: var(--shahi-accent-primary, #60a5fa);
+    color: var(--slos-accent-primary);
     padding: 8px 16px;
 }
 
 .shahi-btn-ghost:hover {
-    background: rgba(96, 165, 250, 0.1);
-    border-color: rgba(96, 165, 250, 0.3);
+    background: var(--slos-surface-tertiary);
+    border-color: var(--slos-accent-primary);
 }
 
 .shahi-btn-ghost .dashicons {
@@ -1455,7 +1445,7 @@ a.shahi-info-value .dashicons {
 .shahi-quick-action:hover .shahi-action-arrow {
     opacity: 1;
     transform: translateX(0);
-    color: var(--shahi-accent-primary, #60a5fa);
+    color: var(--slos-accent-primary);
 }
 
 /* ============================================================================
@@ -1627,10 +1617,10 @@ a.shahi-info-value .dashicons {
     justify-content: center;
     width: 40px;
     height: 40px;
-    background: linear-gradient(135deg, var(--shahi-primary-color, var(--shahi-accent-primary, #60a5fa)), var(--shahi-secondary-color, var(--shahi-accent-secondary, #93c5fd)));
+    background: var(--slos-accent-primary);
     border-radius: 10px;
     flex-shrink: 0;
-    box-shadow: 0 4px 15px rgba(96, 165, 250, 0.3);
+    box-shadow: var(--slos-shadow-sm);
 }
 
 .shahi-section-divider-icon .dashicons {
@@ -1651,7 +1641,7 @@ a.shahi-info-value .dashicons {
 .shahi-section-divider-line {
     flex: 1;
     height: 2px;
-    background: linear-gradient(90deg, rgba(96, 165, 250, 0.5) 0%, rgba(147, 197, 253, 0.3) 50%, transparent 100%);
+    background: linear-gradient(90deg, var(--slos-accent-primary) 0%, var(--slos-accent-light) 50%, transparent 100%);
     border-radius: 1px;
 }
 
@@ -1730,8 +1720,8 @@ a.shahi-info-value .dashicons {
 }
 
 .shahi-mini-stat:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(96, 165, 250, 0.3);
+    background: var(--slos-surface-tertiary);
+    border-color: var(--slos-accent-primary);
     transform: translateY(-2px);
 }
 
@@ -1741,7 +1731,7 @@ a.shahi-info-value .dashicons {
     justify-content: center;
     width: 36px;
     height: 36px;
-    background: linear-gradient(135deg, rgba(96, 165, 250, 0.2), rgba(147, 197, 253, 0.2));
+    background: var(--slos-surface-tertiary);
     border-radius: 8px;
     margin-bottom: 0.5rem;
 }
@@ -1750,7 +1740,7 @@ a.shahi-info-value .dashicons {
     font-size: 18px;
     width: 18px;
     height: 18px;
-    color: var(--shahi-primary-color, var(--shahi-accent-primary, #60a5fa));
+    color: var(--slos-accent-primary);
 }
 
 .shahi-mini-stat-value {
@@ -1820,7 +1810,7 @@ a.shahi-info-value .dashicons {
     font-size: 16px;
     width: 16px;
     height: 16px;
-    color: var(--shahi-primary-color, var(--shahi-accent-primary, #60a5fa));
+    color: var(--slos-accent-primary);
 }
 
 .shahi-meta-divider {
@@ -1846,7 +1836,7 @@ a.shahi-info-value .dashicons {
 
 .shahi-progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--shahi-primary-color, var(--shahi-accent-primary, #60a5fa)), var(--shahi-secondary-color, var(--shahi-accent-secondary, #93c5fd)));
+    background: linear-gradient(90deg, var(--slos-accent-primary), var(--slos-accent-light));
     border-radius: 4px;
     transition: width 0.5s ease;
     position: relative;
@@ -1889,7 +1879,7 @@ a.shahi-info-value .dashicons {
     top: 0;
     bottom: 0;
     width: 2px;
-    background: linear-gradient(180deg, var(--shahi-primary-color, var(--shahi-accent-primary, #60a5fa)), rgba(147, 197, 253, 0.3));
+    background: linear-gradient(180deg, var(--slos-accent-primary), var(--slos-accent-light));
     border-radius: 1px;
 }
 
@@ -1905,15 +1895,15 @@ a.shahi-info-value .dashicons {
     top: 1rem;
     width: 12px;
     height: 12px;
-    background: var(--shahi-card-bg, #1e293b);
-    border: 2px solid var(--shahi-primary-color, var(--shahi-accent-primary, #60a5fa));
+    background: var(--slos-surface-primary);
+    border: 2px solid var(--slos-accent-primary);
     border-radius: 50%;
     z-index: 1;
 }
 
 .shahi-timeline-item:first-child .shahi-timeline-dot {
-    background: var(--shahi-primary-color, var(--shahi-accent-primary, #60a5fa));
-    box-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
+    background: var(--slos-accent-primary);
+    box-shadow: var(--slos-shadow-sm);
 }
 
 .shahi-timeline-content {
@@ -1925,8 +1915,8 @@ a.shahi-info-value .dashicons {
 }
 
 .shahi-timeline-item:hover .shahi-timeline-content {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(96, 165, 250, 0.2);
+    background: var(--slos-surface-tertiary);
+    border-color: var(--slos-accent-primary);
 }
 
 .shahi-timeline-title {
@@ -1956,7 +1946,7 @@ a.shahi-info-value .dashicons {
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, var(--shahi-primary-color, var(--shahi-accent-primary, #60a5fa)), var(--shahi-secondary-color, var(--shahi-accent-secondary, #93c5fd)));
+    background: linear-gradient(90deg, var(--slos-accent-primary), var(--slos-accent-light));
 }
 
 .shahi-module-status-bar.status-inactive::before {
@@ -1980,7 +1970,7 @@ a.shahi-info-value .dashicons {
     justify-content: center;
     width: 44px;
     height: 44px;
-    background: linear-gradient(135deg, rgba(96, 165, 250, 0.15), rgba(147, 197, 253, 0.15));
+    background: var(--slos-surface-tertiary);
     border-radius: 10px;
 }
 
@@ -1988,7 +1978,7 @@ a.shahi-info-value .dashicons {
     font-size: 22px;
     width: 22px;
     height: 22px;
-    color: var(--shahi-primary-color, var(--shahi-accent-primary, #60a5fa));
+    color: var(--slos-accent-primary);
 }
 
 .shahi-module-badge {
@@ -2042,18 +2032,18 @@ a.shahi-info-value .dashicons {
    CARD HEADERS WITH COLORS
    ============================================ */
 .shahi-card-header-primary {
-    background: linear-gradient(135deg, rgba(96, 165, 250, 0.1), rgba(147, 197, 253, 0.1));
-    border-bottom: 1px solid rgba(96, 165, 250, 0.2);
+    background: var(--slos-surface-tertiary);
+    border-bottom: 1px solid var(--slos-accent-primary);
 }
 
 .shahi-card-header-accent {
-    background: linear-gradient(135deg, rgba(147, 197, 253, 0.1), rgba(236, 72, 153, 0.1));
-    border-bottom: 1px solid rgba(147, 197, 253, 0.2);
+    background: var(--slos-surface-tertiary);
+    border-bottom: 1px solid var(--slos-accent-light);
 }
 
 .shahi-card-header-info {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(96, 165, 250, 0.1));
-    border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+    background: var(--slos-surface-tertiary);
+    border-bottom: 1px solid var(--slos-accent-primary);
 }
 
 .shahi-card-badge {
@@ -2062,8 +2052,8 @@ a.shahi-info-value .dashicons {
     padding: 0.25rem 0.6rem;
     font-size: 0.7rem;
     font-weight: 600;
-    background: linear-gradient(135deg, var(--shahi-primary-color, var(--shahi-accent-primary, #60a5fa)), var(--shahi-secondary-color, var(--shahi-accent-secondary, #93c5fd)));
-    color: #fff;
+    background: var(--slos-accent-primary);
+    color: var(--slos-text-primary);
     border-radius: 20px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -2091,8 +2081,8 @@ a.shahi-info-value .dashicons {
 }
 
 .shahi-action-item:hover {
-    background: rgba(96, 165, 250, 0.1);
-    border-color: rgba(96, 165, 250, 0.3);
+    background: var(--slos-surface-tertiary);
+    border-color: var(--slos-accent-primary);
     transform: translateX(4px);
 }
 
@@ -2102,7 +2092,7 @@ a.shahi-info-value .dashicons {
     justify-content: center;
     width: 38px;
     height: 38px;
-    background: linear-gradient(135deg, rgba(96, 165, 250, 0.15), rgba(147, 197, 253, 0.15));
+    background: var(--slos-surface-tertiary);
     border-radius: 8px;
     flex-shrink: 0;
 }
@@ -2111,7 +2101,7 @@ a.shahi-info-value .dashicons {
     font-size: 18px;
     width: 18px;
     height: 18px;
-    color: var(--shahi-primary-color, var(--shahi-accent-primary, #60a5fa));
+    color: var(--slos-accent-primary);
 }
 
 .shahi-action-content {
@@ -2137,7 +2127,7 @@ a.shahi-info-value .dashicons {
 }
 
 .shahi-action-item:hover .shahi-action-arrow {
-    color: var(--shahi-primary-color, var(--shahi-accent-primary, #60a5fa));
+    color: var(--slos-accent-primary);
     transform: translateX(4px);
 }
 
@@ -2257,8 +2247,8 @@ a.shahi-info-value .dashicons {
 
 .shahi-support-card-v2:hover {
     transform: translateY(-4px);
-    border-color: rgba(96, 165, 250, 0.3);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    border-color: var(--slos-accent-primary);
+    box-shadow: var(--slos-shadow-md);
 }
 
 .shahi-support-card-v2 .shahi-support-icon {
@@ -2267,7 +2257,7 @@ a.shahi-info-value .dashicons {
     justify-content: center;
     width: 44px;
     height: 44px;
-    background: linear-gradient(135deg, rgba(96, 165, 250, 0.15), rgba(147, 197, 253, 0.15));
+    background: var(--slos-surface-tertiary);
     border-radius: 10px;
     margin-bottom: 0.75rem;
 }
@@ -2276,7 +2266,7 @@ a.shahi-info-value .dashicons {
     font-size: 20px;
     width: 20px;
     height: 20px;
-    color: var(--shahi-primary-color, var(--shahi-accent-primary, #60a5fa));
+    color: var(--slos-accent-primary);
 }
 
 .shahi-support-card-v2 .shahi-support-title {
@@ -2355,7 +2345,7 @@ a.shahi-info-value .dashicons {
 }
 
 .shahi-footer-link:hover {
-    color: var(--shahi-primary-color, var(--shahi-accent-primary, #60a5fa));
+    color: var(--slos-accent-primary);
 }
 
 .shahi-footer-link .dashicons {
@@ -2479,3 +2469,445 @@ a.shahi-info-value .dashicons {
 }
 
 
+
+/* ============================================
+   V3 CLASS ALIASES FOR TEMPLATE COMPATIBILITY
+   Added to maintain compatibility with dashboard.php template
+   These classes alias to the refactored base classes above
+   ============================================ */
+
+/* Top Bar */
+.shahi-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--slos-space-md);
+    background: var(--slos-surface-secondary);
+    border-bottom: 1px solid var(--slos-border-primary);
+    margin-bottom: var(--slos-space-lg);
+}
+.shahi-topbar-left,
+.shahi-topbar-right { display: flex; align-items: center; gap: var(--slos-space-sm); }
+.shahi-topbar-left { flex: 1; }
+.shahi-brand { display: flex; align-items: center; gap: var(--slos-space-sm); }
+.shahi-brand-icon { font-size: 24px; }
+.shahi-brand-text { display: flex; flex-direction: column; }
+.shahi-brand-name { font-weight: 600; color: var(--slos-text-primary); font-size: 16px; }
+.shahi-brand-tag { font-size: 12px; color: var(--slos-text-secondary); }
+.shahi-breadcrumb { display: flex; align-items: center; gap: 8px; margin-left: var(--slos-space-md); color: var(--slos-text-secondary); }
+.shahi-breadcrumb-text { font-size: 14px; }
+.shahi-btn-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: transparent;
+    border: 1px solid var(--slos-border-primary);
+    border-radius: var(--slos-radius-sm);
+    color: var(--slos-text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.shahi-btn-icon:hover {
+    background: var(--slos-surface-tertiary);
+    border-color: var(--slos-accent-primary);
+    color: var(--slos-accent-primary);
+}
+
+/* Hero */
+.shahi-hero {
+    background: var(--slos-surface-secondary);
+    border: 1px solid var(--slos-border-primary);
+    border-radius: var(--slos-radius-lg);
+    padding: var(--slos-space-xl) var(--slos-space-lg);
+    margin-bottom: var(--slos-space-lg);
+    position: relative;
+    overflow: hidden;
+}
+.shahi-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--slos-accent-primary) 0%, var(--slos-accent-light) 100%);
+}
+.shahi-hero-bg { display: none; }
+.shahi-hero-content { display: flex; align-items: center; justify-content: space-between; gap: var(--slos-space-lg); }
+.shahi-hero-main { flex: 1; }
+.shahi-hero-title { font-size: 28px; font-weight: 700; color: var(--slos-text-primary); margin: 0 0 8px 0; }
+.shahi-hero-subtitle { color: var(--slos-text-secondary); margin: 0; font-size: 14px; }
+.shahi-hero-actions { display: flex; gap: var(--slos-space-sm); }
+
+/* Section Intro */
+.shahi-section-intro { margin-bottom: var(--slos-space-md); }
+.shahi-section-desc { color: var(--slos-text-secondary); font-size: 14px; margin: 0; }
+
+/* Stats Row */
+.shahi-stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--slos-space-md);
+    margin-bottom: var(--slos-space-lg);
+}
+
+/* Stat Badges */
+.shahi-stat-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: var(--slos-radius-sm);
+    background: var(--slos-surface-tertiary);
+    color: var(--slos-text-secondary);
+}
+.shahi-stat-label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--slos-text-secondary); font-weight: 500; margin-bottom: 8px; }
+.shahi-stat-desc { font-size: 13px; color: var(--slos-text-muted); margin-top: 4px; }
+
+/* Main Grid */
+.shahi-main-grid {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: var(--slos-space-lg);
+}
+.shahi-col-left { display: flex; flex-direction: column; gap: var(--slos-space-lg); }
+.shahi-col-right { display: flex; flex-direction: column; gap: var(--slos-space-lg); }
+
+/* Card Header Left */
+.shahi-card-header-left { display: flex; align-items: center; gap: var(--slos-space-sm); }
+.shahi-card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: var(--slos-surface-tertiary);
+    border-radius: var(--slos-radius-sm);
+    color: var(--slos-accent-primary);
+}
+.shahi-card-link {
+    color: var(--slos-accent-primary);
+    text-decoration: none;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s ease;
+}
+.shahi-card-link:hover { color: var(--slos-accent-light); }
+.shahi-card-intro { color: var(--slos-text-secondary); font-size: 13px; margin: 0 0 var(--slos-space-md) 0; line-height: 1.5; }
+
+/* Badge */
+.shahi-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: var(--slos-radius-full);
+    background: rgba(107, 142, 78, 0.2);
+    color: var(--slos-accent-light);
+}
+.shahi-badge-success {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--slos-success-primary);
+}
+
+/* Modules */
+.shahi-modules-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--slos-space-sm);
+}
+.shahi-module-item {
+    display: flex;
+    align-items: center;
+    gap: var(--slos-space-md);
+    padding: var(--slos-space-md);
+    background: var(--slos-surface-tertiary);
+    border: 1px solid var(--slos-border-primary);
+    border-radius: var(--slos-radius-md);
+    transition: all 0.2s ease;
+}
+.shahi-module-item:hover {
+    border-color: var(--slos-accent-primary);
+    box-shadow: var(--slos-shadow-sm);
+}
+.shahi-module-item.active {
+    border-color: var(--slos-accent-primary);
+}
+.shahi-module-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: var(--slos-surface-primary);
+    border-radius: var(--slos-radius-md);
+    flex-shrink: 0;
+}
+.shahi-module-emoji { font-size: 24px; }
+.shahi-module-info { flex: 1; min-width: 0; }
+.shahi-module-name { font-size: 14px; font-weight: 600; color: var(--slos-text-primary); margin: 0 0 4px 0; }
+.shahi-module-desc { font-size: 12px; color: var(--slos-text-secondary); margin: 0; }
+.shahi-module-status { display: flex; align-items: center; gap: var(--slos-space-sm); }
+.shahi-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--slos-text-muted);
+}
+.shahi-status-dot.active {
+    background: var(--slos-success-primary);
+    animation: pulse-animation 2s infinite;
+}
+.shahi-status-dot.inactive {
+    background: rgba(255, 255, 255, 0.2);
+}
+.shahi-btn-outline {
+    padding: 6px 14px;
+    font-size: 12px;
+    background: transparent;
+    border: 1px solid var(--slos-border-primary);
+    color: var(--slos-text-secondary);
+    border-radius: var(--slos-radius-sm);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.shahi-btn-outline:hover {
+    border-color: var(--slos-accent-primary);
+    color: var(--slos-accent-primary);
+}
+.shahi-btn-ghost {
+    padding: 6px 14px;
+    font-size: 12px;
+    background: transparent;
+    border: none;
+    color: var(--slos-accent-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.shahi-btn-ghost:hover {
+    background: rgba(107, 142, 78, 0.1);
+}
+
+/* Actions */
+.shahi-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: var(--slos-space-sm);
+}
+.shahi-action-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--slos-space-sm);
+    padding: var(--slos-space-md);
+    background: var(--slos-surface-tertiary);
+    border: 1px solid var(--slos-border-primary);
+    border-radius: var(--slos-radius-md);
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+.shahi-action-tile:hover {
+    border-color: var(--slos-accent-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--slos-shadow-sm);
+}
+.shahi-action-icon-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: var(--slos-surface-primary);
+    border-radius: var(--slos-radius-md);
+    color: var(--slos-accent-primary);
+}
+.shahi-action-title { font-size: 13px; font-weight: 500; color: var(--slos-text-primary); }
+
+/* Setup/Progress */
+.shahi-progress-circle-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: var(--slos-space-lg) 0;
+    position: relative;
+}
+.shahi-progress-circle {
+    width: 140px;
+    height: 140px;
+}
+.shahi-progress-circle-text {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.shahi-progress-percent {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--slos-accent-primary);
+}
+.shahi-progress-label {
+    font-size: 12px;
+    color: var(--slos-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Checklist */
+.shahi-checklist {
+    display: flex;
+    flex-direction: column;
+    gap: var(--slos-space-sm);
+}
+.shahi-checklist-item {
+    display: flex;
+    align-items: center;
+    gap: var(--slos-space-sm);
+    padding: var(--slos-space-sm);
+    background: var(--slos-surface-tertiary);
+    border: 1px solid var(--slos-border-primary);
+    border-radius: var(--slos-radius-md);
+    transition: all 0.2s ease;
+}
+.shahi-checklist-item:hover {
+    border-color: var(--slos-accent-primary);
+}
+.shahi-checklist-item.completed {
+    opacity: 0.7;
+}
+.shahi-check-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--slos-surface-primary);
+    color: var(--slos-text-secondary);
+    flex-shrink: 0;
+}
+.shahi-checklist-item.completed .shahi-check-icon {
+    background: var(--slos-accent-primary);
+    color: var(--slos-text-on-accent);
+}
+.shahi-check-text {
+    flex: 1;
+    font-size: 13px;
+    color: var(--slos-text-primary);
+}
+.shahi-check-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: var(--slos-radius-sm);
+    background: transparent;
+    border: 1px solid var(--slos-border-primary);
+    color: var(--slos-text-secondary);
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+.shahi-check-action:hover {
+    border-color: var(--slos-accent-primary);
+    color: var(--slos-accent-primary);
+}
+
+/* Activity */
+.shahi-activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--slos-space-sm);
+}
+
+/* Support */
+.shahi-support-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--slos-space-xs);
+}
+.shahi-support-item {
+    display: flex;
+    align-items: center;
+    gap: var(--slos-space-sm);
+    padding: var(--slos-space-sm);
+    background: var(--slos-surface-tertiary);
+    border: 1px solid var(--slos-border-primary);
+    border-radius: var(--slos-radius-md);
+    text-decoration: none;
+    color: var(--slos-text-primary);
+    font-size: 13px;
+    transition: all 0.2s ease;
+}
+.shahi-support-item:hover {
+    border-color: var(--slos-accent-primary);
+    background: var(--slos-surface-primary);
+}
+.shahi-support-text { flex: 1; }
+
+/* Footer */
+.shahi-footer {
+    margin-top: var(--slos-space-xl);
+    padding: var(--slos-space-lg);
+    background: var(--slos-surface-secondary);
+    border: 1px solid var(--slos-border-primary);
+    border-radius: var(--slos-radius-lg);
+}
+.shahi-footer-content { text-align: center; }
+.shahi-footer-text { font-size: 13px; color: var(--slos-text-secondary); }
+
+/* Button Primary */
+.shahi-btn-primary {
+    padding: 10px 20px;
+    background: var(--slos-gradient-primary);
+    color: var(--slos-text-on-accent);
+    border: none;
+    border-radius: var(--slos-radius-md);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+.shahi-btn-primary:hover {
+    box-shadow: var(--slos-shadow-md);
+    transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .shahi-main-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .shahi-stats-row {
+        grid-template-columns: 1fr;
+    }
+    .shahi-actions-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .shahi-hero-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    .shahi-actions-grid {
+        grid-template-columns: 1fr;
+    }
+}

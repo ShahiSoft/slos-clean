@@ -18,7 +18,7 @@
 	--slos-hub-text-muted: #94a3b8;
 	--slos-hub-gray: #64748b;
 	--slos-hub-border: #334155;
-	--slos-hub-primary: #3b82f6;
+	--slos-hub-primary: var(--slos-accent-primary, #6b8e4e);
 	--slos-hub-success: #22c55e;
 	--slos-hub-warning: #f59e0b;
 	--slos-hub-danger: #ef4444;
@@ -54,7 +54,7 @@
 		0 0 10px rgba(255, 255, 255, 0.8),
 		0 0 20px rgba(255, 255, 255, 0.6),
 		0 0 40px rgba(255, 255, 255, 0.4),
-		0 0 60px rgba(147, 197, 253, 0.3);
+		0 0 60px rgba(139, 169, 114, 0.3);
 	letter-spacing: 0.5px;
 }
 
@@ -62,7 +62,7 @@
 	font-size: 32px;
 	width: 32px;
 	height: 32px;
-	color: #3b82f6;
+	color: var(--slos-accent-primary, #6b8e4e);
 }
 
 .slos-hub-subtitle {
@@ -281,18 +281,18 @@
 
 .slos-hub-filter-btn:hover {
 	background: #475569;
-	color: #3b82f6;
-	border-color: #3b82f6;
+	color: var(--slos-accent-primary, #6b8e4e);
+	border-color: var(--slos-accent-primary, #6b8e4e);
 	transform: translateY(-2px);
-	box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+	box-shadow: 0 4px 12px rgba(107, 142, 78, 0.2);
 }
 
 .slos-hub-filter-btn--active {
-	background: linear-gradient(135deg, #3b82f6 0%, #93c5fd 50%, #ffffff 100%) !important;
+	background: linear-gradient(135deg, #6b8e4e 0%, #8ba972 50%, #ffffff 100%) !important;
 	color: #1e3a5f !important;
 	font-weight: 700;
 	border-color: #3b82f6 !important;
-	box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4), 0 0 40px rgba(147, 197, 253, 0.3);
+	box-shadow: 0 6px 20px rgba(107, 142, 78, 0.4), 0 0 40px rgba(139, 169, 114, 0.3);
 	transform: translateY(-2px);
 }
 

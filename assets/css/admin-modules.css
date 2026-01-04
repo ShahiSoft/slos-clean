@@ -21,9 +21,9 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--shahi-border-light);
+    margin-bottom: var(--slos-space-xl, 30px);
+    padding-bottom: var(--slos-space-lg, 20px);
+    border-bottom: 1px solid var(--slos-border-default, rgba(107, 142, 78, 0.2));
 }
 
 .shahi-header-actions {
@@ -48,13 +48,15 @@
 }
 
 .shahi-stat-card {
-    background: var(--shahi-gradient-primary);
-    border: 1px solid var(--shahi-border-color);
-    border-radius: 12px;
-    padding: 25px;
+    background: var(--slos-bg-secondary, #242b24);
+    border: 1px solid var(--slos-border-default, rgba(107, 142, 78, 0.2));
+    border-radius: var(--slos-radius-lg, 12px);
+    padding: var(--slos-space-lg, 25px);
     text-align: center;
     position: relative;
     overflow: hidden;
+    box-shadow: var(--slos-shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.4));
+    transition: all 0.3s ease;
 }
 
 .shahi-stat-card::before {
@@ -64,9 +66,9 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, var(--shahi-accent-primary), transparent);
-    opacity: 0.1;
-    transition: left 0.5s;
+    background: linear-gradient(90deg, transparent, var(--slos-accent-primary, #6b8e4e), transparent);
+    opacity: 0.15;
+    transition: left 0.5s ease;
 }
 
 .shahi-stat-card:hover::before {
@@ -74,25 +76,25 @@
 }
 
 .shahi-stat-value {
-    font-size: 36px;
-    font-weight: 700;
-    color: var(--shahi-accent-primary);
-    margin-bottom: 8px;
+    font-size: var(--slos-text-3xl, 36px);
+    font-weight: var(--slos-font-bold, 700);
+    color: var(--slos-accent-primary, #6b8e4e);
+    margin-bottom: var(--slos-space-xs, 8px);
 }
 
 .shahi-stat-label {
-    font-size: 14px;
-    color: var(--shahi-text-muted);
+    font-size: var(--slos-text-sm, 14px);
+    color: var(--slos-text-tertiary, #94a3b8);
     text-transform: uppercase;
     letter-spacing: 1px;
 }
 
 .shahi-stat-success .shahi-stat-value {
-    color: var(--shahi-accent-success);
+    color: var(--slos-success, #10b981);
 }
 
 .shahi-stat-secondary .shahi-stat-value {
-    color: var(--shahi-accent-secondary);
+    color: var(--slos-accent-light, #8ba972);
 }
 
 /* ============================================================================
@@ -113,16 +115,17 @@
 
 .shahi-module-card {
     position: relative;
-    background: var(--shahi-bg-elevated);
-    border: 1px solid var(--shahi-border-color);
-    border-radius: 16px;
-    padding: 20px;
+    background: var(--slos-bg-secondary, #242b24);
+    border: 1px solid var(--slos-border-default, rgba(107, 142, 78, 0.2));
+    border-radius: var(--slos-radius-xl, 16px);
+    padding: var(--slos-space-lg, 20px);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: visible;
     animation: fadeInUp 0.5s ease-out;
     min-height: 280px;
     display: flex;
     flex-direction: column;
+    box-shadow: var(--slos-shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.4));
 }
 
 .shahi-module-card::before {
@@ -132,15 +135,16 @@
     left: 0;
     right: 0;
     height: 3px;
-    background: var(--shahi-gradient-primary);
+    background: linear-gradient(90deg, var(--slos-accent-primary, #6b8e4e) 0%, var(--slos-accent-light, #8ba972) 100%);
     opacity: 0;
-    transition: opacity 0.3s;
+    transition: opacity 0.3s ease;
+    border-radius: var(--slos-radius-xl, 16px) var(--slos-radius-xl, 16px) 0 0;
 }
 
 .shahi-module-card:hover {
     transform: translateY(-5px);
-    border-color: var(--shahi-border-accent);
-    box-shadow: var(--shahi-shadow);
+    border-color: var(--slos-accent-primary, #6b8e4e);
+    box-shadow: var(--slos-shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.5));
 }
 
 .shahi-module-card:hover::before {
@@ -148,12 +152,12 @@
 }
 
 .shahi-module-card.shahi-module-active {
-    border-color: var(--shahi-accent-success);
-    background: var(--shahi-gradient-success);
+    border-color: var(--slos-accent-primary, #6b8e4e);
+    background: var(--slos-bg-tertiary, #2d342d);
 }
 
 .shahi-module-card.shahi-module-active::before {
-    background: var(--shahi-gradient-success);
+    background: linear-gradient(90deg, var(--slos-accent-primary, #6b8e4e) 0%, var(--slos-accent-light, #8ba972) 100%);
     opacity: 1;
 }
 
@@ -164,14 +168,14 @@
     right: 15px;
     width: 10px;
     height: 10px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
-    transition: all 0.3s;
+    border-radius: var(--slos-radius-full, 50%);
+    background: rgba(107, 142, 78, 0.3);
+    transition: all 0.3s ease;
 }
 
 .shahi-module-active .shahi-module-status-indicator {
-    background: var(--shahi-success, #10b981);
-    box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+    background: var(--slos-accent-primary, #6b8e4e);
+    box-shadow: 0 0 10px rgba(107, 142, 78, 0.6);
     animation: pulse 2s infinite;
 }
 
@@ -187,8 +191,8 @@
 .shahi-module-header {
     display: flex;
     align-items: flex-start;
-    gap: 15px;
-    margin-bottom: 20px;
+    gap: var(--slos-space-md, 15px);
+    margin-bottom: var(--slos-space-lg, 20px);
 }
 
 .shahi-module-icon {
@@ -198,12 +202,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--shahi-gradient-primary);
-    border-radius: 12px;
-    font-size: 28px;
-    color: var(--shahi-text-primary);
-    box-shadow: var(--shahi-shadow);
-    transition: transform 0.3s;
+    background: linear-gradient(135deg, var(--slos-accent-primary, #6b8e4e) 0%, var(--slos-accent-light, #8ba972) 100%);
+    border-radius: var(--slos-radius-lg, 12px);
+    font-size: var(--slos-text-3xl, 28px);
+    color: var(--slos-text-primary, #f8fafc);
+    box-shadow: var(--slos-shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.4));
+    transition: transform 0.3s ease;
 }
 
 .shahi-module-card:hover .shahi-module-icon {
@@ -215,51 +219,51 @@
 }
 
 .shahi-module-title {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--shahi-text-primary);
-    margin: 0 0 8px 0;
-    line-height: 1.3;
+    font-size: var(--slos-text-xl, 20px);
+    font-weight: var(--slos-font-bold, 700);
+    color: var(--slos-text-primary, #f8fafc);
+    margin: 0 0 var(--slos-space-xs, 8px) 0;
+    line-height: var(--slos-leading-tight, 1.3);
 }
 
 .shahi-module-category {
     display: inline-block;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 600;
+    padding: var(--slos-space-xs, 4px) 10px;
+    border-radius: var(--slos-radius-full, 20px);
+    font-size: var(--slos-text-xs, 11px);
+    font-weight: var(--slos-font-semibold, 600);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 .shahi-badge-tracking {
-    background: rgba(96,165,250,0.15);
-    color: var(--shahi-accent-primary);
-    border: 1px solid var(--shahi-border-color);
+    background: rgba(107, 142, 78, 0.15);
+    color: var(--slos-accent-primary, #6b8e4e);
+    border: 1px solid var(--slos-border-default, rgba(107, 142, 78, 0.2));
 }
 
 .shahi-badge-performance {
-    background: rgba(147,197,253,0.15);
-    color: var(--shahi-accent-secondary);
-    border: 1px solid var(--shahi-border-color);
+    background: rgba(139, 167, 114, 0.15);
+    color: var(--slos-accent-light, #8ba972);
+    border: 1px solid var(--slos-border-default, rgba(107, 142, 78, 0.2));
 }
 
 .shahi-badge-security {
     background: rgba(239, 68, 68, 0.15);
-    color: var(--shahi-accent-error);
-    border: 1px solid var(--shahi-border-color);
+    color: var(--slos-error, #ef4444);
+    border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
 .shahi-badge-marketing {
     background: rgba(52, 211, 153, 0.15);
-    color: var(--shahi-accent-success);
-    border: 1px solid var(--shahi-border-color);
+    color: var(--slos-success, #10b981);
+    border: 1px solid rgba(52, 211, 153, 0.3);
 }
 
 .shahi-badge-content {
     background: rgba(245, 158, 11, 0.15);
-    color: var(--shahi-accent-warning);
-    border: 1px solid var(--shahi-border-color);
+    color: var(--slos-warning, #f59e0b);
+    border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 .shahi-badge-tools,
@@ -275,28 +279,28 @@
    ========================================================================= */
 
 .shahi-module-body {
-    margin-bottom: 20px;
+    margin-bottom: var(--slos-space-lg, 20px);
     flex: 1;
 }
 
 .shahi-module-description {
-    color: var(--shahi-text-secondary);
-    font-size: 14px;
-    line-height: 1.7;
-    margin-bottom: 15px;
+    color: var(--slos-text-secondary, #cbd5e1);
+    font-size: var(--slos-text-sm, 14px);
+    line-height: var(--slos-leading-relaxed, 1.7);
+    margin-bottom: var(--slos-space-md, 15px);
 }
 
 .shahi-module-dependencies {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 10px;
+    gap: var(--slos-space-xs, 8px);
+    padding: var(--slos-space-sm, 10px);
     background: rgba(245, 158, 11, 0.1);
-    border: 1px solid var(--shahi-border-color);
-    border-radius: 8px;
-    font-size: 13px;
-    color: var(--shahi-accent-warning);
-    margin-top: 12px;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: var(--slos-radius-md, 8px);
+    font-size: var(--slos-text-sm, 13px);
+    color: var(--slos-warning, #f59e0b);
+    margin-top: var(--slos-space-md, 12px);
 }
 
 .shahi-module-dependencies .dashicons {
@@ -332,16 +336,16 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 15px;
-    border-top: 1px solid var(--shahi-border-color);
+    padding-top: var(--slos-space-md, 15px);
+    border-top: 1px solid var(--slos-border-default, rgba(107, 142, 78, 0.2));
 }
 
 .shahi-module-meta {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 12px;
-    color: var(--shahi-text-muted);
+    gap: var(--slos-space-xs, 8px);
+    font-size: var(--slos-text-xs, 12px);
+    color: var(--slos-text-tertiary, #94a3b8);
 }
 
 .shahi-module-separator {
@@ -349,12 +353,12 @@
 }
 
 .shahi-module-settings-link {
-    color: var(--shahi-accent-primary);
-    transition: color 0.3s;
+    color: var(--slos-accent-primary, #6b8e4e);
+    transition: color 0.3s ease;
 }
 
 .shahi-module-settings-link:hover {
-    color: var(--shahi-accent-success);
+    color: var(--slos-accent-light, #8ba972);
 }
 
 .shahi-module-settings-link .dashicons {
@@ -392,10 +396,10 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: var(--shahi-bg-tertiary);
-    border: 2px solid var(--shahi-border-light);
+    background: var(--slos-bg-tertiary, #2d342d);
+    border: 2px solid var(--slos-border-default, rgba(107, 142, 78, 0.2));
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border-radius: 32px;
+    border-radius: var(--slos-radius-full, 32px);
 }
 
 .shahi-toggle-slider:before {
@@ -405,27 +409,27 @@
     width: 24px;
     left: 2px;
     bottom: 2px;
-    background: var(--shahi-bg-card);
+    background: var(--slos-text-primary, #f8fafc);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border-radius: 50%;
+    border-radius: var(--slos-radius-full, 50%);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
-/* Active/Checked State - GREEN */
+/* Active/Checked State - OLIVE */
 .shahi-toggle-switch input:checked + .shahi-toggle-slider {
-    background: var(--shahi-accent-success);
-    border-color: var(--shahi-accent-success);
-    box-shadow: var(--shahi-shadow);
+    background: var(--slos-accent-primary, #6b8e4e);
+    border-color: var(--slos-accent-primary, #6b8e4e);
+    box-shadow: var(--slos-shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.4));
 }
 
 .shahi-toggle-switch input:checked + .shahi-toggle-slider:before {
     transform: translateX(28px);
-    background: var(--shahi-bg-card);
+    background: var(--slos-text-primary, #f8fafc);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 .shahi-toggle-switch:hover .shahi-toggle-slider {
-    border-color: var(--shahi-border-accent);
+    border-color: var(--slos-accent-light, #8ba972);
 }
 
 /* Loading state */
@@ -458,28 +462,28 @@
 
 .shahi-empty-state {
     text-align: center;
-    padding: 60px 20px;
-    background: var(--shahi-gradient-secondary);
-    border: 2px dashed var(--shahi-border-color);
-    border-radius: 16px;
-    margin-top: 20px;
+    padding: var(--slos-space-3xl, 60px) var(--slos-space-lg, 20px);
+    background: var(--slos-bg-secondary, #242b24);
+    border: 2px dashed var(--slos-border-default, rgba(107, 142, 78, 0.2));
+    border-radius: var(--slos-radius-xl, 16px);
+    margin-top: var(--slos-space-lg, 20px);
 }
 
 .shahi-empty-state .dashicons {
-    font-size: 64px;
-    color: var(--shahi-text-muted);
-    margin-bottom: 20px;
+    font-size: var(--slos-text-3xl, 64px);
+    color: var(--slos-text-tertiary, #94a3b8);
+    margin-bottom: var(--slos-space-lg, 20px);
 }
 
 .shahi-empty-state h3 {
-    font-size: 24px;
-    color: var(--shahi-text-primary);
-    margin-bottom: 10px;
+    font-size: var(--slos-text-2xl, 24px);
+    color: var(--slos-text-primary, #f8fafc);
+    margin-bottom: var(--slos-space-sm, 10px);
 }
 
 .shahi-empty-state p {
-    font-size: 16px;
-    color: var(--shahi-text-secondary);
+    font-size: var(--slos-text-base, 16px);
+    color: var(--slos-text-secondary, #cbd5e1);
 }
 
 /* ============================================================================

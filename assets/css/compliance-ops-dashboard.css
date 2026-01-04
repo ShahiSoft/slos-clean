@@ -50,10 +50,9 @@
 
 .slos-ops-metric {
 	padding: 12px 16px;
-	background: rgba(255, 255, 255, 0.15);
-	border-radius: 8px;
-	-webkit-backdrop-filter: blur(10px);
-	backdrop-filter: blur(10px);
+	background: var(--slos-bg-tertiary, #2d342d);
+	border-radius: var(--slos-radius-md, 8px);
+	box-shadow: var(--slos-shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.3));
 	text-align: center;
 	min-width: 100px;
 }

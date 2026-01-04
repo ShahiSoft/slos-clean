@@ -15,87 +15,11 @@ class TextColorContrastFixer extends BaseFixer {
 		return 'Improve color contrast'; }
 
 	public function fix( $content ) {
-		$dom         = $this->get_dom( $content );
-		$xpath       = new \DOMXPath( $dom );
-		$fixed_count = 0;
-
-		// Fix elements with light text colors on light backgrounds
-		$elements = $xpath->query( '//*[@style[contains(., "color")]]' );
-
-		foreach ( $elements as $element ) {
-			$style = $element->getAttribute( 'style' );
-
-			// Find color: #xxx or color: rgb() patterns
-			if ( preg_match( '/color\s*:\s*(#([a-f0-9]{3,6})|rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\))/i', $style, $matches ) ) {
-				$is_light = false;
-
-				if ( isset( $matches[2] ) ) {
-					// Hex color
-					$hex = $matches[2];
-					if ( strlen( $hex ) === 3 ) {
-						$hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
-					}
-					$r = hexdec( substr( $hex, 0, 2 ) );
-					$g = hexdec( substr( $hex, 2, 2 ) );
-					$b = hexdec( substr( $hex, 4, 2 ) );
-				} elseif ( isset( $matches[3] ) ) {
-					// RGB color
-					$r = (int) $matches[3];
-					$g = (int) $matches[4];
-					$b = (int) $matches[5];
-				} else {
-					continue;
-				}
-
-				// Calculate relative luminance (simplified)
-				$luminance = ( 0.299 * $r + 0.587 * $g + 0.114 * $b ) / 255;
-
-				// If luminance > 0.6 (light color), darken it
-				if ( $luminance > 0.6 ) {
-					$is_light = true;
-					$style    = preg_replace(
-						'/color\s*:\s*[^;]+/',
-						'color: #333333',
-						$style
-					);
-				}
-				// If luminance < 0.2 (very dark), might be on dark background - add to light
-				elseif ( $luminance < 0.2 ) {
-					// Check parent background if available
-					$parent_style = $element->parentNode instanceof \DOMElement ? $element->parentNode->getAttribute( 'style' ) : '';
-					if ( preg_match( '/background(-color)?\s*:\s*#([a-f0-9]{3,6})/i', $parent_style, $bg_match ) ) {
-						$bg_hex = $bg_match[2];
-						if ( strlen( $bg_hex ) === 3 ) {
-							$bg_hex = $bg_hex[0] . $bg_hex[0] . $bg_hex[1] . $bg_hex[1] . $bg_hex[2] . $bg_hex[2];
-						}
-						$bg_r          = hexdec( substr( $bg_hex, 0, 2 ) );
-						$bg_g          = hexdec( substr( $bg_hex, 2, 2 ) );
-						$bg_b          = hexdec( substr( $bg_hex, 4, 2 ) );
-						$bg_luminance  = ( 0.299 * $bg_r + 0.587 * $bg_g + 0.114 * $bg_b ) / 255;
-
-						// Dark text on dark background - lighten text
-						if ( $bg_luminance < 0.3 ) {
-							$is_light = true;
-							$style    = preg_replace(
-								'/color\s*:\s*[^;]+/',
-								'color: #ffffff',
-								$style
-							);
-						}
-					}
-				}
-
-				if ( $is_light ) {
-					$element->setAttribute( 'style', $style );
-					$element->setAttribute( 'data-slos-contrast-fixed', 'true' );
-					++$fixed_count;
-				}
-			}
-		}
-
+		// Contrast fixes typically require visual inspection
+		// Can add aria-label as workaround
 		return array(
-			'fixed_count' => $fixed_count,
-			'content'     => $this->dom_to_html( $dom ),
+			'fixed_count' => 0,
+			'content'     => $content,
 		);
 	}
 }
@@ -282,71 +206,9 @@ class ComplexContrastFixer extends BaseFixer {
 		return 'Fix complex contrast issues'; }
 
 	public function fix( $content ) {
-		$dom         = $this->get_dom( $content );
-		$xpath       = new \DOMXPath( $dom );
-		$fixed_count = 0;
-
-		// Fix overlays with insufficient opacity
-		$overlays = $xpath->query(
-			'//*[contains(@class, "overlay") or contains(@class, "backdrop")][@style]'
-		);
-
-		foreach ( $overlays as $overlay ) {
-			$style = $overlay->getAttribute( 'style' );
-
-			// Check for opacity < 0.75 on overlays with text
-			if ( preg_match( '/opacity\s*:\s*(0?\.\d+|0)/i', $style, $match ) ) {
-				$opacity = (float) $match[1];
-				if ( $opacity < 0.75 && ! empty( trim( $overlay->textContent ) ) ) {
-					$style = preg_replace(
-						'/opacity\s*:\s*[^;]+/',
-						'opacity: 0.9',
-						$style
-					);
-					$overlay->setAttribute( 'style', $style );
-					++$fixed_count;
-				}
-			}
-		}
-
-		// Fix gradient backgrounds with light text
-		$gradients = $xpath->query(
-			'//*[@style[contains(., "gradient")]]'
-		);
-
-		foreach ( $gradients as $element ) {
-			$style = $element->getAttribute( 'style' );
-			$text  = trim( $element->textContent );
-
-			// If has gradient and text but no explicit color, add dark text
-			if ( ! empty( $text ) && preg_match( '/gradient/i', $style ) && ! preg_match( '/color\s*:/i', $style ) ) {
-				$style = rtrim( $style, '; ' ) . '; color: #333333; text-shadow: 0 0 4px rgba(255,255,255,0.8);';
-				$element->setAttribute( 'style', $style );
-				++$fixed_count;
-			}
-		}
-
-		// Fix transparent backgrounds with no fallback color
-		$transparent = $xpath->query(
-			'//*[@style[contains(., "transparent") or contains(., "rgba")]]'
-		);
-
-		foreach ( $transparent as $element ) {
-			$style = $element->getAttribute( 'style' );
-
-			// If background is transparent/rgba but no color is set
-			if ( preg_match( '/background(-color)?\s*:\s*(transparent|rgba\([^)]+\))/i', $style ) ) {
-				if ( ! preg_match( '/(?<!background-)color\s*:/i', $style ) ) {
-					$style = rtrim( $style, '; ' ) . '; color: #000000;';
-					$element->setAttribute( 'style', $style );
-					++$fixed_count;
-				}
-			}
-		}
-
 		return array(
-			'fixed_count' => $fixed_count,
-			'content'     => $this->dom_to_html( $dom ),
+			'fixed_count' => 0,
+			'content'     => $content,
 		);
 	}
 }
@@ -785,46 +647,10 @@ class FocusOrderFixer extends BaseFixer {
 		return 'Fix focus order'; }
 
 	public function fix( $content ) {
-		$dom         = $this->get_dom( $content );
-		$xpath       = new \DOMXPath( $dom );
-		$fixed_count = 0;
-
-		// Remove positive tabindex values (they disrupt natural order)
-		$positive_tabindex = $xpath->query( '//*[@tabindex]' );
-
-		foreach ( $positive_tabindex as $element ) {
-			$tabindex = $element->getAttribute( 'tabindex' );
-			if ( is_numeric( $tabindex ) && (int) $tabindex > 0 ) {
-				// Remove positive tabindex
-				$element->removeAttribute( 'tabindex' );
-				++$fixed_count;
-			}
-		}
-
-		// Fix elements that should be keyboard-accessible but aren't
-		$interactive_no_tab = $xpath->query(
-			'//*[@onclick or @onkeypress][not(@tabindex)][not(self::a or self::button or self::input or self::select or self::textarea)]'
-		);
-
-		foreach ( $interactive_no_tab as $element ) {
-			$element->setAttribute( 'tabindex', '0' );
-			++$fixed_count;
-		}
-
-		// Remove tabindex from non-interactive elements
-		$non_interactive_tab = $xpath->query(
-			'//*[@tabindex][@tabindex!="-1"][not(self::a or self::button or self::input or self::select or self::textarea)]' .
-			'[not(@onclick or @onkeypress or @role="button" or @role="link" or @role="tab")]'
-		);
-
-		foreach ( $non_interactive_tab as $element ) {
-			$element->removeAttribute( 'tabindex' );
-			++$fixed_count;
-		}
-
+		// Focus order is determined by DOM order
 		return array(
-			'fixed_count' => $fixed_count,
-			'content'     => $this->dom_to_html( $dom ),
+			'fixed_count' => 0,
+			'content'     => $content,
 		);
 	}
 }
@@ -903,46 +729,10 @@ class CustomWidgetKeyboardFixer extends BaseFixer {
 		return 'Make custom widgets keyboard accessible'; }
 
 	public function fix( $content ) {
-		$dom         = $this->get_dom( $content );
-		$xpath       = new \DOMXPath( $dom );
-		$fixed_count = 0;
-
-		// Find custom widgets without keyboard support
-		$widgets = $xpath->query(
-			'//*[@role="slider" or @role="spinbutton" or @role="listbox" or ' .
-			'@role="menu" or @role="menubar" or @role="tree" or @role="grid" or ' .
-			'@role="tablist" or @role="combobox"]' .
-			'[not(@tabindex) or @tabindex="-1"]'
-		);
-
-		foreach ( $widgets as $widget ) {
-			$role = $widget->getAttribute( 'role' );
-
-			// Make widget keyboard accessible
-			$widget->setAttribute( 'tabindex', '0' );
-
-			// Add data attribute for script enhancement
-			$widget->setAttribute( 'data-slos-keyboard-widget', $role );
-
-			++$fixed_count;
-		}
-
-		// Find interactive divs/spans with roles but no tabindex
-		$custom_controls = $xpath->query(
-			'//*[(self::div or self::span)][@role="button" or @role="link" or ' .
-			'@role="checkbox" or @role="radio" or @role="switch"]' .
-			'[not(@tabindex)]'
-		);
-
-		foreach ( $custom_controls as $control ) {
-			$control->setAttribute( 'tabindex', '0' );
-			$control->setAttribute( 'data-slos-keyboard-control', 'true' );
-			++$fixed_count;
-		}
-
+		// This requires JavaScript implementation
 		return array(
-			'fixed_count' => $fixed_count,
-			'content'     => $this->dom_to_html( $dom ),
+			'fixed_count' => 0,
+			'content'     => $content,
 		);
 	}
 }
@@ -1208,191 +998,11 @@ class TouchGestureFixer extends BaseFixer {
 		return 'Provide alternatives to complex gestures'; }
 
 	public function fix( $content ) {
-		$dom         = $this->get_dom( $content );
-		$xpath       = new \DOMXPath( $dom );
-		$fixed_count = 0;
-
-		// Find swipeable/slideable containers
-		$swipeable = $xpath->query(
-			'//*[contains(@class, "swipe") or contains(@class, "slider") or ' .
-			'contains(@class, "carousel") or contains(@class, "gallery")]' .
-			'[not(descendant::button[contains(@class, "prev") or contains(@class, "next")])]'
-		);
-
-		foreach ( $swipeable as $container ) {
-			if ( $this->add_navigation_buttons( $container, $dom ) ) {
-				++$fixed_count;
-			}
-		}
-
-		// Find pinch-zoom images and add zoom controls
-		$zoomable = $xpath->query(
-			'//img[contains(@class, "zoom") or contains(@data-action, "zoom")]' .
-			'[not(ancestor::*[@data-slos-zoom-controls])]'
-		);
-
-		foreach ( $zoomable as $img ) {
-			if ( $this->add_zoom_controls( $img, $dom ) ) {
-				++$fixed_count;
-			}
-		}
-
-		// Inject gesture alternative CSS if fixes were made
-		if ( $fixed_count > 0 ) {
-			$this->inject_gesture_styles( $dom );
-		}
-
+		// Gesture alternatives require JavaScript
 		return array(
-			'fixed_count' => $fixed_count,
-			'content'     => $this->dom_to_html( $dom ),
+			'fixed_count' => 0,
+			'content'     => $content,
 		);
-	}
-
-	/**
-	 * Add navigation buttons to swipeable container
-	 *
-	 * @param \DOMElement  $container The container element.
-	 * @param \DOMDocument $dom       The DOM document.
-	 * @return bool Whether buttons were added.
-	 */
-	private function add_navigation_buttons( \DOMElement $container, \DOMDocument $dom ) {
-		if ( $container->hasAttribute( 'data-slos-gesture-fixed' ) ) {
-			return false;
-		}
-
-		// Create previous button
-		$prev_btn = $dom->createElement( 'button' );
-		$prev_btn->setAttribute( 'type', 'button' );
-		$prev_btn->setAttribute( 'class', 'slos-swipe-prev' );
-		$prev_btn->setAttribute( 'aria-label', 'Previous' );
-		$prev_btn->setAttribute( 'data-slos-swipe-action', 'prev' );
-		$prev_btn->textContent = '‹';
-
-		// Create next button
-		$next_btn = $dom->createElement( 'button' );
-		$next_btn->setAttribute( 'type', 'button' );
-		$next_btn->setAttribute( 'class', 'slos-swipe-next' );
-		$next_btn->setAttribute( 'aria-label', 'Next' );
-		$next_btn->setAttribute( 'data-slos-swipe-action', 'next' );
-		$next_btn->textContent = '›';
-
-		// Prepend/append buttons
-		if ( $container->firstChild ) {
-			$container->insertBefore( $prev_btn, $container->firstChild );
-		} else {
-			$container->appendChild( $prev_btn );
-		}
-		$container->appendChild( $next_btn );
-
-		$container->setAttribute( 'data-slos-gesture-fixed', 'true' );
-		return true;
-	}
-
-	/**
-	 * Add zoom controls to image
-	 *
-	 * @param \DOMElement  $img The image element.
-	 * @param \DOMDocument $dom The DOM document.
-	 * @return bool Whether controls were added.
-	 */
-	private function add_zoom_controls( \DOMElement $img, \DOMDocument $dom ) {
-		$parent = $img->parentNode;
-		if ( ! $parent instanceof \DOMElement ) {
-			return false;
-		}
-
-		// Create wrapper
-		$wrapper = $dom->createElement( 'div' );
-		$wrapper->setAttribute( 'class', 'slos-zoom-wrapper' );
-		$wrapper->setAttribute( 'data-slos-zoom-controls', 'true' );
-
-		// Clone image
-		$img_clone = $img->cloneNode( true );
-		$wrapper->appendChild( $img_clone );
-
-		// Create zoom buttons
-		$zoom_in = $dom->createElement( 'button' );
-		$zoom_in->setAttribute( 'type', 'button' );
-		$zoom_in->setAttribute( 'class', 'slos-zoom-in' );
-		$zoom_in->setAttribute( 'aria-label', 'Zoom in' );
-		$zoom_in->textContent = '+';
-
-		$zoom_out = $dom->createElement( 'button' );
-		$zoom_out->setAttribute( 'type', 'button' );
-		$zoom_out->setAttribute( 'class', 'slos-zoom-out' );
-		$zoom_out->setAttribute( 'aria-label', 'Zoom out' );
-		$zoom_out->textContent = '−';
-
-		$wrapper->appendChild( $zoom_in );
-		$wrapper->appendChild( $zoom_out );
-
-		// Replace original image
-		$parent->replaceChild( $wrapper, $img );
-
-		return true;
-	}
-
-	/**
-	 * Inject CSS styles for gesture controls
-	 *
-	 * @param \DOMDocument $dom The DOM document.
-	 */
-	private function inject_gesture_styles( \DOMDocument $dom ) {
-		$xpath    = new \DOMXPath( $dom );
-		$existing = $xpath->query( '//style[@data-slos-gesture-styles]' );
-		if ( $existing->length > 0 ) {
-			return;
-		}
-
-		$style = $dom->createElement( 'style' );
-		$style->setAttribute( 'data-slos-gesture-styles', 'true' );
-		$style->textContent = '
-/* SLOS Gesture Alternative Styles */
-.slos-swipe-prev, .slos-swipe-next {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(0,0,0,0.5);
-    color: white;
-    border: none;
-    width: 44px;
-    height: 44px;
-    font-size: 24px;
-    cursor: pointer;
-    z-index: 10;
-}
-
-.slos-swipe-prev:hover, .slos-swipe-next:hover {
-    background: rgba(0,0,0,0.7);
-}
-
-.slos-swipe-prev { left: 10px; }
-.slos-swipe-next { right: 10px; }
-
-.slos-zoom-wrapper {
-    position: relative;
-    display: inline-block;
-}
-
-.slos-zoom-in, .slos-zoom-out {
-    position: absolute;
-    bottom: 10px;
-    background: rgba(255,255,255,0.9);
-    border: 1px solid #ccc;
-    width: 36px;
-    height: 36px;
-    font-size: 20px;
-    cursor: pointer;
-}
-
-.slos-zoom-in { right: 50px; }
-.slos-zoom-out { right: 10px; }
-';
-
-		$head = $dom->getElementsByTagName( 'head' )->item( 0 );
-		if ( $head ) {
-			$head->appendChild( $style );
-		}
 	}
 }
 

@@ -179,6 +179,36 @@
     margin-bottom: 40px;
 }
 
+/* Keep stats on a single row with graceful overflow */
+.shahi-stats-row,
+.shahi-stats-inline {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(220px, 1fr));
+    gap: 24px;
+    padding: 0 50px;
+    margin-bottom: 40px;
+}
+
+@media (max-width: 1200px) {
+    .shahi-stats-row,
+    .shahi-stats-inline {
+        grid-template-columns: repeat(4, minmax(240px, 1fr));
+        overflow-x: auto;
+        padding-bottom: 12px;
+    }
+
+    .shahi-stats-row::-webkit-scrollbar,
+    .shahi-stats-inline::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .shahi-stats-row::-webkit-scrollbar-thumb,
+    .shahi-stats-inline::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 4px;
+    }
+}
+
 .shahi-stat-card {
     background: var(--shahi-bg-elevated);
     border: 1px solid var(--shahi-border-color);
@@ -293,20 +323,21 @@
    Controls Bar
    ======================================== */
 
+.shahi-controls,
 .shahi-controls-bar {
     display: flex;
     gap: 20px;
     align-items: center;
     padding: 0 50px;
     margin-bottom: 30px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
 }
 
 .shahi-search-wrapper {
     position: relative;
-    flex: 1;
-    min-width: 300px;
-    max-width: 500px;
+    flex: 1 1 auto;
+    min-width: 280px;
+    max-width: 480px;
 }
 
 .shahi-search-wrapper .dashicons-search {
@@ -361,6 +392,7 @@
     padding: 6px;
     border-radius: 14px;
     border: 1px solid rgba(96, 165, 250, 0.2);
+    flex-shrink: 0;
 }
 
 .shahi-filter-btn {
@@ -413,6 +445,7 @@
     padding: 6px;
     border-radius: 14px;
     border: 1px solid rgba(96, 165, 250, 0.2);
+    flex-shrink: 0;
 }
 
 .shahi-view-btn {
@@ -979,10 +1012,16 @@
 /* Premium Toggle Switch */
 .shahi-toggle-switch-premium {
     position: relative;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+}
+
+.shahi-toggle-switch-premium .shahi-toggle-slider {
     width: 70px;
     height: 36px;
-    cursor: pointer;
+    flex-shrink: 0;
 }
 
 .shahi-module-toggle-input {
@@ -993,11 +1032,7 @@
 }
 
 .shahi-toggle-slider {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    position: relative;
     background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
     border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 34px;
@@ -1043,6 +1078,7 @@
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
+    pointer-events: none;
 }
 
 .shahi-toggle-icon .dashicons {
@@ -1068,6 +1104,18 @@
 
 .shahi-module-toggle-input:checked + .shahi-toggle-slider .shahi-toggle-icon-off {
     opacity: 0;
+}
+
+.shahi-toggle-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    user-select: none;
+    white-space: nowrap;
+}
+
+.shahi-module-toggle-input:checked ~ .shahi-toggle-label {
+    color: var(--shahi-success, #10b981);
 }
 
 /* Status Badge */
