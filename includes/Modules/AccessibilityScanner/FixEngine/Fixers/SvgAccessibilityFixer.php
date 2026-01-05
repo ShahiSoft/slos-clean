@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class SvgAccessibilityFixer extends AbstractFixer {
 
 	public function get_id(): string {
-		return 'svg_accessibility';
+		return 'missing-svg-title';
 	}
 
 	public function get_name(): string {

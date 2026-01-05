@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class AriaLabelFixer extends AbstractFixer {
 
 	public function get_id(): string {
-		return 'aria_label';
+		return 'missing-aria-label';
 	}
 
 	public function get_name(): string {

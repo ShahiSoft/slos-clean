@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class IframeAccessibilityFixer extends AbstractFixer {
 
 	public function get_id(): string {
-		return 'iframe_accessibility';
+		return 'missing-iframe-title';
 	}
 
 	public function get_name(): string {

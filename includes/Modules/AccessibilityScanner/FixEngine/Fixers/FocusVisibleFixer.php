@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class FocusVisibleFixer extends AbstractFixer {
 
 	public function get_id(): string {
-		return 'focus_visible';
+		return 'missing-focus-indicator';
 	}
 
 	public function get_name(): string {

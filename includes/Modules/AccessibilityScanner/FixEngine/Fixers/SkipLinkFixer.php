@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class SkipLinkFixer extends AbstractFixer {
 
 	public function get_id(): string {
-		return 'skip_link';
+		return 'missing-skip-link';
 	}
 
 	public function get_name(): string {

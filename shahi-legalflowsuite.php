@@ -100,6 +100,13 @@ function run_shahi_template()
 add_action('plugins_loaded', 'run_shahi_template', 10);
 
 /**
+ * Load WP-CLI Commands
+ */
+if (defined('WP_CLI') && WP_CLI) {
+	require_once SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'includes/CLI/FixEngineCommand.php';
+}
+
+/**
  * Enqueue Consent Banner Scripts and Styles
  */
 function enqueue_slos_consent_banner()

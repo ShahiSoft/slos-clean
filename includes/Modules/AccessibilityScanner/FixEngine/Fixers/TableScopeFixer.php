@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class TableScopeFixer extends AbstractFixer {
 
 	public function get_id(): string {
-		return 'table_scope';
+		return 'missing-table-scope';
 	}
 
 	public function get_name(): string {

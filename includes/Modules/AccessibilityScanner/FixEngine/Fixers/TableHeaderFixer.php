@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class TableHeaderFixer extends AbstractFixer {
 
 	public function get_id(): string {
-		return 'table_header';
+		return 'missing-table-headers';
 	}
 
 	public function get_name(): string {

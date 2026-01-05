@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class TabIndexFixer extends AbstractFixer {
 
 	public function get_id(): string {
-		return 'tabindex';
+		return 'invalid-tabindex';
 	}
 
 	public function get_name(): string {

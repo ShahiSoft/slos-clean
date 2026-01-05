@@ -259,6 +259,14 @@ class Assets {
 				array(),
 				$this->version
 			);
+
+			// Scan Progress Modal CSS (for dashboard-triggered scans)
+			wp_enqueue_style(
+				'slos-scan-progress',
+				$this->assets_url . 'css/slos-scan-progress.css',
+				array(),
+				$this->version
+			);
 		} elseif ( $this->is_settings_page( $hook ) ) {
 			$this->enqueue_style(
 				'shahi-admin-settings',
@@ -282,6 +290,14 @@ class Assets {
 			wp_enqueue_style(
 				'slos-autofix-progress',
 				$this->assets_url . 'css/slos-autofix-progress.css',
+				array(),
+				$this->version
+			);
+
+			// Scan Progress Modal CSS
+			wp_enqueue_style(
+				'slos-scan-progress',
+				$this->assets_url . 'css/slos-scan-progress.css',
 				array(),
 				$this->version
 			);
@@ -568,6 +584,17 @@ class Assets {
 				)
 			);
 
+			// Scan Progress Modal assets (dashboard entry points)
+			wp_enqueue_script(
+				'slos-scan-progress',
+				$this->assets_url . 'js/slos-scan-progress.js',
+				array( 'jquery' ),
+				$this->version,
+				true
+			);
+
+			$this->localize_scan_progress_script();
+
 			// Auto-Fix Progress Popup Assets for Dashboard Fix All buttons
 			// Force non-minified version (minified version doesn't exist yet)
 			wp_enqueue_script(
@@ -641,6 +668,17 @@ class Assets {
 					'nonce'    => wp_create_nonce( 'slos_scanner_nonce' ),
 				)
 			);
+
+			// Scan Progress Modal assets
+			wp_enqueue_script(
+				'slos-scan-progress',
+				$this->assets_url . 'js/slos-scan-progress.js',
+				array( 'jquery' ),
+				$this->version,
+				true
+			);
+
+			$this->localize_scan_progress_script();
 
 			// Auto-Fix Progress Popup Assets
 			// Force non-minified version (minified version doesn't exist yet)
@@ -1286,6 +1324,33 @@ class Assets {
 					'serious'  => __( 'Serious', 'shahi-legalflowsuite' ),
 					'moderate' => __( 'Moderate', 'shahi-legalflowsuite' ),
 					'minor'    => __( 'Minor', 'shahi-legalflowsuite' ),
+				),
+			)
+		);
+	}
+
+	/**
+	 * Localize script data for Scan Progress modal.
+	 *
+	 * @since 3.2.0
+	 * @return void
+	 */
+	private function localize_scan_progress_script() {
+		wp_localize_script(
+			'slos-scan-progress',
+			'slosScanConfig',
+			array(
+				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+				'nonce'   => wp_create_nonce( 'slos_scanner_nonce' ),
+				'i18n'    => array(
+					'initializing'   => __( 'Initializing...', 'shahi-legalflowsuite' ),
+					'fetching'       => __( 'Fetching pages to scan...', 'shahi-legalflowsuite' ),
+					'scanning'       => __( 'Scanning', 'shahi-legalflowsuite' ),
+					'complete'       => __( 'Scan complete!', 'shahi-legalflowsuite' ),
+					'cancelled'      => __( 'Scan cancelled', 'shahi-legalflowsuite' ),
+					'error'          => __( 'Error', 'shahi-legalflowsuite' ),
+					'noPages'        => __( 'No pages found to scan', 'shahi-legalflowsuite' ),
+					'confirmCancel'  => __( 'Are you sure you want to cancel the scan?', 'shahi-legalflowsuite' ),
 				),
 			)
 		);

@@ -8,6 +8,9 @@
 
 namespace ShahiLegalFlowSuite\Modules\AccessibilityScanner\FixEngine;
 
+use ShahiLegalFlowSuite\FixEngine\CanonicalIds;
+use ShahiLegalFlowSuite\FixEngine\Logger;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -74,107 +77,16 @@ final class FixEngine {
 
 	/**
 	 * Load all built-in fixers
+	 * Phase 2.2: Uses dynamic discovery instead of manual registration
 	 */
 	private function load_fixers(): void {
-		$fixer_dir = dirname( __FILE__ ) . '/Fixers';
-
-		if ( ! is_dir( $fixer_dir ) ) {
-			return;
-		}
-
-		// Load all PHP files in the Fixers directory
-		$files = glob( $fixer_dir . '/*.php' );
-
-		foreach ( $files as $file ) {
-			require_once $file;
-		}
-
-		// Auto-register all loaded fixers
-		$this->auto_register_fixers();
-	}
-
-	/**
-	 * Auto-register all classes that implement FixerInterface
-	 */
-	private function auto_register_fixers(): void {
-		$namespace = 'ShahiLegalFlowSuite\\Modules\\AccessibilityScanner\\FixEngine\\Fixers\\';
+		// Use FixerCollection's auto-discovery (Phase 2.2)
+		$count = $this->fixers->auto_discover();
 		
-		// Define all fixer classes explicitly for reliability
-		// These match exactly the files in the Fixers directory
-		$fixer_classes = [
-			// Images (5 fixers)
-			'MissingAltFixer',
-			'EmptyAltFixer',
-			'DecorativeImageFixer',
-			'SvgAccessibilityFixer',
-			'FigureCaptionFixer',
-			
-			// Links (3 fixers)
-			'EmptyLinkFixer',
-			'GenericLinkTextFixer',
-			'LinkTargetBlankFixer',
-			
-			// Headings (2 fixers)
-			'EmptyHeadingFixer',
-			'HeadingHierarchyFixer',
-			
-			// Forms (4 fixers)
-			'FormLabelFixer',
-			'AutocompleteFixer',
-			'RequiredFieldFixer',
-			'InputErrorDescriptionFixer',
-			
-			// Tables (3 fixers)
-			'TableHeaderFixer',
-			'TableCaptionFixer',
-			'TableScopeFixer',
-			
-			// Structure (2 fixers)
-			'LandmarkFixer',
-			'ListStructureFixer',
-			
-			// Interactive (3 fixers)
-			'ButtonTypeFixer',
-			'FocusVisibleFixer',
-			'TabIndexFixer',
-			
-			// ARIA (1 fixer)
-			'AriaLabelFixer',
-			
-			// Media (3 fixers)
-			'AudioAccessibilityFixer',
-			'VideoAccessibilityFixer',
-			'IframeAccessibilityFixer',
-			
-			// Document (4 fixers)
-			'LanguageAttributeFixer',
-			'DocumentTitleFixer',
-			'MetaViewportFixer',
-			'SkipLinkFixer',
-			
-			// Visual (1 fixer)
-			'ColorContrastFixer',
-		];
-
-		foreach ( $fixer_classes as $class_name ) {
-			$full_class = $namespace . $class_name;
-			
-			if ( class_exists( $full_class ) ) {
-				try {
-					$instance = new $full_class();
-					
-					if ( $instance instanceof FixerInterface ) {
-						$this->fixers->register( $instance );
-					}
-				} catch ( \Exception $e ) {
-					error_log( sprintf(
-						'[FixEngine] Failed to instantiate fixer %s: %s',
-						$class_name,
-						$e->getMessage()
-					) );
-				}
-			}
-		}
+		Logger::info( "FixEngine initialized", [ 
+			'fixers_count' => $count,
+			'categories' => count( $this->fixers->categories() )
+		] );
 	}
 
 	/**
@@ -217,7 +129,8 @@ final class FixEngine {
 	 */
 	public function get_fixer( string $fixer_id ): ?FixerInterface {
 		$this->initialize();
-		return $this->fixers->get( $fixer_id );
+		$canonical_id = CanonicalIds::canonicalize( $fixer_id ) ?? $fixer_id;
+		return $this->fixers->get( $canonical_id );
 	}
 
 	/**
@@ -263,7 +176,8 @@ final class FixEngine {
 			$fixers_to_run = iterator_to_array( $this->fixers );
 		} else {
 			foreach ( $fixer_ids as $id ) {
-				$fixer = $this->fixers->get( $id );
+				$canonical_id = CanonicalIds::canonicalize( $id ) ?? $id;
+				$fixer = $this->fixers->get( $canonical_id );
 				if ( $fixer ) {
 					$fixers_to_run[] = $fixer;
 				}

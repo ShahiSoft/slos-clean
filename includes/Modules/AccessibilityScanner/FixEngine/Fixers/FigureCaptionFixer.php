@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class FigureCaptionFixer extends AbstractFixer {
 
 	public function get_id(): string {
-		return 'figure_caption';
+		return 'missing-figure-caption';
 	}
 
 	public function get_name(): string {

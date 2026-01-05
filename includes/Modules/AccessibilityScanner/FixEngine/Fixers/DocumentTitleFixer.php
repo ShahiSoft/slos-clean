@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class DocumentTitleFixer extends AbstractFixer {
 
 	public function get_id(): string {
-		return 'document_title';
+		return 'missing-page-title';
 	}
 
 	public function get_name(): string {

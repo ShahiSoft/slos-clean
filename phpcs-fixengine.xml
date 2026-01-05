@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<ruleset name="SLOS FixEngine Coding Standards">
+    <description>PSR-12 + WordPress coding standards for FixEngine</description>
+    
+    <!-- Use PSR-12 as base -->
+    <rule ref="PSR12"/>
+    
+    <!-- WordPress specific rules -->
+    <rule ref="WordPress-Core">
+        <!-- Allow PSR-4 namespaces -->
+        <exclude name="WordPress.Files.FileName"/>
+    </rule>
+    
+    <rule ref="WordPress-Extra">
+        <!-- Exclude conflicting rules -->
+        <exclude name="WordPress.Files.FileName"/>
+        <exclude name="WordPress.NamingConventions.ValidVariableName"/>
+    </rule>
+    
+    <!-- Security rules -->
+    <rule ref="WordPress.Security"/>
+    
+    <!-- Sanitization rules -->
+    <rule ref="WordPress.Security.EscapeOutput"/>
+    <rule ref="WordPress.Security.NonceVerification"/>
+    <rule ref="WordPress.Security.ValidatedSanitizedInput"/>
+    
+    <!-- Performance rules -->
+    <rule ref="WordPress.DB.DirectDatabaseQuery">
+        <type>warning</type>
+    </rule>
+    
+    <!-- Paths to check -->
+    <file>includes/Modules/AccessibilityScanner/FixEngine/</file>
+    
+    <!-- Exclude vendor -->
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
+    
+    <!-- Arguments -->
+    <arg name="colors"/>
+    <arg value="sp"/> <!-- Show sniff and progress -->
+    <arg name="extensions" value="php"/>
+    <arg name="parallel" value="8"/>
+    
+    <!-- Check for PHP cross-version compatibility -->
+    <config name="testVersion" value="7.4-"/>
+    
+    <!-- Show warnings -->
+    <arg name="warning-severity" value="0"/>
+</ruleset>

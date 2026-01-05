@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class LanguageAttributeFixer extends AbstractFixer {
 
 	public function get_id(): string {
-		return 'language_attribute';
+		return 'missing-lang-attribute';
 	}
 
 	public function get_name(): string {

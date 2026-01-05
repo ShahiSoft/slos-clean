@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class MetaViewportFixer extends AbstractFixer {
 
 	public function get_id(): string {
-		return 'meta_viewport';
+		return 'improper-viewport';
 	}
 
 	public function get_name(): string {

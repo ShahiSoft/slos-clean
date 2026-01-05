@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class LandmarkFixer extends AbstractFixer {
 
 	public function get_id(): string {
-		return 'landmark';
+		return 'missing-landmark';
 	}
 
 	public function get_name(): string {

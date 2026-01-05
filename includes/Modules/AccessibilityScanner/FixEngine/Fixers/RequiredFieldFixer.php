@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class RequiredFieldFixer extends AbstractFixer {
 
 	public function get_id(): string {
-		return 'required_field';
+		return 'missing-required-attribute';
 	}
 
 	public function get_name(): string {

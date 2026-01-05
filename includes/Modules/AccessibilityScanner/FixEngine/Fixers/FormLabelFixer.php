@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class FormLabelFixer extends AbstractFixer {
 
 	public function get_id(): string {
-		return 'form_label';
+		return 'missing-form-label';
 	}
 
 	public function get_name(): string {

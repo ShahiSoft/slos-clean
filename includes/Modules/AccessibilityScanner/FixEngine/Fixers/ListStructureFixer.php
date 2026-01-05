@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class ListStructureFixer extends AbstractFixer {
 
 	public function get_id(): string {
-		return 'list_structure';
+		return 'improper-list-structure';
 	}
 
 	public function get_name(): string {

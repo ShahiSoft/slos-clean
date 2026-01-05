@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class ButtonTypeFixer extends AbstractFixer {
 
 	public function get_id(): string {
-		return 'button_type';
+		return 'missing-button-type';
 	}
 
 	public function get_name(): string {

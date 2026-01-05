@@ -8,6 +8,9 @@
 
 namespace ShahiLegalFlowSuite\Modules\AccessibilityScanner\FixEngine;
 
+use ShahiLegalFlowSuite\FixEngine\CanonicalIds;
+use ShahiLegalFlowSuite\FixEngine\Logger;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -30,6 +33,37 @@ abstract class AbstractFixer implements FixerInterface {
 	 * @var \DOMXPath|null Cached XPath instance
 	 */
 	protected $xpath;
+
+	/**
+	 * @var string Canonical fixer ID
+	 */
+	protected $canonical_id;
+	
+	/**
+	 * Constructor - Validate ID against canonical registry
+	 */
+	public function __construct() {
+		$id = $this->get_id();
+		$this->canonical_id = CanonicalIds::canonicalize($id) ?? '';
+		
+		if (empty($this->canonical_id)) {
+			Logger::error('Fixer ID not in canonical registry', [
+				'fixer_id' => $id,
+				'fixer_class' => get_class($this),
+			]);
+			
+			throw new \InvalidArgumentException(
+				sprintf('Fixer ID "%s" is not in the canonical registry. Check CanonicalIds class.', $id)
+			);
+		}
+	}
+
+	/**
+	 * Canonical fixer ID accessor
+	 */
+	public function get_canonical_id(): string {
+		return $this->canonical_id;
+	}
 
 	/**
 	 * Get human-readable name (derived from ID by default)
@@ -61,7 +95,7 @@ abstract class AbstractFixer implements FixerInterface {
 		try {
 			// Check if we can fix this content
 			if ( ! $this->can_fix( $content ) ) {
-				return FixResult::skipped( $this->get_id(), $content, 'No fixable issues detected' );
+				return FixResult::skipped( $this->canonical_id, $content, 'No fixable issues detected' );
 			}
 
 			// Parse HTML
@@ -83,7 +117,7 @@ abstract class AbstractFixer implements FixerInterface {
 			// Return appropriate result
 			if ( $fix_details['count'] > 0 ) {
 				return FixResult::success(
-					$this->get_id(),
+					$this->canonical_id,
 					$content,
 					$fixed_content,
 					$fix_details['count'],
@@ -92,13 +126,13 @@ abstract class AbstractFixer implements FixerInterface {
 				);
 			}
 
-			return FixResult::skipped( $this->get_id(), $content );
+			return FixResult::skipped( $this->canonical_id, $content );
 
 		} catch ( \Throwable $e ) {
 			$this->dom = null;
 			$this->xpath = null;
 
-			return FixResult::error( $this->get_id(), $content, $e->getMessage() );
+			return FixResult::error( $this->canonical_id, $content, $e->getMessage() );
 		}
 	}
 

@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class MissingAltFixer extends AbstractFixer {
 
 	public function get_id(): string {
-		return 'missing_alt';
+		return 'missing-alt-text';
 	}
 
 	public function get_name(): string {

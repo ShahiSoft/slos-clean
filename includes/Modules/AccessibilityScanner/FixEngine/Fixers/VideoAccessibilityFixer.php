@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class VideoAccessibilityFixer extends AbstractFixer {
 
 	public function get_id(): string {
-		return 'video_accessibility';
+		return 'missing-video-caption';
 	}
 
 	public function get_name(): string {

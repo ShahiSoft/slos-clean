@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class HeadingHierarchyFixer extends AbstractFixer {
 
 	public function get_id(): string {
-		return 'heading_hierarchy';
+		return 'skipped-heading-level';
 	}
 
 	public function get_name(): string {

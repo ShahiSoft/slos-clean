@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class LinkTargetBlankFixer extends AbstractFixer {
 
 	public function get_id(): string {
-		return 'link_target_blank';
+		return 'link-opens-new-window';
 	}
 
 	public function get_name(): string {

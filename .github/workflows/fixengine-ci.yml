@@ -1,0 +1,66 @@
+name: SLOS FixEngine CI
+
+on:
+  push:
+    branches: [ slos-newfix, main ]
+  pull_request:
+    branches: [ slos-newfix, main ]
+
+jobs:
+  php-tests:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        php-version: ['7.4', '8.0', '8.1']
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-version }}
+        extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, mysql
+        coverage: xdebug
+    
+    - name: Install Composer dependencies
+      run: composer install --prefer-dist --no-progress
+    
+    - name: Run PHPCS
+      run: vendor/bin/phpcs --standard=phpcs-fixengine.xml
+    
+    - name: Run PHPUnit
+      run: vendor/bin/phpunit --configuration phpunit.xml --coverage-text
+    
+    - name: Run PHPStan
+      run: vendor/bin/phpstan analyse includes/Modules/AccessibilityScanner/FixEngine/ --level=5
+  
+  javascript-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    
+    - name: Install dependencies
+      run: npm install
+    
+    - name: Run ESLint
+      run: npm run lint
+    
+    - name: Run tests
+      run: npm test
+  
+  security-scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Run security audit
+      run: composer audit

@@ -7,6 +7,24 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 }
 
+/* Position modifiers */
+.slos-aw-widget.slos-aw-pos-bottom-left {
+    left: 20px;
+    right: auto;
+}
+
+.slos-aw-widget.slos-aw-pos-top-right {
+    top: 20px;
+    bottom: auto;
+}
+
+.slos-aw-widget.slos-aw-pos-top-left {
+    top: 20px;
+    bottom: auto;
+    left: 20px;
+    right: auto;
+}
+
 .slos-aw-toggle {
     width: 50px;
     height: 50px;
@@ -20,6 +38,63 @@
     align-items: center;
     justify-content: center;
     transition: transform 0.2s, background-color 0.2s;
+}
+
+/* Color theme modifiers for toggle & active buttons */
+.slos-aw-widget.slos-aw-theme-green .slos-aw-toggle {
+    background-color: #16a34a;
+}
+
+.slos-aw-widget.slos-aw-theme-green .slos-aw-toggle:hover,
+.slos-aw-widget.slos-aw-theme-green .slos-aw-toggle:focus {
+    background-color: #15803d;
+}
+
+.slos-aw-widget.slos-aw-theme-purple .slos-aw-toggle {
+    background-color: #7c3aed;
+}
+
+.slos-aw-widget.slos-aw-theme-purple .slos-aw-toggle:hover,
+.slos-aw-widget.slos-aw-theme-purple .slos-aw-toggle:focus {
+    background-color: #6d28d9;
+}
+
+.slos-aw-widget.slos-aw-theme-orange .slos-aw-toggle {
+    background-color: #f97316;
+}
+
+.slos-aw-widget.slos-aw-theme-orange .slos-aw-toggle:hover,
+.slos-aw-widget.slos-aw-theme-orange .slos-aw-toggle:focus {
+    background-color: #ea580c;
+}
+
+.slos-aw-widget.slos-aw-theme-dark .slos-aw-toggle {
+    background-color: #0f172a;
+}
+
+.slos-aw-widget.slos-aw-theme-dark .slos-aw-toggle:hover,
+.slos-aw-widget.slos-aw-theme-dark .slos-aw-toggle:focus {
+    background-color: #020617;
+}
+
+.slos-aw-widget.slos-aw-theme-green .slos-aw-btn.is-active,
+.slos-aw-widget.slos-aw-theme-green .slos-aw-btn:hover {
+    border-color: #16a34a;
+}
+
+.slos-aw-widget.slos-aw-theme-purple .slos-aw-btn.is-active,
+.slos-aw-widget.slos-aw-theme-purple .slos-aw-btn:hover {
+    border-color: #7c3aed;
+}
+
+.slos-aw-widget.slos-aw-theme-orange .slos-aw-btn.is-active,
+.slos-aw-widget.slos-aw-theme-orange .slos-aw-btn:hover {
+    border-color: #f97316;
+}
+
+.slos-aw-widget.slos-aw-theme-dark .slos-aw-btn.is-active,
+.slos-aw-widget.slos-aw-theme-dark .slos-aw-btn:hover {
+    border-color: #0f172a;
 }
 
 .slos-aw-toggle:hover, .slos-aw-toggle:focus {

@@ -22,6 +22,9 @@ class AccessibilitySettings {
 	public function register_settings() {
 		register_setting( 'slos_accessibility_settings', 'slos_active_checkers' );
 		register_setting( 'slos_accessibility_settings', 'slos_active_fixes' );
+		register_setting( 'slos_accessibility_settings', 'slos_widget_features' );
+		register_setting( 'slos_accessibility_settings', 'slos_widget_position' );
+		register_setting( 'slos_accessibility_settings', 'slos_widget_color' );
 	}
 
 	public function render() {
@@ -79,6 +82,14 @@ class AccessibilitySettings {
 	 * @return void
 	 */
 	private function render_settings_content( $checkers, $fixes, $active_checkers, $active_fixes ) {
+		$widget_elements = $this->get_widget_elements();
+		$widget_features = get_option( 'slos_widget_features', array_keys( $widget_elements ) );
+		if ( ! is_array( $widget_features ) || empty( $widget_features ) ) {
+			$widget_features = array_keys( $widget_elements );
+		}
+		$widget_position = get_option( 'slos_widget_position', 'bottom-right' );
+		$widget_color    = get_option( 'slos_widget_color', 'blue' );
+
 		?>
 		<style>
 		.slos-settings-v3 {
@@ -205,6 +216,19 @@ class AccessibilitySettings {
 			transform: translateY(-1px);
 			box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 		}
+		.slos-settings-v3 .slos-widget-select {
+			width: 100%;
+			padding: 8px 12px;
+			background: var(--slos-card-bg);
+			border: 1px solid var(--slos-border);
+			border-radius: 6px;
+			color: var(--slos-text-primary);
+			font-size: 13px;
+		}
+		.slos-settings-v3 .slos-widget-select:focus {
+			outline: none;
+			border-color: var(--slos-accent);
+		}
 		@media (max-width: 900px) {
 			.slos-settings-v3 .slos-settings-grid {
 				grid-template-columns: 1fr;
@@ -277,6 +301,54 @@ class AccessibilitySettings {
 										<span><?php echo esc_html( $label ); ?></span>
 									</label>
 								<?php endforeach; ?>
+							</div>
+						</div>
+					</div>
+
+					<!-- Accessibility Widget Card -->
+					<div class="slos-settings-card">
+						<div class="slos-card-header">
+							<div>
+								<h3>
+									<span class="dashicons dashicons-visibility"></span>
+									<?php esc_html_e( 'Accessibility Widget', 'shahi-legalflowsuite' ); ?>
+								</h3>
+								<p><?php esc_html_e( 'Choose which controls are available in the frontend accessibility widget and how it appears.', 'shahi-legalflowsuite' ); ?></p>
+							</div>
+						</div>
+						<div class="slos-card-body">
+							<div class="slos-checkbox-grid">
+								<?php foreach ( $widget_elements as $key => $label ) : ?>
+									<label class="slos-checkbox-item">
+										<input type="checkbox" name="slos_widget_features[]" value="<?php echo esc_attr( $key ); ?>" <?php checked( in_array( $key, $widget_features, true ) ); ?>>
+										<span><?php echo esc_html( $label ); ?></span>
+									</label>
+								<?php endforeach; ?>
+							</div>
+							<div style="margin-top:16px; display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+								<div>
+									<label for="slos_widget_position" style="display:block; font-size:13px; font-weight:500; color:var(--slos-text-secondary); margin-bottom:6px;">
+										<?php esc_html_e( 'Widget Position', 'shahi-legalflowsuite' ); ?>
+									</label>
+									<select id="slos_widget_position" name="slos_widget_position" class="slos-widget-select">
+										<option value="bottom-right" <?php selected( $widget_position, 'bottom-right' ); ?>><?php esc_html_e( 'Bottom Right', 'shahi-legalflowsuite' ); ?></option>
+										<option value="bottom-left" <?php selected( $widget_position, 'bottom-left' ); ?>><?php esc_html_e( 'Bottom Left', 'shahi-legalflowsuite' ); ?></option>
+										<option value="top-right" <?php selected( $widget_position, 'top-right' ); ?>><?php esc_html_e( 'Top Right', 'shahi-legalflowsuite' ); ?></option>
+										<option value="top-left" <?php selected( $widget_position, 'top-left' ); ?>><?php esc_html_e( 'Top Left', 'shahi-legalflowsuite' ); ?></option>
+									</select>
+								</div>
+								<div>
+									<label for="slos_widget_color" style="display:block; font-size:13px; font-weight:500; color:var(--slos-text-secondary); margin-bottom:6px;">
+										<?php esc_html_e( 'Color Theme', 'shahi-legalflowsuite' ); ?>
+									</label>
+									<select id="slos_widget_color" name="slos_widget_color" class="slos-widget-select">
+										<option value="blue" <?php selected( $widget_color, 'blue' ); ?>><?php esc_html_e( 'Blue', 'shahi-legalflowsuite' ); ?></option>
+										<option value="green" <?php selected( $widget_color, 'green' ); ?>><?php esc_html_e( 'Green', 'shahi-legalflowsuite' ); ?></option>
+										<option value="purple" <?php selected( $widget_color, 'purple' ); ?>><?php esc_html_e( 'Purple', 'shahi-legalflowsuite' ); ?></option>
+										<option value="orange" <?php selected( $widget_color, 'orange' ); ?>><?php esc_html_e( 'Orange', 'shahi-legalflowsuite' ); ?></option>
+										<option value="dark" <?php selected( $widget_color, 'dark' ); ?>><?php esc_html_e( 'Dark', 'shahi-legalflowsuite' ); ?></option>
+									</select>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -420,6 +492,24 @@ class AccessibilitySettings {
 			'fix_timing_controls'      => 'Fix Timing Controls',
 			'fix_status_messages'      => 'Fix Status Messages',
 			'fix_error_identification' => 'Fix Error Identification',
+		);
+	}
+
+	/**
+	 * Get available accessibility widget feature groups
+	 *
+	 * @since 3.1.1
+	 * @return array
+	 */
+	private function get_widget_elements() {
+		return array(
+			'profiles'               => __( 'Accessibility Profiles panel', 'shahi-legalflowsuite' ),
+			'content_adjustments'    => __( 'Content adjustments (text size, cursor, highlights)', 'shahi-legalflowsuite' ),
+			'text_spacing'           => __( 'Text spacing & alignment controls', 'shahi-legalflowsuite' ),
+			'color_contrast'         => __( 'Color & contrast and color-blindness tools', 'shahi-legalflowsuite' ),
+			'navigation_interaction' => __( 'Navigation & interaction helpers', 'shahi-legalflowsuite' ),
+			'content_readability'    => __( 'Content & readability tools', 'shahi-legalflowsuite' ),
+			'reset'                  => __( '"Reset all" button', 'shahi-legalflowsuite' ),
 		);
 	}
 }

@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class EmptyLinkFixer extends AbstractFixer {
 
 	public function get_id(): string {
-		return 'empty_link';
+		return 'empty-link';
 	}
 
 	public function get_name(): string {

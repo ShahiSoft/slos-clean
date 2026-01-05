@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class DecorativeImageFixer extends AbstractFixer {
 
 	public function get_id(): string {
-		return 'decorative_image';
+		return 'decorative-image';
 	}
 
 	public function get_name(): string {

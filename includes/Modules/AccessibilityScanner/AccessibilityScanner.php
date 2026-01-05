@@ -236,12 +236,21 @@ class AccessibilityScanner extends Module {
 		add_action( 'wp_ajax_slos_get_detailed_scan_report', array( $this, 'ajax_get_detailed_scan_report' ) );
 		add_action( 'wp_ajax_slos_rollback_fixes', array( $this, 'ajax_rollback_fixes' ) );
 		add_action( 'wp_ajax_slos_check_backup_exists', array( $this, 'ajax_check_backup_exists' ) );
+		add_action( 'wp_ajax_slos_save_scanner_config', array( $this, 'ajax_save_scanner_config' ) );
+		add_action( 'wp_ajax_slos_schedule_email_report', array( $this, 'ajax_schedule_email_report' ) );
+		add_action( 'wp_ajax_slos_toggle_widget', array( $this, 'ajax_toggle_widget' ) );
 
 		// Schedule cleanup cron job if not already scheduled
 		if ( ! wp_next_scheduled( 'slos_cleanup_old_backups' ) ) {
 			wp_schedule_event( time(), 'daily', 'slos_cleanup_old_backups' );
 		}
 		add_action( 'slos_cleanup_old_backups', array( $this, 'cron_cleanup_old_backups' ) );
+
+		// Schedule periodic accessibility email reports (daily driver, frequency handled in callback)
+		if ( ! wp_next_scheduled( 'slos_send_accessibility_report' ) ) {
+			wp_schedule_event( time(), 'daily', 'slos_send_accessibility_report' );
+		}
+		add_action( 'slos_send_accessibility_report', array( $this, 'cron_send_accessibility_report' ) );
 	}
 
 	/**
@@ -726,9 +735,15 @@ class AccessibilityScanner extends Module {
 			wp_send_json_error( 'Unauthorized' );
 		}
 
+		// Use configured post types if available, otherwise default to posts and pages
+		$post_types = get_option( 'slos_scan_post_types', array( 'post', 'page' ) );
+		if ( empty( $post_types ) || ! is_array( $post_types ) ) {
+			$post_types = array( 'post', 'page' );
+		}
+
 		$posts = get_posts(
 			array(
-				'post_type'      => array( 'post', 'page' ),
+				'post_type'      => $post_types,
 				'posts_per_page' => -1,
 				'post_status'    => 'publish',
 			)
@@ -2674,7 +2689,10 @@ class AccessibilityScanner extends Module {
 	 * @since 3.1.1
 	 */
 	public function ajax_rollback_fixes() {
-		check_ajax_referer( 'slos_autofix_nonce', 'nonce' );
+		// Accept either the original autofix nonce or the scanner nonce for compatibility
+		if ( ! check_ajax_referer( 'slos_autofix_nonce', 'nonce', false ) && ! check_ajax_referer( 'slos_scanner_nonce', 'nonce', false ) ) {
+			wp_send_json_error( array( 'message' => 'Invalid nonce' ) );
+		}
 
 		if ( ! $this->user_can_manage_accessibility() ) {
 			wp_send_json_error( array( 'message' => 'Unauthorized' ) );
@@ -2727,6 +2745,168 @@ class AccessibilityScanner extends Module {
 				'backup_date' => $backup ? $backup['created_at'] : '',
 			)
 		);
+	}
+
+	/**
+	 * AJAX: Save scanner configuration from Tools page
+	 *
+	 * Mirrors the Accessibility Settings page but scoped to the Tools UI.
+	 */
+	public function ajax_save_scanner_config() {
+		check_ajax_referer( 'slos_scanner_nonce', 'nonce' );
+
+		if ( ! $this->user_can_manage_accessibility() ) {
+			wp_send_json_error( array( 'message' => 'Unauthorized' ) );
+		}
+
+		// Sanitize WCAG level
+		$wcag_level = isset( $_POST['wcag_level'] ) ? sanitize_text_field( wp_unslash( $_POST['wcag_level'] ) ) : 'AA';
+		$allowed_levels = array( 'A', 'AA', 'AAA' );
+		if ( ! in_array( $wcag_level, $allowed_levels, true ) ) {
+			$wcag_level = 'AA';
+		}
+
+		// Sanitize post types
+		$scan_post_types = isset( $_POST['scan_post_types'] ) ? (array) $_POST['scan_post_types'] : array( 'post', 'page' );
+		$scan_post_types = array_map( 'sanitize_key', $scan_post_types );
+
+		// Only keep valid public post types
+		$public_types = get_post_types( array( 'public' => true ), 'names' );
+		$scan_post_types = array_values( array_intersect( $scan_post_types, $public_types ) );
+		if ( empty( $scan_post_types ) ) {
+			$scan_post_types = array( 'post', 'page' );
+		}
+
+		// Sanitize active checkers; reuse same keys as settings page
+		$raw_checkers = isset( $_POST['active_checkers'] ) ? (array) $_POST['active_checkers'] : array();
+		$raw_checkers = array_map( 'sanitize_key', $raw_checkers );
+		$available_checkers = array_keys( $this->get_check_mapping() );
+		$active_checkers = array_values( array_intersect( $raw_checkers, $available_checkers ) );
+		if ( empty( $active_checkers ) ) {
+			$active_checkers = $available_checkers;
+		}
+
+		update_option( 'slos_wcag_level', $wcag_level );
+		update_option( 'slos_scan_post_types', $scan_post_types );
+		update_option( 'slos_active_checkers', $active_checkers );
+
+		wp_send_json_success(
+			array(
+				'wcag_level'      => $wcag_level,
+				'scan_post_types' => $scan_post_types,
+				'active_checkers' => $active_checkers,
+			)
+		);
+	}
+
+	/**
+	 * AJAX: Schedule accessibility email reports
+	 *
+	 * Stores report settings and relies on cron_send_accessibility_report()
+	 * to send periodic summaries.
+	 */
+	public function ajax_schedule_email_report() {
+		check_ajax_referer( 'slos_scanner_nonce', 'nonce' );
+
+		if ( ! $this->user_can_manage_accessibility() ) {
+			wp_send_json_error( array( 'message' => 'Unauthorized' ) );
+		}
+
+		$email = isset( $_POST['email'] ) ? sanitize_email( wp_unslash( $_POST['email'] ) ) : '';
+		$frequency = isset( $_POST['frequency'] ) ? sanitize_text_field( wp_unslash( $_POST['frequency'] ) ) : 'weekly';
+
+		if ( empty( $email ) || ! is_email( $email ) ) {
+			wp_send_json_error( array( 'message' => __( 'Please provide a valid email address.', 'shahi-legalflowsuite' ) ) );
+		}
+
+		$allowed_frequencies = array( 'weekly', 'monthly' );
+		if ( ! in_array( $frequency, $allowed_frequencies, true ) ) {
+			$frequency = 'weekly';
+		}
+
+		$settings = array(
+			'email'      => $email,
+			'frequency'  => $frequency,
+			'last_sent'  => '',
+		);
+
+		update_option( 'slos_accessibility_report_settings', $settings );
+
+		wp_send_json_success(
+			array(
+				'message'   => __( 'Email reports scheduled successfully.', 'shahi-legalflowsuite' ),
+				'settings'  => $settings,
+			)
+		);
+	}
+
+	/**
+	 * Cron callback: send periodic accessibility email report.
+	 *
+	 * Runs daily but honours the configured weekly/monthly cadence.
+	 */
+	public function cron_send_accessibility_report() {
+		$settings = get_option( 'slos_accessibility_report_settings', array() );
+		$email    = isset( $settings['email'] ) ? $settings['email'] : '';
+		$frequency = isset( $settings['frequency'] ) ? $settings['frequency'] : 'weekly';
+
+		if ( empty( $email ) || ! is_email( $email ) ) {
+			return;
+		}
+
+		$now       = current_time( 'timestamp' );
+		$last_sent = ! empty( $settings['last_sent'] ) ? strtotime( $settings['last_sent'] ) : 0;
+		$interval_days = ( 'monthly' === $frequency ) ? 30 : 7;
+
+		if ( $last_sent && ( $now - $last_sent ) < ( DAY_IN_SECONDS * $interval_days ) ) {
+			return;
+		}
+
+		$stats = get_option( 'slos_scan_statistics', array() );
+		$score = isset( $stats['average_score'] ) ? intval( $stats['average_score'] ) : 0;
+		$total_issues = isset( $stats['total_issues'] ) ? intval( $stats['total_issues'] ) : 0;
+		$critical_issues = isset( $stats['total_critical'] ) ? intval( $stats['total_critical'] ) : 0;
+
+		$subject = sprintf(
+			/* translators: %s: date */
+			__( 'Accessibility Scan Report (%s)', 'shahi-legalflowsuite' ),
+			wp_date( get_option( 'date_format' ), $now )
+		);
+
+		$body_lines = array();
+		$body_lines[] = __( 'Here is your latest accessibility scan summary:', 'shahi-legalflowsuite' );
+		$body_lines[] = '';
+		$body_lines[] = sprintf( __( 'Average score: %d%%', 'shahi-legalflowsuite' ), $score );
+		$body_lines[] = sprintf( __( 'Total issues: %d', 'shahi-legalflowsuite' ), $total_issues );
+		$body_lines[] = sprintf( __( 'Critical issues: %d', 'shahi-legalflowsuite' ), $critical_issues );
+		$body_lines[] = '';
+		$body_lines[] = __( 'For full details and to fix issues, visit the Accessibility Tools & Dashboard in your WordPress admin.', 'shahi-legalflowsuite' );
+
+		$body = implode( "\n", $body_lines );
+
+		// Send email via WordPress mailer
+		wp_mail( $email, $subject, $body );
+
+		$settings['last_sent'] = current_time( 'mysql' );
+		update_option( 'slos_accessibility_report_settings', $settings );
+	}
+
+	/**
+	 * AJAX: Toggle accessibility widget enabled/disabled
+	 *
+	 * @since 3.1.1
+	 */
+	public function ajax_toggle_widget() {
+		check_ajax_referer( 'slos_scanner_nonce', 'nonce' );
+
+		if ( ! $this->user_can_manage_accessibility() ) {
+			wp_send_json_error( 'Unauthorized' );
+		}
+
+		$enabled = ! empty( $_POST['enabled'] ) && 'true' === $_POST['enabled'];
+		update_option( 'slos_widget_enabled', $enabled );
+
+		wp_send_json_success( array( 'enabled' => $enabled ) );
 	}
 
 	/**

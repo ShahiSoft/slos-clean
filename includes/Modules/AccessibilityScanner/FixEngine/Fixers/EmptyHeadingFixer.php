@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class EmptyHeadingFixer extends AbstractFixer {
 
 	public function get_id(): string {
-		return 'empty_heading';
+		return 'empty-heading';
 	}
 
 	public function get_name(): string {

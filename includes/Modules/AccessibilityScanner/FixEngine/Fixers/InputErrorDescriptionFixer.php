@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class InputErrorDescriptionFixer extends AbstractFixer {
 
 	public function get_id(): string {
-		return 'input_error_description';
+		return 'missing-error-description';
 	}
 
 	public function get_name(): string {

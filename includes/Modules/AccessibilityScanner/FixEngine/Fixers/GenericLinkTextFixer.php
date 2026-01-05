@@ -45,7 +45,7 @@ final class GenericLinkTextFixer extends AbstractFixer {
 	];
 
 	public function get_id(): string {
-		return 'generic_link_text';
+		return 'generic-link-text';
 	}
 
 	public function get_name(): string {

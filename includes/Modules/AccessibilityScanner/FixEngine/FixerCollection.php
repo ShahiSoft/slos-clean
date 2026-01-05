@@ -8,6 +8,9 @@
 
 namespace ShahiLegalFlowSuite\Modules\AccessibilityScanner\FixEngine;
 
+use ShahiLegalFlowSuite\FixEngine\CanonicalIds;
+use ShahiLegalFlowSuite\FixEngine\Logger;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -36,17 +39,36 @@ final class FixerCollection implements \Countable, \IteratorAggregate {
 	 *
 	 * @param FixerInterface $fixer
 	 * @return self
+	 * @throws \InvalidArgumentException If ID not canonical
 	 */
 	public function register( FixerInterface $fixer ): self {
 		$id = $fixer->get_id();
+		$canonical_id = method_exists($fixer, 'get_canonical_id')
+			? $fixer->get_canonical_id()
+			: CanonicalIds::canonicalize($id);
+		
+		// Validate against canonical IDs
+		if (!$canonical_id) {
+			Logger::error('Attempted to register fixer with non-canonical ID', [
+				'fixer_id' => $id,
+				'fixer_class' => get_class($fixer),
+			]);
+			
+			throw new \InvalidArgumentException(
+				sprintf('Cannot register fixer with non-canonical ID: %s', $id)
+			);
+		}
+		
 		$category = $fixer->get_category();
 
-		$this->fixers[ $id ] = $fixer;
+		$this->fixers[ $canonical_id ] = $fixer;
 
 		if ( ! isset( $this->by_category[ $category ] ) ) {
 			$this->by_category[ $category ] = [];
 		}
-		$this->by_category[ $category ][ $id ] = $fixer;
+		$this->by_category[ $category ][ $canonical_id ] = $fixer;
+		
+		Logger::debug('Fixer registered', ['fixer_id' => $canonical_id, 'category' => $category]);
 
 		return $this;
 	}
@@ -115,6 +137,61 @@ final class FixerCollection implements \Countable, \IteratorAggregate {
 	 */
 	public function count(): int {
 		return count( $this->fixers );
+	}
+	
+	/**
+	 * Auto-discover and register all fixers from Fixers directory
+	 * Phase 2.2: Dynamic Discovery
+	 * 
+	 * @return int Number of fixers discovered
+	 */
+	public function auto_discover(): int {
+		$fixers_dir = __DIR__ . '/Fixers';
+		$count = 0;
+		
+		if ( ! is_dir( $fixers_dir ) ) {
+			Logger::error( "Fixers directory not found", [ 'path' => $fixers_dir ] );
+			return 0;
+		}
+		
+		$files = glob( $fixers_dir . '/*.php' );
+		
+		foreach ( $files as $file ) {
+			$class_name = basename( $file, '.php' );
+			$fqcn = __NAMESPACE__ . '\\Fixers\\' . $class_name;
+			
+			// Skip if class doesn't exist
+			if ( ! class_exists( $fqcn ) ) {
+				continue;
+			}
+			
+			// Check if extends AbstractFixer
+			if ( ! is_subclass_of( $fqcn, AbstractFixer::class ) ) {
+				Logger::warning(
+					"Class does not extend AbstractFixer",
+					[ 'class' => $class_name ]
+				);
+				continue;
+			}
+			
+			try {
+				$fixer = new $fqcn();
+				$this->register( $fixer );
+				$count++;
+			} catch ( \Exception $e ) {
+				Logger::error(
+					"Failed to instantiate fixer",
+					[ 
+						'class' => $class_name, 
+						'error' => $e->getMessage()
+					]
+				);
+			}
+		}
+		
+		Logger::info( "Auto-discovered fixers", [ 'count' => $count ] );
+		
+		return $count;
 	}
 
 	/**

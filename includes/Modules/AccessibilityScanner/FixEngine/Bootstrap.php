@@ -75,6 +75,20 @@ final class Bootstrap {
 			}
 		}
 
+		// Load infrastructure classes (Phase 0)
+		$infrastructure_files = [
+			'FeatureFlags.php',
+			'Logger.php',
+			'CanonicalIds.php',
+		];
+
+		foreach ( $infrastructure_files as $file ) {
+			$path = $base_dir . '/' . $file;
+			if ( file_exists( $path ) ) {
+				require_once $path;
+			}
+		}
+
 		// Load core classes
 		$core_files = [
 			'FixResult.php',
