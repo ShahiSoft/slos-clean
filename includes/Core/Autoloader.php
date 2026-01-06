@@ -53,6 +53,16 @@ class Autoloader {
 		$relative_path  = str_replace( '\\', '/', $relative_class ) . '.php';
 		$file           = $base_dir . $relative_path;
 
+		// Special case: load built ScannerPage from dist to avoid relying on
+		// potentially out-of-sync source versions.
+		if ( $relative_path === 'Modules/AccessibilityScanner/Admin/ScannerPage.php' ) {
+			$dist_file = SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'dist/includes/' . $relative_path;
+			if ( file_exists( $dist_file ) ) {
+				require_once $dist_file;
+				return;
+			}
+		}
+
 		if ( file_exists( $file ) ) {
 			require_once $file;
 			return;

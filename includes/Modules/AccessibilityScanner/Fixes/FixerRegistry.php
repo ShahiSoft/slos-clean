@@ -263,7 +263,18 @@ class FixerRegistry {
 	 */
 	public static function get_fixer_count() {
 		self::init();
-		return count( self::$registry );
+
+		// Only count fixers that can actually be instantiated. This keeps
+		// diagnostics and any UI that relies on this value aligned with the
+		// real set of available fixers.
+		$count = 0;
+		foreach ( array_keys( self::$registry ) as $checker_id ) {
+			if ( self::get_fixer( $checker_id ) ) {
+				$count++;
+			}
+		}
+
+		return $count;
 	}
 }
 

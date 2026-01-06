@@ -75,6 +75,20 @@ abstract class AbstractFixer implements FixerInterface {
 	}
 
 	/**
+	 * Get fixer description (from CanonicalIds metadata by default)
+	 *
+	 * @return string
+	 */
+	public function get_description(): string {
+		$meta = CanonicalIds::get_metadata( $this->canonical_id );
+		if ( is_array( $meta ) && isset( $meta['name'] ) ) {
+			return $meta['name'];
+		}
+
+		return $this->get_name();
+	}
+
+	/**
 	 * Get WCAG criteria (empty by default, override in subclasses)
 	 *
 	 * @return array
@@ -84,68 +98,54 @@ abstract class AbstractFixer implements FixerInterface {
 	}
 
 	/**
-	 * Template method: Apply fix with timing and error handling
+	 * Get fixer category (from CanonicalIds metadata by default)
 	 *
-	 * @param string $content
+	 * @return string
+	 */
+	public function get_category(): string {
+		$meta = CanonicalIds::get_metadata( $this->canonical_id );
+		if ( is_array( $meta ) && isset( $meta['category'] ) ) {
+			return $meta['category'];
+		}
+
+		return 'general';
+	}
+
+	/**
+	 * Apply fix with shared error handling.
+	 *
+	 * Subclasses implement the actual logic in apply_fix().
+	 *
+	 * @param string $content HTML content to fix
+	 * @param array  $options Optional configuration
 	 * @return FixResult
 	 */
-	final public function fix( string $content ): FixResult {
-		$start_time = microtime( true );
-
+	public function fix( string $content, array $options = [] ): FixResult {
 		try {
-			// Check if we can fix this content
-			if ( ! $this->can_fix( $content ) ) {
-				return FixResult::skipped( $this->canonical_id, $content, 'No fixable issues detected' );
-			}
-
-			// Parse HTML
-			$this->dom = $this->parse_html( $content );
-			$this->xpath = new \DOMXPath( $this->dom );
-
-			// Apply the fix (implemented by subclasses)
-			$fix_details = $this->apply_fix();
-
-			// Get the fixed content
-			$fixed_content = $this->get_html();
-
-			// Clean up
-			$this->dom = null;
-			$this->xpath = null;
-
-			$execution_time = microtime( true ) - $start_time;
-
-			// Return appropriate result
-			if ( $fix_details['count'] > 0 ) {
-				return FixResult::success(
-					$this->canonical_id,
-					$content,
-					$fixed_content,
-					$fix_details['count'],
-					$fix_details['items'] ?? [],
-					$execution_time
-				);
-			}
-
-			return FixResult::skipped( $this->canonical_id, $content );
-
+			return $this->apply_fix( $content, $options );
 		} catch ( \Throwable $e ) {
-			$this->dom = null;
-			$this->xpath = null;
-
-			return FixResult::error( $this->canonical_id, $content, $e->getMessage() );
+			return FixResult::error( $this->canonical_id ?: $this->get_id(), $content, $e->getMessage() );
 		}
 	}
 
 	/**
-	 * Apply the actual fix - implemented by subclasses
+	 * Default can_fix implementation - concrete fixers may override.
 	 *
-	 * Returns an array with:
-	 * - 'count' (int): Number of fixes applied
-	 * - 'items' (array): Optional details about what was fixed
-	 *
-	 * @return array{count: int, items?: array}
+	 * @param string $content
+	 * @return bool
 	 */
-	abstract protected function apply_fix(): array;
+	public function can_fix( string $content ): bool {
+		return true;
+	}
+
+	/**
+	 * Apply the actual fix - implemented by subclasses.
+	 *
+	 * @param string $content HTML content to fix
+	 * @param array  $options Optional configuration
+	 * @return FixResult
+	 */
+	abstract protected function apply_fix( string $content, array $options = [] ): FixResult;
 
 	/**
 	 * Parse HTML content into DOMDocument
@@ -159,12 +159,16 @@ abstract class AbstractFixer implements FixerInterface {
 		libxml_use_internal_errors( true );
 
 		// Wrap content in proper HTML structure
-		$wrapped = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>' 
-		         . $content 
+		$wrapped = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>'
+		         . $content
 		         . '</body></html>';
 
 		$dom->loadHTML( $wrapped, LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED );
 		libxml_clear_errors();
+
+		// Cache DOM and XPath for helper methods like query() and get_html().
+		$this->dom   = $dom;
+		$this->xpath = new \DOMXPath( $dom );
 
 		return $dom;
 	}
@@ -195,11 +199,14 @@ abstract class AbstractFixer implements FixerInterface {
 	/**
 	 * Query DOM using XPath
 	 *
-	 * @param string $query XPath query
+	 * @param string        $query XPath query
+	 * @param \DOMNode|null $context Optional context node
 	 * @return \DOMNodeList
 	 */
-	protected function query( string $query ): \DOMNodeList {
-		return $this->xpath->query( $query );
+	protected function query( string $query, \DOMNode $context = null ): \DOMNodeList {
+		return $context
+			? $this->xpath->query( $query, $context )
+			: $this->xpath->query( $query );
 	}
 
 	/**

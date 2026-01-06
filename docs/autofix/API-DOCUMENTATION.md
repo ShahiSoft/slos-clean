@@ -329,17 +329,11 @@ FixerRegistry::init();
 $fixer = FixerRegistry::get_fixer('generic-link'); // Alias
 $result = $fixer->fix($content);
 
-// NEW: FixEngine
+// NEW: FixEngine (single canonical pipeline)
 use ShahiLegalFlowSuite\Modules\AccessibilityScanner\FixEngine\Bootstrap;
 
 $engine = Bootstrap::get_engine();
 $result = $engine->fix_with_fixer($content, 'generic-link-text'); // Canonical
-
-// Or use UnifiedFixerRouter for automatic routing
-use ShahiLegalFlowSuite\Modules\AccessibilityScanner\UnifiedFixerRouter;
-
-$router = new UnifiedFixerRouter();
-$result = $router->fix($content, 'generic-link-text'); // Routes to FixEngine or legacy
 ```
 
 ### Run ID Migration

@@ -119,20 +119,18 @@ Successfully implemented comprehensive refactoring of the autofix system from du
 **Status:** Complete  
 **Duration:** ~2 hours
 
-**Deliverables:**
-- ✅ `UnifiedFixerRouter.php` - Intelligent routing with fallback
-- ✅ Performance metrics tracking
-- ✅ Hybrid mode support (FixEngine + Legacy)
-- ✅ Gradual migration path
+**Deliverables (historical):**
+- `UnifiedFixerRouter.php` - Intelligent routing with fallback (**removed**; FixEngine is now the sole execution pipeline)
+- Performance metrics tracking
+- Hybrid mode support (FixEngine + Legacy) (**retired** in favor of FixEngine-first with a narrow internal legacy fallback)
+- Gradual migration path
 
-**Routing Logic:**
-1. Check feature flags
-2. Determine fixer availability in each system
-3. Route to FixEngine if available
-4. Fallback to legacy if enabled
-5. Track metrics for monitoring
+**Current Routing Strategy:**
+1. Autofix AJAX flows call FixEngine directly as the primary and canonical engine.
+2. A narrow, internal FixerRegistry fallback exists only inside AccessibilityScanner for rare migration/compatibility cases.
+3. No external or public API uses a hybrid router; new integrations should use FixEngine directly.
 
-**Metrics Tracked:**
+**Metrics Tracked (when enabled):**
 - Calls per system
 - Average execution time
 - Total fixes applied
@@ -273,7 +271,7 @@ Successfully implemented comprehensive refactoring of the autofix system from du
 
 ### Schema & Routing (Phase 3-4)
 12. `includes/Modules/AccessibilityScanner/FixEngine/Migrations/DatabaseSchemaMigration.php`
-13. `includes/Modules/AccessibilityScanner/UnifiedFixerRouter.php`
+13. (removed) `includes/Modules/AccessibilityScanner/UnifiedFixerRouter.php` - legacy hybrid router retired; FixEngine is now the sole routing path
 
 ### Performance & Testing (Phase 5-6)
 14. `includes/Modules/AccessibilityScanner/FixEngine/PerformanceProfiler.php`

@@ -106,7 +106,7 @@ final class ButtonTypeFixer extends AbstractFixer {
 	 * @param \DOMElement $button
 	 * @return bool
 	 */
-	private function has_accessible_name( \DOMElement $button ): bool {
+	protected function has_accessible_name( \DOMElement $button ): bool {
 		// Has text content
 		$text = trim( $button->textContent );
 		if ( ! empty( $text ) ) {

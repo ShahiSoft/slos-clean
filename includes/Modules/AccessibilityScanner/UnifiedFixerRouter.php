@@ -19,13 +19,23 @@ use ShahiLegalFlowSuite\FixEngine\Logger;
 use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry;
 
 /**
- * Unified Fixer Router
- * 
- * Routes fix requests to FixEngine or legacy system based on:
- * - Feature flags
- * - Fixer availability
- * - Performance metrics
- */
+	 * Unified Fixer Router (deprecated)
+	 *
+	 * This class was introduced as a Phase 4 migration wrapper to
+	 * gradually route between the legacy FixerRegistry system and
+	 * the new FixEngine implementation.
+	 *
+	 * As of FixEngine rollout completion, all production autofix
+	 * flows execute exclusively through FixEngine. The legacy
+	 * FixerRegistry is retained only for very narrow, opt-in
+	 * debugging and offline comparison tools.
+	 *
+	 * The router itself is no longer used anywhere in the plugin
+	 * and is kept solely to avoid hard fatal errors in the unlikely
+	 * event that third-party or ad-hoc code attempts to reference it.
+	 *
+	 * @deprecated 3.1.1 Use FixEngine directly; hybrid routing is no longer supported.
+	 */
 class UnifiedFixerRouter {
 	
 	/** @var FixEngine */
@@ -35,6 +45,16 @@ class UnifiedFixerRouter {
 	private $metrics = [];
 	
 	public function __construct() {
+		// The unified router is deprecated and no longer participates in
+		// any production code paths. Instantiating it is strongly discouraged.
+		if ( function_exists( '\_doing_it_wrong' ) ) {
+			\_doing_it_wrong(
+				__METHOD__,
+				'UnifiedFixerRouter is deprecated. All autofix traffic now routes directly through FixEngine.',
+				'3.1.1'
+			);
+		}
+
 		$this->fix_engine = new FixEngine();
 		$this->fix_engine->initialize();
 	}

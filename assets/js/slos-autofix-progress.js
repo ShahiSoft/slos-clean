@@ -58,6 +58,7 @@
             rescanStats: null, // Store final rescan statistics
             elementErrors: [], // Store element-level errors
             pageId: null, // Store page ID for localStorage persistence
+            fixerCatalog: {}, // Canonical fixer metadata indexed by ID (from FixEngine when available)
         },
 
         /**
@@ -90,7 +91,46 @@
             this.createModal();
             this.bindEvents();
             this.createLiveRegion();
+            this.initializeFixerCatalog();
             console.log('SLOSAutoFixProgress: Initialized successfully');
+        },
+
+        /**
+         * Build a canonical fixer catalog from localized data
+         *
+         * Preference order:
+         * 1) slosFixEngine.fixers (FixEngine-backed, includes categories)
+         * 2) slosautoFixConfig.fixers (legacy, no categories)
+         */
+        initializeFixerCatalog: function() {
+            this.state.fixerCatalog = {};
+
+            var source = null;
+
+            // Prefer FixEngine-backed data when available
+            if (typeof window.slosFixEngine !== 'undefined' && Array.isArray(window.slosFixEngine.fixers)) {
+                source = window.slosFixEngine.fixers;
+            } else if (typeof window.slosautoFixConfig !== 'undefined' && Array.isArray(window.slosautoFixConfig.fixers)) {
+                // Fallback to legacy localized fixer list
+                source = window.slosautoFixConfig.fixers;
+            }
+
+            if (!source) {
+                return;
+            }
+
+            source.forEach(function(fixer) {
+                if (!fixer || !fixer.id) {
+                    return;
+                }
+
+                this.state.fixerCatalog[fixer.id] = {
+                    id: fixer.id,
+                    name: fixer.name || '',
+                    description: fixer.description || '',
+                    category: fixer.category || '',
+                };
+            }.bind(this));
         },
 
         /**
@@ -444,19 +484,17 @@
                     
                     if (response.success && response.data) {
                         const data = response.data;
-                        
-                        // Check if backend says to use all fixers
-                        if (data.use_all_fixers === true) {
+
+                        // Prefer page-specific fixers when available.
+                        if (data.fixers && data.fixers.length > 0 && data.use_all_fixers !== true) {
+                            console.log('SLOSAutoFixProgress: Using ' + data.fixers.length + ' page-specific fixers');
+                            callback(data.fixers);
+                        } else if (data.use_all_fixers === true) {
+                            // Explicit opt-in path to run all registered fixers.
                             console.log('SLOSAutoFixProgress: Backend signaled to use all fixers (' + (data.issue_count || 0) + ' issues found)');
                             callback(self.getDefaultFixers());
-                        } 
-                        // Check if we have specific fixers
-                        else if (data.fixers && data.fixers.length > 0) {
-                            console.log('SLOSAutoFixProgress: Using ' + data.fixers.length + ' specific fixers');
-                            callback(data.fixers);
-                        } 
-                        // No fixers and not told to use all = no issues
-                        else {
+                        } else {
+                            // No fixable issues.
                             console.log('SLOSAutoFixProgress: No fixable issues found');
                             callback([]);
                         }
@@ -472,9 +510,10 @@
                     }
                     isResolved = true;
                     clearTimeout(timeoutId);
-                    // On error, fall back to showing all fixers
-                    console.error('SLOSAutoFixProgress: AJAX error, using all fixers as fallback', error);
-                    callback(self.getDefaultFixers());
+                    // On error, do not blindly run all fixers; behave as if no fixers
+                    // were found so the user is not misled by irrelevant results.
+                    console.error('SLOSAutoFixProgress: AJAX error while loading page fixable issues', error);
+                    callback([]);
                 }
             });
         },
@@ -622,12 +661,31 @@
          * Note: This returns ALL registered fixers. Use fetchPageScanResults() to get only relevant ones.
          */
         getDefaultFixers: function() {
-            if (typeof slosautoFixConfig !== 'undefined' && slosautoFixConfig.fixers) {
-                return slosautoFixConfig.fixers.map(function(fixer) {
+            // Prefer canonical catalog (FixEngine-backed when available)
+            var catalogIds = Object.keys(this.state.fixerCatalog || {});
+            if (catalogIds.length > 0) {
+                return catalogIds.map(function(id) {
+                    var base = this.state.fixerCatalog[id] || {};
+                    return {
+                        id: base.id || id,
+                        name: base.name || '',
+                        description: base.description || '',
+                        category: base.category || '',
+                        status: 'pending',
+                        count: 0,
+                        message: '',
+                    };
+                }.bind(this));
+            }
+
+            // Legacy fallback: use slosautoFixConfig if catalog is empty
+            if (typeof window.slosautoFixConfig !== 'undefined' && Array.isArray(window.slosautoFixConfig.fixers)) {
+                return window.slosautoFixConfig.fixers.map(function(fixer) {
                     return {
                         id: fixer.id,
                         name: fixer.name,
                         description: fixer.description || '',
+                        category: fixer.category || '',
                         status: 'pending',
                         count: 0,
                         message: '',
@@ -635,7 +693,7 @@
                 });
             }
 
-            // Fallback: Generate generic list
+            // Fallback: no fixers available
             return [];
         },
 
@@ -643,23 +701,98 @@
          * Populate the fixer list
          */
         populateFixerList: function(fixers) {
-            this.elements.fixerList.innerHTML = '';
+            const listEl = this.elements.fixerList;
+            listEl.innerHTML = '';
 
-            fixers.forEach(function(fixer, index) {
-                const item = document.createElement('div');
-                item.className = 'slos-autofix-fixer-item pending';
-                item.setAttribute('role', 'listitem');
-                item.setAttribute('data-fixer-id', fixer.id);
-                item.innerHTML = `
-                    <div class="slos-autofix-fixer-status pending" aria-hidden="true"></div>
-                    <div class="slos-autofix-fixer-info">
-                        <div class="slos-autofix-fixer-name">${this.escapeHtml(fixer.name)}</div>
-                        <div class="slos-autofix-fixer-desc">${this.escapeHtml(fixer.description)}</div>
-                    </div>
-                    <span class="slos-autofix-fixer-count" style="display: none;"></span>
-                `;
-                this.elements.fixerList.appendChild(item);
-            }.bind(this));
+            if (!fixers || !fixers.length) {
+                return;
+            }
+
+            const self = this;
+
+            // Group fixers by category (using canonical metadata when available)
+            const groups = {};
+            fixers.forEach(function(fixer) {
+                const base = self.state.fixerCatalog[fixer.id] || {};
+                const categoryKey = fixer.category || base.category || '';
+                const key = categoryKey || 'other';
+
+                if (!groups[key]) {
+                    groups[key] = [];
+                }
+
+                groups[key].push(fixer);
+            });
+
+            // Sort categories for stable, readable ordering (alphabetical, with "other" last)
+            const categoryKeys = Object.keys(groups).sort(function(a, b) {
+                if (a === 'other') return 1;
+                if (b === 'other') return -1;
+                return a.localeCompare(b);
+            });
+
+            categoryKeys.forEach(function(categoryKey) {
+                const categoryLabel = self.getCategoryLabel(categoryKey);
+
+                // Category header
+                const header = document.createElement('div');
+                header.className = 'slos-autofix-category-header';
+                header.textContent = categoryLabel;
+                listEl.appendChild(header);
+
+                // Category items
+                groups[categoryKey].forEach(function(fixer) {
+                    const item = document.createElement('div');
+                    item.className = 'slos-autofix-fixer-item pending';
+                    item.setAttribute('role', 'listitem');
+                    item.setAttribute('data-fixer-id', fixer.id);
+                    item.setAttribute('data-category', categoryKey);
+                    item.innerHTML = `
+                        <div class="slos-autofix-fixer-status pending" aria-hidden="true"></div>
+                        <div class="slos-autofix-fixer-info">
+                            <div class="slos-autofix-fixer-name">${self.escapeHtml(fixer.name)}</div>
+                            <div class="slos-autofix-fixer-desc">${self.escapeHtml(fixer.description)}</div>
+                        </div>
+                        <span class="slos-autofix-fixer-count" style="display: none;"></span>
+                    `;
+                    listEl.appendChild(item);
+                });
+            });
+        },
+
+        /**
+         * Get human-friendly label for a category key
+         */
+        getCategoryLabel: function(key) {
+            if (!key || key === 'other') {
+                return 'Other Fixers';
+            }
+
+            const map = {
+                images: 'Images',
+                headings: 'Headings',
+                forms: 'Forms',
+                links: 'Links',
+                aria: 'ARIA & Roles',
+                tables: 'Tables',
+                keyboard: 'Keyboard & Focus',
+                contrast: 'Color & Contrast',
+                structure: 'Structure & Semantics',
+                media: 'Media',
+                mobile: 'Mobile & Viewport',
+                advanced: 'Advanced',
+            };
+
+            if (map[key]) {
+                return map[key];
+            }
+
+            // Fallback: prettify slug-style keys
+            const label = String(key)
+                .replace(/[-_]+/g, ' ')
+                .replace(/\b\w/g, function(char) { return char.toUpperCase(); });
+
+            return label || 'Other Fixers';
         },
 
         /**
@@ -706,9 +839,23 @@
                             }
                         }
                     } else if (fixer.status === 'skipped') {
-                        // Clear skipped message - NOT a fix
-                        countEl.textContent = fixer.message || 'No issues found';
-                        countEl.setAttribute('title', fixer.message || 'No fixable issues detected');
+                        // Skipped means this fixer did not apply or could
+                        // not run in this context. Use reason when present
+                        // to distinguish cases.
+                        let label;
+
+                        if (fixer.reason === 'no-issues') {
+                            label = fixer.message || 'No applicable issues on this page';
+                        } else if (fixer.reason === 'no-content') {
+                            label = fixer.message || 'No content available to analyze';
+                        } else if (fixer.reason === 'fixer-unavailable') {
+                            label = fixer.message || 'Fixer unavailable';
+                        } else {
+                            label = fixer.message || 'Not applicable on this page';
+                        }
+
+                        countEl.textContent = label;
+                        countEl.setAttribute('title', label);
                     } else {
                         countEl.style.display = 'none';
                     }
@@ -731,6 +878,7 @@
             fixer.status = status;
             fixer.count = data.count || 0;
             fixer.message = data.message || '';
+            fixer.reason = data.reason || fixer.reason || '';
             fixer.errorDetails = data.errorDetails || ''; // Store element-level error details
 
             // Update counts - ONLY count as fixed if status is 'success' AND count > 0

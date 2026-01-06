@@ -321,6 +321,39 @@ jQuery(document).ready(function($) {
     // Initialize auto-fix handlers
     initAutoFixHandlers();
 
+    // Centralized Autofix toggle handler for all pages
+    $(document).on('change', '.slos-autofix-checkbox', function() {
+        const $checkbox = $(this);
+        const postId = $checkbox.data('post-id');
+        const enabled = $checkbox.is(':checked');
+
+        if (!postId) {
+            return;
+        }
+
+        $.ajax({
+            url: slosScanner.ajax_url,
+            type: 'POST',
+            data: {
+                action: 'slos_toggle_autofix',
+                nonce: slosScanner.nonce,
+                post_id: postId,
+                enabled: enabled
+            },
+            success: function(response) {
+                if (!response || !response.success) {
+                    // Revert checkbox on failure
+                    $checkbox.prop('checked', !enabled);
+                    alert('Failed to update auto-fix setting.' + (response && response.data ? '\n' + response.data : ''));
+                }
+            },
+            error: function() {
+                $checkbox.prop('checked', !enabled);
+                alert('Network error while updating auto-fix setting.');
+            }
+        });
+    });
+
     /**
      * Initialize Rollback button handlers
      * Allows users to undo recent fixes and restore previous content

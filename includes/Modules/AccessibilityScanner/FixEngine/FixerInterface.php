@@ -67,7 +67,8 @@ interface FixerInterface {
 	 * Apply fixes to content
 	 *
 	 * @param string $content HTML content to fix
+	 * @param array  $options Optional configuration for fixer behavior
 	 * @return FixResult
 	 */
-	public function fix( string $content ): FixResult;
+	public function fix( string $content, array $options = [] ): FixResult;
 }

@@ -210,9 +210,18 @@ final class FixerCollection implements \Countable, \IteratorAggregate {
 	 */
 	public function to_array(): array {
 		$result = [];
-		foreach ( $this->fixers as $id => $fixer ) {
+		foreach ( $this->fixers as $canonical_id => $fixer ) {
+			$export_id = $canonical_id;
+			if ( method_exists( $fixer, 'get_canonical_id' ) ) {
+				$export_id = $fixer->get_canonical_id();
+			} else {
+				$normalized = CanonicalIds::canonicalize( $fixer->get_id() );
+				if ( $normalized ) {
+					$export_id = $normalized;
+				}
+			}
 			$result[] = [
-				'id'          => $fixer->get_id(),
+				'id'          => $export_id,
 				'name'        => $fixer->get_name(),
 				'description' => $fixer->get_description(),
 				'category'    => $fixer->get_category(),

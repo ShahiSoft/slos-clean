@@ -95,69 +95,9 @@ class ScannerPage {
 			SHAHI_LEGALFLOWSUITE_VERSION
 		);
 
-		// Auto-Fix Progress Popup Assets
-		wp_enqueue_style(
-			'slos-autofix-progress',
-			SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/css/slos-autofix-progress.css',
-			array(),
-			SHAHI_LEGALFLOWSUITE_VERSION
-		);
-
-		wp_enqueue_script(
-			'slos-autofix-progress',
-			SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/js/slos-autofix-progress.js',
-			array( 'jquery' ),
-			SHAHI_LEGALFLOWSUITE_VERSION,
-			true
-		);
-
-		// Localize Auto-Fix Progress with fixer data
-		wp_localize_script(
-			'slos-autofix-progress',
-			'slosautoFixConfig',
-			array(
-				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-				'nonce'   => wp_create_nonce( 'slos_autofix_nonce' ),
-				'fixers'  => $this->get_fixer_list_for_js(),
-				'i18n'    => array(
-					'processing'  => __( 'Processing...', 'shahi-legalflowsuite' ),
-					'complete'    => __( 'Complete!', 'shahi-legalflowsuite' ),
-					'cancelled'   => __( 'Cancelled', 'shahi-legalflowsuite' ),
-					'error'       => __( 'Error', 'shahi-legalflowsuite' ),
-					'noIssues'    => __( 'No issues found', 'shahi-legalflowsuite' ),
-					'fixedIssues' => __( 'Fixed %d issue(s)', 'shahi-legalflowsuite' ),
-				),
-			)
-		);
-	}
-
-	/**
-	 * Get list of fixers for JavaScript
-	 *
-	 * @since 3.2.0
-	 * @return array
-	 */
-	private function get_fixer_list_for_js() {
-		// Initialize registry if needed
-		if ( class_exists( '\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry' ) ) {
-			\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::init();
-			$fixer_ids = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::get_all_fixer_ids();
-			
-			$fixers = array();
-			foreach ( $fixer_ids as $id ) {
-				$fixer = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::get_fixer( $id );
-				if ( $fixer ) {
-					$fixers[] = array(
-						'id'          => $fixer->get_id(),
-						'name'        => $fixer->get_name(),
-						'description' => $fixer->get_description(),
-					);
-				}
-			}
-			return $fixers;
-		}
-		
-		return array();
+		// Note: Scan and Auto-Fix progress assets (styles, scripts, localization)
+		// are enqueued centrally via Core\Assets. ScannerPage remains responsible
+		// only for its own layout-specific CSS and markup.
 	}
 
 	/**
@@ -320,26 +260,39 @@ class ScannerPage {
 			}
 			
 			.slos-score-value .number {
-				font-size: 36px;
-				font-weight: 700;
-				color: var(--slos-text-primary);
-				line-height: 1;
-			}
+					// Primary source: FixEngine catalog
+					if ( class_exists( '\\ShahiLegalFlowSuite\\Modules\\AccessibilityScanner\\FixEngine\\Bootstrap' ) ) {
+						try {
+							$scanner_data = \\ShahiLegalFlowSuite\\Modules\\AccessibilityScanner\\FixEngine\\Bootstrap::get_scanner_data();
+							if ( ! empty( $scanner_data['fixers'] ) && is_array( $scanner_data['fixers'] ) ) {
+								return $scanner_data['fixers'];
+							}
+						} catch ( \Throwable $e ) {
+							// Fail silently and fall back to legacy registry below.
+						}
+					}
+
+					// Legacy fallback: FixerRegistry (kept for backwards compatibility)
+					if ( class_exists( '\\ShahiLegalFlowSuite\\Modules\\AccessibilityScanner\\Fixes\\FixerRegistry' ) ) {
+						\\ShahiLegalFlowSuite\\Modules\\AccessibilityScanner\\Fixes\\FixerRegistry::init();
+						$fixer_ids = \\ShahiLegalFlowSuite\\Modules\\AccessibilityScanner\\Fixes\\FixerRegistry::get_all_fixer_ids();
 			
-			.slos-score-value .label {
-				font-size: 12px;
-				color: var(--slos-text-muted);
-				text-transform: uppercase;
-			}
-			
-			.slos-score-details {
-				flex: 1;
-			}
-			
-			.slos-score-grade {
-				display: inline-flex;
-				align-items: center;
-				gap: 8px;
+						$fixers = array();
+						foreach ( $fixer_ids as $id ) {
+							$fixer = \\ShahiLegalFlowSuite\\Modules\\AccessibilityScanner\\Fixes\\FixerRegistry::get_fixer( $id );
+							if ( $fixer ) {
+								$fixers[] = array(
+									'id'          => $fixer->get_id(),
+									'name'        => method_exists( $fixer, 'get_name' ) ? $fixer->get_name() : ucwords( str_replace( array( '-', '_' ), ' ', $fixer->get_id() ) ),
+									'description' => method_exists( $fixer, 'get_description' ) ? $fixer->get_description() : '',
+								);
+							}
+						}
+						return $fixers;
+					}
+		
+					// Fallback: return empty array if neither FixEngine nor registry are available
+					return array();
 				margin-bottom: 16px;
 			}
 			

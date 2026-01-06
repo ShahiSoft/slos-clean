@@ -1363,32 +1363,13 @@ class Assets {
 	 * @return void
 	 */
 	private function localize_autofix_progress_script() {
-		// Get fixer list for JS
+		// Get fixer list for JS from the canonical FixEngine to avoid
+		// duplicate catalogs and keep metadata in sync across backend and frontend.
 		$fixers = array();
-		if ( class_exists( '\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry' ) ) {
-			\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::init();
-			$fixer_ids = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::get_all_fixer_ids();
-
-			foreach ( $fixer_ids as $id ) {
-				$fixer = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::get_fixer( $id );
-				if ( $fixer ) {
-					// Get ID and derive name from it (BaseFixer doesn't have get_name)
-					$fixer_id = $fixer->get_id();
-					// Convert ID like 'missing_alt' to 'Missing Alt'
-					$fixer_name = ucwords( str_replace( array( '-', '_' ), ' ', $fixer_id ) );
-					
-					// Get description safely
-					$description = '';
-					if ( method_exists( $fixer, 'get_description' ) ) {
-						$description = $fixer->get_description();
-					}
-					
-					$fixers[] = array(
-						'id'          => $fixer_id,
-						'name'        => $fixer_name,
-						'description' => $description,
-					);
-				}
+		if ( class_exists( '\\ShahiLegalFlowSuite\\Modules\\AccessibilityScanner\\FixEngine\\Bootstrap' ) ) {
+			$scanner_data = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\FixEngine\Bootstrap::get_scanner_data();
+			if ( isset( $scanner_data['fixers'] ) && is_array( $scanner_data['fixers'] ) ) {
+				$fixers = $scanner_data['fixers'];
 			}
 		}
 

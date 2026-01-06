@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class TableCaptionFixer extends AbstractFixer {
 
 	public function get_id(): string {
-		return 'missing-table-caption';
+		return 'table-caption';
 	}
 
 	public function get_name(): string {

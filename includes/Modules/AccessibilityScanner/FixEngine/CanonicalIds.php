@@ -694,6 +694,16 @@ class CanonicalIds {
         $canonical = self::canonicalize($id);
         return $canonical ? self::$ids[$canonical] : null;
     }
+
+    /**
+     * Backwards-compatible getter used by some tools/CLI commands.
+     *
+     * @param string $id
+     * @return array|null
+     */
+    public static function get(string $id): ?array {
+        return self::get_metadata($id);
+    }
     
     /**
      * Check if ID is valid

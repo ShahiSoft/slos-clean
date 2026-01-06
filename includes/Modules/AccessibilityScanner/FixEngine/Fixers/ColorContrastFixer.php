@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class ColorContrastFixer extends AbstractFixer {
 
 	public function get_id(): string {
-		return 'color_contrast';
+		return 'text-color-contrast';
 	}
 
 	public function get_name(): string {

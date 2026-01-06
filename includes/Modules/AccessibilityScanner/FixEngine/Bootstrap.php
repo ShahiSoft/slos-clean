@@ -52,7 +52,10 @@ final class Bootstrap {
 		add_action( 'admin_enqueue_scripts', [ __CLASS__, 'enqueue_scripts' ] );
 
 		// Activation hook for database setup
-		register_activation_hook( SLOS_PLUGIN_FILE ?? __FILE__, [ __CLASS__, 'on_activation' ] );
+		$plugin_file = defined( 'SHAHI_LEGALFLOWSUITE_PLUGIN_FILE' )
+			? SHAHI_LEGALFLOWSUITE_PLUGIN_FILE
+			: __FILE__;
+		register_activation_hook( $plugin_file, [ __CLASS__, 'on_activation' ] );
 
 		self::$initialized = true;
 	}

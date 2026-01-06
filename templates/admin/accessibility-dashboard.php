@@ -2267,38 +2267,6 @@ jQuery(document).ready(function($) {
             }
         });
     }
-    
-    // Auto-fix toggle
-    $('.slos-autofix-checkbox').on('change', function() {
-        var $checkbox = $(this);
-        var postId = $checkbox.data('post-id');
-        var enabled = $checkbox.is(':checked');
-        
-        $.ajax({
-            url: ajaxurl,
-            type: 'POST',
-            data: {
-                action: 'slos_toggle_autofix',
-                nonce: '<?php echo wp_create_nonce('slos_scanner_nonce'); ?>',
-                post_id: postId,
-                enabled: enabled
-            },
-            success: function(response) {
-                if (response.success) {
-                    showFixNotification('success', response.data.message);
-                } else {
-                    // Revert checkbox
-                    $checkbox.prop('checked', !enabled);
-                    showFixNotification('error', '<?php echo esc_js(__('Failed to update auto-fix setting.', 'shahi-legalflowsuite')); ?>');
-                }
-            },
-            error: function() {
-                $checkbox.prop('checked', !enabled);
-                showFixNotification('error', '<?php echo esc_js(__('Network error.', 'shahi-legalflowsuite')); ?>');
-            }
-        });
-    });
-    
     // =============================================
     // SCAN HISTORY & TRENDS CHART
     // =============================================
@@ -2318,134 +2286,148 @@ jQuery(document).ready(function($) {
     function initTrendsChart() {
         var ctx = document.getElementById('slos-trends-chart');
         if (!ctx) return;
-        
+
+        // If Chart.js failed to load for any reason, skip chart
+        if (typeof Chart === 'undefined') {
+            if (window.console && console.warn) {
+                console.warn('Chart.js is not available; skipping trends chart initialization.');
+            }
+            return;
+        }
+
         var range = $('#slos-chart-range').val();
         var chartData = getChartData(range);
-        
+
         // Destroy existing chart if any
         if (trendsChart) {
             trendsChart.destroy();
         }
-        
-        trendsChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: chartData.labels,
-                datasets: [
-                    {
-                        label: '<?php echo esc_js(__('Score', 'shahi-legalflowsuite')); ?>',
-                        data: chartData.scores,
-                        borderColor: '#3b82f6',
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.4,
-                        yAxisID: 'y'
-                    },
-                    {
-                        label: '<?php echo esc_js(__('Issues', 'shahi-legalflowsuite')); ?>',
-                        data: chartData.issues,
-                        borderColor: '#f59e0b',
-                        backgroundColor: 'transparent',
-                        borderWidth: 2,
-                        fill: false,
-                        tension: 0.4,
-                        yAxisID: 'y1'
-                    },
-                    {
-                        label: '<?php echo esc_js(__('Critical', 'shahi-legalflowsuite')); ?>',
-                        data: chartData.critical,
-                        borderColor: '#ef4444',
-                        backgroundColor: 'transparent',
-                        borderWidth: 2,
-                        borderDash: [5, 5],
-                        fill: false,
-                        tension: 0.4,
-                        yAxisID: 'y1'
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: {
-                    intersect: false,
-                    mode: 'index'
+
+        try {
+            trendsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartData.labels,
+                    datasets: [
+                        {
+                            label: '<?php echo esc_js(__('Score', 'shahi-legalflowsuite')); ?>',
+                            data: chartData.scores,
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: '<?php echo esc_js(__('Issues', 'shahi-legalflowsuite')); ?>',
+                            data: chartData.issues,
+                            borderColor: '#f59e0b',
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0.4,
+                            yAxisID: 'y1'
+                        },
+                        {
+                            label: '<?php echo esc_js(__('Critical', 'shahi-legalflowsuite')); ?>',
+                            data: chartData.critical,
+                            borderColor: '#ef4444',
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            fill: false,
+                            tension: 0.4,
+                            yAxisID: 'y1'
+                        }
+                    ]
                 },
-                plugins: {
-                    legend: {
-                        display: false
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
                     },
-                    tooltip: {
-                        backgroundColor: '#1e293b',
-                        titleColor: '#f8fafc',
-                        bodyColor: '#94a3b8',
-                        borderColor: '#334155',
-                        borderWidth: 1,
-                        padding: 12,
-                        displayColors: true,
-                        callbacks: {
-                            title: function(items) {
-                                return items[0].label;
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            titleColor: '#f8fafc',
+                            bodyColor: '#94a3b8',
+                            borderColor: '#334155',
+                            borderWidth: 1,
+                            padding: 12,
+                            displayColors: true,
+                            callbacks: {
+                                title: function(items) {
+                                    return items[0].label;
+                                }
                             }
                         }
-                    }
-                },
-                scales: {
-                    x: {
-                        grid: {
-                            color: 'rgba(255, 255, 255, 0.05)',
-                            drawBorder: false
-                        },
-                        ticks: {
-                            color: '#71717a',
-                            font: { size: 11 }
-                        }
                     },
-                    y: {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        min: 0,
-                        max: 100,
-                        grid: {
-                            color: 'rgba(255, 255, 255, 0.05)',
-                            drawBorder: false
-                        },
-                        ticks: {
-                            color: '#71717a',
-                            font: { size: 11 },
-                            callback: function(value) {
-                                return value + '%';
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#71717a',
+                                font: { size: 11 }
                             }
                         },
-                        title: {
+                        y: {
+                            type: 'linear',
                             display: true,
-                            text: '<?php echo esc_js(__('Score', 'shahi-legalflowsuite')); ?>',
-                            color: '#71717a'
-                        }
-                    },
-                    y1: {
-                        type: 'linear',
-                        display: true,
-                        position: 'right',
-                        min: 0,
-                        grid: {
-                            drawOnChartArea: false
+                            position: 'left',
+                            min: 0,
+                            max: 100,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#71717a',
+                                font: { size: 11 },
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: '<?php echo esc_js(__('Score', 'shahi-legalflowsuite')); ?>',
+                                color: '#71717a'
+                            }
                         },
-                        ticks: {
-                            color: '#71717a',
-                            font: { size: 11 }
-                        },
-                        title: {
+                        y1: {
+                            type: 'linear',
                             display: true,
-                            text: '<?php echo esc_js(__('Issues', 'shahi-legalflowsuite')); ?>',
-                            color: '#71717a'
+                            position: 'right',
+                            min: 0,
+                            grid: {
+                                drawOnChartArea: false
+                            },
+                            ticks: {
+                                color: '#71717a',
+                                font: { size: 11 }
+                            },
+                            title: {
+                                display: true,
+                                text: '<?php echo esc_js(__('Issues', 'shahi-legalflowsuite')); ?>',
+                                color: '#71717a'
+                            }
                         }
                     }
                 }
+            });
+        } catch (e) {
+            if (window.console && console.error) {
+                console.error('Failed to initialize accessibility trends chart:', e);
             }
-        });
+        }
     }
     
     /**
@@ -2459,9 +2441,20 @@ jQuery(document).ready(function($) {
         }
         
         return {
-            labels: data.map(function(scan) {
-                var d = new Date(scan.date);
-                return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            labels: data.map(function(scan, index) {
+                try {
+                    var dateValue = scan.date || (scan.timestamp ? scan.timestamp * 1000 : null);
+                    if (!dateValue) {
+                        return '<?php echo esc_js(__('Scan', 'shahi-legalflowsuite')); ?> ' + (index + 1);
+                    }
+                    var d = new Date(dateValue);
+                    if (isNaN(d.getTime())) {
+                        return '<?php echo esc_js(__('Scan', 'shahi-legalflowsuite')); ?> ' + (index + 1);
+                    }
+                    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                } catch (e) {
+                    return '<?php echo esc_js(__('Scan', 'shahi-legalflowsuite')); ?> ' + (index + 1);
+                }
             }),
             scores: data.map(function(scan) { return scan.score || 0; }),
             issues: data.map(function(scan) { return scan.issues || 0; }),

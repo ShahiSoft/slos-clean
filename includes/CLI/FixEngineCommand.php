@@ -11,6 +11,9 @@ namespace SLOSLegalFlowSuite\CLI;
 
 use ShahiLegalFlowSuite\FixEngine\FeatureFlags;
 use ShahiLegalFlowSuite\FixEngine\Logger;
+use ShahiLegalFlowSuite\FixEngine\CanonicalIds;
+use ShahiLegalFlowSuite\Modules\AccessibilityScanner\AccessibilityScanner;
+use ShahiLegalFlowSuite\Modules\AccessibilityScanner\FixEngine\Bootstrap as FixEngineBootstrap;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -313,6 +316,117 @@ class FixEngineCommand {
         
         $report = \ShahiLegalFlowSuite\FixEngine\Migrations\IdCanonicalizationMigration::get_report();
         \WP_CLI::line($report);
+    }
+
+    /**
+     * Inventory auto-fixable canonical IDs vs implemented FixEngine fixers.
+     *
+     * Lists how many canonical auto-fixable IDs exist in CanonicalIds, how many
+     * concrete FixEngine fixers are currently registered, and which canonical
+     * IDs are missing a fixer implementation.
+     *
+     * This command is read-only and does not change any data.
+     *
+     * ## EXAMPLES
+     *
+     *     wp slos fixengine inventory
+     *
+     * @when after_wp_load
+     */
+    public function inventory( $args, $assoc_args ) {
+        // Get canonical auto-fixable IDs from the registry.
+        $auto_fixable_ids = CanonicalIds::get_auto_fixable();
+        $auto_fixable_set = array_fill_keys( $auto_fixable_ids, true );
+        $total_canonical  = count( $auto_fixable_ids );
+
+        // Initialize FixEngine via Bootstrap and get all registered fixers.
+        $engine = FixEngineBootstrap::get_engine();
+        $engine->initialize();
+        $fixer_array = $engine->get_fixers_array();
+
+        $implemented_ids = [];
+        foreach ( $fixer_array as $fixer ) {
+            if ( ! isset( $fixer['id'] ) ) {
+                continue;
+            }
+            $implemented_ids[] = $fixer['id'];
+        }
+
+        $implemented_set = array_fill_keys( $implemented_ids, true );
+        $total_implemented = count( $implemented_ids );
+
+        // Compute missing canonical IDs that are marked auto-fixable but do
+        // not yet have a corresponding FixEngine fixer.
+        $missing = [];
+        foreach ( $auto_fixable_ids as $id ) {
+            if ( ! isset( $implemented_set[ $id ] ) ) {
+                $missing[] = $id;
+            }
+        }
+
+        \WP_CLI::line( 'FixEngine Canonical Fixer Inventory' );
+        \WP_CLI::line( '====================================' );
+        \WP_CLI::line( '' );
+        \WP_CLI::line( sprintf( 'Canonical auto-fixable IDs:   %d', $total_canonical ) );
+        \WP_CLI::line( sprintf( 'Implemented FixEngine fixers: %d', $total_implemented ) );
+        \WP_CLI::line( sprintf( 'Missing implementations:       %d', count( $missing ) ) );
+        \WP_CLI::line( '' );
+
+        if ( empty( $missing ) ) {
+            \WP_CLI::success( 'All canonical auto-fixable IDs have corresponding FixEngine fixers.' );
+            return;
+        }
+
+        \WP_CLI::warning( 'Canonical auto-fixable IDs without a FixEngine fixer:' );
+        foreach ( $missing as $id ) {
+            $meta      = CanonicalIds::get( $id );
+            $humanName = $meta && isset( $meta['name'] ) ? $meta['name'] : '(no name defined)';
+            \WP_CLI::line( sprintf( '  - %s (%s)', $id, $humanName ) );
+        }
+    }
+
+    /**
+     * Validate checker-to-fixer mapping against canonical FixEngine IDs.
+     *
+     * Scans the AccessibilityScanner::get_check_to_fixer_mapping() output and
+     * verifies that each target fixer ID is a valid canonical ID (or alias)
+     * according to CanonicalIds. Intended as a lightweight sanity check during
+     * development and QA.
+     *
+     * ## EXAMPLES
+     *
+     *     wp slos fixengine validate-mapping
+     *
+     * @when after_wp_load
+     */
+    public function validate_mapping( $args, $assoc_args ) {
+        $scanner = new AccessibilityScanner();
+        $mapping = ( new \ReflectionClass( $scanner ) )->getMethod( 'get_check_to_fixer_mapping' );
+        $mapping->setAccessible( true );
+        $map = $mapping->invoke( $scanner );
+
+        $invalid = [];
+        foreach ( $map as $checker_id => $fixer_id ) {
+            $canonical = CanonicalIds::canonicalize( $fixer_id );
+            if ( null === $canonical ) {
+                $invalid[] = [
+                    'checker' => $checker_id,
+                    'fixer'   => $fixer_id,
+                ];
+            }
+        }
+
+        if ( empty( $invalid ) ) {
+            \WP_CLI::success( 'All checker-to-fixer mappings resolve to valid canonical FixEngine IDs.' );
+            return;
+        }
+
+        \WP_CLI::warning( 'Found checker mappings that do not resolve to canonical FixEngine IDs:' );
+        foreach ( $invalid as $entry ) {
+            \WP_CLI::line( sprintf( '  Checker "%s" → Fixer "%s" (INVALID)', $entry['checker'], $entry['fixer'] ) );
+        }
+
+        \WP_CLI::error( sprintf( 'Total invalid mappings: %d', count( $invalid ) ) );
     }
 }
 
