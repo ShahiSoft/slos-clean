@@ -1264,8 +1264,14 @@ class Assets {
 	 * @return void
 	 */
 	public function enqueue_frontend_styles() {
-		// Frontend styles will be added if public-facing components are created
-		// Currently, this is an admin-only plugin
+		// Legal Document Shortcode styles
+		wp_enqueue_style(
+			'slos-legal-doc-shortcode',
+			SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/css/slos-legal-doc-shortcode.css',
+			array(),
+			SHAHI_LEGALFLOWSUITE_VERSION,
+			'all'
+		);
 	}
 
 	/**

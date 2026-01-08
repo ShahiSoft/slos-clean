@@ -61,6 +61,7 @@ class ShortcodeManager {
             'dsr_status'        => new DSR_Status_Shortcode(),
             'cookie_table'      => new Cookie_Table_Shortcode(),
             'embed_placeholder' => new Embed_Placeholder_Shortcode(),
+            'legal_doc'         => new Legal_Doc_Shortcode(),
         );
 		// Consent shortcodes are now registered by the ConsentManagement module
 	}
