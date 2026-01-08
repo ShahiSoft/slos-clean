@@ -55,12 +55,12 @@ class Dashboard {
 	 * @return void
 	 */
 	public function render() {
-		// Verify user capabilities
+		// Verify user capabilities.
 		if ( ! current_user_can( 'manage_shahi_template' ) ) {
-			wp_die( __( 'You do not have sufficient permissions to access this page.', 'shahi-legalflowsuite' ) );
+			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'shahi-legalflowsuite' ) );
 		}
 
-		// Enqueue dashboard styles
+		// Enqueue dashboard styles.
 		wp_enqueue_style(
 			'shahi-legalflowsuite-dashboard',
 			SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/css/admin-dashboard-new.css',
@@ -68,7 +68,7 @@ class Dashboard {
 			SHAHI_LEGALFLOWSUITE_VERSION
 		);
 
-		// Get dashboard data
+		// Get dashboard data.
 		$plugin_info     = $this->get_plugin_info();
 		$stats           = $this->get_statistics();
 		$modules_status  = $this->get_modules_status();
@@ -77,7 +77,7 @@ class Dashboard {
 		$getting_started = $this->get_getting_started_items();
 		$support_links   = $this->get_support_links();
 
-		// Load template
+		// Load template.
 		include SHAHI_LEGALFLOWSUITE_PATH . 'templates/admin/dashboard.php';
 	}
 
@@ -116,8 +116,8 @@ class Dashboard {
 	 * @return array Modules status data
 	 */
 	private function get_modules_status() {
-		// Define which modules to display on Dashboard (active modules only)
-		// Excludes dormant modules: dsr-portal, security
+		// Define which modules to display on Dashboard (active modules only).
+		// Excludes dormant modules: dsr-portal, security.
 		$display_modules = array(
 			'consent-management'    => array(
 				'icon'     => '🛡️',
@@ -136,7 +136,7 @@ class Dashboard {
 			),
 		);
 
-		// Get modules from ModuleManager (same source as Module Dashboard)
+		// Get modules from ModuleManager (same source as Module Dashboard).
 		$module_manager = ModuleManager::get_instance();
 		$all_modules    = array();
 
@@ -144,7 +144,7 @@ class Dashboard {
 			$module_obj = $module_manager->get_module( $key );
 
 			if ( $module_obj ) {
-				// Module exists - get real data from ModuleManager
+				// Module exists - get real data from ModuleManager.
 				$all_modules[ $key ] = array(
 					'name'        => $module_obj->get_name(),
 					'description' => $module_obj->get_description(),
@@ -155,7 +155,7 @@ class Dashboard {
 					'slug'        => $key,
 				);
 			}
-			// Skip unregistered modules (they shouldn't appear on dashboard)
+			// Skip unregistered modules (they shouldn't appear on dashboard).
 		}
 
 		return $all_modules;
@@ -182,14 +182,14 @@ class Dashboard {
 				'title'       => __( 'Knowledge Base', 'shahi-legalflowsuite' ),
 				'description' => __( 'FAQs and troubleshooting', 'shahi-legalflowsuite' ),
 				'icon'        => 'dashicons-lightbulb',
-				'url'         => '#', // Placeholder - user will add later
+				'url'         => '#', // Placeholder - user will add later.
 				'external'    => true,
 			),
 			array(
 				'title'       => __( 'Video Tutorials', 'shahi-legalflowsuite' ),
 				'description' => __( 'Step-by-step video guides', 'shahi-legalflowsuite' ),
 				'icon'        => 'dashicons-video-alt3',
-				'url'         => '#', // Placeholder - user will add later
+				'url'         => '#', // Placeholder - user will add later.
 				'external'    => true,
 			),
 			array(
@@ -203,7 +203,7 @@ class Dashboard {
 				'title'       => __( 'Feature Request', 'shahi-legalflowsuite' ),
 				'description' => __( 'Suggest new features', 'shahi-legalflowsuite' ),
 				'icon'        => 'dashicons-megaphone',
-				'url'         => '#', // Placeholder - user will add later
+				'url'         => '#', // Placeholder - user will add later.
 				'external'    => true,
 			),
 			array(
@@ -273,10 +273,10 @@ class Dashboard {
 	 * @return int Number of active modules
 	 */
 	private function get_active_modules_count() {
-		// Use ModuleManager for accurate count (excludes dormant/unregistered modules)
+		// Use ModuleManager for accurate count (excludes dormant/unregistered modules).
 		$module_manager = ModuleManager::get_instance();
 		$stats          = $module_manager->get_statistics();
-		
+
 		return (int) $stats['enabled'];
 	}
 
@@ -290,12 +290,12 @@ class Dashboard {
 		global $wpdb;
 		$table = $wpdb->prefix . 'shahi_analytics';
 
-		// Check if table exists (cached for performance)
+		// Check if table exists (cached for performance).
 		if ( ! QueryOptimizer::table_exists_cached( $table ) ) {
 			return 0;
 		}
 
-		$count = $wpdb->get_var( "SELECT COUNT(*) FROM $table" );
+		$count = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table ) );
 		return (int) $count;
 	}
 
@@ -309,12 +309,12 @@ class Dashboard {
 		global $wpdb;
 		$table = $wpdb->prefix . 'shahi_analytics';
 
-		// Check if table exists (cached for performance)
+		// Check if table exists (cached for performance).
 		if ( ! QueryOptimizer::table_exists_cached( $table ) ) {
 			return __( 'N/A', 'shahi-legalflowsuite' );
 		}
 
-		$last_time = $wpdb->get_var( $wpdb->prepare( "SELECT created_at FROM %i ORDER BY created_at DESC LIMIT 1", $table ) );
+		$last_time = $wpdb->get_var( $wpdb->prepare( 'SELECT created_at FROM %i ORDER BY created_at DESC LIMIT 1', $table ) );
 
 		if ( ! $last_time ) {
 			return __( 'N/A', 'shahi-legalflowsuite' );
@@ -337,8 +337,8 @@ class Dashboard {
 	private function get_performance_score() {
 		$score = 0;
 
-		// Factor 1: Active modules (max 40 points)
-		// Only count registered modules (excludes dormant DSR/Security)
+		// Factor 1: Active modules (max 40 points).
+		// Only count registered modules (excludes dormant DSR/Security).
 		$module_manager = ModuleManager::get_instance();
 		$stats          = $module_manager->get_statistics();
 		if ( $stats['total'] > 0 ) {
@@ -346,24 +346,24 @@ class Dashboard {
 			$score        += (int) ( $enabled_ratio * 40 );
 		}
 
-		// Factor 2: Configuration completeness (max 30 points)
-		// Check if company profile is configured
+		// Factor 2: Configuration completeness (max 30 points).
+		// Check if company profile is configured.
 		$profile_repo = \ShahiLegalFlowSuite\Database\Repositories\Company_Profile_Repository::get_instance();
 		$profile      = $profile_repo->get_profile();
 
-		// Check if profile has meaningful data (not just defaults)
+		// Check if profile has meaningful data (not just defaults).
 		$completion = $profile_repo->get_completion_percentage();
-		if ( $completion > 10 ) { // At least 10% configured
+		if ( $completion > 10 ) { // At least 10% configured.
 			$score += 30;
 		}
 
-		// Factor 3: Database health (max 30 points)
-		// Check active module tables only (exclude dormant DSR table)
+		// Factor 3: Database health (max 30 points).
+		// Check active module tables only (exclude dormant DSR table).
 		global $wpdb;
 		$tables = array(
-			$wpdb->prefix . 'slos_consents',      // Consent Management
-			$wpdb->prefix . 'slos_documents',     // Legal Documents
-			$wpdb->prefix . 'slos_scan_results',  // Accessibility Scanner
+			$wpdb->prefix . 'slos_consents',      // Consent Management.
+			$wpdb->prefix . 'slos_documents',     // Legal Documents.
+			$wpdb->prefix . 'slos_scan_results',  // Accessibility Scanner.
 		);
 
 		$healthy_tables = 0;
@@ -446,14 +446,15 @@ class Dashboard {
 		global $wpdb;
 		$table = $wpdb->prefix . 'shahi_analytics';
 
-		// Check if table exists (cached for performance)
+		// Check if table exists (cached for performance).
 		if ( ! QueryOptimizer::table_exists_cached( $table ) ) {
 			return array();
 		}
 
 		$results = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT event_type, event_data, created_at FROM $table ORDER BY created_at DESC LIMIT %d",
+				'SELECT event_type, event_data, created_at FROM %i ORDER BY created_at DESC LIMIT %d',
+				$table,
 				$limit
 			)
 		);
@@ -509,7 +510,7 @@ class Dashboard {
 			return __( 'No additional details', 'shahi-legalflowsuite' );
 		}
 
-		// Format based on event type
+		// Format based on event type.
 		switch ( $event->event_type ) {
 			case 'module_enabled':
 			case 'module_disabled':
@@ -555,7 +556,7 @@ class Dashboard {
 		$modules_configured   = $this->get_active_modules_count() > 0;
 		$settings_configured  = ! empty( get_option( 'shahi_legalflowsuite_settings', array() ) );
 
-		// Check if company profile is set up
+		// Check if company profile is set up.
 		$company_profile    = get_option( 'slos_company_profile', array() );
 		$profile_configured = ! empty( $company_profile ) && ! empty( $company_profile['company_name'] );
 
@@ -565,7 +566,7 @@ class Dashboard {
 				'description'  => __( 'Set up your plugin with our guided onboarding wizard', 'shahi-legalflowsuite' ),
 				'completed'    => $onboarding_completed,
 				'action_text'  => $onboarding_completed ? __( 'Review', 'shahi-legalflowsuite' ) : __( 'Start Now', 'shahi-legalflowsuite' ),
-				'action_url'   => '#', // Will trigger onboarding modal via JS
+				'action_url'   => '#', // Will trigger onboarding modal via JS.
 				'action_class' => 'shahi-trigger-onboarding',
 			),
 			array(
