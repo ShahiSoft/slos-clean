@@ -137,6 +137,17 @@ class Document_Generator extends Base_Service {
 	 * @return array|\WP_Error Generated document data or error
 	 */
 	public function generate( string $document_type, int $profile_id = null, array $options = array() ) {
+		// Check if document type is dormant
+		if ( defined( 'SLOS_ACTIVE_LEGAL_DOCS' ) && is_array( SLOS_ACTIVE_LEGAL_DOCS ) ) {
+			if ( ! in_array( $document_type, SLOS_ACTIVE_LEGAL_DOCS, true ) ) {
+				return new \WP_Error(
+					'document_type_dormant',
+					/* translators: %s: document type */
+					sprintf( __( 'Document type "%s" is currently dormant and cannot be generated.', 'shahi-legalflowsuite' ), $document_type )
+				);
+			}
+		}
+		
 		// Validate document type
 		if ( ! $this->is_valid_type( $document_type ) ) {
 			return new \WP_Error(

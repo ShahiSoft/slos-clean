@@ -108,6 +108,17 @@ if ( ! defined( 'SLOS_DORMANT_COMPLIANCE_FEATURES' ) ) {
 	) );
 }
 
+// Active Legal Documents (Only these will be visible, all others dormant)
+if ( ! defined( 'SLOS_ACTIVE_LEGAL_DOCS' ) ) {
+	define( 'SLOS_ACTIVE_LEGAL_DOCS', array(
+		'privacy-policy',     // Privacy Policy
+		'terms-of-service',   // Terms of Service
+		'cookie-policy',      // Cookie Policy
+		'refund-policy',      // Refund & Return Policy
+		'shipping-policy',    // Shipping Policy
+	) );
+}
+
 // Disable half of accessibility checkers (keep 36 essential, disable 35 advanced)
 if ( ! defined( 'SLOS_DORMANT_CHECKERS' ) ) {
 	define( 'SLOS_DORMANT_CHECKERS', array(

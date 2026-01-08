@@ -70,6 +70,13 @@ class Document_Hub_Service
         $cards = array();
 
         foreach ($types as $type_key => $config) {
+            // Filter out dormant documents if active list is defined
+            if ( defined( 'SLOS_ACTIVE_LEGAL_DOCS' ) && is_array( SLOS_ACTIVE_LEGAL_DOCS ) ) {
+                if ( ! in_array( $type_key, SLOS_ACTIVE_LEGAL_DOCS, true ) ) {
+                    continue; // Skip dormant documents
+                }
+            }
+            
             $existing = $this->doc_repository->find_by_type($type_key);
 
             $cards[] = array(
