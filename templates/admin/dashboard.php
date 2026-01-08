@@ -272,7 +272,7 @@ foreach ($modules_status as $module) {
                 </div>
             </div>
 
-            <!-- Recent Activity -->
+            <?php /* Recent Activity section - DORMANT (temporarily hidden)
             <div class="shahi-card shahi-activity-card">
                 <div class="shahi-card-header">
                     <div class="shahi-card-header-left">
@@ -309,6 +309,7 @@ foreach ($modules_status as $module) {
                     <?php endif; ?>
                 </div>
             </div>
+            */ ?>
 
             <!-- Support Resources -->
             <div class="shahi-card shahi-support-card">
