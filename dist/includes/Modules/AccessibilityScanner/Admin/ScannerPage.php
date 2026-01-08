@@ -1277,6 +1277,7 @@ class ScannerPage {
 				?>
 			
 				<!-- Card 8: Export & Reporting -->
+				<?php if ( ! defined( 'SLOS_DORMANT_REPORTING' ) || ! SLOS_DORMANT_REPORTING ) : ?>
 				<div class="slos-tools-card full-width">
 					<div class="slos-card-header">
 						<h3>
@@ -1368,6 +1369,7 @@ class ScannerPage {
 						</div>
 					</div>
 				</div>
+				<?php endif; ?>
 				
 			</div>
 		</div>

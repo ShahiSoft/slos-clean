@@ -93,6 +93,11 @@ if ( ! defined( 'SLOS_DORMANT_AUTOFIX' ) ) {
 	define( 'SLOS_DORMANT_AUTOFIX', true );
 }
 
+// Disable Reporting & Export features (PDF, CSV, JSON, Scheduled reports)
+if ( ! defined( 'SLOS_DORMANT_REPORTING' ) ) {
+	define( 'SLOS_DORMANT_REPORTING', true );
+}
+
 // Disable half of accessibility checkers (keep 36 essential, disable 35 advanced)
 if ( ! defined( 'SLOS_DORMANT_CHECKERS' ) ) {
 	define( 'SLOS_DORMANT_CHECKERS', array(
