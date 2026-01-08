@@ -1271,12 +1271,10 @@ class ScannerPage {
 				</div>
 			
 				<!-- Card 7: Pages Requiring Attention (Full Width) -->
-				<?php if ( ! defined( 'SLOS_DORMANT_AUTOFIX' ) || ! SLOS_DORMANT_AUTOFIX ) : ?>
 				<?php
 				$pages_attention = new \ShahiLegalFlowSuite\Modules\AccessibilityScanner\Admin\PagesRequiringAttention();
 				$pages_attention->render();
 				?>
-				<?php endif; ?>
 			
 				<!-- Card 8: Export & Reporting -->
 				<?php if ( ! defined( 'SLOS_DORMANT_REPORTING' ) || ! SLOS_DORMANT_REPORTING ) : ?>
