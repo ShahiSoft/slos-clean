@@ -347,10 +347,8 @@ class DSR_Export_Service {
         // Collect from legacy consent_logs table (if exists)
         $table = $wpdb->prefix . 'slos_consent_logs';
 
-        // Check if table exists
-        if ( $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) === $table ) {
-            $user_id = $request->user_id ?? null;
-
+		// Check if table exists.
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) === $table ) {
             // Query consent logs
             $where = array();
             $values = array();

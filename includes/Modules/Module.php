@@ -325,11 +325,12 @@ abstract class Module {
 			return;
 		}
 
-		// Fallback: Check database table only if option had nothing
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) === $table ) {
+		// Fallback: Check database table only if option had nothing.
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) === $table ) {
 			$db_result = $wpdb->get_row(
 				$wpdb->prepare(
-					"SELECT is_enabled, settings FROM $table WHERE module_key = %s",
+					"SELECT is_enabled, settings FROM %i WHERE module_key = %s",
+					$table,
 					$this->key
 				),
 				ARRAY_A
@@ -353,8 +354,8 @@ abstract class Module {
 		$table = $wpdb->prefix . 'shahi_modules';
 		$db_saved = true;
 
-		// Check if table exists
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) !== $table ) {
+		// Check if table exists.
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) !== $table ) {
 			$db_saved = false;
 		} else {
 			$result = $wpdb->update(
@@ -398,12 +399,13 @@ abstract class Module {
 		$table = $wpdb->prefix . 'shahi_modules';
 		$db_saved = false;
 
-		// Check if table exists
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) === $table ) {
-			// Check if record exists
+		// Check if table exists.
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) === $table ) {
+			// Check if record exists.
 			$exists = $wpdb->get_var(
 				$wpdb->prepare(
-					"SELECT COUNT(*) FROM $table WHERE module_key = %s",
+					"SELECT COUNT(*) FROM %i WHERE module_key = %s",
+					$table,
 					$this->key
 				)
 			);

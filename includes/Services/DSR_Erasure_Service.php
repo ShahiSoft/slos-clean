@@ -357,10 +357,10 @@ class DSR_Erasure_Service {
 
         $table = $wpdb->prefix . 'slos_consent_logs';
 
-        // Check if table exists
-        if ( $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) !== $table ) {
-            return false;
-        }
+		// Check if table exists.
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) !== $table ) {
+			return false;
+		}
 
         $user_id = $request->user_id ?? null;
         $email   = $request->requester_email ?? '';

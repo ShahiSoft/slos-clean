@@ -783,8 +783,8 @@ class Compliance_Score_Calculator extends Base_Service {
 
 		$table = $wpdb->prefix . 'slos_consent';
 		
-		// Check if country_code column exists (migration may not have run yet)
-		$columns = $wpdb->get_results( "SHOW COLUMNS FROM {$table}" );
+		// Check if country_code column exists (migration may not have run yet).
+		$columns = $wpdb->get_results( $wpdb->prepare( 'SHOW COLUMNS FROM %i', $table ) );
 		$column_names = array_map( function( $col ) { return $col->Field; }, $columns );
 		
 		if ( ! in_array( 'country_code', $column_names, true ) ) {

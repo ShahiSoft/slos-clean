@@ -63,11 +63,11 @@ class DatabaseHelper {
 		$table_name = self::get_table_name( $table );
 
 		if ( empty( $where ) ) {
-			return (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table_name}" );
+			return (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table_name ) );
 		}
 
 		$where_clause = self::build_where_clause( $where );
-		$sql          = "SELECT COUNT(*) FROM {$table_name} WHERE {$where_clause}";
+		$sql          = $wpdb->prepare( 'SELECT COUNT(*) FROM %i WHERE ', $table_name ) . $where_clause;
 
 		return (int) $wpdb->get_var( $sql );
 	}

@@ -160,9 +160,12 @@ class AnalyticsController {
 				$date_condition = '';
 		}
 
-		// Get total events
+		// Get total events.
 		$total_events = $wpdb->get_var(
-			"SELECT COUNT(*) FROM $analytics_table WHERE 1=1 $date_condition"
+			$wpdb->prepare(
+				"SELECT COUNT(*) FROM %i WHERE 1=1 $date_condition",
+				$analytics_table
+			)
 		);
 
 		// Get events by type
@@ -217,12 +220,12 @@ class AnalyticsController {
 
 		$analytics_table = $wpdb->prefix . 'shahi_analytics';
 
-		// Check if table exists
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '$analytics_table'" ) !== $analytics_table ) {
+		// Check if table exists.
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $analytics_table ) ) !== $analytics_table ) {
 			return RestAPI::error( 'Analytics table not found', 404 );
 		}
 
-		// Build query
+		// Build query.
 		$where  = array( '1=1' );
 		$values = array();
 
@@ -233,21 +236,17 @@ class AnalyticsController {
 
 		$where_clause = implode( ' AND ', $where );
 
-		// Get total count
-		$total_query = "SELECT COUNT(*) FROM $analytics_table WHERE $where_clause";
+		// Get total count.
+		$total_query = $wpdb->prepare( "SELECT COUNT(*) FROM %i WHERE $where_clause", $analytics_table );
 		if ( ! empty( $values ) ) {
-			$total_query = $wpdb->prepare( $total_query, $values );
+			$total_query = $wpdb->prepare( "SELECT COUNT(*) FROM %i WHERE $where_clause", array_merge( array( $analytics_table ), $values ) );
 		}
 		$total = $wpdb->get_var( $total_query );
 
-		// Get events
-		$query    = "SELECT id, event_type, event_data, user_id, ip_address, user_agent, created_at FROM $analytics_table WHERE $where_clause ORDER BY created_at DESC LIMIT %d OFFSET %d";
-		$values[] = $limit;
-		$values[] = $offset;
-
-		$events = $wpdb->get_results(
-			$wpdb->prepare( $query, $values ),
-			ARRAY_A
+		// Get events.
+		$query = $wpdb->prepare(
+			"SELECT id, event_type, event_data, user_id, ip_address, user_agent, created_at FROM %i WHERE $where_clause ORDER BY created_at DESC LIMIT %d OFFSET %d",
+			array_merge( array( $analytics_table ), $values, array( $limit, $offset ) )
 		);
 
 		// Parse JSON event_data
@@ -282,12 +281,12 @@ class AnalyticsController {
 
 		$analytics_table = $wpdb->prefix . 'shahi_analytics';
 
-		// Check if table exists
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '$analytics_table'" ) !== $analytics_table ) {
+		// Check if table exists.
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $analytics_table ) ) !== $analytics_table ) {
 			return RestAPI::error( 'Analytics table not found', 404 );
 		}
 
-		// Insert event
+		// Insert event.
 		$result = $wpdb->insert(
 			$analytics_table,
 			array(

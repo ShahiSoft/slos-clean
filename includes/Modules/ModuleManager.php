@@ -335,10 +335,11 @@ class ModuleManager
 		$table = $wpdb->prefix . 'shahi_modules';
 
 		$db_record_exists = false;
-		if ($wpdb->get_var("SHOW TABLES LIKE '$table'") === $table) {
+		if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $table)) === $table) {
 			$db_record_exists = (bool) $wpdb->get_var(
 				$wpdb->prepare(
-					"SELECT COUNT(*) FROM $table WHERE module_key = %s",
+					"SELECT COUNT(*) FROM %i WHERE module_key = %s",
+					$table,
 					$key
 				)
 			);
