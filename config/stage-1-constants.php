@@ -98,6 +98,16 @@ if ( ! defined( 'SLOS_DORMANT_REPORTING' ) ) {
 	define( 'SLOS_DORMANT_REPORTING', true );
 }
 
+// Dormant Compliance Features (Consent Records, Audit Logs, Geo Rules, Config Sync)
+if ( ! defined( 'SLOS_DORMANT_COMPLIANCE_FEATURES' ) ) {
+	define( 'SLOS_DORMANT_COMPLIANCE_FEATURES', array(
+		'records',  // Consent Records tab
+		'audit',    // Audit Logs tab
+		'geo',      // Geo Rules tab
+		'config',   // Config Sync tab
+	) );
+}
+
 // Disable half of accessibility checkers (keep 36 essential, disable 35 advanced)
 if ( ! defined( 'SLOS_DORMANT_CHECKERS' ) ) {
 	define( 'SLOS_DORMANT_CHECKERS', array(

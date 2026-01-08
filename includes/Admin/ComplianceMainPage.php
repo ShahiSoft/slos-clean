@@ -89,6 +89,13 @@ class ComplianceMainPage {
 	 * @return void
 	 */
 	public function enqueue_config_sync_assets( $hook ) {
+		// Check if config sync is dormant
+		if ( defined( 'SLOS_DORMANT_COMPLIANCE_FEATURES' ) && 
+		     is_array( SLOS_DORMANT_COMPLIANCE_FEATURES ) && 
+		     in_array( 'config', SLOS_DORMANT_COMPLIANCE_FEATURES, true ) ) {
+			return;
+		}
+		
 		// Only load on compliance page with config tab
 		if ( 'toplevel_page_slos-compliance' !== $hook ) {
 			return;
@@ -155,6 +162,15 @@ class ComplianceMainPage {
 				'icon'  => 'dashicons-cloud',
 			),
 		);
+		
+		// Filter out dormant tabs
+		if ( defined( 'SLOS_DORMANT_COMPLIANCE_FEATURES' ) && is_array( SLOS_DORMANT_COMPLIANCE_FEATURES ) ) {
+			foreach ( SLOS_DORMANT_COMPLIANCE_FEATURES as $dormant_tab ) {
+				unset( $tabs[ $dormant_tab ] );
+			}
+		}
+		
+		return $tabs;
 	}
 
 	/**
@@ -406,6 +422,15 @@ class ComplianceMainPage {
 	 * @return void
 	 */
 	public function render_tab_content( $stats, $recent_activity ) {
+		// Check if current tab is dormant
+		if ( defined( 'SLOS_DORMANT_COMPLIANCE_FEATURES' ) && 
+		     is_array( SLOS_DORMANT_COMPLIANCE_FEATURES ) && 
+		     in_array( $this->current_tab, SLOS_DORMANT_COMPLIANCE_FEATURES, true ) ) {
+			// Redirect to dashboard if accessing dormant tab
+			include SHAHI_LEGALFLOWSUITE_PATH . 'templates/admin/compliance/tabs/dashboard.php';
+			return;
+		}
+		
 		switch ( $this->current_tab ) {
 			case 'dashboard':
 				include SHAHI_LEGALFLOWSUITE_PATH . 'templates/admin/compliance/tabs/dashboard.php';

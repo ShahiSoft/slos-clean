@@ -61,10 +61,21 @@ class Compliance_Export_Ajax {
 	 * @return void
 	 */
 	public function register_actions() {
-		add_action( 'wp_ajax_slos_export_consents_csv', array( $this, 'export_consents_csv' ) );
-		add_action( 'wp_ajax_slos_export_consents_pdf', array( $this, 'export_consents_pdf' ) );
-		add_action( 'wp_ajax_slos_export_audit_logs_csv', array( $this, 'export_audit_logs_csv' ) );
-		add_action( 'wp_ajax_slos_get_consent_time_series', array( $this, 'get_consent_time_series' ) );
+		// Check if consent records and audit logs features are dormant
+		$dormant_features = defined( 'SLOS_DORMANT_COMPLIANCE_FEATURES' ) && is_array( SLOS_DORMANT_COMPLIANCE_FEATURES ) 
+			? SLOS_DORMANT_COMPLIANCE_FEATURES 
+			: array();
+		
+		// Only register export handlers if not dormant
+		if ( ! in_array( 'records', $dormant_features, true ) ) {
+			add_action( 'wp_ajax_slos_export_consents_csv', array( $this, 'export_consents_csv' ) );
+			add_action( 'wp_ajax_slos_export_consents_pdf', array( $this, 'export_consents_pdf' ) );
+			add_action( 'wp_ajax_slos_get_consent_time_series', array( $this, 'get_consent_time_series' ) );
+		}
+		
+		if ( ! in_array( 'audit', $dormant_features, true ) ) {
+			add_action( 'wp_ajax_slos_export_audit_logs_csv', array( $this, 'export_audit_logs_csv' ) );
+		}
 	}
 
 	/**

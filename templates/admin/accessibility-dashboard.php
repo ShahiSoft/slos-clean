@@ -2184,6 +2184,7 @@ $widget_enabled = get_option('slos_widget_enabled', true);
         </div>
         
         <!-- Card 7: Pages Requiring Attention - Redirect to Tools Tab (Full Width) -->
+        <?php if ( ! defined( 'SLOS_DORMANT_AUTOFIX' ) || ! SLOS_DORMANT_AUTOFIX ) : ?>
         <div class="slos-dashboard-card full-width">
             <div class="slos-card-header">
                 <h3>
@@ -2207,6 +2208,7 @@ $widget_enabled = get_option('slos_widget_enabled', true);
                 </div>
             </div>
         </div>
+        <?php endif; ?>
         
     </div>
 </div>
