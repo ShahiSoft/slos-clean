@@ -245,7 +245,7 @@ class Dashboard {
 				'icon'        => 'dashicons-admin-plugins',
 				'color'       => 'primary',
 				'trend'       => null,
-				'description' => __( 'Compliance features currently enabled on your site', 'shahi-legalflowsuite' ),
+				'description' => __( 'Compliance features currently enabled and running', 'shahi-legalflowsuite' ),
 			),
 			array(
 				'title'       => __( 'Total Events', 'shahi-legalflowsuite' ),
@@ -253,7 +253,7 @@ class Dashboard {
 				'icon'        => 'dashicons-chart-line',
 				'color'       => 'success',
 				'trend'       => null,
-				'description' => __( 'Consent records, DSR requests, and system actions logged', 'shahi-legalflowsuite' ),
+				'description' => __( 'Consent records, audit logs, and system actions tracked', 'shahi-legalflowsuite' ),
 			),
 			array(
 				'title'       => __( 'Performance Score', 'shahi-legalflowsuite' ),
@@ -262,7 +262,7 @@ class Dashboard {
 				'icon'        => 'dashicons-performance',
 				'color'       => 'accent',
 				'trend'       => null,
-				'description' => __( 'Overall plugin health based on config and optimizations', 'shahi-legalflowsuite' ),
+				'description' => __( 'System health based on active modules and configuration', 'shahi-legalflowsuite' ),
 			),
 			array(
 				'title'       => __( 'Last Activity', 'shahi-legalflowsuite' ),
@@ -271,7 +271,7 @@ class Dashboard {
 				'color'       => 'info',
 				'trend'       => null,
 				'is_time'     => true,
-				'description' => __( 'Most recent compliance event or configuration change', 'shahi-legalflowsuite' ),
+				'description' => __( 'Most recent compliance event or system change', 'shahi-legalflowsuite' ),
 			),
 		);
 	}
@@ -279,20 +279,18 @@ class Dashboard {
 	/**
 	 * Get active modules count
 	 *
+	 * Uses ModuleManager to get accurate count of registered and enabled modules.
+	 * This ensures dormant modules (DSR, Security) are excluded from the count.
+	 *
 	 * @since 1.0.0
 	 * @return int Number of active modules
 	 */
 	private function get_active_modules_count() {
-		global $wpdb;
-		$table = $wpdb->prefix . 'shahi_modules';
-
-		// Check if table exists (cached for performance)
-		if ( ! QueryOptimizer::table_exists_cached( $table ) ) {
-			return 0;
-		}
-
-		$count = $wpdb->get_var( "SELECT COUNT(*) FROM $table WHERE is_enabled = 1" );
-		return (int) $count;
+		// Use ModuleManager for accurate count (excludes dormant/unregistered modules)
+		$module_manager = ModuleManager::get_instance();
+		$stats          = $module_manager->get_statistics();
+		
+		return (int) $stats['enabled'];
 	}
 
 	/**
@@ -342,7 +340,7 @@ class Dashboard {
 	 * Get performance score
 	 *
 	 * Calculate overall plugin health score based on:
-	 * - Active modules count
+	 * - Active modules count (only registered, non-dormant modules)
 	 * - Configuration completeness
 	 * - Database health
 	 *
@@ -353,6 +351,7 @@ class Dashboard {
 		$score = 0;
 
 		// Factor 1: Active modules (max 40 points)
+		// Only count registered modules (excludes dormant DSR/Security)
 		$module_manager = ModuleManager::get_instance();
 		$stats          = $module_manager->get_statistics();
 		if ( $stats['total'] > 0 ) {
@@ -372,12 +371,12 @@ class Dashboard {
 		}
 
 		// Factor 3: Database health (max 30 points)
-		// Check if tables exist and have data
+		// Check active module tables only (exclude dormant DSR table)
 		global $wpdb;
 		$tables = array(
-			$wpdb->prefix . 'slos_consents',
-			$wpdb->prefix . 'slos_dsr_requests',
-			$wpdb->prefix . 'slos_documents',
+			$wpdb->prefix . 'slos_consents',      // Consent Management
+			$wpdb->prefix . 'slos_documents',     // Legal Documents
+			$wpdb->prefix . 'slos_scan_results',  // Accessibility Scanner
 		);
 
 		$healthy_tables = 0;
@@ -395,6 +394,7 @@ class Dashboard {
 	 * Get quick actions
 	 *
 	 * Returns an array of quick action buttons to display on the dashboard.
+	 * Only shows actions for active (non-dormant) modules.
 	 *
 	 * @since 1.0.0
 	 * @return array Quick actions data
@@ -409,10 +409,10 @@ class Dashboard {
 				'color'       => 'primary',
 			),
 			array(
-				'title'       => __( 'DSR Requests', 'shahi-legalflowsuite' ),
-				'description' => __( 'Manage data subject requests', 'shahi-legalflowsuite' ),
-				'icon'        => 'dashicons-clipboard',
-				'url'         => admin_url( 'admin.php?page=slos-requests' ),
+				'title'       => __( 'Accessibility Scanner', 'shahi-legalflowsuite' ),
+				'description' => __( 'Scan & fix accessibility issues', 'shahi-legalflowsuite' ),
+				'icon'        => 'dashicons-universal-access',
+				'url'         => admin_url( 'admin.php?page=slos-accessibility' ),
 				'color'       => 'success',
 			),
 			array(
