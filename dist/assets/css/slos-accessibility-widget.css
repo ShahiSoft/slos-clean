@@ -48,6 +48,24 @@
     border: 1px solid #ddd;
 }
 
+/* Panel positioning based on widget position */
+.slos-aw-widget.slos-aw-pos-bottom-left .slos-aw-panel {
+    left: 0;
+    right: auto;
+}
+
+.slos-aw-widget.slos-aw-pos-top-right .slos-aw-panel {
+    top: 70px;
+    bottom: auto;
+}
+
+.slos-aw-widget.slos-aw-pos-top-left .slos-aw-panel {
+    top: 70px;
+    bottom: auto;
+    left: 0;
+    right: auto;
+}
+
 .slos-aw-panel.is-open {
     display: block;
     animation: slos-slide-up 0.3s ease-out;
@@ -55,6 +73,17 @@
 
 @keyframes slos-slide-up {
     from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Adjust animation for top positions */
+.slos-aw-widget.slos-aw-pos-top-right .slos-aw-panel.is-open,
+.slos-aw-widget.slos-aw-pos-top-left .slos-aw-panel.is-open {
+    animation: slos-slide-down 0.3s ease-out;
+}
+
+@keyframes slos-slide-down {
+    from { opacity: 0; transform: translateY(-20px); }
     to { opacity: 1; transform: translateY(0); }
 }
 

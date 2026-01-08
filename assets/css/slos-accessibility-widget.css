@@ -41,6 +41,15 @@
 }
 
 /* Color theme modifiers for toggle & active buttons */
+.slos-aw-widget.slos-aw-theme-blue .slos-aw-toggle {
+    background-color: #0073aa;
+}
+
+.slos-aw-widget.slos-aw-theme-blue .slos-aw-toggle:hover,
+.slos-aw-widget.slos-aw-theme-blue .slos-aw-toggle:focus {
+    background-color: #005177;
+}
+
 .slos-aw-widget.slos-aw-theme-green .slos-aw-toggle {
     background-color: #16a34a;
 }
@@ -68,6 +77,24 @@
     background-color: #ea580c;
 }
 
+.slos-aw-widget.slos-aw-theme-red .slos-aw-toggle {
+    background-color: #dc2626;
+}
+
+.slos-aw-widget.slos-aw-theme-red .slos-aw-toggle:hover,
+.slos-aw-widget.slos-aw-theme-red .slos-aw-toggle:focus {
+    background-color: #b91c1c;
+}
+
+.slos-aw-widget.slos-aw-theme-teal .slos-aw-toggle {
+    background-color: #14b8a6;
+}
+
+.slos-aw-widget.slos-aw-theme-teal .slos-aw-toggle:hover,
+.slos-aw-widget.slos-aw-theme-teal .slos-aw-toggle:focus {
+    background-color: #0d9488;
+}
+
 .slos-aw-widget.slos-aw-theme-dark .slos-aw-toggle {
     background-color: #0f172a;
 }
@@ -75,6 +102,11 @@
 .slos-aw-widget.slos-aw-theme-dark .slos-aw-toggle:hover,
 .slos-aw-widget.slos-aw-theme-dark .slos-aw-toggle:focus {
     background-color: #020617;
+}
+
+.slos-aw-widget.slos-aw-theme-blue .slos-aw-btn.is-active,
+.slos-aw-widget.slos-aw-theme-blue .slos-aw-btn:hover {
+    border-color: #0073aa;
 }
 
 .slos-aw-widget.slos-aw-theme-green .slos-aw-btn.is-active,
@@ -90,6 +122,16 @@
 .slos-aw-widget.slos-aw-theme-orange .slos-aw-btn.is-active,
 .slos-aw-widget.slos-aw-theme-orange .slos-aw-btn:hover {
     border-color: #f97316;
+}
+
+.slos-aw-widget.slos-aw-theme-red .slos-aw-btn.is-active,
+.slos-aw-widget.slos-aw-theme-red .slos-aw-btn:hover {
+    border-color: #dc2626;
+}
+
+.slos-aw-widget.slos-aw-theme-teal .slos-aw-btn.is-active,
+.slos-aw-widget.slos-aw-theme-teal .slos-aw-btn:hover {
+    border-color: #14b8a6;
 }
 
 .slos-aw-widget.slos-aw-theme-dark .slos-aw-btn.is-active,
@@ -123,6 +165,24 @@
     border: 1px solid #ddd;
 }
 
+/* Panel positioning based on widget position */
+.slos-aw-widget.slos-aw-pos-bottom-left .slos-aw-panel {
+    left: 0;
+    right: auto;
+}
+
+.slos-aw-widget.slos-aw-pos-top-right .slos-aw-panel {
+    top: 70px;
+    bottom: auto;
+}
+
+.slos-aw-widget.slos-aw-pos-top-left .slos-aw-panel {
+    top: 70px;
+    bottom: auto;
+    left: 0;
+    right: auto;
+}
+
 .slos-aw-panel.is-open {
     display: block;
     animation: slos-slide-up 0.3s ease-out;
@@ -130,6 +190,17 @@
 
 @keyframes slos-slide-up {
     from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Adjust animation for top positions */
+.slos-aw-widget.slos-aw-pos-top-right .slos-aw-panel.is-open,
+.slos-aw-widget.slos-aw-pos-top-left .slos-aw-panel.is-open {
+    animation: slos-slide-down 0.3s ease-out;
+}
+
+@keyframes slos-slide-down {
+    from { opacity: 0; transform: translateY(-20px); }
     to { opacity: 1; transform: translateY(0); }
 }
 

@@ -239,6 +239,10 @@ class AccessibilityScanner extends Module {
 		add_action( 'wp_ajax_slos_save_scanner_config', array( $this, 'ajax_save_scanner_config' ) );
 		add_action( 'wp_ajax_slos_schedule_email_report', array( $this, 'ajax_schedule_email_report' ) );
 		add_action( 'wp_ajax_slos_toggle_widget', array( $this, 'ajax_toggle_widget' ) );
+		add_action( 'wp_ajax_slos_save_widget_config', array( $this, 'ajax_save_widget_config' ) );
+		add_action( 'wp_ajax_slos_check_color_contrast', array( $this, 'ajax_check_color_contrast' ) );
+		add_action( 'wp_ajax_slos_check_readability', array( $this, 'ajax_check_readability' ) );
+		add_action( 'wp_ajax_slos_check_link_text', array( $this, 'ajax_check_link_text' ) );
 
 		// Schedule cleanup cron job if not already scheduled
 		if ( ! wp_next_scheduled( 'slos_cleanup_old_backups' ) ) {
@@ -442,12 +446,15 @@ class AccessibilityScanner extends Module {
 		}
 
 		// Use lightweight query - only get IDs and titles, skip get_permalink (slow)
+		// Allow optional limit for quick scan requests and prioritize recent content
 		global $wpdb;
+		$limit       = isset( $_POST['limit'] ) ? intval( $_POST['limit'] ) : 0;
+		$limit_clause = $limit > 0 ? $wpdb->prepare( ' LIMIT %d', $limit ) : '';
 		$results = $wpdb->get_results(
 			"SELECT ID, post_title FROM {$wpdb->posts} 
              WHERE post_type IN ('post', 'page') 
              AND post_status = 'publish' 
-             ORDER BY post_title ASC",
+             ORDER BY post_date DESC" . $limit_clause,
 			ARRAY_A
 		);
 
@@ -472,14 +479,81 @@ class AccessibilityScanner extends Module {
 			wp_send_json_error( 'Unauthorized' );
 		}
 
-		$post_id = intval( $_POST['post_id'] );
-		$post    = get_post( $post_id );
+		$post_id = intval( $_POST['post_id'] ?? 0 );
+		$url     = isset( $_POST['url'] ) ? esc_url_raw( wp_unslash( $_POST['url'] ) ) : '';
+		$post    = null;
+
+		if ( $url && ! $post_id ) {
+			$site_host   = wp_parse_url( home_url(), PHP_URL_HOST );
+			$target_host = wp_parse_url( $url, PHP_URL_HOST );
+
+			if ( $site_host && $target_host && $site_host !== $target_host ) {
+				wp_send_json_error( __( 'Please scan URLs from this site only for security reasons.', 'shahi-legalflowsuite' ) );
+			}
+
+			$post_id = url_to_postid( $url );
+
+			if ( $post_id ) {
+				$post = get_post( $post_id );
+			} else {
+				$response = wp_remote_get( $url );
+				if ( is_wp_error( $response ) ) {
+					wp_send_json_error( $response->get_error_message() );
+				}
+
+				$body = wp_remote_retrieve_body( $response );
+
+				if ( empty( $body ) ) {
+					wp_send_json_error( __( 'Unable to retrieve the requested URL.', 'shahi-legalflowsuite' ) );
+				}
+
+				$scan_results   = $this->scanner->scan( $body );
+				$issues_count   = 0;
+				$critical_count = 0;
+				$issue_types    = array();
+
+				foreach ( $scan_results as $check ) {
+					$check_issues = isset( $check['issues'] ) ? (array) $check['issues'] : array();
+					$issue_count  = count( $check_issues );
+
+					if ( $issue_count > 0 ) {
+						$issues_count += $issue_count;
+						$issue_types[] = $check['id'];
+
+						if ( isset( $check['severity'] ) && 'critical' === $check['severity'] ) {
+							$critical_count += $issue_count;
+						}
+					}
+				}
+
+				$score = $issues_count > 0 ? max( 0, 100 - ( $critical_count * 10 + ( $issues_count - $critical_count ) * 3 ) ) : 100;
+
+				wp_send_json_success(
+					array(
+						'url'            => $url,
+						'issues_count'   => $issues_count,
+						'critical_count' => $critical_count,
+						'issue_types'    => array_unique( $issue_types ),
+						'score'          => $score,
+						'scan_date'      => current_time( 'mysql' ),
+					)
+				);
+			}
+		}
+
+		if ( $post_id && ! $post ) {
+			$post = get_post( $post_id );
+		}
 
 		if ( ! $post ) {
 			wp_send_json_error( 'Post not found' );
 		}
 
 		$result = $this->run_scan_for_post( $post_id, $post );
+
+		if ( empty( $result['url'] ) ) {
+			$result['url'] = get_permalink( $post_id );
+		}
 
 		// Note: Consolidation removed from here - should only run at end of full scan
 		// Individual scans don't need to rebuild entire dashboard data
@@ -572,44 +646,64 @@ class AccessibilityScanner extends Module {
 
 		// Check if statement page already exists
 		$existing = get_page_by_path( 'accessibility-statement' );
+		
+		// Check if pre-generated content was provided
+		$statement_content = isset( $_POST['statement_content'] ) ? wp_kses_post( wp_unslash( $_POST['statement_content'] ) ) : '';
+		
+		// If no pre-generated content, generate from form data
+		if ( empty( $statement_content ) ) {
+			$org_name       = sanitize_text_field( wp_unslash( $_POST['org_name'] ?? '' ) );
+			$contact_email  = sanitize_email( wp_unslash( $_POST['contact_email'] ?? '' ) );
+			$wcag_target    = sanitize_text_field( wp_unslash( $_POST['wcag_target'] ?? 'WCAG 2.2 Level AA' ) );
+			$statement_date = sanitize_text_field( wp_unslash( $_POST['statement_date'] ?? '' ) );
+			$commitment     = sanitize_textarea_field( wp_unslash( $_POST['commitment'] ?? '' ) );
+
+			if ( empty( $org_name ) ) {
+				wp_send_json_error( __( 'Organization name is required or statement content must be provided.', 'shahi-legalflowsuite' ) );
+			}
+
+			// Build statement HTML
+			$statement_content = $this->build_accessibility_statement(
+				$org_name,
+				$contact_email,
+				$wcag_target,
+				$statement_date,
+				$commitment
+			);
+		}
+		
+		// If page exists, update it
 		if ( $existing ) {
+			$page_id = wp_update_post(
+				array(
+					'ID'           => $existing->ID,
+					'post_content' => $statement_content,
+					'post_author'  => get_current_user_id(),
+				)
+			);
+			
+			if ( is_wp_error( $page_id ) ) {
+				wp_send_json_error( $page_id->get_error_message() );
+			}
+			
 			wp_send_json_success(
 				array(
-					'page_url'  => get_permalink( $existing->ID ),
-					'edit_url'  => get_edit_post_link( $existing->ID, 'raw' ),
-					'message'   => __( 'Accessibility Statement page already exists.', 'shahi-legalflowsuite' ),
-					'exists'    => true,
+					'page_id'   => $existing->ID,
+					'view_link' => get_permalink( $existing->ID ),
+					'edit_link' => get_edit_post_link( $existing->ID, 'raw' ),
+					'message'   => __( 'Accessibility Statement page updated successfully.', 'shahi-legalflowsuite' ),
+					'updated'   => true,
 				)
 			);
 			return;
 		}
 
-		// Generate statement content
-		$org_name       = sanitize_text_field( wp_unslash( $_POST['org_name'] ?? '' ) );
-		$contact_email  = sanitize_email( wp_unslash( $_POST['contact_email'] ?? '' ) );
-		$wcag_target    = sanitize_text_field( wp_unslash( $_POST['wcag_target'] ?? 'WCAG 2.1 Level AA' ) );
-		$statement_date = sanitize_text_field( wp_unslash( $_POST['statement_date'] ?? '' ) );
-		$commitment     = sanitize_textarea_field( wp_unslash( $_POST['commitment'] ?? '' ) );
-
-		if ( empty( $org_name ) ) {
-			wp_send_json_error( __( 'Organization name is required.', 'shahi-legalflowsuite' ) );
-		}
-
-		// Build statement HTML
-		$statement = $this->build_accessibility_statement(
-			$org_name,
-			$contact_email,
-			$wcag_target,
-			$statement_date,
-			$commitment
-		);
-
-		// Create the page
+		// Create new page
 		$page_id = wp_insert_post(
 			array(
 				'post_title'   => __( 'Accessibility Statement', 'shahi-legalflowsuite' ),
 				'post_name'    => 'accessibility-statement',
-				'post_content' => $statement,
+				'post_content' => $statement_content,
 				'post_status'  => 'publish',
 				'post_type'    => 'page',
 				'post_author'  => get_current_user_id(),
@@ -622,10 +716,10 @@ class AccessibilityScanner extends Module {
 
 		wp_send_json_success(
 			array(
-				'page_id'  => $page_id,
-				'page_url' => get_permalink( $page_id ),
-				'edit_url' => get_edit_post_link( $page_id, 'raw' ),
-				'message'  => __( 'Accessibility Statement page created successfully.', 'shahi-legalflowsuite' ),
+				'page_id'   => $page_id,
+				'view_link' => get_permalink( $page_id ),
+				'edit_link' => get_edit_post_link( $page_id, 'raw' ),
+				'message'   => __( 'Accessibility Statement page created successfully.', 'shahi-legalflowsuite' ),
 			)
 		);
 	}
@@ -651,7 +745,7 @@ class AccessibilityScanner extends Module {
 		$html .= '<!-- wp:paragraph -->' . "\n";
 		$html .= '<p>' . sprintf(
 			/* translators: 1: Organization name, 2: Site URL */
-			__( '%1$s is committed to ensuring digital accessibility for people with disabilities. We are continually improving the user experience for everyone and applying the relevant accessibility standards.', 'shahi-legalflowsuite' ),
+			__( '%1$s is committed to ensuring digital accessibility for people with disabilities. We are continually improving the user experience for everyone and applying the relevant accessibility standards for %2$s.', 'shahi-legalflowsuite' ),
 			esc_html( $org_name ),
 			esc_url( $site_url )
 		) . '</p>' . "\n";
@@ -685,6 +779,22 @@ class AccessibilityScanner extends Module {
 		$html .= '<li>' . __( 'Employ formal accessibility quality assurance methods.', 'shahi-legalflowsuite' ) . '</li>' . "\n";
 		$html .= '</ul>' . "\n";
 		$html .= '<!-- /wp:list -->' . "\n\n";
+
+		$html .= '<!-- wp:heading -->' . "\n";
+		$html .= '<h2 class="wp-block-heading">' . __( 'Compatibility with browsers and assistive technology', 'shahi-legalflowsuite' ) . '</h2>' . "\n";
+		$html .= '<!-- /wp:heading -->' . "\n\n";
+
+		$html .= '<!-- wp:paragraph -->' . "\n";
+		$html .= '<p>' . __( 'Our goal is to support the latest versions of major browsers and assistive technologies, including Chrome, Firefox, Safari, Edge, and modern screen readers.', 'shahi-legalflowsuite' ) . '</p>' . "\n";
+		$html .= '<!-- /wp:paragraph -->' . "\n\n";
+
+		$html .= '<!-- wp:heading -->' . "\n";
+		$html .= '<h2 class="wp-block-heading">' . __( 'Assessment approach', 'shahi-legalflowsuite' ) . '</h2>' . "\n";
+		$html .= '<!-- /wp:heading -->' . "\n\n";
+
+		$html .= '<!-- wp:paragraph -->' . "\n";
+		$html .= '<p>' . __( 'We assess the accessibility of this website through continuous automated scanning, manual reviews, and user feedback.', 'shahi-legalflowsuite' ) . '</p>' . "\n";
+		$html .= '<!-- /wp:paragraph -->' . "\n\n";
 
 		if ( ! empty( $commitment ) ) {
 			$html .= '<!-- wp:heading -->' . "\n";
@@ -814,14 +924,21 @@ class AccessibilityScanner extends Module {
 			}
 		}
 
+		$score = 100;
+		if ( $issues_count > 0 ) {
+			$score = max( 0, 100 - ( $critical_count * 10 + ( $issues_count - $critical_count ) * 3 ) );
+		}
+
 		return array(
 			'post_id'        => $post_id,
 			'title'          => $post->post_title,
+			'url'            => get_permalink( $post_id ),
 			'edit_link'      => get_edit_post_link( $post_id ),
 			'issues_count'   => $issues_count,
 			'critical_count' => $critical_count,
 			'issue_types'    => array_unique( $issue_types ), // Only unique types
 			'scan_date'      => current_time( 'mysql' ),
+			'score'          => $score,
 		);
 	}
 
@@ -1867,86 +1984,36 @@ class AccessibilityScanner extends Module {
 		// Get scan results for this page
 		$scan_results = get_post_meta( $page_id, '_slos_accessibility_scan_results', true );
 
-		if ( empty( $scan_results ) || ! is_array( $scan_results ) ) {
+		// Count total issues in scan results
+		$total_issues = 0;
+		if ( ! empty( $scan_results ) && is_array( $scan_results ) ) {
+			foreach ( $scan_results as $check_result ) {
+				if ( ! empty( $check_result['issues'] ) && is_array( $check_result['issues'] ) ) {
+					$total_issues += count( $check_result['issues'] );
+				}
+			}
+		}
+
+		// If scan results exist and have issues, signal frontend to use all fixers
+		// This allows all fixers to attempt fixing regardless of scan detection accuracy
+		if ( $total_issues > 0 ) {
 			wp_send_json_success(
 				array(
-					'fixers' => array(),
-					'message' => 'No scan results found. Please scan this page first.',
+					'use_all_fixers' => true,
+					'issue_count'    => $total_issues,
+					'message'        => sprintf( 'Found %d issue(s) - running all fixers', $total_issues ),
 				)
 			);
 			return;
 		}
 
-		// Initialize FixEngine and get canonical fixer list
-		if ( ! class_exists( '\\ShahiLegalFlowSuite\\Modules\\AccessibilityScanner\\FixEngine\\Bootstrap' ) ) {
-			wp_send_json_error( array( 'message' => 'Fix engine not available' ) );
-		}
-
-		$engine = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\FixEngine\Bootstrap::get_engine();
-		$engine->initialize();
-		$available_fixers = $engine->get_fixers();
-
-		// Map check IDs to canonical fixer IDs (some checks have corresponding fixers)
-		$check_to_fixer_map = $this->get_check_to_fixer_mapping();
-
-		// Collect fixers that have issues (for UI highlighting).
-		// Note: scan results are stored as a numerically indexed list of
-		// check arrays (each containing an 'id' key), not keyed by check ID.
-		// We therefore need to read the checker ID from the element itself
-		// instead of using the array index.
-		$fixers_with_issues = array();
-		$seen_fixers        = array();
-
-		foreach ( $scan_results as $check_result ) {
-			// Each $check_result is expected to be an associative array with
-			// at least 'id' and 'issues' keys.
-			$check_id = isset( $check_result['id'] ) ? $check_result['id'] : null;
-
-			if ( ! $check_id ) {
-				continue;
-			}
-
-			// Check if this check has fixable issues
-			if ( empty( $check_result['issues'] ) ) {
-				continue;
-			}
-
-			// Check if there's a corresponding canonical fixer for this check
-			if ( isset( $check_to_fixer_map[ $check_id ] ) ) {
-				$canonical_fixer_id = $check_to_fixer_map[ $check_id ];
-
-				// Avoid duplicates
-				if ( in_array( $canonical_fixer_id, $seen_fixers, true ) ) {
-					continue;
-				}
-
-				// Ensure the fixer actually exists in FixEngine
-				$fixer = $engine->get_fixer( $canonical_fixer_id );
-
-				if ( $fixer ) {
-					$seen_fixers[]        = $canonical_fixer_id;
-					$fixers_with_issues[] = array(
-						'id'          => $fixer->get_id(),
-						'name'        => $fixer->get_name(),
-						'description' => $fixer->get_description(),
-						'status'      => 'pending',
-						'count'       => 0,
-						'message'     => '',
-					);
-				}
-			}
-		}
-
-		// Return only the fixers that have issues on this page.
-		// The frontend will use this list as the primary source of fixers
-		// to run for the Auto-Fix session.
+		// No scan results or no issues - return empty fixer list
 		wp_send_json_success(
 			array(
-				'fixers'      => $fixers_with_issues,
-				'issue_count' => count( $fixers_with_issues ),
-				'message'     => count( $fixers_with_issues ) > 0
-					? sprintf( 'Found %d fixer(s) with issues', count( $fixers_with_issues ) )
-					: 'No fixable issues found',
+				'fixers'  => array(),
+				'message' => $total_issues === 0 && ! empty( $scan_results )
+					? 'No accessibility issues detected'
+					: 'No scan results found. Please scan this page first.',
 			)
 		);
 	}
@@ -2860,21 +2927,42 @@ class AccessibilityScanner extends Module {
 			wp_send_json_error( array( 'message' => 'Unauthorized' ) );
 		}
 
-		$email = isset( $_POST['email'] ) ? sanitize_email( wp_unslash( $_POST['email'] ) ) : '';
+		$email = isset( $_POST['email'] ) ? sanitize_text_field( wp_unslash( $_POST['email'] ) ) : '';
 		$frequency = isset( $_POST['frequency'] ) ? sanitize_text_field( wp_unslash( $_POST['frequency'] ) ) : 'weekly';
+		$template = isset( $_POST['template'] ) ? sanitize_text_field( wp_unslash( $_POST['template'] ) ) : 'executive';
 
-		if ( empty( $email ) || ! is_email( $email ) ) {
-			wp_send_json_error( array( 'message' => __( 'Please provide a valid email address.', 'shahi-legalflowsuite' ) ) );
+		if ( empty( $email ) ) {
+			wp_send_json_error( array( 'message' => __( 'Please provide at least one email address.', 'shahi-legalflowsuite' ) ) );
 		}
 
-		$allowed_frequencies = array( 'weekly', 'monthly' );
+		// Validate email addresses (support multiple emails separated by commas)
+		$emails = array_map( 'trim', explode( ',', $email ) );
+		$valid_emails = array();
+		
+		foreach ( $emails as $single_email ) {
+			if ( is_email( $single_email ) ) {
+				$valid_emails[] = $single_email;
+			}
+		}
+
+		if ( empty( $valid_emails ) ) {
+			wp_send_json_error( array( 'message' => __( 'Please provide at least one valid email address.', 'shahi-legalflowsuite' ) ) );
+		}
+
+		$allowed_frequencies = array( 'daily', 'weekly', 'monthly' );
 		if ( ! in_array( $frequency, $allowed_frequencies, true ) ) {
 			$frequency = 'weekly';
 		}
 
+		$allowed_templates = array( 'executive', 'technical', 'combined' );
+		if ( ! in_array( $template, $allowed_templates, true ) ) {
+			$template = 'executive';
+		}
+
 		$settings = array(
-			'email'      => $email,
+			'email'      => implode( ', ', $valid_emails ),
 			'frequency'  => $frequency,
+			'template'   => $template,
 			'last_sent'  => '',
 		);
 
@@ -2882,7 +2970,16 @@ class AccessibilityScanner extends Module {
 
 		wp_send_json_success(
 			array(
-				'message'   => __( 'Email reports scheduled successfully.', 'shahi-legalflowsuite' ),
+				'message'   => sprintf(
+					/* translators: %d: number of email addresses */
+					_n(
+						'Email report scheduled successfully to %d recipient.',
+						'Email report scheduled successfully to %d recipients.',
+						count( $valid_emails ),
+						'shahi-legalflowsuite'
+					),
+					count( $valid_emails )
+				),
 				'settings'  => $settings,
 			)
 		);
@@ -2891,52 +2988,65 @@ class AccessibilityScanner extends Module {
 	/**
 	 * Cron callback: send periodic accessibility email report.
 	 *
-	 * Runs daily but honours the configured weekly/monthly cadence.
+	 * Runs daily but honours the configured daily/weekly/monthly cadence.
 	 */
 	public function cron_send_accessibility_report() {
 		$settings = get_option( 'slos_accessibility_report_settings', array() );
 		$email    = isset( $settings['email'] ) ? $settings['email'] : '';
 		$frequency = isset( $settings['frequency'] ) ? $settings['frequency'] : 'weekly';
+		$template = isset( $settings['template'] ) ? $settings['template'] : 'executive';
 
-		if ( empty( $email ) || ! is_email( $email ) ) {
+		if ( empty( $email ) ) {
+			return;
+		}
+
+		// Parse multiple emails
+		$emails = array_map( 'trim', explode( ',', $email ) );
+		$valid_emails = array_filter( $emails, 'is_email' );
+
+		if ( empty( $valid_emails ) ) {
 			return;
 		}
 
 		$now       = current_time( 'timestamp' );
 		$last_sent = ! empty( $settings['last_sent'] ) ? strtotime( $settings['last_sent'] ) : 0;
-		$interval_days = ( 'monthly' === $frequency ) ? 30 : 7;
+		
+		// Determine interval based on frequency
+		$interval_days = 7; // default weekly
+		switch ( $frequency ) {
+			case 'daily':
+				$interval_days = 1;
+				break;
+			case 'monthly':
+				$interval_days = 30;
+				break;
+		}
 
+		// Check if enough time has passed since last report
 		if ( $last_sent && ( $now - $last_sent ) < ( DAY_IN_SECONDS * $interval_days ) ) {
 			return;
 		}
 
-		$stats = get_option( 'slos_scan_statistics', array() );
-		$score = isset( $stats['average_score'] ) ? intval( $stats['average_score'] ) : 0;
-		$total_issues = isset( $stats['total_issues'] ) ? intval( $stats['total_issues'] ) : 0;
-		$critical_issues = isset( $stats['total_critical'] ) ? intval( $stats['total_critical'] ) : 0;
+		// Get reporter instance
+		if ( ! class_exists( 'ShahiLegalFlowSuite\Modules\AccessibilityScanner\Reporting\AccessibilityReporter' ) ) {
+			return;
+		}
 
-		$subject = sprintf(
-			/* translators: %s: date */
-			__( 'Accessibility Scan Report (%s)', 'shahi-legalflowsuite' ),
-			wp_date( get_option( 'date_format' ), $now )
-		);
+		$reporter = new \ShahiLegalFlowSuite\Modules\AccessibilityScanner\Reporting\AccessibilityReporter();
 
-		$body_lines = array();
-		$body_lines[] = __( 'Here is your latest accessibility scan summary:', 'shahi-legalflowsuite' );
-		$body_lines[] = '';
-		$body_lines[] = sprintf( __( 'Average score: %d%%', 'shahi-legalflowsuite' ), $score );
-		$body_lines[] = sprintf( __( 'Total issues: %d', 'shahi-legalflowsuite' ), $total_issues );
-		$body_lines[] = sprintf( __( 'Critical issues: %d', 'shahi-legalflowsuite' ), $critical_issues );
-		$body_lines[] = '';
-		$body_lines[] = __( 'For full details and to fix issues, visit the Accessibility Tools & Dashboard in your WordPress admin.', 'shahi-legalflowsuite' );
+		// Send to all recipients
+		$sent_count = 0;
+		foreach ( $valid_emails as $recipient ) {
+			if ( $reporter->send_email_report( $recipient, $template ) ) {
+				$sent_count++;
+			}
+		}
 
-		$body = implode( "\n", $body_lines );
-
-		// Send email via WordPress mailer
-		wp_mail( $email, $subject, $body );
-
-		$settings['last_sent'] = current_time( 'mysql' );
-		update_option( 'slos_accessibility_report_settings', $settings );
+		// Update last sent time if at least one email was sent successfully
+		if ( $sent_count > 0 ) {
+			$settings['last_sent'] = current_time( 'mysql' );
+			update_option( 'slos_accessibility_report_settings', $settings );
+		}
 	}
 
 	/**
@@ -2955,6 +3065,50 @@ class AccessibilityScanner extends Module {
 		update_option( 'slos_widget_enabled', $enabled );
 
 		wp_send_json_success( array( 'enabled' => $enabled ) );
+	}
+
+	/**
+	 * AJAX: Save comprehensive widget configuration
+	 *
+	 * @since 3.1.1
+	 */
+	public function ajax_save_widget_config() {
+		check_ajax_referer( 'slos_scanner_nonce', 'nonce' );
+
+		if ( ! $this->user_can_manage_accessibility() ) {
+			wp_send_json_error( array( 'message' => __( 'Unauthorized access.', 'shahi-legalflowsuite' ) ) );
+		}
+
+		// Sanitize and validate widget enabled
+		$enabled = ! empty( $_POST['enabled'] ) && 'true' === $_POST['enabled'];
+
+		// Sanitize and validate widget position
+		$position = isset( $_POST['position'] ) ? sanitize_text_field( $_POST['position'] ) : 'bottom-right';
+		$valid_positions = array( 'top-left', 'top-right', 'bottom-left', 'bottom-right' );
+		if ( ! in_array( $position, $valid_positions, true ) ) {
+			$position = 'bottom-right';
+		}
+
+		// Sanitize and validate widget color
+		$color = isset( $_POST['color'] ) ? sanitize_text_field( $_POST['color'] ) : 'blue';
+		$valid_colors = array( 'blue', 'green', 'purple', 'orange', 'red', 'teal' );
+		if ( ! in_array( $color, $valid_colors, true ) ) {
+			$color = 'blue';
+		}
+
+		// Update widget options (removed features - all features enabled by default)
+		update_option( 'slos_widget_enabled', $enabled );
+		update_option( 'slos_widget_position', $position );
+		update_option( 'slos_widget_color', $color );
+
+		wp_send_json_success(
+			array(
+				'message'  => __( 'Widget configuration saved successfully.', 'shahi-legalflowsuite' ),
+				'enabled'  => $enabled,
+				'position' => $position,
+				'color'    => $color,
+			)
+		);
 	}
 
 	/**
@@ -3034,6 +3188,479 @@ class AccessibilityScanner extends Module {
 			'scan_freshness'  => $freshness,
 			'by_severity'     => $by_severity,
 		);
+	}
+
+	/**
+	 * AJAX: Check Color Contrast
+	 * 
+	 * Calculates the contrast ratio between foreground and background colors
+	 * and checks against WCAG 2.2 standards.
+	 * 
+	 * @since 3.1.2
+	 * @return void Sends JSON response
+	 */
+	public function ajax_check_color_contrast() {
+		check_ajax_referer( 'slos_scanner_nonce', 'nonce' );
+
+		if ( ! $this->user_can_manage_accessibility() ) {
+			wp_send_json_error( 'Unauthorized' );
+		}
+
+		$fg_color = sanitize_text_field( wp_unslash( $_POST['fg_color'] ?? '' ) );
+		$bg_color = sanitize_text_field( wp_unslash( $_POST['bg_color'] ?? '' ) );
+
+		if ( empty( $fg_color ) || empty( $bg_color ) ) {
+			wp_send_json_error( __( 'Both colors are required.', 'shahi-legalflowsuite' ) );
+		}
+
+		// Calculate contrast ratio
+		$ratio = $this->calculate_contrast_ratio( $fg_color, $bg_color );
+
+		// WCAG 2.2 standards
+		$wcag_aa_normal  = $ratio >= 4.5;
+		$wcag_aa_large   = $ratio >= 3.0;
+		$wcag_aaa_normal = $ratio >= 7.0;
+		$wcag_aaa_large  = $ratio >= 4.5;
+
+		wp_send_json_success(
+			array(
+				'ratio'           => round( $ratio, 2 ),
+				'wcag_aa_normal'  => $wcag_aa_normal,
+				'wcag_aa_large'   => $wcag_aa_large,
+				'wcag_aaa_normal' => $wcag_aaa_normal,
+				'wcag_aaa_large'  => $wcag_aaa_large,
+				'passes_aa'       => $wcag_aa_normal,
+				'recommendation'  => $this->get_contrast_recommendation( $ratio ),
+			)
+		);
+	}
+
+	/**
+	 * Calculate contrast ratio between two colors
+	 * 
+	 * Uses WCAG 2.2 formula: (L1 + 0.05) / (L2 + 0.05)
+	 * where L1 is the lighter color and L2 is the darker color.
+	 * 
+	 * @since 3.1.2
+	 * @param string $fg Foreground color (hex format)
+	 * @param string $bg Background color (hex format)
+	 * @return float Contrast ratio
+	 */
+	private function calculate_contrast_ratio( $fg, $bg ) {
+		$fg_luminance = $this->get_relative_luminance( $fg );
+		$bg_luminance = $this->get_relative_luminance( $bg );
+
+		$lighter = max( $fg_luminance, $bg_luminance );
+		$darker  = min( $fg_luminance, $bg_luminance );
+
+		return ( $lighter + 0.05 ) / ( $darker + 0.05 );
+	}
+
+	/**
+	 * Get relative luminance of a color
+	 * 
+	 * Implements the WCAG 2.2 relative luminance formula.
+	 * 
+	 * @since 3.1.2
+	 * @param string $hex Color in hex format (#RRGGBB or RRGGBB)
+	 * @return float Relative luminance (0-1)
+	 */
+	private function get_relative_luminance( $hex ) {
+		// Remove # if present
+		$hex = ltrim( $hex, '#' );
+
+		// Convert hex to RGB (0-255)
+		$r = hexdec( substr( $hex, 0, 2 ) ) / 255;
+		$g = hexdec( substr( $hex, 2, 2 ) ) / 255;
+		$b = hexdec( substr( $hex, 4, 2 ) ) / 255;
+
+		// Apply sRGB to linear RGB conversion
+		$r = $r <= 0.03928 ? $r / 12.92 : pow( ( $r + 0.055 ) / 1.055, 2.4 );
+		$g = $g <= 0.03928 ? $g / 12.92 : pow( ( $g + 0.055 ) / 1.055, 2.4 );
+		$b = $b <= 0.03928 ? $b / 12.92 : pow( ( $b + 0.055 ) / 1.055, 2.4 );
+
+		// Calculate relative luminance
+		return 0.2126 * $r + 0.7152 * $g + 0.0722 * $b;
+	}
+
+	/**
+	 * Get contrast recommendation based on ratio
+	 * 
+	 * Provides human-readable guidance on WCAG compliance.
+	 * 
+	 * @since 3.1.2
+	 * @param float $ratio Contrast ratio
+	 * @return string Recommendation message
+	 */
+	private function get_contrast_recommendation( $ratio ) {
+		if ( $ratio >= 7.0 ) {
+			return __( 'Excellent! Passes WCAG AAA for all text sizes.', 'shahi-legalflowsuite' );
+		} elseif ( $ratio >= 4.5 ) {
+			return __( 'Good! Passes WCAG AA for normal text.', 'shahi-legalflowsuite' );
+		} elseif ( $ratio >= 3.0 ) {
+			return __( 'Acceptable for large text only (18pt+).', 'shahi-legalflowsuite' );
+		} else {
+			return __( 'Fails WCAG standards. Increase contrast.', 'shahi-legalflowsuite' );
+		}
+	}
+
+	/**
+	 * AJAX Handler: Check Readability Score (Flesch-Kincaid)
+	 * 
+	 * Analyzes text readability using Flesch-Kincaid Grade Level formula.
+	 * WCAG recommends lower secondary education level (grade 7-9) for accessibility.
+	 * 
+	 * @since 3.1.2
+	 * @return void
+	 */
+	public function ajax_check_readability() {
+		check_ajax_referer( 'slos_scanner_nonce', 'nonce' );
+
+		if ( ! $this->user_can_manage_accessibility() ) {
+			wp_send_json_error( __( 'Unauthorized', 'shahi-legalflowsuite' ) );
+		}
+
+		$text = isset( $_POST['text'] ) ? wp_unslash( $_POST['text'] ) : '';
+
+		if ( empty( $text ) ) {
+			wp_send_json_error( __( 'Text is required.', 'shahi-legalflowsuite' ) );
+		}
+
+		// Calculate readability metrics
+		$words     = str_word_count( $text );
+		$sentences = $this->count_sentences( $text );
+		$syllables = $this->count_syllables( $text );
+
+		if ( $words === 0 || $sentences === 0 ) {
+			wp_send_json_error( __( 'Please provide valid text with complete sentences.', 'shahi-legalflowsuite' ) );
+		}
+
+		// Calculate Flesch-Kincaid Grade Level
+		$grade_level = $this->calculate_flesch_kincaid( $words, $sentences, $syllables );
+
+		// Calculate Flesch Reading Ease Score
+		// Formula: 206.835 - 1.015 × (words/sentences) - 84.6 × (syllables/words)
+		$asl          = $words / $sentences;
+		$asw          = $syllables / $words;
+		$flesch_score = 206.835 - ( 1.015 * $asl ) - ( 84.6 * $asw );
+		$flesch_score = max( 0, min( 100, $flesch_score ) ); // Clamp between 0-100
+
+		// Get interpretation
+		$interpretation = $this->get_readability_interpretation( $grade_level );
+
+		wp_send_json_success(
+			array(
+				'grade_level'    => $grade_level,
+				'word_count'     => $words,
+				'sentence_count' => $sentences,
+				'syllable_count' => $syllables,
+				'flesch_score'   => $flesch_score,
+				'interpretation' => $interpretation['text'],
+				'level_name'     => $interpretation['level'],
+				'passes_wcag'    => $interpretation['passes'],
+				'recommendation' => $interpretation['recommendation'],
+			)
+		);
+	}
+
+	/**
+	 * Count sentences in text
+	 * 
+	 * Splits text by sentence-ending punctuation (.!?) followed by
+	 * uppercase letter or end of string to avoid abbreviations.
+	 * 
+	 * @since 3.1.2
+	 * @param string $text Text to analyze
+	 * @return int Number of sentences
+	 */
+	private function count_sentences( $text ) {
+		// Remove extra whitespace
+		$text = trim( $text );
+
+		// Count sentences ending with . ! ? (but not abbreviations like Dr. or Mr.)
+		$sentences = preg_split( '/[.!?]+(?=\s+[A-Z]|$)/', $text, -1, PREG_SPLIT_NO_EMPTY );
+
+		return max( 1, count( $sentences ) );
+	}
+
+	/**
+	 * Count syllables in text (Flesch-Kincaid method)
+	 * 
+	 * Uses vowel group counting algorithm consistent with standard
+	 * Flesch-Kincaid readability calculations.
+	 * 
+	 * @since 3.1.2
+	 * @param string $text Text to analyze
+	 * @return int Number of syllables
+	 */
+	private function count_syllables( $text ) {
+		// Convert to lowercase and remove non-alphabetic characters
+		$text = strtolower( $text );
+		$text = preg_replace( '/[^a-z\s]/', ' ', $text );
+
+		// Split into words
+		$words = preg_split( '/\s+/', $text, -1, PREG_SPLIT_NO_EMPTY );
+
+		$syllable_count = 0;
+
+		foreach ( $words as $word ) {
+			// Remove trailing 'e' and 'es' if not sole vowels
+			$word = preg_replace( '/(?:[^laeiouy]es|ed|[^laeiouy]e)$/', '', $word );
+
+			// Remove leading 'y'
+			$word = preg_replace( '/^y/', '', $word );
+
+			// Count vowel groups (consecutive vowels count as one)
+			preg_match_all( '/[aeiouy]{1,2}/', $word, $matches );
+			$syllables = count( $matches[0] );
+
+			// Every word has at least one syllable
+			$syllable_count += max( 1, $syllables );
+		}
+
+		return max( 1, $syllable_count );
+	}
+
+	/**
+	 * Calculate Flesch-Kincaid Grade Level
+	 * 
+	 * Formula: 0.39 × (words/sentences) + 11.8 × (syllables/words) - 15.59
+	 * 
+	 * @since 3.1.2
+	 * @param int $words     Number of words
+	 * @param int $sentences Number of sentences
+	 * @param int $syllables Number of syllables
+	 * @return float Grade level (0-18+)
+	 */
+	private function calculate_flesch_kincaid( $words, $sentences, $syllables ) {
+		// Flesch-Kincaid Grade Level formula:
+		// 0.39 × (words / sentences) + 11.8 × (syllables / words) - 15.59
+		$asl = $words / $sentences; // Average Sentence Length
+		$asw = $syllables / $words; // Average Syllables per Word
+
+		$grade = ( 0.39 * $asl ) + ( 11.8 * $asw ) - 15.59;
+
+		// Round to 1 decimal place and ensure non-negative
+		return max( 0, round( $grade, 1 ) );
+	}
+
+	/**
+	 * Get readability interpretation based on grade level
+	 * 
+	 * Returns user-friendly message with WCAG compliance status.
+	 * Grade 7-9 (lower secondary) recommended for broad accessibility.
+	 * 
+	 * @since 3.1.2
+	 * @param float $grade_level Flesch-Kincaid grade level
+	 * @return array Interpretation details
+	 */
+	private function get_readability_interpretation( $grade_level ) {
+		if ( $grade_level <= 6 ) {
+			return array(
+				'level'          => __( 'Easy (Elementary)', 'shahi-legalflowsuite' ),
+				'text'           => __( 'Very easy to read. Easily understood by 11-12 year olds.', 'shahi-legalflowsuite' ),
+				'passes'         => true,
+				'recommendation' => __( 'Excellent! This text is highly accessible.', 'shahi-legalflowsuite' ),
+			);
+		} elseif ( $grade_level <= 8 ) {
+			return array(
+				'level'          => __( 'Standard (Middle School)', 'shahi-legalflowsuite' ),
+				'text'           => __( 'Easy to read. Conversational English for consumers.', 'shahi-legalflowsuite' ),
+				'passes'         => true,
+				'recommendation' => __( 'Good! Meets WCAG recommendation for broad accessibility.', 'shahi-legalflowsuite' ),
+			);
+		} elseif ( $grade_level <= 10 ) {
+			return array(
+				'level'          => __( 'Fairly Difficult (Early High School)', 'shahi-legalflowsuite' ),
+				'text'           => __( 'Fairly difficult to read. Requires some secondary education.', 'shahi-legalflowsuite' ),
+				'passes'         => false,
+				'recommendation' => __( 'Consider simplifying for better accessibility.', 'shahi-legalflowsuite' ),
+			);
+		} elseif ( $grade_level <= 12 ) {
+			return array(
+				'level'          => __( 'Difficult (High School)', 'shahi-legalflowsuite' ),
+				'text'           => __( 'Difficult to read. Requires high school level education.', 'shahi-legalflowsuite' ),
+				'passes'         => false,
+				'recommendation' => __( 'Simplify content for better accessibility.', 'shahi-legalflowsuite' ),
+			);
+		} else {
+			return array(
+				'level'          => __( 'Very Difficult (College+)', 'shahi-legalflowsuite' ),
+				'text'           => __( 'Very difficult to read. Best understood by college graduates.', 'shahi-legalflowsuite' ),
+				'passes'         => false,
+				'recommendation' => __( 'Strongly recommend simplifying for accessibility.', 'shahi-legalflowsuite' ),
+			);
+		}
+	}
+
+	/**
+	 * AJAX Handler: Check Link Text Validator
+	 * 
+	 * Validates link text against generic phrases and provides suggestions.
+	 * WCAG 2.4.4 requires link purpose identifiable from link text alone.
+	 * 
+	 * @since 3.1.2
+	 * @return void
+	 */
+	public function ajax_check_link_text() {
+		check_ajax_referer( 'slos_scanner_nonce', 'nonce' );
+
+		if ( ! $this->user_can_manage_accessibility() ) {
+			wp_send_json_error( __( 'Unauthorized', 'shahi-legalflowsuite' ) );
+		}
+
+		$link_text = isset( $_POST['link_text'] ) ? sanitize_text_field( wp_unslash( $_POST['link_text'] ) ) : '';
+
+		if ( empty( $link_text ) ) {
+			wp_send_json_error( __( 'Link text is required.', 'shahi-legalflowsuite' ) );
+		}
+
+		// Check against generic patterns
+		$is_generic    = $this->is_generic_link_text( $link_text );
+		$pattern_match = $this->get_matched_generic_pattern( $link_text );
+		$suggestions   = $this->get_link_text_suggestions( $link_text, $pattern_match );
+
+		wp_send_json_success(
+			array(
+				'link_text'      => $link_text,
+				'is_descriptive' => ! $is_generic,
+				'is_generic'     => $is_generic,
+				'pattern_match'  => $pattern_match,
+				'suggestions'    => $suggestions,
+				'passes_wcag'    => ! $is_generic,
+			)
+		);
+	}
+
+	/**
+	 * Check if link text is generic
+	 * 
+	 * Tests against common non-descriptive link text patterns.
+	 * 
+	 * @since 3.1.2
+	 * @param string $link_text Link text to check
+	 * @return bool True if generic
+	 */
+	private function is_generic_link_text( $link_text ) {
+		$text = strtolower( trim( $link_text ) );
+
+		// Too short
+		if ( strlen( $text ) < 4 ) {
+			return true;
+		}
+
+		// Check against generic patterns
+		$generic_patterns = $this->get_generic_link_patterns();
+
+		foreach ( $generic_patterns as $pattern ) {
+			if ( $text === $pattern || strpos( $text, $pattern ) !== false ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get matched generic pattern
+	 * 
+	 * Returns the specific generic pattern that matched.
+	 * 
+	 * @since 3.1.2
+	 * @param string $link_text Link text to check
+	 * @return string|null Matched pattern or null
+	 */
+	private function get_matched_generic_pattern( $link_text ) {
+		$text = strtolower( trim( $link_text ) );
+
+		if ( strlen( $text ) < 4 ) {
+			return 'too_short';
+		}
+
+		$generic_patterns = $this->get_generic_link_patterns();
+
+		foreach ( $generic_patterns as $pattern ) {
+			if ( $text === $pattern || strpos( $text, $pattern ) !== false ) {
+				return $pattern;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get list of generic link text patterns
+	 * 
+	 * Common non-descriptive link phrases that fail WCAG 2.4.4.
+	 * 
+	 * @since 3.1.2
+	 * @return array Generic patterns
+	 */
+	private function get_generic_link_patterns() {
+		return array(
+			'click here',
+			'click',
+			'here',
+			'read more',
+			'more',
+			'learn more',
+			'link',
+			'this link',
+			'this page',
+			'this website',
+			'go',
+			'go here',
+			'see more',
+			'view more',
+			'details',
+			'more details',
+			'info',
+			'more info',
+			'information',
+			'continue',
+			'next',
+			'download',
+			'file',
+			'page',
+			'website',
+			'site',
+		);
+	}
+
+	/**
+	 * Get link text suggestions
+	 * 
+	 * Provides context-aware recommendations for better link text.
+	 * 
+	 * @since 3.1.2
+	 * @param string      $link_text     Original link text
+	 * @param string|null $pattern_match Matched pattern
+	 * @return array Suggestions
+	 */
+	private function get_link_text_suggestions( $link_text, $pattern_match ) {
+		$suggestions = array();
+
+		if ( $pattern_match === 'too_short' ) {
+			$suggestions[] = __( 'Use at least 4 characters to describe the link destination.', 'shahi-legalflowsuite' );
+			$suggestions[] = __( 'Example: Instead of "Go", use "Go to contact page"', 'shahi-legalflowsuite' );
+		} elseif ( in_array( $pattern_match, array( 'click here', 'click' ), true ) ) {
+			$suggestions[] = __( 'Replace "click here" with a description of the destination.', 'shahi-legalflowsuite' );
+			$suggestions[] = __( 'Example: "View our accessibility policy" or "Download annual report"', 'shahi-legalflowsuite' );
+		} elseif ( in_array( $pattern_match, array( 'read more', 'more', 'learn more' ), true ) ) {
+			$suggestions[] = __( 'Include what the user will read more about.', 'shahi-legalflowsuite' );
+			$suggestions[] = __( 'Example: "Read more about our services" or "Learn more about WCAG 2.2"', 'shahi-legalflowsuite' );
+		} elseif ( in_array( $pattern_match, array( 'here', 'link', 'this link' ), true ) ) {
+			$suggestions[] = __( 'Describe the link destination instead of using directional words.', 'shahi-legalflowsuite' );
+			$suggestions[] = __( 'Example: "Contact support team" or "Product documentation"', 'shahi-legalflowsuite' );
+		} elseif ( in_array( $pattern_match, array( 'details', 'info', 'information' ), true ) ) {
+			$suggestions[] = __( 'Specify what details or information the link provides.', 'shahi-legalflowsuite' );
+			$suggestions[] = __( 'Example: "Pricing details" or "Technical specifications"', 'shahi-legalflowsuite' );
+		} else {
+			$suggestions[] = __( 'Make link text descriptive of the destination or action.', 'shahi-legalflowsuite' );
+			$suggestions[] = __( 'Link text should make sense when read out of context.', 'shahi-legalflowsuite' );
+		}
+
+		return $suggestions;
 	}
 }
 

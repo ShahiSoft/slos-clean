@@ -415,12 +415,15 @@ class AccessibilityScanner extends Module {
 		}
 
 		// Use lightweight query - only get IDs and titles, skip get_permalink (slow)
+		// Allow optional limit for quick scan requests and prioritize recent content
 		global $wpdb;
+		$limit        = isset( $_POST['limit'] ) ? intval( $_POST['limit'] ) : 0;
+		$limit_clause = $limit > 0 ? $wpdb->prepare( ' LIMIT %d', $limit ) : '';
 		$results = $wpdb->get_results(
 			"SELECT ID, post_title FROM {$wpdb->posts} 
              WHERE post_type IN ('post', 'page') 
              AND post_status = 'publish' 
-             ORDER BY post_title ASC",
+             ORDER BY post_date DESC" . $limit_clause,
 			ARRAY_A
 		);
 
@@ -445,14 +448,81 @@ class AccessibilityScanner extends Module {
 			wp_send_json_error( 'Unauthorized' );
 		}
 
-		$post_id = intval( $_POST['post_id'] );
-		$post    = get_post( $post_id );
+		$post_id = intval( $_POST['post_id'] ?? 0 );
+		$url     = isset( $_POST['url'] ) ? esc_url_raw( wp_unslash( $_POST['url'] ) ) : '';
+		$post    = null;
+
+		if ( $url && ! $post_id ) {
+			$site_host   = wp_parse_url( home_url(), PHP_URL_HOST );
+			$target_host = wp_parse_url( $url, PHP_URL_HOST );
+
+			if ( $site_host && $target_host && $site_host !== $target_host ) {
+				wp_send_json_error( __( 'Please scan URLs from this site only for security reasons.', 'shahi-legalflowsuite' ) );
+			}
+
+			$post_id = url_to_postid( $url );
+
+			if ( $post_id ) {
+				$post = get_post( $post_id );
+			} else {
+				$response = wp_remote_get( $url );
+				if ( is_wp_error( $response ) ) {
+					wp_send_json_error( $response->get_error_message() );
+				}
+
+				$body = wp_remote_retrieve_body( $response );
+
+				if ( empty( $body ) ) {
+					wp_send_json_error( __( 'Unable to retrieve the requested URL.', 'shahi-legalflowsuite' ) );
+				}
+
+				$scan_results   = $this->scanner->scan( $body );
+				$issues_count   = 0;
+				$critical_count = 0;
+				$issue_types    = array();
+
+				foreach ( $scan_results as $check ) {
+					$check_issues = isset( $check['issues'] ) ? (array) $check['issues'] : array();
+					$issue_count  = count( $check_issues );
+
+					if ( $issue_count > 0 ) {
+						$issues_count += $issue_count;
+						$issue_types[] = $check['id'];
+
+						if ( isset( $check['severity'] ) && 'critical' === $check['severity'] ) {
+							$critical_count += $issue_count;
+						}
+					}
+				}
+
+				$score = $issues_count > 0 ? max( 0, 100 - ( $critical_count * 10 + ( $issues_count - $critical_count ) * 3 ) ) : 100;
+
+				wp_send_json_success(
+					array(
+						'url'            => $url,
+						'issues_count'   => $issues_count,
+						'critical_count' => $critical_count,
+						'issue_types'    => array_unique( $issue_types ),
+						'score'          => $score,
+						'scan_date'      => current_time( 'mysql' ),
+					)
+				);
+			}
+		}
+
+		if ( $post_id && ! $post ) {
+			$post = get_post( $post_id );
+		}
 
 		if ( ! $post ) {
 			wp_send_json_error( 'Post not found' );
 		}
 
 		$result = $this->run_scan_for_post( $post_id, $post );
+
+		if ( empty( $result['url'] ) ) {
+			$result['url'] = get_permalink( $post_id );
+		}
 
 		// Note: Consolidation removed from here - should only run at end of full scan
 		// Individual scans don't need to rebuild entire dashboard data
@@ -781,14 +851,21 @@ class AccessibilityScanner extends Module {
 			}
 		}
 
+		$score = 100;
+		if ( $issues_count > 0 ) {
+			$score = max( 0, 100 - ( $critical_count * 10 + ( $issues_count - $critical_count ) * 3 ) );
+		}
+
 		return array(
 			'post_id'        => $post_id,
 			'title'          => $post->post_title,
+			'url'            => get_permalink( $post_id ),
 			'edit_link'      => get_edit_post_link( $post_id ),
 			'issues_count'   => $issues_count,
 			'critical_count' => $critical_count,
 			'issue_types'    => array_unique( $issue_types ), // Only unique types
 			'scan_date'      => current_time( 'mysql' ),
+			'score'          => $score,
 		);
 	}
 
@@ -1785,67 +1862,36 @@ class AccessibilityScanner extends Module {
 		// Get scan results for this page
 		$scan_results = get_post_meta( $page_id, '_slos_accessibility_scan_results', true );
 
-		if ( empty( $scan_results ) ) {
+		// Count total issues in scan results
+		$total_issues = 0;
+		if ( ! empty( $scan_results ) && is_array( $scan_results ) ) {
+			foreach ( $scan_results as $check_result ) {
+				if ( ! empty( $check_result['issues'] ) && is_array( $check_result['issues'] ) ) {
+					$total_issues += count( $check_result['issues'] );
+				}
+			}
+		}
+
+		// If scan results exist and have issues, signal frontend to use all fixers
+		// This allows all fixers to attempt fixing regardless of scan detection accuracy
+		if ( $total_issues > 0 ) {
 			wp_send_json_success(
 				array(
-					'fixers' => array(),
-					'message' => 'No scan results found. Please scan this page first.',
+					'use_all_fixers' => true,
+					'issue_count'    => $total_issues,
+					'message'        => sprintf( 'Found %d issue(s) - running all fixers', $total_issues ),
 				)
 			);
 			return;
 		}
 
-		// Initialize fixer registry
-		if ( ! class_exists( '\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry' ) ) {
-			wp_send_json_error( array( 'message' => 'Fixer system not available' ) );
-		}
-
-		\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::init();
-
-		// Map check IDs to fixer IDs (some checks have corresponding fixers)
-		$check_to_fixer_map = $this->get_check_to_fixer_mapping();
-
-		// Collect fixers that have issues
-		$fixers_with_issues = array();
-		$seen_fixers        = array();
-
-		foreach ( $scan_results as $check_id => $check_result ) {
-			// Check if this check has fixable issues
-			if ( empty( $check_result['issues'] ) ) {
-				continue;
-			}
-
-			// Check if there's a corresponding fixer for this check
-			if ( isset( $check_to_fixer_map[ $check_id ] ) ) {
-				$fixer_id = $check_to_fixer_map[ $check_id ];
-
-				// Avoid duplicates
-				if ( in_array( $fixer_id, $seen_fixers, true ) ) {
-					continue;
-				}
-
-				$fixer = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::get_fixer( $fixer_id );
-
-				if ( $fixer ) {
-					$seen_fixers[]        = $fixer_id;
-					$fixers_with_issues[] = array(
-						'id'          => $fixer->get_id(),
-						'name'        => $this->get_fixer_name_from_id( $fixer->get_id() ),
-						'description' => $fixer->get_description(),
-						'status'      => 'pending',
-						'count'       => 0,
-						'message'     => '',
-					);
-				}
-			}
-		}
-
+		// No scan results or no issues - return empty fixer list
 		wp_send_json_success(
 			array(
-				'fixers'  => $fixers_with_issues,
-				'message' => count( $fixers_with_issues ) > 0 
-					? sprintf( 'Found %d fixer(s) with issues', count( $fixers_with_issues ) )
-					: 'No fixable issues found',
+				'fixers'  => array(),
+				'message' => $total_issues === 0 && ! empty( $scan_results )
+					? 'No accessibility issues detected'
+					: 'No scan results found. Please scan this page first.',
 			)
 		);
 	}

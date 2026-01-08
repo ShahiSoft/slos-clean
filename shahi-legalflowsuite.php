@@ -52,6 +52,13 @@ if (!defined('SLOS_GEN_VERSION')) {
 require_once plugin_dir_path(__FILE__) . 'config/stage-1-constants.php';
 
 /**
+ * Composer Autoloader - Load vendor dependencies (Dompdf, etc.)
+ */
+if (file_exists(SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'vendor/autoload.php')) {
+	require_once SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'vendor/autoload.php';
+}
+
+/**
  * PSR-4 Autoloader
  */
 require_once SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'includes/Core/Autoloader.php';

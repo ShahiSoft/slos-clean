@@ -309,6 +309,31 @@
     letter-spacing: 0.5px;
 }
 
+/* ============================================================================
+   WCAG BADGES - Color Contrast Checker
+   ========================================================================= */
+
+.wcag-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.wcag-badge.pass {
+    background: rgba(34, 197, 94, 0.15);
+    color: var(--slos-success, #22c55e);
+}
+
+.wcag-badge.fail {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--slos-error, #ef4444);
+}
+
+
 /* Status-specific value colors */
 .slos-summary-stat--critical .slos-summary-value {
     color: var(--slos-error, #ef4444);
@@ -351,3 +376,693 @@
     }
 }
 
+/* ============================================================================
+   SCANNER CONFIGURATION
+   ========================================================================= */
+
+.slos-config-section {
+    margin-bottom: var(--slos-space-xl, 32px);
+}
+
+.slos-config-section h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--slos-text-primary, #f8fafc);
+    margin: 0 0 8px 0;
+}
+
+.slos-config-section .description {
+    font-size: 13px;
+    color: var(--slos-text-muted, #94a3b8);
+    margin: 0 0 12px 0;
+}
+
+.slos-config-select {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px 12px;
+    background: var(--slos-bg-primary, #1a1f1a);
+    border: 1px solid var(--slos-border-default, rgba(107, 142, 78, 0.2));
+    border-radius: var(--slos-radius-sm, 4px);
+    color: var(--slos-text-primary, #f8fafc);
+    font-size: 14px;
+    transition: border-color 0.2s ease;
+}
+
+.slos-config-select:focus {
+    outline: none;
+    border-color: var(--slos-accent-primary, #6b8e4e);
+    box-shadow: 0 0 0 3px rgba(107, 142, 78, 0.1);
+}
+
+.slos-checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.slos-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--slos-bg-primary, #1a1f1a);
+    border: 1px solid var(--slos-border-default, rgba(107, 142, 78, 0.2));
+    border-radius: var(--slos-radius-sm, 4px);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.slos-checkbox-label:hover {
+    border-color: var(--slos-accent-primary, #6b8e4e);
+    background: var(--slos-bg-secondary, #242b24);
+}
+
+.slos-checkbox-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--slos-accent-primary, #6b8e4e);
+}
+
+.slos-checkbox-label span {
+    font-size: 13px;
+    color: var(--slos-text-primary, #f8fafc);
+}
+
+.slos-checker-categories {
+    margin-top: 12px;
+}
+
+.slos-checker-category {
+    margin-bottom: 24px;
+    padding: 16px;
+    background: var(--slos-bg-primary, #1a1f1a);
+    border: 1px solid var(--slos-border-default, rgba(107, 142, 78, 0.2));
+    border-radius: var(--slos-radius-md, 8px);
+}
+
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--slos-border-default, rgba(107, 142, 78, 0.2));
+}
+
+.category-header strong {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--slos-text-primary, #f8fafc);
+}
+
+.category-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.slos-category-toggle-all {
+    padding: 4px 10px;
+    background: transparent;
+    border: 1px solid var(--slos-border-default, rgba(107, 142, 78, 0.3));
+    border-radius: var(--slos-radius-sm, 4px);
+    color: var(--slos-text-muted, #94a3b8);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.slos-category-toggle-all:hover {
+    border-color: var(--slos-accent-primary, #6b8e4e);
+    color: var(--slos-text-primary, #f8fafc);
+    background: var(--slos-bg-secondary, #242b24);
+}
+
+.category-checkers {
+    margin-top: 0;
+}
+
+.slos-config-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--slos-border-default, rgba(107, 142, 78, 0.2));
+}
+
+.slos-config-actions button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: var(--slos-radius-sm, 4px);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.slos-config-actions .slos-btn-primary {
+    background: var(--slos-accent-primary, #6b8e4e);
+    color: white;
+    border: none;
+}
+
+.slos-config-actions .slos-btn-primary:hover {
+    background: var(--slos-accent-hover, #5a7741);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(107, 142, 78, 0.3);
+}
+
+.slos-config-actions .slos-btn-primary:active {
+    transform: translateY(0);
+}
+
+.slos-config-actions .slos-btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.slos-config-actions .slos-btn-secondary {
+    background: transparent;
+    color: var(--slos-text-muted, #94a3b8);
+    border: 1px solid var(--slos-border-default, rgba(107, 142, 78, 0.3));
+}
+
+.slos-config-actions .slos-btn-secondary:hover {
+    border-color: var(--slos-accent-primary, #6b8e4e);
+    color: var(--slos-text-primary, #f8fafc);
+    background: var(--slos-bg-secondary, #242b24);
+}
+
+@media (max-width: 768px) {
+    .slos-checkbox-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+    
+    .slos-config-actions {
+        flex-direction: column;
+    }
+    
+    .slos-config-actions button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+/* ============================================================================
+   8. Widget Configuration Panel Styles
+   ============================================================================ */
+
+.slos-widget-config-container {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 30px;
+}
+
+.slos-widget-config-left {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.slos-config-section {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.slos-config-section h4 {
+    margin: 0 0 8px 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #e2e8f0;
+}
+
+.slos-config-section .description {
+    margin: 0 0 16px 0;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* Widget Toggle Switch */
+.slos-widget-toggle-switch {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.slos-widget-toggle-switch input[type="checkbox"] {
+    display: none;
+}
+
+.slos-widget-toggle-slider {
+    position: relative;
+    width: 50px;
+    height: 26px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 13px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.slos-widget-toggle-slider::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background: #cbd5e1;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.slos-widget-toggle-switch input[type="checkbox"]:checked + .slos-widget-toggle-slider {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    border-color: #3b82f6;
+}
+
+.slos-widget-toggle-switch input[type="checkbox"]:checked + .slos-widget-toggle-slider::before {
+    transform: translateX(24px);
+    background: #ffffff;
+}
+
+.slos-widget-toggle-label {
+    font-size: 14px;
+    color: #e2e8f0;
+    font-weight: 500;
+}
+
+/* Widget Position Grid */
+.slos-position-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.slos-position-option {
+    display: block;
+    cursor: pointer;
+}
+
+.slos-position-option input[type="radio"] {
+    display: none;
+}
+
+.slos-position-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    position: relative;
+    height: 100px;
+}
+
+.slos-position-indicator {
+    width: 40px;
+    height: 40px;
+    background: rgba(59, 130, 246, 0.5);
+    border-radius: 6px;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+}
+
+.slos-position-label {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.slos-position-option:hover .slos-position-box {
+    border-color: rgba(59, 130, 246, 0.5);
+    background: rgba(59, 130, 246, 0.05);
+}
+
+.slos-position-option input[type="radio"]:checked + .slos-position-box {
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.slos-position-option input[type="radio"]:checked + .slos-position-box .slos-position-indicator {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    transform: scale(1.1);
+}
+
+.slos-position-option input[type="radio"]:checked + .slos-position-box .slos-position-label {
+    color: #60a5fa;
+}
+
+/* Widget Color Scheme Grid */
+.slos-color-scheme-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.slos-color-option {
+    display: block;
+    cursor: pointer;
+}
+
+.slos-color-option input[type="radio"] {
+    display: none;
+}
+
+.slos-color-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 60px;
+    border-radius: 8px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.slos-color-check {
+    font-size: 28px;
+    color: white;
+    opacity: 0;
+    transition: all 0.3s ease;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.slos-color-option:hover .slos-color-box {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.slos-color-option input[type="radio"]:checked + .slos-color-box {
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+}
+
+.slos-color-option input[type="radio"]:checked + .slos-color-box .slos-color-check {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.slos-color-label {
+    display: block;
+    text-align: center;
+    margin-top: 8px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 500;
+}
+
+/* Widget Features Toggles */
+.slos-feature-toggles {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+.slos-feature-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.slos-feature-toggle:hover {
+    background: rgba(59, 130, 246, 0.05);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.slos-feature-toggle input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #3b82f6;
+}
+
+.slos-feature-toggle span {
+    font-size: 14px;
+    color: #e2e8f0;
+    font-weight: 500;
+}
+
+.slos-feature-toggle input[type="checkbox"]:checked + span {
+    color: #60a5fa;
+}
+
+/* Config Actions */
+.slos-config-actions {
+    display: flex;
+    justify-content: flex-start;
+    padding-top: 10px;
+}
+
+/* Widget Preview Container */
+.slos-widget-config-right {
+    display: flex;
+    flex-direction: column;
+}
+
+.slos-widget-preview-container {
+    position: sticky;
+    top: 100px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.slos-widget-preview-container h4 {
+    margin: 0 0 16px 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #e2e8f0;
+}
+
+.slos-widget-preview-screen {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    border-radius: 8px;
+    padding: 40px;
+    min-height: 400px;
+    position: relative;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+
+.slos-widget-preview {
+    position: absolute;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Preview Position Classes */
+.slos-widget-preview.position-top-left {
+    top: 20px;
+    left: 20px;
+}
+
+.slos-widget-preview.position-top-right {
+    top: 20px;
+    right: 20px;
+}
+
+.slos-widget-preview.position-bottom-left {
+    bottom: 20px;
+    left: 20px;
+}
+
+.slos-widget-preview.position-bottom-right {
+    bottom: 20px;
+    right: 20px;
+}
+
+.slos-preview-widget-button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.slos-preview-widget-button .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    color: white;
+}
+
+.slos-preview-widget-button:hover {
+    transform: scale(1.1);
+}
+
+.slos-preview-widget-panel {
+    display: none;
+    position: absolute;
+    width: 280px;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    margin-top: 10px;
+    opacity: 0;
+    animation: slideIn 0.3s ease forwards;
+}
+
+@keyframes slideIn {
+    to {
+        opacity: 1;
+    }
+}
+
+.slos-preview-widget-panel.show {
+    display: block;
+}
+
+.slos-preview-header {
+    padding: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.slos-preview-header strong {
+    font-size: 14px;
+    color: white;
+}
+
+.slos-preview-header .dashicons {
+    font-size: 18px;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.slos-preview-body {
+    padding: 15px;
+}
+
+.slos-preview-feature {
+    padding: 10px;
+    margin-bottom: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.slos-preview-feature:last-child {
+    margin-bottom: 0;
+}
+
+/* Preview Color Themes */
+.slos-widget-preview.theme-blue .slos-preview-widget-button {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.slos-widget-preview.theme-blue .slos-preview-widget-panel {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.slos-widget-preview.theme-green .slos-preview-widget-button {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.slos-widget-preview.theme-green .slos-preview-widget-panel {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.slos-widget-preview.theme-purple .slos-preview-widget-button {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+}
+
+.slos-widget-preview.theme-purple .slos-preview-widget-panel {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+}
+
+.slos-widget-preview.theme-orange .slos-preview-widget-button {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.slos-widget-preview.theme-orange .slos-preview-widget-panel {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.slos-widget-preview.theme-red .slos-preview-widget-button {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.slos-widget-preview.theme-red .slos-preview-widget-panel {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.slos-widget-preview.theme-teal .slos-preview-widget-button {
+    background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+}
+
+.slos-widget-preview.theme-teal .slos-preview-widget-panel {
+    background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+}
+
+.slos-preview-note {
+    margin-top: 16px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    text-align: center;
+    line-height: 1.5;
+}
+
+/* Responsive Adjustments for Widget Config */
+@media (max-width: 1400px) {
+    .slos-widget-config-container {
+        grid-template-columns: 1fr 350px;
+        gap: 20px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .slos-widget-config-container {
+        grid-template-columns: 1fr;
+    }
+
+    .slos-widget-preview-container {
+        position: relative;
+        top: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .slos-position-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .slos-color-scheme-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+/* ============================================================================
+   RESPONSIVE LAYOUT FOR SIDE-BY-SIDE CARDS
+   ========================================================================= */
+
+/* Responsive behavior for tablet and mobile screens */
+@media (max-width: 1200px) {
+    /* Stack cards vertically on smaller screens */
+    div[style*="grid-template-columns: repeat(2, 1fr)"] {
+        grid-template-columns: 1fr !important;
+    }
+}

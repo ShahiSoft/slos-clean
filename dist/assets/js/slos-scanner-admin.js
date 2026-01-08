@@ -4,8 +4,31 @@ jQuery(document).ready(function($) {
     let currentIdx = 0;
     let results = [];
 
-    $('#slos-start-scan').on('click', function() {
-        $(this).prop('disabled', true);
+    $('#slos-start-scan').on('click', function(e) {
+        e.preventDefault();
+
+        const $btn = $(this);
+
+        // Prefer the modal-based progress UI when available
+        if (typeof window.SLOSScanProgress !== 'undefined' && typeof window.SLOSScanProgress.start === 'function') {
+            if (typeof window.SLOSScanProgress.init === 'function' && !$('#slos-scan-progress-overlay').length) {
+                window.SLOSScanProgress.init();
+            }
+
+            $btn.prop('disabled', true).text('Scanning...');
+
+            window.SLOSScanProgress.start({
+                onComplete: function() {
+                    $btn.prop('disabled', false).text('Start Full Scan');
+                }
+            });
+
+            $('#slos-scan-status, #slos-progress-bar-wrapper').hide();
+            return;
+        }
+
+        // Fallback to legacy inline progress
+        $btn.prop('disabled', true);
         $('#slos-scan-status').show();
         $('#slos-progress-bar-wrapper').show();
         $('#slos-scan-results').html('<p>Initializing scan...</p>');
@@ -202,6 +225,191 @@ jQuery(document).ready(function($) {
         $('body').append(form);
         form.submit();
         form.remove();
+    });
+
+    function submitReportDownload(action, extraFields = {}) {
+        const form = $('<form>', {
+            action: slosScanner.ajax_url,
+            method: 'POST',
+            target: '_blank'
+        });
+
+        form.append($('<input>', {
+            type: 'hidden',
+            name: 'action',
+            value: action
+        }));
+
+        form.append($('<input>', {
+            type: 'hidden',
+            name: 'nonce',
+            value: slosScanner.nonce
+        }));
+
+        $.each(extraFields, function(key, value) {
+            form.append($('<input>', {
+                type: 'hidden',
+                name: key,
+                value: value
+            }));
+        });
+
+        $('body').append(form);
+        form.trigger('submit');
+        setTimeout(function() {
+            form.remove();
+        }, 0);
+    }
+
+    function showReportNotification(type, message) {
+        let $status = $('#slos-report-status');
+        if (!$status.length) {
+            const $container = $('#slos-schedule-report').closest('.slos-tool-content');
+            $status = $('<div id="slos-report-status"></div>').css({
+                marginTop: '10px',
+                padding: '10px 12px',
+                borderRadius: '6px',
+                border: '1px solid #d1d5db',
+                background: '#f9fafb',
+                color: '#111827',
+                fontSize: '13px'
+            });
+
+            if ($container.length) {
+                $container.append($status);
+            } else {
+                $('body').append($status);
+            }
+        }
+
+        const isError = type === 'error';
+        $status
+            .css({
+                borderColor: isError ? '#ef4444' : '#10b981',
+                background: isError ? 'rgba(239,68,68,0.12)' : 'rgba(16,185,129,0.12)'
+            })
+            .text(message)
+            .show();
+
+        setTimeout(function() {
+            $status.fadeOut(200);
+        }, 4000);
+    }
+
+    function handleDownloadButton($btn, action, extraFields) {
+        const originalHtml = $btn.html();
+        $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> Preparing...');
+
+        submitReportDownload(action, extraFields);
+
+        setTimeout(function() {
+            $btn.prop('disabled', false).html(originalHtml);
+        }, 1200);
+    }
+
+    function slosIsValidEmail(email) {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailPattern.test(email);
+    }
+
+    $(document).on('click', '.slos-export-pdf', function(e) {
+        e.preventDefault();
+        const $btn = $(this);
+        const template = $btn.data('template') || 'executive';
+        handleDownloadButton($btn, 'slos_export_pdf', { template: template });
+    });
+
+    $(document).on('click', '.slos-export-csv', function(e) {
+        e.preventDefault();
+        handleDownloadButton($(this), 'slos_export_csv');
+    });
+
+    $(document).on('click', '.slos-export-json', function(e) {
+        e.preventDefault();
+        handleDownloadButton($(this), 'slos_export_json');
+    });
+
+    $(document).on('click', '#slos-schedule-report', function(e) {
+        e.preventDefault();
+
+        const $btn = $(this);
+        const emailRaw = $('#slos-report-email').val().trim();
+        const frequency = $('#slos-report-frequency').val();
+        const template = $('#slos-report-template').val() || 'executive';
+        const emails = emailRaw.split(',').map(function(email) { return email.trim(); }).filter(Boolean);
+
+        if (!emails.length || !emails.every(slosIsValidEmail)) {
+            showReportNotification('error', 'Please enter valid email address(es). Separate multiple emails with commas.');
+            return;
+        }
+
+        const originalHtml = $btn.html();
+        $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> Scheduling...');
+
+        $.ajax({
+            url: slosScanner.ajax_url,
+            type: 'POST',
+            data: {
+                action: 'slos_schedule_email_report',
+                nonce: slosScanner.nonce,
+                email: emailRaw,
+                frequency: frequency,
+                template: template
+            },
+            success: function(response) {
+                $btn.prop('disabled', false).html(originalHtml);
+
+                if (response && response.success) {
+                    showReportNotification('success', (response.data && response.data.message) || 'Report schedule saved.');
+                } else {
+                    showReportNotification('error', (response && response.data && response.data.message) || 'Failed to schedule report.');
+                }
+            },
+            error: function() {
+                $btn.prop('disabled', false).html(originalHtml);
+                showReportNotification('error', 'Network error while scheduling report.');
+            }
+        });
+    });
+
+    $(document).on('click', '#slos-send-test-report', function(e) {
+        e.preventDefault();
+
+        const $btn = $(this);
+        const email = $('#slos-report-email').val().trim();
+        const template = $('#slos-report-template').val() || 'executive';
+
+        if (!email || !slosIsValidEmail(email)) {
+            showReportNotification('error', 'Please enter a valid email address to send the test report.');
+            return;
+        }
+
+        const originalHtml = $btn.html();
+        $btn.prop('disabled', true).html('<span class="dashicons dashicons-email-alt"></span> Sending...');
+
+        $.ajax({
+            url: slosScanner.ajax_url,
+            type: 'POST',
+            data: {
+                action: 'slos_send_test_report',
+                nonce: slosScanner.nonce,
+                email: email,
+                template: template
+            },
+            success: function(response) {
+                $btn.prop('disabled', false).html(originalHtml);
+
+                if (response && response.success) {
+                    showReportNotification('success', (response.data && response.data.message) || 'Test report sent successfully.');
+                } else {
+                    showReportNotification('error', (response && response.data && response.data.message) || 'Failed to send test report.');
+                }
+            },
+            error: function() {
+                $btn.prop('disabled', false).html(originalHtml);
+                showReportNotification('error', 'Network error while sending test report.');
+            }
+        });
     });
 
     // ==========================================================================

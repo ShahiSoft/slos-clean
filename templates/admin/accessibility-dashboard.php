@@ -1319,6 +1319,107 @@ $widget_enabled = get_option('slos_widget_enabled', true);
     font-weight: 600;
 }
 
+/* Enhanced Trend Chart Styles */
+.slos-trend-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.slos-trend-subtitle {
+    margin: 4px 0 0;
+    font-size: 13px;
+    color: var(--slos-text-muted);
+    font-weight: 400;
+}
+
+.slos-trend-stats {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+}
+
+.slos-trend-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    min-width: 80px;
+}
+
+.slos-trend-stat .label {
+    font-size: 11px;
+    color: var(--slos-text-muted);
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.slos-trend-stat .value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--slos-text-primary);
+}
+
+.slos-trend-chart-container {
+    position: relative;
+    height: 320px;
+    margin: 0 -8px 16px;
+}
+
+.slos-trend-legend {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(51, 65, 85, 0.5);
+}
+
+.slos-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--slos-text-secondary);
+}
+
+.slos-legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.slos-legend-line {
+    width: 24px;
+    height: 2px;
+    border-top: 2px dashed;
+    display: inline-block;
+}
+
+@media (max-width: 768px) {
+    .slos-trend-header {
+        flex-direction: column;
+    }
+    
+    .slos-trend-stats {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .slos-trend-stat {
+        align-items: center;
+        min-width: 0;
+    }
+    
+    .slos-trend-chart-container {
+        height: 280px;
+    }
+}
+
 .slos-comparison-bars {
     display: flex;
     flex-direction: column;
@@ -2039,84 +2140,71 @@ $widget_enabled = get_option('slos_widget_enabled', true);
                     
                     <!-- Score Trend -->
                     <div class="slos-comparison-card full">
-                        <h4><?php esc_html_e('Score Improvement Trend', 'shahi-legalflowsuite'); ?></h4>
-                        <canvas id="slos-score-trend-chart" width="800" height="300"></canvas>
+                        <div class="slos-trend-header">
+                            <div>
+                                <h4><?php esc_html_e('Score Improvement Trend', 'shahi-legalflowsuite'); ?></h4>
+                                <p class="slos-trend-subtitle">
+                                    <?php 
+                                    $days_shown = min(30, count($scan_history));
+                                    printf(esc_html__('Last %d scans', 'shahi-legalflowsuite'), $days_shown); 
+                                    ?>
+                                </p>
+                            </div>
+                            <div class="slos-trend-stats">
+                                <div class="slos-trend-stat" id="slos-trend-avg">
+                                    <span class="label"><?php esc_html_e('Average', 'shahi-legalflowsuite'); ?></span>
+                                    <span class="value">--</span>
+                                </div>
+                                <div class="slos-trend-stat" id="slos-trend-change">
+                                    <span class="label"><?php esc_html_e('Change', 'shahi-legalflowsuite'); ?></span>
+                                    <span class="value">--</span>
+                                </div>
+                                <div class="slos-trend-stat" id="slos-trend-peak">
+                                    <span class="label"><?php esc_html_e('Peak', 'shahi-legalflowsuite'); ?></span>
+                                    <span class="value">--</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slos-trend-chart-container">
+                            <canvas id="slos-score-trend-chart"></canvas>
+                        </div>
+                        <div class="slos-trend-legend">
+                            <div class="slos-legend-item">
+                                <span class="slos-legend-dot" style="background: #22c55e;"></span>
+                                <span><?php esc_html_e('Accessibility Score', 'shahi-legalflowsuite'); ?></span>
+                            </div>
+                            <div class="slos-legend-item">
+                                <span class="slos-legend-line" style="border-color: #ef4444;"></span>
+                                <span><?php esc_html_e('Goal: 90%', 'shahi-legalflowsuite'); ?></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- Card 7: Scan Results Overview (Read-Only) (Full Width) -->
+        <!-- Card 7: Pages Requiring Attention - Redirect to Tools Tab (Full Width) -->
         <div class="slos-dashboard-card full-width">
             <div class="slos-card-header">
                 <h3>
-                    <span class="dashicons dashicons-list-view"></span>
-                    <?php echo esc_html__('Scan Results Overview', 'shahi-legalflowsuite'); ?>
+                    <span class="dashicons dashicons-admin-tools"></span>
+                    <?php echo esc_html__('Pages Requiring Attention', 'shahi-legalflowsuite'); ?>
                 </h3>
-                <span class="badge"><?php echo esc_html(count($scan_results)); ?> <?php esc_html_e('pages scanned', 'shahi-legalflowsuite'); ?></span>
             </div>
-            <div class="slos-card-body" style="padding: 0;">
-                <?php if (empty($scan_results)): ?>
-                <div style="text-align: center; padding: 40px; color: var(--slos-text-muted);">
-                    <span class="dashicons dashicons-search" style="font-size: 48px; margin-bottom: 12px; display: block;"></span>
-                    <p><?php esc_html_e('No scan results yet. Run a scan from the Tools & Scanner tab.', 'shahi-legalflowsuite'); ?></p>
+            <div class="slos-card-body">
+                <div style="text-align: center; padding: 60px 20px;">
+                    <span class="dashicons dashicons-admin-tools" style="font-size: 64px; color: var(--slos-accent); margin-bottom: 16px; display: block;"></span>
+                    <h4 style="color: var(--slos-text-primary); margin: 0 0 8px;">
+                        <?php esc_html_e('View and Fix Accessibility Issues', 'shahi-legalflowsuite'); ?>
+                    </h4>
+                    <p style="color: var(--slos-text-muted); margin: 0 0 24px;">
+                        <?php esc_html_e('The "Pages Requiring Attention" section has moved to the Tools & Scanner tab for better workflow organization.', 'shahi-legalflowsuite'); ?>
+                    </p>
+                    <a href="<?php echo esc_url(admin_url('admin.php?page=slos-accessibility&tab=tools')); ?>" class="slos-btn-primary">
+                        <span class="dashicons dashicons-arrow-right-alt"></span>
+                        <?php esc_html_e('Go to Tools & Scanner Tab', 'shahi-legalflowsuite'); ?>
+                    </a>
                 </div>
-                <?php else: ?>
-                <table class="slos-results-table">
-                    <thead>
-                        <tr>
-                            <th><?php esc_html_e('Page Name', 'shahi-legalflowsuite'); ?></th>
-                            <th><?php esc_html_e('Issues', 'shahi-legalflowsuite'); ?></th>
-                            <th><?php esc_html_e('Score', 'shahi-legalflowsuite'); ?></th>
-                            <th><?php esc_html_e('Last Scanned', 'shahi-legalflowsuite'); ?></th>
-                            <th><?php esc_html_e('Status', 'shahi-legalflowsuite'); ?></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php 
-                        foreach (array_slice($scan_results, 0, 20) as $result): 
-                            $issues_count = isset($result['issues_count']) ? $result['issues_count'] : 0;
-                            $score = isset($result['score']) ? $result['score'] : 100;
-                            $timestamp = isset($result['timestamp']) ? $result['timestamp'] : '';
-                            $status = $issues_count === 0 ? 'pass' : ($issues_count > 5 ? 'fail' : 'warning');
-                        ?>
-                        <tr>
-                            <td class="page-name"><?php echo esc_html($result['page'] ?? 'Unknown Page'); ?></td>
-                            <td class="issues-count <?php echo esc_attr($status); ?>"><?php echo esc_html($issues_count); ?></td>
-                            <td class="score-cell">
-                                <span class="score-badge <?php echo esc_attr($score >= 90 ? 'excellent' : ($score >= 70 ? 'good' : 'poor')); ?>">
-                                    <?php echo esc_html($score); ?>%
-                                </span>
-                            </td>
-                            <td class="timestamp"><?php echo $timestamp ? esc_html(human_time_diff(strtotime($timestamp)) . ' ago') : '-'; ?></td>
-                            <td>
-                                <?php if ($status === 'pass'): ?>
-                                <span class="status-badge pass">
-                                    <span class="dashicons dashicons-yes-alt"></span>
-                                    <?php esc_html_e('Pass', 'shahi-legalflowsuite'); ?>
-                                </span>
-                                <?php elseif ($status === 'fail'): ?>
-                                <span class="status-badge fail">
-                                    <span class="dashicons dashicons-warning"></span>
-                                    <?php esc_html_e('Action Required', 'shahi-legalflowsuite'); ?>
-                                </span>
-                                <?php else: ?>
-                                <span class="status-badge warning">
-                                    <span class="dashicons dashicons-info"></span>
-                                    <?php esc_html_e('Review', 'shahi-legalflowsuite'); ?>
-                                </span>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-                <?php if (count($scan_results) > 20): ?>
-                <div class="slos-table-footer">
-                    <p><?php printf(esc_html__('Showing 20 of %d results. Visit Tools & Scanner tab to view and fix all pages.', 'shahi-legalflowsuite'), count($scan_results)); ?></p>
-                </div>
-                <?php endif; ?>
-                <?php endif; ?>
             </div>
         </div>
         
@@ -2471,17 +2559,50 @@ jQuery(document).ready(function($) {
     if (typeof Chart !== 'undefined' && $('#slos-score-trend-chart').length) {
         var trendCtx = document.getElementById('slos-score-trend-chart').getContext('2d');
         var scanHistory = <?php echo json_encode($scan_history); ?>;
-        var lastScores = scanHistory.slice(-30).map(function(h) { return h.score || 0; });
-        var labels = scanHistory.slice(-30).map(function(h) { 
-            var d = new Date(h.date);
-            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        
+        // Process data - get last 30 scans
+        var processedData = scanHistory.slice(-30).map(function(h, index) { 
+            return {
+                score: h.score || 0,
+                date: h.date,
+                index: index
+            };
         });
         
-        // If no history, use sample data
+        var lastScores = processedData.map(function(d) { return d.score; });
+        var labels = processedData.map(function(d) { 
+            var date = new Date(d.date);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        });
+        
+        // Calculate statistics
+        var avgScore = lastScores.length > 0 ? 
+            Math.round(lastScores.reduce(function(a, b) { return a + b; }, 0) / lastScores.length) : 0;
+        var firstScore = lastScores[0] || 0;
+        var lastScore = lastScores[lastScores.length - 1] || 0;
+        var changeScore = lastScore - firstScore;
+        var peakScore = lastScores.length > 0 ? Math.max.apply(null, lastScores) : 0;
+        
+        // Update stat boxes
+        $('#slos-trend-avg .value').text(avgScore + '%');
+        $('#slos-trend-change .value')
+            .text((changeScore >= 0 ? '+' : '') + changeScore + '%')
+            .css('color', changeScore >= 0 ? '#22c55e' : '#ef4444');
+        $('#slos-trend-peak .value').text(peakScore + '%');
+        
+        // If no history, use sample data to demonstrate capability
         if (!lastScores.length) {
-            lastScores = [65, 68, 72, 75, 78, 81, 83, 85, 87, 88];
-            labels = ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7', 'Day 8', 'Day 9', 'Day 10'];
+            lastScores = [65, 68, 70, 72, 75, 76, 78, 80, 81, 83, 84, 85, 86, 87, 88, 89];
+            labels = lastScores.map(function(_, i) { return 'Scan ' + (i + 1); });
+            $('#slos-trend-avg .value').text('79%');
+            $('#slos-trend-change .value').text('+24%').css('color', '#22c55e');
+            $('#slos-trend-peak .value').text('89%');
         }
+        
+        // Create gradient for fill
+        var gradient = trendCtx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(34, 197, 94, 0.3)');
+        gradient.addColorStop(1, 'rgba(34, 197, 94, 0.01)');
         
         new Chart(trendCtx, {
             type: 'line',
@@ -2491,30 +2612,86 @@ jQuery(document).ready(function($) {
                     label: '<?php echo esc_js(__('Accessibility Score', 'shahi-legalflowsuite')); ?>',
                     data: lastScores,
                     borderColor: '#22c55e',
-                    backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                    backgroundColor: gradient,
                     tension: 0.4,
                     fill: true,
-                    borderWidth: 2,
+                    borderWidth: 3,
                     pointBackgroundColor: '#22c55e',
-                    pointBorderColor: '#fff',
+                    pointBorderColor: '#1e293b',
                     pointBorderWidth: 2,
-                    pointRadius: 4,
-                    pointHoverRadius: 6
+                    pointRadius: 5,
+                    pointHoverRadius: 8,
+                    pointHoverBorderWidth: 3,
+                    pointHoverBackgroundColor: '#22c55e',
+                    pointHoverBorderColor: '#fff'
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
                 plugins: {
                     legend: { display: false },
                     tooltip: {
-                        backgroundColor: 'rgba(30, 41, 59, 0.95)',
+                        backgroundColor: 'rgba(15, 23, 42, 0.95)',
                         titleColor: '#f8fafc',
                         bodyColor: '#cbd5e1',
-                        borderColor: '#475569',
-                        borderWidth: 1,
-                        padding: 12,
-                        displayColors: false
+                        borderColor: '#22c55e',
+                        borderWidth: 2,
+                        padding: 14,
+                        displayColors: true,
+                        boxWidth: 12,
+                        boxHeight: 12,
+                        boxPadding: 6,
+                        titleFont: {
+                            size: 13,
+                            weight: '600'
+                        },
+                        bodyFont: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        callbacks: {
+                            label: function(context) {
+                                return 'Score: ' + context.parsed.y + '%';
+                            },
+                            afterLabel: function(context) {
+                                if (context.dataIndex > 0) {
+                                    var prev = context.dataset.data[context.dataIndex - 1];
+                                    var current = context.parsed.y;
+                                    var change = current - prev;
+                                    return 'Change: ' + (change >= 0 ? '+' : '') + change.toFixed(1) + '%';
+                                }
+                                return '';
+                            }
+                        }
+                    },
+                    annotation: {
+                        annotations: {
+                            goalLine: {
+                                type: 'line',
+                                yMin: 90,
+                                yMax: 90,
+                                borderColor: '#ef4444',
+                                borderWidth: 2,
+                                borderDash: [8, 4],
+                                label: {
+                                    content: 'Goal: 90%',
+                                    enabled: true,
+                                    position: 'end',
+                                    backgroundColor: 'rgba(239, 68, 68, 0.9)',
+                                    color: '#fff',
+                                    font: {
+                                        size: 11,
+                                        weight: '600'
+                                    },
+                                    padding: 6
+                                }
+                            }
+                        }
                     }
                 },
                 scales: {
@@ -2523,25 +2700,43 @@ jQuery(document).ready(function($) {
                         max: 100,
                         ticks: { 
                             color: '#94a3b8',
-                            font: { size: 12 }
+                            font: { size: 12, weight: '500' },
+                            callback: function(value) {
+                                return value + '%';
+                            },
+                            stepSize: 10
                         },
                         grid: { 
-                            color: 'rgba(51, 65, 85, 0.5)',
-                            drawBorder: false
+                            color: 'rgba(51, 65, 85, 0.4)',
+                            drawBorder: false,
+                            lineWidth: 1
+                        },
+                        border: {
+                            display: false
                         }
                     },
                     x: {
                         ticks: { 
                             color: '#94a3b8',
-                            font: { size: 11 },
+                            font: { size: 11, weight: '500' },
                             maxRotation: 45,
-                            minRotation: 45
+                            minRotation: 45,
+                            autoSkip: true,
+                            maxTicksLimit: 15
                         },
                         grid: { 
-                            color: 'rgba(51, 65, 85, 0.3)',
-                            drawBorder: false
+                            color: 'rgba(51, 65, 85, 0.2)',
+                            drawBorder: false,
+                            lineWidth: 1
+                        },
+                        border: {
+                            display: false
                         }
                     }
+                },
+                animation: {
+                    duration: 1500,
+                    easing: 'easeInOutQuart'
                 }
             }
         });
