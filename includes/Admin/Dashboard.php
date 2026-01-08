@@ -110,18 +110,15 @@ class Dashboard {
 	 *
 	 * Returns the status of all available modules using ModuleManager
 	 * to ensure consistency with Module Dashboard.
+	 * Only displays active (non-dormant) modules.
 	 *
 	 * @since 3.0.1
 	 * @return array Modules status data
 	 */
 	private function get_modules_status() {
-		// Define which modules to display on Dashboard (core compliance modules)
+		// Define which modules to display on Dashboard (active modules only)
+		// Excludes dormant modules: dsr-portal, security
 		$display_modules = array(
-			'dsr-portal'            => array(
-				'icon'     => '📋',
-				'page'     => 'slos-requests',
-				'dashicon' => 'dashicons-clipboard',
-			),
 			'consent-management'    => array(
 				'icon'     => '🛡️',
 				'page'     => 'slos-compliance',
@@ -157,18 +154,8 @@ class Dashboard {
 					'enabled'     => $module_obj->is_enabled(),
 					'slug'        => $key,
 				);
-			} else {
-				// Module not registered - show as disabled
-				$all_modules[ $key ] = array(
-					'name'        => ucwords( str_replace( '-', ' ', $key ) ),
-					'description' => __( 'Module not available', 'shahi-legalflowsuite' ),
-					'icon'        => $display_info['icon'],
-					'page'        => $display_info['page'],
-					'dashicon'    => $display_info['dashicon'],
-					'enabled'     => false,
-					'slug'        => $key,
-				);
 			}
+			// Skip unregistered modules (they shouldn't appear on dashboard)
 		}
 
 		return $all_modules;
