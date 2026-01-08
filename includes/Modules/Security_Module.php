@@ -93,6 +93,11 @@ class Security_Module extends Module {
 	 * @return void
 	 */
 	public function init() {
+		// Check if module is dormant (safety check)
+		if ( defined( 'SLOS_DORMANT_MODULES' ) && in_array( 'security', SLOS_DORMANT_MODULES, true ) ) {
+			return;
+		}
+
 		$this->security = new Security();
 
 		// Add rate limiting

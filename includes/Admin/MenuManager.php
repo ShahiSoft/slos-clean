@@ -271,15 +271,17 @@ class MenuManager {
 
 		// Hidden utility pages (not visible in menu, accessible via direct URL)
 
-		// DSR Request Detail page (hidden)
-		add_submenu_page(
-			null,
-			__( 'DSR Request Detail', 'shahi-legalflowsuite' ),
-			__( 'DSR Request Detail', 'shahi-legalflowsuite' ),
-			'slos_manage_dsr',
-			self::MENU_SLUG . '-dsr-detail',
-			array( $this->get_dsr_detail(), 'render' )
-		);
+		// DSR Request Detail page (hidden) - only register if DSR module is not dormant
+		if ( ! ( defined( 'SLOS_DORMANT_MODULES' ) && in_array( 'dsr-portal', SLOS_DORMANT_MODULES, true ) ) ) {
+			add_submenu_page(
+				null,
+				__( 'DSR Request Detail', 'shahi-legalflowsuite' ),
+				__( 'DSR Request Detail', 'shahi-legalflowsuite' ),
+				'slos_manage_dsr',
+				self::MENU_SLUG . '-dsr-detail',
+				array( $this->get_dsr_detail(), 'render' )
+			);
+		}
 
 		// Banner Settings page (hidden, linked from Compliance module)
 		add_submenu_page(

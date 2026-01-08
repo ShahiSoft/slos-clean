@@ -106,6 +106,11 @@ class DSR_Portal extends Module {
 	 * @return void
 	 */
 	public function init(): void {
+		// Check if module is dormant (safety check)
+		if ( defined( 'SLOS_DORMANT_MODULES' ) && in_array( 'dsr-portal', SLOS_DORMANT_MODULES, true ) ) {
+			return;
+		}
+
 		// Only proceed if module is enabled
 		if ( ! $this->is_enabled() ) {
 			return;

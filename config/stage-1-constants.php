@@ -63,6 +63,23 @@ if ( ! defined( 'SLOS_FEATURE_PROFILE_VALIDATION' ) ) {
 
 /*
 |--------------------------------------------------------------------------
+| Dormant Modules Configuration
+|--------------------------------------------------------------------------
+|
+| Modules temporarily disabled but data preserved for future reactivation.
+| To reactivate: remove module key from this array.
+|
+*/
+
+if ( ! defined( 'SLOS_DORMANT_MODULES' ) ) {
+	define( 'SLOS_DORMANT_MODULES', array(
+		'dsr-portal',      // DSR Portal Module - temporarily dormant
+		'security',        // Enhanced Security Module - temporarily dormant
+	) );
+}
+
+/*
+|--------------------------------------------------------------------------
 | Feature Flags - Stage 2 (Disabled in Stage 1)
 |--------------------------------------------------------------------------
 */

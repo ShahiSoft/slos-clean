@@ -369,10 +369,11 @@ class ModuleManager
 			}
 		}
 
-		// Security Module (Keep - relevant for legal compliance & data protection)
-		if (class_exists('ShahiLegalFlowSuite\Modules\Security_Module')) {
-			$this->register(new Security_Module());
-		}
+		// Security Module - DORMANT (temporarily disabled, data preserved)
+		// Uncomment to reactivate or remove 'security' from SLOS_DORMANT_MODULES constant
+		// if (class_exists('ShahiLegalFlowSuite\Modules\Security_Module')) {
+		// 	$this->register(new Security_Module());
+		// }
 
 		// Accessibility Scanner Module (Keep - legal requirement for ADA/WCAG compliance)
 		if (class_exists('ShahiLegalFlowSuite\Modules\AccessibilityScanner\AccessibilityScanner')) {
@@ -387,13 +388,14 @@ class ModuleManager
 			}
 		}
 
-		// DSR Portal Module (Data Subject Rights - Phase 3)
-		if (class_exists('ShahiLegalFlowSuite\Modules\DSR_Portal\DSR_Portal')) {
-			$dsr_module = new \ShahiLegalFlowSuite\Modules\DSR_Portal\DSR_Portal();
-			if ($this->register($dsr_module) && !$this->module_record_exists('dsr-portal')) {
-				$this->enable_module('dsr-portal');
-			}
-		}
+		// DSR Portal Module - DORMANT (temporarily disabled, data preserved)
+		// Uncomment to reactivate or remove 'dsr-portal' from SLOS_DORMANT_MODULES constant
+		// if (class_exists('ShahiLegalFlowSuite\Modules\DSR_Portal\DSR_Portal')) {
+		// 	$dsr_module = new \ShahiLegalFlowSuite\Modules\DSR_Portal\DSR_Portal();
+		// 	if ($this->register($dsr_module) && !$this->module_record_exists('dsr-portal')) {
+		// 		$this->enable_module('dsr-portal');
+		// 	}
+		// }
 
 		// Legal Documents Module (New)
 		if (class_exists('ShahiLegalFlowSuite\Modules\LegalDocs\LegalDocuments')) {
