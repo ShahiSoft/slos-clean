@@ -65,11 +65,11 @@ class DashboardAjax {
 		$total_events    = 0;
 		$events_today    = 0;
 
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '$analytics_table'" ) === $analytics_table ) {
-			$total_events = intval( $wpdb->get_var( "SELECT COUNT(*) FROM $analytics_table" ) );
+		if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $analytics_table ) ) === $analytics_table ) {
+			$total_events = intval( $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM %i", $analytics_table ) ) );
 			$events_today = intval(
 				$wpdb->get_var(
-					"SELECT COUNT(*) FROM $analytics_table WHERE DATE(created_at) = CURDATE()"
+					$wpdb->prepare( "SELECT COUNT(*) FROM %i WHERE DATE(created_at) = CURDATE()", $analytics_table )
 				)
 			);
 		}

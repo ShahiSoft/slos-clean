@@ -71,7 +71,7 @@ foreach ($modules_status as $module) {
             <div class="shahi-hero-main">
                 <h1 class="shahi-hero-title">
                     <?php echo esc_html__('Welcome back!', 'shahi-legalflowsuite'); ?>
-                    <span aria-hidden="true" style="color:#e53935;">❤️</span>
+                    <span aria-hidden="true">❤️</span>
                 </h1>
                 <p class="shahi-hero-subtitle">
                     <?php echo esc_html__('Here\'s what\'s happening with your legal compliance system today.', 'shahi-legalflowsuite'); ?>
@@ -157,7 +157,7 @@ foreach ($modules_status as $module) {
                     </p>
                     <div class="shahi-modules-grid">
                         <?php foreach ($modules_status as $module): ?>
-                            <div class="shahi-module-item <?php echo $module['enabled'] ? 'active' : 'inactive'; ?>">
+                            <div class="shahi-module-item <?php echo esc_attr($module['enabled'] ? 'active' : 'inactive'); ?>">
                                 <div class="shahi-module-icon">
                                     <span class="shahi-module-emoji"><?php echo esc_html($module['icon']); ?></span>
                                 </div>
@@ -255,7 +255,7 @@ foreach ($modules_status as $module) {
                     <!-- Checklist -->
                     <div class="shahi-checklist">
                         <?php foreach ($getting_started as $item): ?>
-                            <div class="shahi-checklist-item <?php echo $item['completed'] ? 'completed' : ''; ?>">
+                            <div class="shahi-checklist-item <?php echo esc_attr($item['completed'] ? 'completed' : ''); ?>">
                                 <div class="shahi-check-icon">
                                     <?php if ($item['completed']): ?>
                                         <span class="dashicons dashicons-yes-alt"></span>

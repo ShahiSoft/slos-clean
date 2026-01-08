@@ -314,7 +314,7 @@ class Dashboard {
 			return __( 'N/A', 'shahi-legalflowsuite' );
 		}
 
-		$last_time = $wpdb->get_var( "SELECT created_at FROM $table ORDER BY created_at DESC LIMIT 1" );
+		$last_time = $wpdb->get_var( $wpdb->prepare( "SELECT created_at FROM %i ORDER BY created_at DESC LIMIT 1", $table ) );
 
 		if ( ! $last_time ) {
 			return __( 'N/A', 'shahi-legalflowsuite' );

@@ -154,6 +154,12 @@
     line-height: 1.2;
 }
 
+/* Hero title heart icon - red color */
+.shahi-hero-title [aria-hidden="true"],
+.shahi-v3-hero-title [aria-hidden="true"] {
+    color: #e53935;
+}
+
 .shahi-v3-hero-subtitle {
     font-size: 1rem;
     color: rgba(255, 255, 255, 0.6);
