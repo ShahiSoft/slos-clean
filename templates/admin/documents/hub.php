@@ -236,25 +236,41 @@ $nonce      = $data['nonce'] ?? '';
 		</p>
 		<div class="slos-hub-shortcodes__list">
 			<div class="slos-hub-shortcode">
-				<code class="slos-hub-shortcode__code">[slos_legal_doc type="privacy_policy"]</code>
+				<code class="slos-hub-shortcode__code">[slos_legal_doc type="privacy-policy"]</code>
 				<button type="button" class="slos-btn slos-btn--icon slos-hub-copy-shortcode" 
-						data-shortcode='[slos_legal_doc type="privacy_policy"]'
+						data-shortcode='[slos_legal_doc type="privacy-policy"]'
 						title="<?php esc_attr_e( 'Copy shortcode', 'shahi-legalflowsuite' ); ?>">
 					<span class="dashicons dashicons-clipboard"></span>
 				</button>
 			</div>
 			<div class="slos-hub-shortcode">
-				<code class="slos-hub-shortcode__code">[slos_legal_doc type="terms_conditions"]</code>
+				<code class="slos-hub-shortcode__code">[slos_legal_doc type="terms-of-service"]</code>
 				<button type="button" class="slos-btn slos-btn--icon slos-hub-copy-shortcode" 
-						data-shortcode='[slos_legal_doc type="terms_conditions"]'
+						data-shortcode='[slos_legal_doc type="terms-of-service"]'
 						title="<?php esc_attr_e( 'Copy shortcode', 'shahi-legalflowsuite' ); ?>">
 					<span class="dashicons dashicons-clipboard"></span>
 				</button>
 			</div>
 			<div class="slos-hub-shortcode">
-				<code class="slos-hub-shortcode__code">[slos_legal_doc type="cookie_policy"]</code>
+				<code class="slos-hub-shortcode__code">[slos_legal_doc type="cookie-policy"]</code>
 				<button type="button" class="slos-btn slos-btn--icon slos-hub-copy-shortcode" 
-						data-shortcode='[slos_legal_doc type="cookie_policy"]'
+						data-shortcode='[slos_legal_doc type="cookie-policy"]'
+						title="<?php esc_attr_e( 'Copy shortcode', 'shahi-legalflowsuite' ); ?>">
+					<span class="dashicons dashicons-clipboard"></span>
+				</button>
+			</div>
+			<div class="slos-hub-shortcode">
+				<code class="slos-hub-shortcode__code">[slos_legal_doc type="refund-policy"]</code>
+				<button type="button" class="slos-btn slos-btn--icon slos-hub-copy-shortcode" 
+						data-shortcode='[slos_legal_doc type="refund-policy"]'
+						title="<?php esc_attr_e( 'Copy shortcode', 'shahi-legalflowsuite' ); ?>">
+					<span class="dashicons dashicons-clipboard"></span>
+				</button>
+			</div>
+			<div class="slos-hub-shortcode">
+				<code class="slos-hub-shortcode__code">[slos_legal_doc type="shipping-policy"]</code>
+				<button type="button" class="slos-btn slos-btn--icon slos-hub-copy-shortcode" 
+						data-shortcode='[slos_legal_doc type="shipping-policy"]'
 						title="<?php esc_attr_e( 'Copy shortcode', 'shahi-legalflowsuite' ); ?>">
 					<span class="dashicons dashicons-clipboard"></span>
 				</button>
