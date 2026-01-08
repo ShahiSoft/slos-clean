@@ -274,6 +274,7 @@ class AccessibilitySettings {
 					</div>
 
 					<!-- Automated Fixes Card -->
+					<?php if ( ! defined( 'SLOS_DORMANT_AUTOFIX' ) || ! SLOS_DORMANT_AUTOFIX ) : ?>
 					<div class="slos-settings-card">
 						<div class="slos-card-header">
 							<div>
@@ -304,6 +305,7 @@ class AccessibilitySettings {
 							</div>
 						</div>
 					</div>
+					<?php endif; ?>
 
 					<!-- Accessibility Widget Card -->
 					<div class="slos-settings-card">
@@ -457,6 +459,57 @@ class AccessibilitySettings {
 			'status-message'       => 'Status Messages',
 			'error-identification' => 'Error Identification',
 		);
+		
+		// Filter out dormant checkers
+		if ( defined( 'SLOS_DORMANT_CHECKERS' ) && is_array( SLOS_DORMANT_CHECKERS ) ) {
+			// Map settings keys to checker IDs
+			$key_to_id_map = array(
+				'complex-image'       => 'complex-image',
+				'logo-image'          => 'logo-image',
+				'bg-image'            => 'background-image',
+				'decorative-image'    => 'decorative-image',
+				'svg-access'          => 'missing-svg-title',
+				'heading-length'      => 'heading-length',
+				'heading-nesting'     => 'heading-nesting',
+				'heading-unique'      => 'heading-uniqueness',
+				'heading-visual'      => 'heading-visual',
+				'download-link'       => 'download-link',
+				'external-link'       => 'external-link',
+				'input-type'          => 'input-type',
+				'placeholder-label'   => 'placeholder-label',
+				'custom-control'      => 'custom-control',
+				'orphaned-label'      => 'orphaned-label',
+				'form-aria'           => 'form-aria',
+				'complex-table'       => 'complex-table',
+				'layout-table'        => 'layout-table',
+				'media-alt'           => 'media-alternative',
+				'interactive-element' => 'interactive-element',
+				'modal-access'        => 'modal-accessibility',
+				'widget-keyboard'     => 'custom-widget-keyboard',
+				'color-reliance'      => 'color-reliance',
+				'complex-contrast'    => 'complex-contrast',
+				'touch-target'        => 'touch-target',
+				'touch-gesture'       => 'touch-gesture',
+				'viewport'            => 'improper-viewport',
+				'aria-state'          => 'aria-state',
+				'invalid-aria'        => 'invalid-aria-combination',
+				'hidden-content'      => 'hidden-content',
+				'live-region'         => 'live-region',
+				'redundant-aria'      => 'redundant-aria',
+				'language-change'     => 'language-change',
+				'animation-pause'     => 'animation-pause',
+				'timing-control'      => 'timing-control',
+			);
+			
+			foreach ( $all_checkers as $key => $label ) {
+				$checker_id = isset( $key_to_id_map[ $key ] ) ? $key_to_id_map[ $key ] : $key;
+				if ( in_array( $checker_id, SLOS_DORMANT_CHECKERS, true ) ) {
+					unset( $all_checkers[ $key ] );
+				}
+			}
+		}
+		
+		return $all_checkers;
 	}
 
 	private function get_available_fixes() {
