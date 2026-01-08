@@ -48,6 +48,10 @@ class ScannerEngine {
 	 * @param CheckInterface $check Check instance to register
 	 */
 	public function register_check( CheckInterface $check ) {
+		// Skip registration if checker is dormant
+		if ( defined( 'SLOS_DORMANT_CHECKERS' ) && in_array( $check->get_id(), SLOS_DORMANT_CHECKERS, true ) ) {
+			return;
+		}
 		$this->checks[ $check->get_id() ] = $check;
 	}
 

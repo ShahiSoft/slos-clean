@@ -80,6 +80,72 @@ if ( ! defined( 'SLOS_DORMANT_MODULES' ) ) {
 
 /*
 |--------------------------------------------------------------------------
+| Dormant Accessibility Features Configuration
+|--------------------------------------------------------------------------
+|
+| Controls which accessibility scanner features are disabled.
+| All data preserved for future reactivation.
+|
+*/
+
+// Disable ALL autofix functionality (scanning still works)
+if ( ! defined( 'SLOS_DORMANT_AUTOFIX' ) ) {
+	define( 'SLOS_DORMANT_AUTOFIX', true );
+}
+
+// Disable half of accessibility checkers (keep 36 essential, disable 35 advanced)
+if ( ! defined( 'SLOS_DORMANT_CHECKERS' ) ) {
+	define( 'SLOS_DORMANT_CHECKERS', array(
+		// Advanced Image Checks
+		'complex-image',
+		'logo-image',
+		'background-image',
+		'decorative-image',
+		'missing-svg-title',
+		// Advanced Heading Checks
+		'heading-length',
+		'heading-nesting',
+		'heading-uniqueness',
+		'heading-visual',
+		// Advanced Link Checks
+		'download-link',
+		'external-link',
+		// Advanced Form Checks
+		'input-type',
+		'placeholder-label',
+		'custom-control',
+		'orphaned-label',
+		'form-aria',
+		// Advanced Table Checks
+		'complex-table',
+		'layout-table',
+		'media-alternative',
+		// Advanced Interactivity Checks
+		'interactive-element',
+		'modal-accessibility',
+		'custom-widget-keyboard',
+		// Advanced Color/Contrast Checks
+		'color-reliance',
+		'complex-contrast',
+		// Touch/Mobile Checks
+		'touch-target',
+		'touch-gesture',
+		'improper-viewport',
+		// Advanced ARIA Checks
+		'aria-state',
+		'invalid-aria-combination',
+		'hidden-content',
+		'live-region',
+		'redundant-aria',
+		// Advanced Timing/Animation Checks
+		'language-change',
+		'animation-pause',
+		'timing-control',
+	) );
+}
+
+/*
+|--------------------------------------------------------------------------
 | Feature Flags - Stage 2 (Disabled in Stage 1)
 |--------------------------------------------------------------------------
 */

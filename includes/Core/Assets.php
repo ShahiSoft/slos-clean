@@ -66,6 +66,9 @@ class Assets {
 
 		// Add filter to prevent style caching during development
 		add_filter( 'style_loader_tag', array( $this, 'add_nocache_to_styles' ), 10, 4 );
+		
+		// Add body class for dormant features
+		add_filter( 'admin_body_class', array( $this, 'admin_body_class' ) );
 	}
 
 	/**
@@ -324,6 +327,16 @@ class Assets {
 				array(),
 				$this->version
 			);
+			
+			// Dormant features CSS - hide autofix UI when dormant
+			if ( defined( 'SLOS_DORMANT_AUTOFIX' ) && SLOS_DORMANT_AUTOFIX ) {
+				wp_enqueue_style(
+					'slos-dormant-features',
+					$this->assets_url . 'css/slos-dormant-features.css',
+					array(),
+					$this->version
+				);
+			}
 		} elseif ( $this->is_consent_page( $hook ) ) {
 			$this->enqueue_style(
 				'shahi-admin-consent',
@@ -431,6 +444,20 @@ class Assets {
         ';
 
 		wp_add_inline_style( 'shahi-admin-global', $inline_css );
+	}
+
+	/**
+	 * Add admin body class for dormant features
+	 *
+	 * @since 3.5.0
+	 * @param string $classes Space-separated string of CSS classes
+	 * @return string Modified classes
+	 */
+	public function admin_body_class( $classes ) {
+		if ( defined( 'SLOS_DORMANT_AUTOFIX' ) && SLOS_DORMANT_AUTOFIX ) {
+			$classes .= ' slos-dormant-autofix';
+		}
+		return $classes;
 	}
 
 	/**
@@ -1412,6 +1439,7 @@ class Assets {
 				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
 				'nonce'   => wp_create_nonce( 'slos_autofix_nonce' ),
 				'fixers'  => $fixers,
+				'dormant' => defined( 'SLOS_DORMANT_AUTOFIX' ) && SLOS_DORMANT_AUTOFIX,
 				'i18n'    => array(
 					'processing'  => __( 'Processing...', 'shahi-legalflowsuite' ),
 					'complete'    => __( 'Complete!', 'shahi-legalflowsuite' ),

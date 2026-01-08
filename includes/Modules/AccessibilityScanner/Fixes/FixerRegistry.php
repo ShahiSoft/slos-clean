@@ -98,6 +98,13 @@ class FixerRegistry {
 	 * Keys MUST match the canonical IDs defined in FixEngine/CanonicalIds.php
 	 */
 	public static function init() {
+		// Skip initialization if autofix is dormant
+		if ( defined( 'SLOS_DORMANT_AUTOFIX' ) && SLOS_DORMANT_AUTOFIX ) {
+			self::$initialized = true;
+			self::$registry = array();
+			return;
+		}
+		
 		if ( self::$initialized ) {
 			return;
 		}

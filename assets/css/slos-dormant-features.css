@@ -1,0 +1,54 @@
+/**
+ * Dormant Features CSS
+ * 
+ * Hides UI elements for dormant accessibility features (autofixers)
+ * Applied when SLOS_DORMANT_AUTOFIX constant is true
+ *
+ * @package    ShahiLegalFlowSuite
+ * @since      3.5.0
+ */
+
+/* Hide all autofix-related buttons and UI elements */
+body.slos-dormant-autofix .slos-fix-all-btn,
+body.slos-dormant-autofix .slos-fix-btn,
+body.slos-dormant-autofix .slos-autofix-trigger,
+body.slos-dormant-autofix .slos-autofix-post-btn,
+body.slos-dormant-autofix .slos-rollback-btn,
+body.slos-dormant-autofix .slos-autofix-toggle,
+body.slos-dormant-autofix .slos-autofix-checkbox,
+body.slos-dormant-autofix .autofix-col,
+body.slos-dormant-autofix .col-autofix,
+body.slos-dormant-autofix [data-action="fix"],
+body.slos-dormant-autofix [data-action="fix-all"],
+body.slos-dormant-autofix [data-action="rollback"] {
+    display: none !important;
+}
+
+/* Hide autofix progress modal */
+body.slos-dormant-autofix #slos-autofix-progress-overlay {
+    display: none !important;
+}
+
+/* Hide fix-related columns in tables */
+body.slos-dormant-autofix .slos-pages-table .col-autofix,
+body.slos-dormant-autofix .slos-pages-table .actions-cell .slos-fix-all-btn,
+body.slos-dormant-autofix .slos-pages-table .actions-cell .slos-rollback-btn {
+    display: none !important;
+}
+
+/* Hide fix buttons in scan results */
+body.slos-dormant-autofix .slos-scan-results .fix-button,
+body.slos-dormant-autofix .slos-issue-actions .fix-action {
+    display: none !important;
+}
+
+/* Hide fixer-related settings sections */
+body.slos-dormant-autofix .slos-autofix-settings,
+body.slos-dormant-autofix .slos-fixer-config {
+    display: none !important;
+}
+
+/* Adjust table layout when autofix column is hidden */
+body.slos-dormant-autofix .slos-pages-table .col-page {
+    width: auto;
+}

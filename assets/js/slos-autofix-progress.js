@@ -87,6 +87,12 @@
          * Initialize the module
          */
         init: function() {
+            // Check if autofix is dormant
+            if (typeof window.slosautoFixConfig !== 'undefined' && window.slosautoFixConfig.dormant === true) {
+                console.log('SLOSAutoFixProgress: Autofix is dormant, skipping initialization');
+                return;
+            }
+            
             console.log('SLOSAutoFixProgress: Initializing');
             this.createModal();
             this.bindEvents();

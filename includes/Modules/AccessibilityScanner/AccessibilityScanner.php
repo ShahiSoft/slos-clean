@@ -223,19 +223,28 @@ class AccessibilityScanner extends Module {
 		add_action( 'wp_ajax_slos_scan_single_post', array( $this, 'ajax_scan_single_post' ) );
 		add_action( 'wp_ajax_slos_generate_alt_text', array( $this, 'ajax_generate_alt_text' ) );
 		add_action( 'wp_ajax_slos_generate_statement', array( $this, 'ajax_generate_statement' ) );
-		add_action( 'wp_ajax_slos_fix_single_issue', array( $this, 'ajax_fix_single_issue' ) );
-		add_action( 'wp_ajax_slos_fix_all_issues', array( $this, 'ajax_fix_all_issues' ) );
-		add_action( 'wp_ajax_slos_toggle_autofix', array( $this, 'ajax_toggle_autofix' ) );
+		
+		// Autofix AJAX handlers - only register if autofix is not dormant
+		if ( ! ( defined( 'SLOS_DORMANT_AUTOFIX' ) && SLOS_DORMANT_AUTOFIX ) ) {
+			add_action( 'wp_ajax_slos_fix_single_issue', array( $this, 'ajax_fix_single_issue' ) );
+			add_action( 'wp_ajax_slos_fix_all_issues', array( $this, 'ajax_fix_all_issues' ) );
+			add_action( 'wp_ajax_slos_toggle_autofix', array( $this, 'ajax_toggle_autofix' ) );
+		}
 		add_action( 'wp_ajax_slos_get_page_issues', array( $this, 'ajax_get_page_issues' ) );
 		add_action( 'wp_ajax_slos_get_page_fixable_issues', array( $this, 'ajax_get_page_fixable_issues' ) );
 		add_action( 'wp_ajax_slos_run_full_scan', array( $this, 'ajax_run_full_scan' ) );
 		add_action( 'wp_ajax_slos_consolidate_scan_results', array( $this, 'ajax_consolidate_scan_results' ) );
 		add_action( 'wp_ajax_slos_audit_media_library', array( $this, 'ajax_audit_media_library' ) );
 		add_action( 'wp_ajax_slos_publish_statement', array( $this, 'ajax_publish_statement' ) );
-		add_action( 'wp_ajax_slos_autofix_single', array( $this, 'ajax_autofix_single_fixer' ) );
+		
+		// Autofix and rollback handlers - only register if autofix is not dormant
+		if ( ! ( defined( 'SLOS_DORMANT_AUTOFIX' ) && SLOS_DORMANT_AUTOFIX ) ) {
+			add_action( 'wp_ajax_slos_autofix_single', array( $this, 'ajax_autofix_single_fixer' ) );
+			add_action( 'wp_ajax_slos_rollback_fixes', array( $this, 'ajax_rollback_fixes' ) );
+			add_action( 'wp_ajax_slos_check_backup_exists', array( $this, 'ajax_check_backup_exists' ) );
+		}
+		
 		add_action( 'wp_ajax_slos_get_detailed_scan_report', array( $this, 'ajax_get_detailed_scan_report' ) );
-		add_action( 'wp_ajax_slos_rollback_fixes', array( $this, 'ajax_rollback_fixes' ) );
-		add_action( 'wp_ajax_slos_check_backup_exists', array( $this, 'ajax_check_backup_exists' ) );
 		add_action( 'wp_ajax_slos_save_scanner_config', array( $this, 'ajax_save_scanner_config' ) );
 		add_action( 'wp_ajax_slos_schedule_email_report', array( $this, 'ajax_schedule_email_report' ) );
 		add_action( 'wp_ajax_slos_toggle_widget', array( $this, 'ajax_toggle_widget' ) );

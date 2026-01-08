@@ -584,6 +584,12 @@ jQuery(document).ready(function($) {
     function initAutoFixHandlers() {
         console.log('SLOS: Initializing Auto-Fix handlers');
         
+        // Check if autofix is dormant
+        if (typeof window.slosautoFixConfig !== 'undefined' && window.slosautoFixConfig.dormant === true) {
+            console.log('SLOS: Autofix is dormant, skipping autofix handler initialization');
+            return;
+        }
+        
         // "Auto Fix All" / "Fix All" button handler - uses new progress modal
         $(document).on('click', '.slos-autofix-trigger, #slos-autofix-all-btn, .slos-fix-all-btn, .slos-autofix-post-btn', function(e) {
             console.log('SLOS: Fix All button clicked', this);
