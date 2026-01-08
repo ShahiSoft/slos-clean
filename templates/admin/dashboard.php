@@ -70,7 +70,7 @@ foreach ($modules_status as $module) {
         <div class="shahi-hero-content">
             <div class="shahi-hero-main">
                 <h1 class="shahi-hero-title">
-                    <?php echo esc_html__('Welcome back!', 'shahi-legalflowsuite'); ?> 👋
+                    <?php echo esc_html__('Welcome back!', 'shahi-legalflowsuite'); ?>
                 </h1>
                 <p class="shahi-hero-subtitle">
                     <?php echo esc_html__('Here\'s what\'s happening with your legal compliance system today.', 'shahi-legalflowsuite'); ?>
