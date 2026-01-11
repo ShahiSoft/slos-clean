@@ -357,4 +357,3 @@ class AnalyticsTracker {
 		return $deleted === false ? 0 : $deleted;
 	}
 }
-

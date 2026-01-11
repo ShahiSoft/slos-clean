@@ -90,19 +90,19 @@ class ComplianceMainPage {
 	 */
 	public function enqueue_config_sync_assets( $hook ) {
 		// Check if config sync is dormant
-		if ( defined( 'SLOS_DORMANT_COMPLIANCE_FEATURES' ) && 
-		     is_array( SLOS_DORMANT_COMPLIANCE_FEATURES ) && 
-		     in_array( 'config', SLOS_DORMANT_COMPLIANCE_FEATURES, true ) ) {
+		if ( defined( 'SLOS_DORMANT_COMPLIANCE_FEATURES' ) &&
+			is_array( SLOS_DORMANT_COMPLIANCE_FEATURES ) &&
+			in_array( 'config', SLOS_DORMANT_COMPLIANCE_FEATURES, true ) ) {
 			return;
 		}
-		
+
 		// Only load on compliance page with config tab
 		if ( 'toplevel_page_slos-compliance' !== $hook ) {
 			return;
 		}
 
 		$current_tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'dashboard';
-		
+
 		if ( 'config' !== $current_tab ) {
 			return;
 		}
@@ -132,7 +132,7 @@ class ComplianceMainPage {
 	 * @return array Tab configuration
 	 */
 	private function get_tabs() {
-		return array(
+		$tabs = array(
 			'dashboard' => array(
 				'label' => __( 'Dashboard', 'shahi-legalflowsuite' ),
 				'icon'  => 'dashicons-chart-area',
@@ -162,14 +162,14 @@ class ComplianceMainPage {
 				'icon'  => 'dashicons-cloud',
 			),
 		);
-		
+
 		// Filter out dormant tabs
 		if ( defined( 'SLOS_DORMANT_COMPLIANCE_FEATURES' ) && is_array( SLOS_DORMANT_COMPLIANCE_FEATURES ) ) {
 			foreach ( SLOS_DORMANT_COMPLIANCE_FEATURES as $dormant_tab ) {
 				unset( $tabs[ $dormant_tab ] );
 			}
 		}
-		
+
 		return $tabs;
 	}
 
@@ -201,27 +201,27 @@ class ComplianceMainPage {
 
 		return array(
 			// Consent activity metrics
-			'total'            => $total,
-			'accepted'         => $accepted,
-			'rejected'         => $rejected,
-			'withdrawn'        => $withdrawn,
-			'pending'          => $pending,
-			'by_type'          => $stats['by_type'] ?? array(),
-			'acceptance_rate'  => $total > 0 ? round( ( $accepted / $total ) * 100, 1 ) : 0,
-			'rejection_rate'   => $total > 0 ? round( ( $rejected / $total ) * 100, 1 ) : 0,
+			'total'                   => $total,
+			'accepted'                => $accepted,
+			'rejected'                => $rejected,
+			'withdrawn'               => $withdrawn,
+			'pending'                 => $pending,
+			'by_type'                 => $stats['by_type'] ?? array(),
+			'acceptance_rate'         => $total > 0 ? round( ( $accepted / $total ) * 100, 1 ) : 0,
+			'rejection_rate'          => $total > 0 ? round( ( $rejected / $total ) * 100, 1 ) : 0,
 
 			// Multi-dimensional readiness score (new)
-			'compliance_score' => $readiness['score'],
-			'grade'            => $readiness['grade'],
-			'grade_class'      => $readiness['grade_class'],
-			'grade_text'       => $readiness['label'],
-			'dimensions'       => $readiness['dimensions'],
+			'compliance_score'        => $readiness['score'],
+			'grade'                   => $readiness['grade'],
+			'grade_class'             => $readiness['grade_class'],
+			'grade_text'              => $readiness['label'],
+			'dimensions'              => $readiness['dimensions'],
 
 			// Legacy metrics
 			'legacy_acceptance_score' => $legacy_acceptance_score,
 
 			// Legal documents status (3.1.1)
-			'legal_docs' => $legal_docs_stats,
+			'legal_docs'              => $legal_docs_stats,
 		);
 	}
 
@@ -233,26 +233,26 @@ class ComplianceMainPage {
 	 */
 	private function get_legal_docs_stats() {
 		$hub_service = new \ShahiLegalFlowSuite\Services\Document_Hub_Service();
-		$cards = $hub_service->get_document_cards();
+		$cards       = $hub_service->get_document_cards();
 
 		// Focus on core compliance documents
 		$required_docs = array( 'cookie-policy', 'privacy-policy', 'accessibility-statement' );
-		$total = count( $required_docs );
-		$published = 0;
-		$stale = 0;
+		$total         = count( $required_docs );
+		$published     = 0;
+		$stale         = 0;
 
 		$docs_status = array();
 
 		foreach ( $cards as $card ) {
 			if ( in_array( $card['id'], $required_docs, true ) ) {
 				$is_published = ( $card['status'] ?? 'not_generated' ) === 'published';
-				$is_stale = ! empty( $card['doc_id'] ) && get_post_meta( $card['doc_id'], '_slos_needs_regeneration', true );
+				$is_stale     = ! empty( $card['doc_id'] ) && get_post_meta( $card['doc_id'], '_slos_needs_regeneration', true );
 
 				if ( $is_published ) {
-					$published++;
+					++$published;
 				}
 				if ( $is_stale ) {
-					$stale++;
+					++$stale;
 				}
 
 				$docs_status[ $card['id'] ] = array(
@@ -301,24 +301,24 @@ class ComplianceMainPage {
 		$consent_total = array_sum( $consent_stats['by_status'] ?? array() );
 
 		$consent = array(
-			'total_consents'   => $consent_total,
-			'accepted'         => $consent_stats['by_status']['accepted'] ?? 0,
-			'rejected'         => $consent_stats['by_status']['rejected'] ?? 0,
-			'withdrawn'        => $consent_stats['by_status']['withdrawn'] ?? 0,
-			'pending'          => $consent_stats['by_status']['pending'] ?? 0,
-			'acceptance_rate'  => $consent_total > 0 ? round( ( ( $consent_stats['by_status']['accepted'] ?? 0 ) / $consent_total ) * 100, 1 ) : 0,
-			'by_type'          => $consent_stats['by_type'] ?? array(),
-			'recent_consents'  => $consent_stats['recent_consents'] ?? array(),
+			'total_consents'  => $consent_total,
+			'accepted'        => $consent_stats['by_status']['accepted'] ?? 0,
+			'rejected'        => $consent_stats['by_status']['rejected'] ?? 0,
+			'withdrawn'       => $consent_stats['by_status']['withdrawn'] ?? 0,
+			'pending'         => $consent_stats['by_status']['pending'] ?? 0,
+			'acceptance_rate' => $consent_total > 0 ? round( ( ( $consent_stats['by_status']['accepted'] ?? 0 ) / $consent_total ) * 100, 1 ) : 0,
+			'by_type'         => $consent_stats['by_type'] ?? array(),
+			'recent_consents' => $consent_stats['recent_consents'] ?? array(),
 		);
 
 		// 2. Get Cookie scanner statistics
 		$cookie_inventory = get_option( 'slos_cookie_inventory', array() );
 		$detected_cookies = get_option( 'slos_detected_cookies', array() );
-		$cookies_data = ! empty( $cookie_inventory ) ? $cookie_inventory : $detected_cookies;
+		$cookies_data     = ! empty( $cookie_inventory ) ? $cookie_inventory : $detected_cookies;
 		$cookie_scan_time = get_option( 'slos_cookie_scan_time', null );
 
-		$total_cookies = count( $cookies_data );
-		$categorized_cookies = 0;
+		$total_cookies         = count( $cookies_data );
+		$categorized_cookies   = 0;
 		$uncategorized_cookies = 0;
 
 		foreach ( $cookies_data as $cookie ) {
@@ -326,9 +326,9 @@ class ComplianceMainPage {
 			$status   = isset( $cookie['status'] ) ? strtolower( $cookie['status'] ) : '';
 
 			if ( ! empty( $category ) && 'unknown' !== $category && 'uncategorized' !== $status ) {
-				$categorized_cookies++;
+				++$categorized_cookies;
 			} else {
-				$uncategorized_cookies++;
+				++$uncategorized_cookies;
 			}
 		}
 
@@ -342,30 +342,30 @@ class ComplianceMainPage {
 
 		// 3. Get DSR statistics
 		$dsr_service = new \ShahiLegalFlowSuite\Services\DSR_Service();
-		$dsr = $dsr_service->get_ops_statistics();
+		$dsr         = $dsr_service->get_ops_statistics();
 
 		// 4. Get Accessibility statistics
 		$accessibility_scanner = new \ShahiLegalFlowSuite\Modules\AccessibilityScanner\AccessibilityScanner();
-		$accessibility = $accessibility_scanner->get_ops_statistics();
+		$accessibility         = $accessibility_scanner->get_ops_statistics();
 
 		// 5. Get Consent UX Checker statistics (Phase 2.3)
 		$consent_ux_checker = new \ShahiLegalFlowSuite\Modules\AccessibilityScanner\ConsentUxChecker();
-		$consent_ux = $consent_ux_checker->get_summary_stats();
+		$consent_ux         = $consent_ux_checker->get_summary_stats();
 
 		// 6. Calculate overall Ops Readiness Score
 		$ops_readiness = $this->score_calculator->calculate_ops_readiness();
 
 		return array(
-			'consent'       => $consent,
-			'cookies'       => $cookies,
-			'dsr'           => $dsr,
-			'accessibility' => $accessibility,
-			'consent_ux'    => $consent_ux,
-			'ops_score'     => $ops_readiness['score'],
-			'ops_grade'     => $ops_readiness['grade'],
+			'consent'         => $consent,
+			'cookies'         => $cookies,
+			'dsr'             => $dsr,
+			'accessibility'   => $accessibility,
+			'consent_ux'      => $consent_ux,
+			'ops_score'       => $ops_readiness['score'],
+			'ops_grade'       => $ops_readiness['grade'],
 			'ops_grade_class' => $ops_readiness['grade_class'],
-			'ops_label'     => $ops_readiness['label'],
-			'dimensions'    => $ops_readiness['dimensions'],
+			'ops_label'       => $ops_readiness['label'],
+			'dimensions'      => $ops_readiness['dimensions'],
 		);
 	}
 
@@ -423,14 +423,14 @@ class ComplianceMainPage {
 	 */
 	public function render_tab_content( $stats, $recent_activity ) {
 		// Check if current tab is dormant
-		if ( defined( 'SLOS_DORMANT_COMPLIANCE_FEATURES' ) && 
-		     is_array( SLOS_DORMANT_COMPLIANCE_FEATURES ) && 
-		     in_array( $this->current_tab, SLOS_DORMANT_COMPLIANCE_FEATURES, true ) ) {
+		if ( defined( 'SLOS_DORMANT_COMPLIANCE_FEATURES' ) &&
+			is_array( SLOS_DORMANT_COMPLIANCE_FEATURES ) &&
+			in_array( $this->current_tab, SLOS_DORMANT_COMPLIANCE_FEATURES, true ) ) {
 			// Redirect to dashboard if accessing dormant tab
 			include SHAHI_LEGALFLOWSUITE_PATH . 'templates/admin/compliance/tabs/dashboard.php';
 			return;
 		}
-		
+
 		switch ( $this->current_tab ) {
 			case 'dashboard':
 				include SHAHI_LEGALFLOWSUITE_PATH . 'templates/admin/compliance/tabs/dashboard.php';

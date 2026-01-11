@@ -8,8 +8,8 @@
  */
 
 /* ==========================================================================
-   Variables - Mac Slate Liquid Theme
-   ========================================================================== */
+	Variables - Mac Slate Liquid Theme
+	========================================================================== */
 
 :root {
 	--slos-hub-white: #1e293b;
@@ -18,20 +18,20 @@
 	--slos-hub-text-muted: #94a3b8;
 	--slos-hub-gray: #64748b;
 	--slos-hub-border: #334155;
-	--slos-hub-primary: #3b82f6;
+	--slos-hub-primary: var(--slos-accent-primary, #6b8e4e);
 	--slos-hub-success: #22c55e;
 	--slos-hub-warning: #f59e0b;
 	--slos-hub-danger: #ef4444;
 	--slos-hub-radius: 12px;
 	--slos-hub-radius-sm: 6px;
-	--slos-hub-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-	--slos-hub-shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.25);
+	--slos-hub-shadow: 0 4px 6px rgb(0 0 0 / 10%);
+	--slos-hub-shadow-lg: 0 10px 25px rgb(0 0 0 / 25%);
 	--slos-hub-transition: 0.2s ease;
 }
 
 /* ==========================================================================
-   Layout
-   ========================================================================== */
+	Layout
+	========================================================================== */
 
 .slos-hub-wrap {
 	max-width: 1400px;
@@ -48,13 +48,13 @@
 	gap: 12px;
 	font-size: 28px;
 	font-weight: 700;
-	color: #ffffff;
+	color: #fff;
 	margin: 0 0 8px;
-	text-shadow: 
-		0 0 10px rgba(255, 255, 255, 0.8),
-		0 0 20px rgba(255, 255, 255, 0.6),
-		0 0 40px rgba(255, 255, 255, 0.4),
-		0 0 60px rgba(147, 197, 253, 0.3);
+	text-shadow:
+		0 0 10px rgb(255 255 255 / 80%),
+		0 0 20px rgb(255 255 255 / 60%),
+		0 0 40px rgb(255 255 255 / 40%),
+		0 0 60px rgb(139 169 114 / 30%);
 	letter-spacing: 0.5px;
 }
 
@@ -62,7 +62,7 @@
 	font-size: 32px;
 	width: 32px;
 	height: 32px;
-	color: #3b82f6;
+	color: var(--slos-accent-primary, #6b8e4e);
 }
 
 .slos-hub-subtitle {
@@ -72,8 +72,8 @@
 }
 
 /* ==========================================================================
-   Profile Banner
-   ========================================================================== */
+	Profile Banner
+	========================================================================== */
 
 .slos-hub-banner {
 	display: flex;
@@ -89,12 +89,12 @@
 
 .slos-hub-banner--success {
 	border-left-color: var(--slos-hub-success);
-	background: linear-gradient(135deg, rgba(0, 163, 42, 0.05) 0%, var(--slos-hub-white) 100%);
+	background: linear-gradient(135deg, rgb(0 163 42 / 5%) 0%, var(--slos-hub-white) 100%);
 }
 
 .slos-hub-banner--warning {
 	border-left-color: var(--slos-hub-warning);
-	background: linear-gradient(135deg, rgba(219, 166, 23, 0.05) 0%, var(--slos-hub-white) 100%);
+	background: linear-gradient(135deg, rgb(219 166 23 / 5%) 0%, var(--slos-hub-white) 100%);
 }
 
 .slos-hub-banner--info {
@@ -218,8 +218,8 @@
 }
 
 /* ==========================================================================
-   Alert Banner
-   ========================================================================== */
+	Alert Banner
+	========================================================================== */
 
 .slos-hub-alert {
 	display: flex;
@@ -247,8 +247,8 @@
 }
 
 /* ==========================================================================
-   Filters
-   ========================================================================== */
+	Filters
+	========================================================================== */
 
 .slos-hub-filters {
 	display: flex;
@@ -281,18 +281,18 @@
 
 .slos-hub-filter-btn:hover {
 	background: #475569;
-	color: #3b82f6;
-	border-color: #3b82f6;
+	color: var(--slos-accent-primary, #6b8e4e);
+	border-color: var(--slos-accent-primary, #6b8e4e);
 	transform: translateY(-2px);
-	box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+	box-shadow: 0 4px 12px rgb(107 142 78 / 20%);
 }
 
 .slos-hub-filter-btn--active {
-	background: linear-gradient(135deg, #3b82f6 0%, #93c5fd 50%, #ffffff 100%) !important;
+	background: linear-gradient(135deg, #6b8e4e 0%, #8ba972 50%, #fff 100%) !important;
 	color: #1e3a5f !important;
 	font-weight: 700;
 	border-color: #3b82f6 !important;
-	box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4), 0 0 40px rgba(147, 197, 253, 0.3);
+	box-shadow: 0 6px 20px rgb(107 142 78 / 40%), 0 0 40px rgb(139 169 114 / 30%);
 	transform: translateY(-2px);
 }
 
@@ -302,8 +302,8 @@
 }
 
 /* ==========================================================================
-   Cards Grid
-   ========================================================================== */
+	Cards Grid
+	========================================================================== */
 
 .slos-hub-grid {
 	display: grid;
@@ -330,8 +330,8 @@
 }
 
 /* ==========================================================================
-   Document Cards
-   ========================================================================== */
+	Document Cards
+	========================================================================== */
 
 .slos-card {
 	background: var(--slos-hub-white);
@@ -410,17 +410,17 @@
 }
 
 .slos-badge--blue {
-	background: rgba(114, 174, 230, 0.15);
+	background: rgb(114 174 230 / 15%);
 	color: var(--slos-hub-primary);
 }
 
 .slos-badge--green {
-	background: rgba(0, 163, 42, 0.15);
+	background: rgb(0 163 42 / 15%);
 	color: var(--slos-hub-success);
 }
 
 .slos-badge--orange {
-	background: rgba(219, 166, 23, 0.15);
+	background: rgb(219 166 23 / 15%);
 	color: #996800;
 }
 
@@ -468,7 +468,7 @@
 	align-items: flex-start;
 	gap: 8px;
 	padding: 10px 12px;
-	background: rgba(219, 166, 23, 0.1);
+	background: rgb(219 166 23 / 10%);
 	border-radius: var(--slos-hub-radius-sm);
 	font-size: 12px;
 	color: #996800;
@@ -517,8 +517,8 @@
 }
 
 /* ==========================================================================
-   Buttons
-   ========================================================================== */
+	Buttons
+	========================================================================== */
 
 .slos-btn {
 	display: inline-flex;
@@ -611,12 +611,12 @@
 }
 
 .slos-btn--highlight {
-	background: rgba(219, 166, 23, 0.15);
+	background: rgb(219 166 23 / 15%);
 	color: #996800;
 }
 
 .slos-btn--highlight:hover {
-	background: rgba(219, 166, 23, 0.25);
+	background: rgb(219 166 23 / 25%);
 }
 
 .slos-btn:disabled,
@@ -635,15 +635,15 @@
 	position: absolute;
 	width: 16px;
 	height: 16px;
-	border: 2px solid currentColor;
+	border: 2px solid currentcolor;
 	border-radius: 50%;
 	border-top-color: transparent;
 	animation: slos-spin 0.8s linear infinite;
 }
 
 /* ==========================================================================
-   Stats Panel
-   ========================================================================== */
+	Stats Panel
+	========================================================================== */
 
 .slos-hub-stats {
 	display: grid;
@@ -693,8 +693,8 @@
 }
 
 /* ==========================================================================
-   Shortcode Section
-   ========================================================================== */
+	Shortcode Section
+	========================================================================== */
 
 .slos-hub-shortcodes {
 	background: var(--slos-hub-white);
@@ -749,16 +749,13 @@
 }
 
 /* ==========================================================================
-   Modal
-   ========================================================================== */
+	Modal
+	========================================================================== */
 
 .slos-modal {
 	display: none;
 	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
+	inset: 0;
 	z-index: 100100;
 	align-items: center;
 	justify-content: center;
@@ -770,11 +767,8 @@
 
 .slos-modal__backdrop {
 	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background: rgba(0, 0, 0, 0.5);
+	inset: 0;
+	background: rgb(0 0 0 / 50%);
 }
 
 .slos-modal__container {
@@ -858,8 +852,8 @@
 }
 
 /* ==========================================================================
-   Generation Context (Modal Content)
-   ========================================================================== */
+	Generation Context (Modal Content)
+	========================================================================== */
 
 .slos-hub-context {
 	padding: 10px 0;
@@ -868,7 +862,7 @@
 .slos-hub-context__title {
 	font-size: 18px;
 	font-weight: 600;
-	margin: 0 0 16px 0;
+	margin: 0 0 16px;
 	color: var(--slos-hub-text);
 }
 
@@ -911,11 +905,11 @@
 }
 
 .slos-hub-context__missing p {
-	margin: 0 0 8px 0;
+	margin: 0 0 8px;
 }
 
 .slos-hub-context__missing ul {
-	margin: 0 0 12px 0;
+	margin: 0 0 12px;
 	padding-left: 20px;
 }
 
@@ -936,8 +930,8 @@
 }
 
 /* ==========================================================================
-   Preview Content
-   ========================================================================== */
+	Preview Content
+	========================================================================== */
 
 .slos-hub-preview-content {
 	font-size: 14px;
@@ -972,8 +966,8 @@
 }
 
 /* ==========================================================================
-   History List
-   ========================================================================== */
+	History List
+	========================================================================== */
 
 .slos-hub-history-list {
 	display: flex;
@@ -1019,8 +1013,8 @@
 }
 
 /* ==========================================================================
-   Spinner
-   ========================================================================== */
+	Spinner
+	========================================================================== */
 
 .slos-spinner {
 	display: inline-block;
@@ -1033,8 +1027,8 @@
 }
 
 /* ==========================================================================
-   Animations
-   ========================================================================== */
+	Animations
+	========================================================================== */
 
 @keyframes slos-spin {
 	to {
@@ -1047,6 +1041,7 @@
 		opacity: 0;
 		transform: scale(0.95);
 	}
+
 	to {
 		opacity: 1;
 		transform: scale(1);
@@ -1054,8 +1049,8 @@
 }
 
 /* ==========================================================================
-   Toast Notifications
-   ========================================================================== */
+	Toast Notifications
+	========================================================================== */
 
 .slos-toast {
 	position: fixed;
@@ -1092,6 +1087,7 @@
 		opacity: 0;
 		transform: translateY(20px);
 	}
+
 	to {
 		opacity: 1;
 		transform: translateY(0);
@@ -1099,10 +1095,10 @@
 }
 
 /* ==========================================================================
-   Responsive
-   ========================================================================== */
+	Responsive
+	========================================================================== */
 
-@media (max-width: 782px) {
+@media (width <= 782px) {
 	.slos-hub-wrap {
 		margin: 10px;
 	}

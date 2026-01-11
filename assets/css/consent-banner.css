@@ -9,142 +9,143 @@
  */
 
 /* ============================================
-   CSS Variables - Light Theme Defaults (0.1.1)
-   ============================================ */
+	CSS Variables - Light Theme Defaults (0.1.1)
+	============================================ */
 :root {
-    /* Background & Surface */
-    --slos-banner-bg: #ffffff;
-    --shahi-bg-card: #ffffff;
-    
-    /* Text Colors */
-    --slos-banner-text: #111827;
-    --slos-banner-muted: #6b7280;
-    
-    /* Border & Dividers */
-    --slos-banner-border: #e5e7eb;
-    
-    /* Accent / Primary Action (Olive) */
-    --slos-banner-accent: #6b8e4e;
-    --slos-banner-accent-hover: #7a9d5d;
-    
-    /* Success / Accept (Green) */
-    --slos-banner-success: #10b981;
-    --slos-banner-success-hover: #059669;
-    
-    /* Danger / Reject (Red) */
-    --slos-banner-danger: #ef4444;
-    
-    /* Effects */
-    --slos-banner-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
-    --slos-banner-radius: 12px;
+	/* Background & Surface */
+	--slos-banner-bg: #fff;
+	--shahi-bg-card: #fff;
+
+	/* Text Colors */
+	--slos-banner-text: #111827;
+	--slos-banner-muted: #6b7280;
+
+	/* Border & Dividers */
+	--slos-banner-border: #e5e7eb;
+
+	/* Accent / Primary Action (Olive) */
+	--slos-banner-accent: #6b8e4e;
+	--slos-banner-accent-hover: #7a9d5d;
+
+	/* Success / Accept (Green) */
+	--slos-banner-success: #10b981;
+	--slos-banner-success-hover: #059669;
+
+	/* Danger / Reject (Red) */
+	--slos-banner-danger: #ef4444;
+
+	/* Effects */
+	--slos-banner-shadow: 0 4px 24px rgb(0 0 0 / 12%);
+	--slos-banner-radius: 12px;
 }
 
 /* ============================================
-   Banner Container - Compact Design
-   ============================================ */
+	Banner Container - Compact Design
+	============================================ */
 #slos-consent-banner {
-    position: fixed;
-    left: 16px;
-    right: 16px;
-    bottom: 16px;
-    max-width: 560px; /* Phase 1.1.1: Increased from 480px for better desktop readability */
-    z-index: 999999;
-    background: var(--slos-banner-bg);
-    border: 1px solid var(--slos-banner-border);
-    border-radius: var(--slos-banner-radius);
-    box-shadow: var(--slos-banner-shadow);
-    padding: 16px 20px;
-    transform: translateY(calc(100% + 32px));
-    opacity: 0;
-    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-    font-size: 14px; /* Phase 1.1.2: Increased from 13px for better readability */
-    line-height: 1.6; /* Phase 1.1.4: Increased from 1.5 for improved readability */
-    color: var(--slos-banner-text);
-    
-    /* Phase 4.4.3: Performance optimizations for CLS prevention */
-    will-change: transform, opacity; /* Hint browser to optimize these properties */
-    contain: layout style paint; /* Isolate banner layout from rest of page */
-    transform: translateY(calc(100% + 32px)) translateZ(0); /* Force GPU acceleration */
+	position: fixed;
+	left: 16px;
+	right: 16px;
+	bottom: 16px;
+	max-width: 560px; /* Phase 1.1.1: Increased from 480px for better desktop readability */
+	z-index: 999999;
+	background: var(--slos-banner-bg);
+	border: 1px solid var(--slos-banner-border);
+	border-radius: var(--slos-banner-radius);
+	box-shadow: var(--slos-banner-shadow);
+	padding: 16px 20px;
+	opacity: 0;
+	transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+	font-size: 14px; /* Phase 1.1.2: Increased from 13px for better readability */
+	line-height: 1.6; /* Phase 1.1.4: Increased from 1.5 for improved readability */
+	color: var(--slos-banner-text);
+
+	/* Phase 4.4.3: Performance optimizations for CLS prevention */
+	will-change: transform, opacity; /* Hint browser to optimize these properties */
+	contain: layout style paint; /* Isolate banner layout from rest of page */
+	transform: translateY(calc(100% + 32px)) translateZ(0); /* Force GPU acceleration */
 }
 
 #slos-consent-banner.slos-banner-visible {
-    transform: translateY(0) translateZ(0); /* Phase 4.4.3: Maintain GPU acceleration */
-    opacity: 1;
+	transform: translateY(0) translateZ(0); /* Phase 4.4.3: Maintain GPU acceleration */
+	opacity: 1;
 }
 
 /* Position Variants */
 .slos-banner-bottom { bottom: 16px; top: auto; }
-.slos-banner-top { 
-    top: 16px; 
-    bottom: auto; 
-    transform: translateY(calc(-100% - 32px)) translateZ(0); /* Phase 4.4.3: GPU acceleration */
+
+.slos-banner-top {
+	top: 16px;
+	bottom: auto;
+	transform: translateY(calc(-100% - 32px)) translateZ(0); /* Phase 4.4.3: GPU acceleration */
 }
-.slos-banner-top.slos-banner-visible { 
-    transform: translateY(0) translateZ(0); /* Phase 4.4.3: GPU acceleration */
+
+.slos-banner-top.slos-banner-visible {
+	transform: translateY(0) translateZ(0); /* Phase 4.4.3: GPU acceleration */
 }
 
 /* Theme Variants - Dark Theme (0.1.2) */
 .slos-banner-dark {
-    /* Background & Surface */
-    --slos-banner-bg: #1f2937;
-    --shahi-bg-card: #374151;
-    
-    /* Text Colors */
-    --slos-banner-text: #f3f4f6;
-    --slos-banner-muted: #9ca3af;
-    
-    /* Border & Dividers */
-    --slos-banner-border: #374151;
-    
-    /* Accent / Primary Action (Olive for dark bg) */
-    --slos-banner-accent: #8ba972;
-    --slos-banner-accent-hover: #6b8e4e;
-    
-    /* Success / Accept (Lighter Green for dark bg) */
-    --slos-banner-success: #34d399;
-    --slos-banner-success-hover: #10b981;
-    
-    /* Danger / Reject (Lighter Red for dark bg) */
-    --slos-banner-danger: #f87171;
-    
-    /* Effects */
-    --slos-banner-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
-    --slos-banner-radius: 12px;
+	/* Background & Surface */
+	--slos-banner-bg: #1f2937;
+	--shahi-bg-card: #374151;
+
+	/* Text Colors */
+	--slos-banner-text: #f3f4f6;
+	--slos-banner-muted: #9ca3af;
+
+	/* Border & Dividers */
+	--slos-banner-border: #374151;
+
+	/* Accent / Primary Action (Olive for dark bg) */
+	--slos-banner-accent: #8ba972;
+	--slos-banner-accent-hover: #6b8e4e;
+
+	/* Success / Accept (Lighter Green for dark bg) */
+	--slos-banner-success: #34d399;
+	--slos-banner-success-hover: #10b981;
+
+	/* Danger / Reject (Lighter Red for dark bg) */
+	--slos-banner-danger: #f87171;
+
+	/* Effects */
+	--slos-banner-shadow: 0 4px 24px rgb(0 0 0 / 40%);
+	--slos-banner-radius: 12px;
 }
 
 /* Theme Variants - Light Theme Override */
 .slos-banner-light {
-    /* Background & Surface */
-    --slos-banner-bg: #ffffff;
-    --shahi-bg-card: #ffffff;
-    
-    /* Text Colors */
-    --slos-banner-text: #111827;
-    --slos-banner-muted: #6b7280;
-    
-    /* Border & Dividers */
-    --slos-banner-border: #e5e7eb;
-    
-    /* Accent / Primary Action */
-    --slos-banner-accent: #6b8e4e;
-    --slos-banner-accent-hover: #7a9d5d;
-    
-    /* Success / Accept */
-    --slos-banner-success: #10b981;
-    --slos-banner-success-hover: #059669;
-    
-    /* Danger / Reject */
-    --slos-banner-danger: #ef4444;
-    
-    /* Effects */
-    --slos-banner-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
-    --slos-banner-radius: 12px;
+	/* Background & Surface */
+	--slos-banner-bg: #fff;
+	--shahi-bg-card: #fff;
+
+	/* Text Colors */
+	--slos-banner-text: #111827;
+	--slos-banner-muted: #6b7280;
+
+	/* Border & Dividers */
+	--slos-banner-border: #e5e7eb;
+
+	/* Accent / Primary Action */
+	--slos-banner-accent: #6b8e4e;
+	--slos-banner-accent-hover: #7a9d5d;
+
+	/* Success / Accept */
+	--slos-banner-success: #10b981;
+	--slos-banner-success-hover: #059669;
+
+	/* Danger / Reject */
+	--slos-banner-danger: #ef4444;
+
+	/* Effects */
+	--slos-banner-shadow: 0 4px 24px rgb(0 0 0 / 12%);
+	--slos-banner-radius: 12px;
 }
 
 /* ============================================
-   Banner Content - Inline Compact Layout
-   ============================================ */
+	Banner Content - Inline Compact Layout
+	============================================ */
 .slos-banner-content { display: flex; flex-direction: column; gap: 12px; position: relative; }
 .slos-banner-header { display: none; }
 .slos-banner-title { margin: 0; font-size: 14px; font-weight: 600; color: var(--slos-banner-text); }
@@ -154,82 +155,82 @@
 .slos-banner-message a:hover { text-decoration: underline; }
 
 /* ============================================
-   Close/Dismiss Button (0.3.2)
-   ============================================ */
+	Close/Dismiss Button (0.3.2)
+	============================================ */
 .slos-banner-close {
-    position: absolute;
-    top: -4px;
-    right: -4px;
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    min-height: 44px;
-    padding: 0;
-    border: none;
-    background: transparent;
-    color: var(--slos-banner-muted);
-    font-size: 28px;
-    line-height: 1;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: all 0.15s ease;
-    z-index: 10;
+	position: absolute;
+	top: -4px;
+	right: -4px;
+	width: 44px;
+	height: 44px;
+	min-width: 44px;
+	min-height: 44px;
+	padding: 0;
+	border: none;
+	background: transparent;
+	color: var(--slos-banner-muted);
+	font-size: 28px;
+	line-height: 1;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	transition: all 0.15s ease;
+	z-index: 10;
 }
 
 .slos-banner-close:hover {
-    background: rgba(0, 0, 0, 0.05);
-    color: var(--slos-banner-text);
-    transform: scale(1.05);
+	background: rgb(0 0 0 / 5%);
+	color: var(--slos-banner-text);
+	transform: scale(1.05);
 }
 
 .slos-banner-dark .slos-banner-close:hover {
-    background: rgba(255, 255, 255, 0.1);
+	background: rgb(255 255 255 / 10%);
 }
 
 .slos-banner-close:focus-visible {
-    outline: 2px solid var(--slos-banner-accent);
-    outline-offset: 2px;
+	outline: 2px solid var(--slos-banner-accent);
+	outline-offset: 2px;
 }
 
 .slos-banner-close:active {
-    transform: scale(0.95);
+	transform: scale(0.95);
 }
 
 .slos-banner-close span {
-    display: block;
-    font-weight: 300;
+	display: block;
+	font-weight: 300;
 }
 
 /* ============================================
-   Consent Options - Collapsed by Default
-   ============================================ */
+	Consent Options - Collapsed by Default
+	============================================ */
 .slos-consent-options {
-    display: none;
-    margin: 12px 0 0;
-    padding: 12px;
-    background: rgba(0, 0, 0, 0.03);
-    border-radius: 8px;
-    max-height: 200px;
-    overflow-y: auto;
+	display: none;
+	margin: 12px 0 0;
+	padding: 12px;
+	background: rgb(0 0 0 / 3%);
+	border-radius: 8px;
+	max-height: 200px;
+	overflow-y: auto;
 }
 
-.slos-banner-dark .slos-consent-options { background: rgba(255, 255, 255, 0.05); }
+.slos-banner-dark .slos-consent-options { background: rgb(255 255 255 / 5%); }
 .slos-consent-options.slos-expanded { display: block; animation: slideDown 0.2s ease; }
 
 @keyframes slideDown {
-    from { opacity: 0; transform: translateY(-8px); }
-    to { opacity: 1; transform: translateY(0); }
+	from { opacity: 0; transform: translateY(-8px); }
+	to { opacity: 1; transform: translateY(0); }
 }
 
 .slos-consent-option {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px solid var(--slos-banner-border);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 8px 0;
+	border-bottom: 1px solid var(--slos-banner-border);
 }
 
 .slos-consent-option:last-child { border-bottom: none; padding-bottom: 0; }
@@ -237,46 +238,47 @@
 
 /* Phase 1.3.2: Ensure 44×44px touch target for accessibility */
 .slos-consent-label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    flex: 1;
-    -webkit-user-select: none;
-    user-select: none;
-    padding: 12px 0; /* Ensures 44px minimum touch target height */
-    min-height: 44px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	cursor: pointer;
+	flex: 1;
+	user-select: none;
+	user-select: none;
+	padding: 12px 0; /* Ensures 44px minimum touch target height */
+	min-height: 44px;
 }
 
 /* Modern Toggle Switch (Phase 1.3.2: 44×44px touch target) */
 .slos-consent-checkbox {
-    position: relative;
-    width: 36px;
-    height: 20px;
-    -webkit-appearance: none;
-    appearance: none;
-    background: var(--slos-banner-border);
-    border-radius: 20px;
-    cursor: pointer;
-    transition: background 0.2s;
-    flex-shrink: 0;
-    margin: 0;
-    /* Phase 1.3.2: Padding ensures 44×44px minimum touch target */
-    padding: 12px;
-    box-sizing: content-box;
+	position: relative;
+	width: 36px;
+	height: 20px;
+	appearance: none;
+	appearance: none;
+	background: var(--slos-banner-border);
+	border-radius: 20px;
+	cursor: pointer;
+	transition: background 0.2s;
+	flex-shrink: 0;
+	margin: 0;
+
+	/* Phase 1.3.2: Padding ensures 44×44px minimum touch target */
+	padding: 12px;
+	box-sizing: content-box;
 }
 
 .slos-consent-checkbox::after {
-    content: '';
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 16px;
-    height: 16px;
-    background: var(--shahi-bg-card);
-    border-radius: 50%;
-    transition: transform 0.2s;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+	content: '';
+	position: absolute;
+	top: 2px;
+	left: 2px;
+	width: 16px;
+	height: 16px;
+	background: var(--shahi-bg-card);
+	border-radius: 50%;
+	transition: transform 0.2s;
+	box-shadow: 0 1px 3px rgb(0 0 0 / 20%);
 }
 
 .slos-consent-checkbox:checked { background: var(--slos-banner-success); }
@@ -288,34 +290,34 @@
 .slos-purpose-description { display: none; }
 
 /* ============================================
-   Banner Footer - Compact Button Row
-   ============================================ */
+	Banner Footer - Compact Button Row
+	============================================ */
 .slos-banner-footer { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 
 /* Buttons - Modern Pill Style */
 .slos-btn {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px; /* Phase 1.1.2: Updated from 13px for consistency */
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    white-space: nowrap;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
+	padding: 8px 16px;
+	border: none;
+	border-radius: 8px;
+	font-size: 14px; /* Phase 1.1.2: Updated from 13px for consistency */
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.15s ease;
+	white-space: nowrap;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
 }
 
 .slos-btn:focus-visible { outline: 2px solid var(--slos-banner-accent); outline-offset: 2px; }
 
 /* Primary Accept Button */
 .slos-btn-accept-all, .slos-btn-accept {
-    background: var(--slos-banner-success);
-    color: white;
-    flex: 1;
-    min-width: 100px;
+	background: var(--slos-banner-success);
+	color: white;
+	flex: 1;
+	min-width: 100px;
 }
 
 .slos-btn-accept-all:hover, .slos-btn-accept:hover { background: var(--slos-banner-success-hover); }
@@ -326,59 +328,59 @@
 
 /* Reject/Decline - Ghost Style (Phase 1.2.2: Neutral, GDPR-compliant) */
 .slos-btn-reject-all, .slos-btn-reject {
-    background: transparent;
-    color: var(--slos-banner-text);
-    border: 1px solid var(--slos-banner-border);
+	background: transparent;
+	color: var(--slos-banner-text);
+	border: 1px solid var(--slos-banner-border);
 }
 
 /* Phase 1.2.2: Neutral hover (equal prominence per GDPR), no aggressive red */
 .slos-btn-reject-all:hover, .slos-btn-reject:hover {
-    background: rgba(0, 0, 0, 0.05);
-    border-color: var(--slos-banner-text);
-    color: var(--slos-banner-text);
+	background: rgb(0 0 0 / 5%);
+	border-color: var(--slos-banner-text);
+	color: var(--slos-banner-text);
 }
 
 /* Dark theme neutral hover */
-.slos-banner-dark .slos-btn-reject-all:hover, 
+.slos-banner-dark .slos-btn-reject-all:hover,
 .slos-banner-dark .slos-btn-reject:hover {
-    background: rgba(255, 255, 255, 0.1);
+	background: rgb(255 255 255 / 10%);
 }
 
 /* Links */
 .slos-privacy-link, .slos-learn-more {
-    color: var(--slos-banner-accent);
-    text-decoration: none;
-    font-size: 12px;
-    transition: color 0.15s;
-    white-space: nowrap;
+	color: var(--slos-banner-accent);
+	text-decoration: none;
+	font-size: 12px;
+	transition: color 0.15s;
+	white-space: nowrap;
 }
 
 .slos-privacy-link:hover, .slos-learn-more:hover { text-decoration: underline; }
 
 /* Phase 1.2.3: Customize link - tertiary text link style, lower emphasis */
 .slos-settings-link {
-    color: var(--slos-banner-muted);
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 400;
-    transition: color 0.15s;
-    white-space: nowrap;
-    padding: 4px 8px;
-    border-radius: 4px;
+	color: var(--slos-banner-muted);
+	text-decoration: none;
+	font-size: 13px;
+	font-weight: 400;
+	transition: color 0.15s;
+	white-space: nowrap;
+	padding: 4px 8px;
+	border-radius: 4px;
 }
 
-.slos-settings-link:hover { 
-    color: var(--slos-banner-text);
-    background: rgba(0, 0, 0, 0.03);
+.slos-settings-link:hover {
+	color: var(--slos-banner-text);
+	background: rgb(0 0 0 / 3%);
 }
 
 .slos-banner-dark .slos-settings-link:hover {
-    background: rgba(255, 255, 255, 0.05);
+	background: rgb(255 255 255 / 5%);
 }
 
 /* ============================================
-   Template-Specific Styles
-   ============================================ */
+	Template-Specific Styles
+	============================================ */
 .slos-template-eu .slos-banner-header,
 .slos-template-gdpr .slos-banner-header,
 .slos-template-advanced .slos-banner-header { display: block; margin-bottom: 4px; }
@@ -386,9 +388,9 @@
 /* CCPA & Simple - Inline style */
 .slos-template-ccpa .slos-banner-content,
 .slos-template-simple .slos-banner-content {
-    flex-direction: row;
-    align-items: center;
-    gap: 16px;
+	flex-direction: row;
+	align-items: center;
+	gap: 16px;
 }
 
 .slos-template-ccpa .slos-banner-body,
@@ -401,132 +403,136 @@
 .slos-template-simple .slos-banner-message { font-size: 12px; }
 
 /* ============================================
-   Responsive Design
-   ============================================ */
-@media (max-width: 640px) {
-    #slos-consent-banner { left: 12px; right: 12px; bottom: 12px; max-width: none; padding: 14px 16px; }
-    .slos-banner-content { gap: 10px; }
-    .slos-template-ccpa .slos-banner-content,
-    .slos-template-simple .slos-banner-content { flex-direction: column; align-items: stretch; }
-    .slos-banner-footer { flex-wrap: wrap; }
-    .slos-btn { flex: 1; min-width: calc(50% - 4px); }
-    /* Phase 1.2.1: Primary accept button full width on mobile for clear hierarchy */
-    .slos-btn-accept-all, .slos-btn-accept { order: 1; flex: 1 1 100%; }
-    .slos-btn-reject-all, .slos-btn-reject { order: 2; flex: 1 1 calc(50% - 4px); }
-    .slos-btn-accept-selected { order: 2; flex: 1 1 calc(50% - 4px); }
-    .slos-settings-link { order: 3; }
-    .slos-privacy-link, .slos-settings-link { width: 100%; text-align: center; padding-top: 8px; order: 4; }
+	Responsive Design
+	============================================ */
+@media (width <= 640px) {
+	#slos-consent-banner { left: 12px; right: 12px; bottom: 12px; max-width: none; padding: 14px 16px; }
+	.slos-banner-content { gap: 10px; }
+
+	.slos-template-ccpa .slos-banner-content,
+	.slos-template-simple .slos-banner-content { flex-direction: column; align-items: stretch; }
+	.slos-banner-footer { flex-wrap: wrap; }
+	.slos-btn { flex: 1; min-width: calc(50% - 4px); }
+
+	/* Phase 1.2.1: Primary accept button full width on mobile for clear hierarchy */
+	.slos-btn-accept-all, .slos-btn-accept { order: 1; flex: 1 1 100%; }
+	.slos-btn-reject-all, .slos-btn-reject { order: 2; flex: 1 1 calc(50% - 4px); }
+	.slos-btn-accept-selected { order: 2; flex: 1 1 calc(50% - 4px); }
+	.slos-settings-link { order: 3; }
+	.slos-privacy-link, .slos-settings-link { width: 100%; text-align: center; padding-top: 8px; order: 4; }
 }
 
-@media (max-width: 380px) {
-    #slos-consent-banner { left: 8px; right: 8px; bottom: 8px; padding: 12px; }
-    .slos-banner-message { font-size: 12px; }
-    .slos-btn { padding: 8px 12px; font-size: 12px; }
+@media (width <= 380px) {
+	#slos-consent-banner { left: 8px; right: 8px; bottom: 8px; padding: 12px; }
+	.slos-banner-message { font-size: 12px; }
+	.slos-btn { padding: 8px 12px; font-size: 12px; }
 }
 
 /* ============================================
-   Accessibility
-   ============================================ */
+	Accessibility
+	============================================ */
 #slos-consent-banner:focus { outline: 2px solid var(--slos-banner-accent); outline-offset: 2px; }
 
 /* Phase 1.3.1: Enhanced focus ring for toggle switches (3px solid accent) */
-.slos-consent-checkbox:focus-visible { 
-    outline: 3px solid var(--slos-banner-accent); 
-    outline-offset: 3px; 
+.slos-consent-checkbox:focus-visible {
+	outline: 3px solid var(--slos-banner-accent);
+	outline-offset: 3px;
 }
 
 @media (prefers-contrast: more) {
-    #slos-consent-banner { border-width: 2px; }
-    .slos-btn { border: 2px solid currentColor; }
+	#slos-consent-banner { border-width: 2px; }
+	.slos-btn { border: 2px solid currentcolor; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    #slos-consent-banner { transition: opacity 0.2s ease; transform: none !important; }
-    #slos-consent-banner:not(.slos-banner-visible) { display: none; }
+	#slos-consent-banner { transition: opacity 0.2s ease; transform: none !important; }
+	#slos-consent-banner:not(.slos-banner-visible) { display: none; }
 }
 
 /* System Dark Mode Auto-Detection (0.1.3) */
 @media (prefers-color-scheme: dark) {
-    #slos-consent-banner:not(.slos-banner-light) {
-        /* Background & Surface */
-        --slos-banner-bg: #1f2937;
-        --shahi-bg-card: #374151;
-        
-        /* Text Colors */
-        --slos-banner-text: #f3f4f6;
-        --slos-banner-muted: #9ca3af;
-        
-        /* Border & Dividers */
-        --slos-banner-border: #374151;
-        
-        /* Accent / Primary Action (Olive for dark bg) */
-        --slos-banner-accent: #8ba972;
-        --slos-banner-accent-hover: #6b8e4e;
-        
-        /* Success / Accept (Lighter Green for dark bg) */
-        --slos-banner-success: #34d399;
-        --slos-banner-success-hover: #10b981;
-        
-        /* Danger / Reject (Lighter Red for dark bg) */
-        --slos-banner-danger: #f87171;
-        
-        /* Effects */
-        --slos-banner-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
-        --slos-banner-radius: 12px;
-    }
-    
-    /* Cookie icon dark mode */
-    .slos-cookie-icon:not(.slos-banner-light) {
-        --slos-banner-bg: #1f2937;
-        --slos-banner-border: #374151;
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
-    }
+	#slos-consent-banner:not(.slos-banner-light) {
+		/* Background & Surface */
+		--slos-banner-bg: #1f2937;
+		--shahi-bg-card: #374151;
+
+		/* Text Colors */
+		--slos-banner-text: #f3f4f6;
+		--slos-banner-muted: #9ca3af;
+
+		/* Border & Dividers */
+		--slos-banner-border: #374151;
+
+		/* Accent / Primary Action (Olive for dark bg) */
+		--slos-banner-accent: #8ba972;
+		--slos-banner-accent-hover: #6b8e4e;
+
+		/* Success / Accept (Lighter Green for dark bg) */
+		--slos-banner-success: #34d399;
+		--slos-banner-success-hover: #10b981;
+
+		/* Danger / Reject (Lighter Red for dark bg) */
+		--slos-banner-danger: #f87171;
+
+		/* Effects */
+		--slos-banner-shadow: 0 4px 24px rgb(0 0 0 / 40%);
+		--slos-banner-radius: 12px;
+	}
+
+	/* Cookie icon dark mode */
+	.slos-cookie-icon:not(.slos-banner-light) {
+		--slos-banner-bg: #1f2937;
+		--slos-banner-border: #374151;
+
+		box-shadow: 0 2px 12px rgb(0 0 0 / 30%);
+	}
 }
 
 /* ============================================
-   Floating Cookie Icon (Re-open Banner)
-   ============================================ */
+	Floating Cookie Icon (Re-open Banner)
+	============================================ */
 .slos-cookie-icon {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    width: 44px;
-    height: 44px;
-    background: var(--slos-banner-bg, #fff);
-    border: 1px solid var(--slos-banner-border, #e5e7eb);
-    border-radius: 50%;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    transition: transform 0.2s, box-shadow 0.2s;
-    z-index: 999998;
+	position: fixed;
+	bottom: 20px;
+	left: 20px;
+	width: 44px;
+	height: 44px;
+	background: var(--slos-banner-bg, #fff);
+	border: 1px solid var(--slos-banner-border, #e5e7eb);
+	border-radius: 50%;
+	box-shadow: 0 2px 12px rgb(0 0 0 / 10%);
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 20px;
+	transition: transform 0.2s, box-shadow 0.2s;
+	z-index: 999998;
 }
 
-.slos-cookie-icon:hover { transform: scale(1.08); box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15); }
+.slos-cookie-icon:hover { transform: scale(1.08); box-shadow: 0 4px 16px rgb(0 0 0 / 15%); }
 .slos-cookie-icon:active { transform: scale(0.95); }
 
 /* Phase 1.4.2: Icon positioning classes */
 .slos-cookie-icon.position-left {
-    left: 20px;
-    right: auto;
+	left: 20px;
+	right: auto;
 }
 
 .slos-cookie-icon.position-right {
-    right: 20px;
-    left: auto;
+	right: 20px;
+	left: auto;
 }
 
 /* ============================================
-   Phase 1.5: Loading Spinner Animation
-   ============================================ */
+	Phase 1.5: Loading Spinner Animation
+	============================================ */
 @keyframes slos-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+	from {
+		transform: rotate(0deg);
+	}
+
+	to {
+		transform: rotate(360deg);
+	}
 }

@@ -52,4 +52,3 @@ class DownloadLinkCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

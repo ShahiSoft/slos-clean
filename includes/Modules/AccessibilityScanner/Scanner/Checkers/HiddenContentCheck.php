@@ -51,4 +51,3 @@ class HiddenContentCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

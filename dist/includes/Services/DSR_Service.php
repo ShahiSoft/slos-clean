@@ -299,7 +299,7 @@ class DSR_Service extends Base_Service {
 		$existing_notes = ! empty( $request->admin_notes ) ? $request->admin_notes . "\n\n" : '';
 		$timestamp      = current_time( 'mysql' );
 		$author_name    = get_userdata( $author )->display_name ?? "User #{$author}";
-		$new_note       = sprintf( "[%s] %s: %s", $timestamp, $author_name, sanitize_textarea_field( $note ) );
+		$new_note       = sprintf( '[%s] %s: %s', $timestamp, $author_name, sanitize_textarea_field( $note ) );
 
 		// Update admin_notes field
 		$result = $this->repository->update(
@@ -352,7 +352,10 @@ class DSR_Service extends Base_Service {
 			$this->add_error(
 				'invalid_transition',
 				sprintf( 'Invalid status transition from "%s" to "%s"', $request->status, $new_status ),
-				array( 'current' => $request->status, 'target' => $new_status )
+				array(
+					'current' => $request->status,
+					'target'  => $new_status,
+				)
 			);
 			return false;
 		}
@@ -485,9 +488,13 @@ class DSR_Service extends Base_Service {
 		do_action( 'slos_dsr_erasure_execute', $request_id, $request );
 
 		// Update status to in_progress (will be completed after erasure)
-		$this->transition( $request_id, 'in_progress', array(
-			'admin_notes' => sprintf( '[%s] Erasure initiated', current_time( 'mysql' ) ),
-		) );
+		$this->transition(
+			$request_id,
+			'in_progress',
+			array(
+				'admin_notes' => sprintf( '[%s] Erasure initiated', current_time( 'mysql' ) ),
+			)
+		);
 
 		$this->add_message( 'Erasure process initiated. Data anonymization in progress.' );
 
@@ -512,7 +519,7 @@ class DSR_Service extends Base_Service {
 			$date->modify( '+1 day' );
 			// Skip weekends (Saturday=6, Sunday=7)
 			if ( (int) $date->format( 'N' ) < 6 ) {
-				$added++;
+				++$added;
 			}
 		}
 
@@ -580,9 +587,12 @@ class DSR_Service extends Base_Service {
 		}
 
 		// Sort by timestamp descending
-		usort( $timeline, function ( $a, $b ) {
-			return strtotime( $b['timestamp'] ) - strtotime( $a['timestamp'] );
-		} );
+		usort(
+			$timeline,
+			function ( $a, $b ) {
+				return strtotime( $b['timestamp'] ) - strtotime( $a['timestamp'] );
+			}
+		);
 
 		return $timeline;
 	}
@@ -595,13 +605,13 @@ class DSR_Service extends Base_Service {
 	 */
 	private function get_settings(): array {
 		$defaults = array(
-			'sla_gdpr'     => 30,
-			'sla_uk-gdpr'  => 30,
-			'sla_ccpa'     => 45,
-			'sla_lgpd'     => 15,
-			'sla_pipeda'   => 30,
-			'sla_popia'    => 30,
-			'rate_limit'   => 5,
+			'sla_gdpr'    => 30,
+			'sla_uk-gdpr' => 30,
+			'sla_ccpa'    => 45,
+			'sla_lgpd'    => 15,
+			'sla_pipeda'  => 30,
+			'sla_popia'   => 30,
+			'rate_limit'  => 5,
 		);
 
 		$settings = get_option( 'slos_dsr_settings', array() );
@@ -655,7 +665,7 @@ class DSR_Service extends Base_Service {
 			$attempts = 0;
 		}
 
-		$attempts++;
+		++$attempts;
 		set_transient( $transient_key, $attempts, HOUR_IN_SECONDS );
 	}
 
@@ -689,7 +699,7 @@ class DSR_Service extends Base_Service {
 	 * @param string $field Field name for error reporting
 	 * @return bool True if valid
 	 */
-	private function validate_email( string $email, string $field ): bool {
+	protected function validate_email( string $email, string $field = 'email' ): bool {
 		if ( empty( $email ) ) {
 			$this->add_validation_error( $field, 'Email is required' );
 			return false;
@@ -707,17 +717,117 @@ class DSR_Service extends Base_Service {
 	 * Validate value in allowed list
 	 *
 	 * @since 3.0.1
-	 * @param string $value Value to check
+	 * @param mixed  $value Value to check
 	 * @param array  $allowed Allowed values
-	 * @param string $field Field name for error reporting
+	 * @param string $field_name Field name for error reporting
 	 * @return bool True if valid
 	 */
-	private function validate_in_list( string $value, array $allowed, string $field ): bool {
+	protected function validate_in_list( $value, array $allowed, string $field_name ): bool {
 		if ( ! in_array( $value, $allowed, true ) ) {
-			$this->add_validation_error( $field, sprintf( 'Invalid %s. Allowed: %s', $field, implode( ', ', $allowed ) ) );
+			$this->add_validation_error( $field_name, sprintf( 'Invalid %s. Allowed: %s', $field_name, implode( ', ', $allowed ) ) );
 			return false;
 		}
 
 		return true;
+	}
+
+	/**
+	 * Get DSR statistics for Ops Dashboard
+	 *
+	 * Returns summary stats: open requests, SLA compliance, queue breakdown.
+	 *
+	 * @since 3.1.1 (Phase 2.1)
+	 * @return array DSR statistics
+	 */
+	public function get_ops_statistics(): array {
+		global $wpdb;
+		$table = $this->repository->get_full_table_name();
+
+		// Open requests (non-terminal statuses)
+		$open_statuses = array( 'pending_verification', 'verified', 'in_progress', 'on_hold' );
+		$placeholders  = implode( ', ', array_fill( 0, count( $open_statuses ), '%s' ) );
+		$open_args     = array_merge( array( $table ), $open_statuses );
+
+		$open_count = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*) FROM %i WHERE status IN ($placeholders)",
+				...$open_args
+			)
+		);
+
+		// Total requests
+		$total_count = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table ) );
+
+		// Completed requests
+		$completed_count = $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT COUNT(*) FROM %i WHERE status = %s',
+				$table,
+				'completed'
+			)
+		);
+
+		// SLA compliance: % of completed requests that met deadline
+		// Note: Table uses completed_date and due_date, not completed_at and sla_deadline
+		$sla_compliant = $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT COUNT(*) FROM %i WHERE status = %s AND completed_date IS NOT NULL AND completed_date <= due_date',
+				$table,
+				'completed'
+			)
+		);
+
+		$sla_compliance_rate = $completed_count > 0
+			? round( ( $sla_compliant / $completed_count ) * 100, 1 )
+			: 100;
+
+		// Queue breakdown by status
+		$queue_breakdown = $wpdb->get_results(
+			$wpdb->prepare( 'SELECT status, COUNT(*) as count FROM %i GROUP BY status', $table ),
+			ARRAY_A
+		);
+
+		$by_status = array();
+		foreach ( $queue_breakdown as $row ) {
+			$by_status[ $row['status'] ] = (int) $row['count'];
+		}
+
+		// Requests by type (last 30 days)
+		// Note: Table uses request_date, not submitted_at
+		$by_type = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT request_type, COUNT(*) as count FROM %i WHERE request_date >= %s GROUP BY request_type',
+				$table,
+				gmdate( 'Y-m-d H:i:s', strtotime( '-30 days' ) )
+			),
+			ARRAY_A
+		);
+
+		$type_breakdown = array();
+		foreach ( $by_type as $row ) {
+			$type_breakdown[ $row['request_type'] ] = (int) $row['count'];
+		}
+
+		// Overdue requests (past SLA deadline, not completed/rejected)
+		// Note: Table uses due_date, not sla_deadline
+		$overdue = $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT COUNT(*) FROM %i WHERE status NOT IN (%s, %s) AND due_date < %s',
+				$table,
+				'completed',
+				'rejected',
+				current_time( 'mysql' )
+			)
+		);
+
+		return array(
+			'open_requests'       => (int) $open_count,
+			'total_requests'      => (int) $total_count,
+			'completed_requests'  => (int) $completed_count,
+			'overdue_requests'    => (int) $overdue,
+			'sla_compliance_rate' => (float) $sla_compliance_rate,
+			'by_status'           => $by_status,
+			'by_type'             => $type_breakdown,
+		);
 	}
 }

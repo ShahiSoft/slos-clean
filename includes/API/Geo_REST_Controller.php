@@ -62,7 +62,7 @@ class Geo_REST_Controller extends Base_REST_Controller {
 							'required'          => true,
 							'type'              => 'string',
 							'sanitize_callback' => 'sanitize_text_field',
-							'validate_callback' => function( $value ) {
+							'validate_callback' => function ( $value ) {
 								return in_array( $value, array( 'EU', 'UK', 'US-CA', 'BR', 'ROW' ), true );
 							},
 						),

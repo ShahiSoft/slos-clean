@@ -1,6 +1,6 @@
 /**
  * ShahiLegalFlowSuite - Admin Global Styles
- * 
+ *
  * Core styles loaded on all plugin admin pages.
  * Implements dark futuristic theme with cyberpunk aesthetics.
  *
@@ -13,131 +13,168 @@
  */
 
 /* ============================================================================
-   CSS VARIABLES - ACCESSIBILITY SCANNER GLOBAL DESIGN SYSTEM
-   Based on Accessibility Scanner interface for unified design
-   ========================================================================= */
+	CSS VARIABLES - DARK OLIVE CORPORATE DESIGN SYSTEM
+	Professional, modern, uniform design across all plugin pages
+	========================================================================= */
 
 :root {
-    /* Background Colors - Dark Navy Blue Theme */
-    --shahi-bg-primary: #0f172a;
-    --shahi-bg-secondary: #1e293b;
-    --shahi-bg-tertiary: #334155;
-    --shahi-bg-elevated: #475569;
-    --shahi-bg-card: #1e293b;
-    --shahi-bg-input: #0f172a;
-    
-    /* Accent Colors - Clean Blue System */
-    --shahi-accent-primary: #3b82f6;
-    --shahi-accent-secondary: #60a5fa;
-    --shahi-accent-tertiary: #93c5fd;
-    --shahi-success: #22c55e;
-    --shahi-warning: #f59e0b;
-    --shahi-error: #ef4444;
-    --shahi-info: #06b6d4;
-    
-    /* Gradients */
-    --shahi-gradient-primary: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
-    --shahi-gradient-secondary: linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%);
-    --shahi-gradient-success: linear-gradient(135deg, #22c55e 0%, #10b981 100%);
-    
-    /* Text Colors */
-    --shahi-text-primary: #ffffff;
-    --shahi-text-secondary: #cbd5e1;
-    --shahi-text-muted: #94a3b8;
-    --shahi-text-accent: #3b82f6;
-    
-    /* Border & Lines */
-    --shahi-border: #334155;
-    --shahi-border-light: #475569;
-    --shahi-border-accent: #3b82f6;
-    
-    /* Shadows - Blue Glow System */
-    --shahi-shadow: 0 4px 20px rgba(59, 130, 246, 0.1);
-    --shahi-shadow-md: 0 8px 30px rgba(59, 130, 246, 0.15);
-    --shahi-shadow-lg: 0 12px 40px rgba(59, 130, 246, 0.2);
-    --shahi-hover-shadow: 0 8px 30px rgba(59, 130, 246, 0.25);
-    
-    /* Typography */
-    --shahi-font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, sans-serif;
-    --shahi-font-mono: 'Courier New', Courier, monospace;
-    
-    /* Spacing */
-    --shahi-space-xs: 8px;
-    --shahi-space-sm: 16px;
-    --shahi-space-md: 24px;
-    --shahi-space-lg: 32px;
-    --shahi-space-xl: 48px;
-    
-    /* Border Radius */
-    --shahi-radius-sm: 6px;
-    --shahi-radius-md: 8px;
-    --shahi-radius-lg: 12px;
-    --shahi-radius-xl: 16px;
-    
-    /* Transitions */
-    --shahi-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --shahi-transition-fast: 150ms ease;
-    --shahi-transition-base: 250ms ease;
-    --shahi-transition-slow: 350ms ease;
+	/* Background Colors - Dark Olive Theme */
+	--shahi-bg-primary: #1a1f1a;        /* Deep olive-black */
+	--shahi-bg-secondary: #242b24;      /* Dark olive */
+	--shahi-bg-tertiary: #2e382e;       /* Medium olive */
+	--shahi-bg-elevated: #3a4a3a;       /* Elevated olive */
+	--shahi-bg-card: #242b24;           /* Card background */
+	--shahi-bg-input: #1a1f1a;          /* Input background */
+
+	/* Accent Colors - Olive Green System */
+	--shahi-accent-primary: #6b8e4e;    /* Olive green */
+	--shahi-accent-secondary: #8ba972;  /* Light olive */
+	--shahi-accent-tertiary: #a8c595;   /* Pale olive */
+	--shahi-success: #6b8e4e;           /* Olive success */
+	--shahi-warning: #c99a4a;           /* Warm brown */
+	--shahi-error: #c96a5a;             /* Muted red */
+	--shahi-info: #6b8e8e;              /* Teal olive */
+
+	/* Gradients - Olive Based */
+	--shahi-gradient-primary: linear-gradient(135deg, #6b8e4e 0%, #8ba972 100%);
+	--shahi-gradient-secondary: linear-gradient(135deg, #8ba972 0%, #a8c595 100%);
+	--shahi-gradient-success: linear-gradient(135deg, #6b8e4e 0%, #8ba972 100%);
+	--shahi-gradient-card: linear-gradient(145deg, rgb(36 43 36 / 98%) 0%, rgb(26 31 26 / 98%) 100%);
+
+	/* Text Colors - Warm Tones */
+	--shahi-text-primary: #e8ede8;      /* Warm white */
+	--shahi-text-secondary: #c5d0c5;    /* Light olive gray */
+	--shahi-text-muted: #92a092;        /* Muted olive */
+	--shahi-text-accent: #8ba972;       /* Olive accent */
+
+	/* Border & Lines - Subtle Olive */
+	--shahi-border: #2e382e;            /* Subtle olive */
+	--shahi-border-light: #3a4a3a;      /* Light olive border */
+	--shahi-border-accent: #6b8e4e;     /* Olive accent border */
+	--shahi-border-color: #2e382e;      /* Alias for compatibility */
+	--shahi-border-glow: #6b8e4e;       /* Glow border */
+
+	/* Shadows - Olive Glow System */
+	--shahi-shadow: 0 4px 20px rgb(107 142 78 / 10%);
+	--shahi-shadow-sm: 0 2px 10px rgb(107 142 78 / 8%);
+	--shahi-shadow-md: 0 8px 30px rgb(107 142 78 / 15%);
+	--shahi-shadow-lg: 0 12px 40px rgb(107 142 78 / 20%);
+	--shahi-shadow-xl: 0 20px 60px rgb(107 142 78 / 30%);
+	--shahi-hover-shadow: 0 8px 30px rgb(107 142 78 / 25%);
+	--shahi-shadow-glow: 0 8px 30px rgb(107 142 78 / 25%);
+
+	/* Typography - Professional Corporate Fonts */
+	--shahi-font-primary: 'Inter', -apple-system, blinkmacsystemfont, 'Segoe UI', roboto, oxygen-sans, ubuntu, cantarell, sans-serif;
+	--shahi-font-heading: 'Inter', 'Segoe UI', sans-serif;
+	--shahi-font-mono: 'JetBrains Mono', 'Courier New', courier, monospace;
+
+	/* Font Sizes */
+	--shahi-text-xs: 0.75rem;           /* 12px */
+	--shahi-text-sm: 0.875rem;          /* 14px */
+	--shahi-text-base: 1rem;            /* 16px */
+	--shahi-text-lg: 1.125rem;          /* 18px */
+	--shahi-text-xl: 1.25rem;           /* 20px */
+	--shahi-text-2xl: 1.5rem;           /* 24px */
+	--shahi-text-3xl: 1.875rem;         /* 30px */
+	--shahi-font-size-sm: 0.875rem;     /* Alias */
+	--shahi-font-size-lg: 1.125rem;     /* Alias */
+
+	/* Font Weights */
+	--shahi-weight-normal: 400;
+	--shahi-weight-medium: 500;
+	--shahi-weight-semibold: 600;
+	--shahi-weight-bold: 700;
+
+	/* Line Heights */
+	--shahi-leading-tight: 1.25;
+	--shahi-leading-normal: 1.5;
+	--shahi-leading-relaxed: 1.75;
+
+	/* Spacing */
+	--shahi-space-xs: 8px;
+	--shahi-space-sm: 16px;
+	--shahi-space-md: 24px;
+	--shahi-space-lg: 32px;
+	--shahi-space-xl: 48px;
+
+	/* Border Radius */
+	--shahi-radius-sm: 6px;
+	--shahi-radius-md: 8px;
+	--shahi-radius-lg: 12px;
+	--shahi-radius-xl: 16px;
+
+	/* Transitions */
+	--shahi-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	--shahi-transition-fast: 150ms ease;
+	--shahi-transition-base: 250ms ease;
+	--shahi-transition-slow: 350ms ease;
+
+	/* Legacy Aliases for Backward Compatibility */
+	--shahi-accent-error: #c96a5a;      /* Error color alias */
+	--shahi-accent-success: #6b8e4e;    /* Success color alias */
+	--shahi-accent-warning: #c99a4a;    /* Warning color alias */
+	--shahi-card-bg: #242b24;           /* Card background alias */
+	--shahi-primary-color: #6b8e4e;     /* Primary color alias */
+	--shahi-secondary-color: #8ba972;   /* Secondary color alias */
 }
 
 /* ============================================================================
-   GLOBAL ADMIN STYLES
-   ========================================================================= */
+	GLOBAL ADMIN STYLES
+	========================================================================= */
 
 /* Wrap all plugin admin pages */
 .shahi-legalflowsuite-admin {
-    background: var(--shahi-bg-primary);
-    min-height: 100vh;
-    color: var(--shahi-text-primary);
-    font-family: var(--shahi-font-primary);
-    padding: var(--shahi-space-md);
+	background: var(--shahi-bg-primary);
+	min-height: 100vh;
+	color: var(--shahi-text-primary);
+	font-family: var(--shahi-font-primary);
+	padding: var(--shahi-space-md);
 }
 
 /* ============================================================================
-   WORDPRESS ADMIN MENU HIGHLIGHTING
-   ========================================================================= */
+	WORDPRESS ADMIN MENU HIGHLIGHTING
+	========================================================================= */
 
 /* Position context for submenu items */
 #adminmenu .wp-submenu li {
-    position: relative;
+	position: relative;
 }
 
 /* Highlight active submenu item */
 #adminmenu .wp-submenu li.current a,
 #adminmenu .wp-submenu li a.current {
-    color: var(--shahi-accent-primary, #60a5fa) !important;
-    font-weight: 600 !important;
+	color: var(--shahi-accent-primary) !important;
+	font-weight: 600 !important;
 }
 
 /* Add indicator for current submenu */
 #adminmenu .wp-submenu li.current a::before,
 #adminmenu .wp-submenu li a.current::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 3px;
-    height: 16px;
-    background: var(--shahi-accent-primary, #60a5fa);
-    border-radius: 0 2px 2px 0;
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 3px;
+	height: 16px;
+	background: var(--shahi-accent-primary);
+	border-radius: 0 2px 2px 0;
 }
 
 /* Hover effect for submenu items */
 #adminmenu .wp-submenu li a:hover {
-    color: var(--shahi-accent-primary, #60a5fa) !important;
+	color: var(--shahi-accent-primary) !important;
 }
 
 /* Main container */
 .shahi-container {
-    max-width: 1400px;
-    margin: 0 auto;
+	max-width: 1400px;
+	margin: 0 auto;
 }
 
 /* ============================================================================
-   TYPOGRAPHY
-   ========================================================================= */
+	TYPOGRAPHY
+	========================================================================= */
 
 .shahi-legalflowsuite-admin h1,
 .shahi-legalflowsuite-admin h2,
@@ -145,362 +182,359 @@
 .shahi-legalflowsuite-admin h4,
 .shahi-legalflowsuite-admin h5,
 .shahi-legalflowsuite-admin h6 {
-    color: var(--shahi-text-primary);
-    font-weight: 600;
-    line-height: 1.3;
-    margin: 0 0 var(--shahi-space-sm);
+	color: var(--shahi-text-primary);
+	font-weight: 600;
+	line-height: 1.3;
+	margin: 0 0 var(--shahi-space-sm);
 }
 
 .shahi-legalflowsuite-admin h1 {
-    font-size: 32px;
-    background: var(--shahi-gradient-primary);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+	font-size: 32px;
+	background: var(--shahi-gradient-primary);
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
 }
 
 .shahi-legalflowsuite-admin h2 {
-    font-size: 24px;
+	font-size: 24px;
 }
 
 .shahi-legalflowsuite-admin h3 {
-    font-size: 20px;
+	font-size: 20px;
 }
 
 .shahi-legalflowsuite-admin p {
-    color: var(--shahi-text-secondary);
-    line-height: 1.6;
-    margin: 0 0 var(--shahi-space-sm);
+	color: var(--shahi-text-secondary);
+	line-height: 1.6;
+	margin: 0 0 var(--shahi-space-sm);
 }
 
 .shahi-text-muted {
-    color: var(--shahi-text-muted);
+	color: var(--shahi-text-muted);
 }
 
 .shahi-text-accent {
-    color: var(--shahi-text-accent);
+	color: var(--shahi-text-accent);
 }
 
 /* ============================================================================
-   CARDS & PANELS
-   ========================================================================= */
+	CARDS & PANELS
+	========================================================================= */
 
 .shahi-card {
-    background: var(--shahi-bg-secondary);
-    border: 1px solid var(--shahi-border-color);
-    border-radius: var(--shahi-radius-lg);
-    padding: var(--shahi-space-md);
-    box-shadow: var(--shahi-shadow-sm);
-    transition: all var(--shahi-transition-base);
+	background: var(--shahi-bg-secondary);
+	border: 1px solid var(--shahi-border-color);
+	border-radius: var(--shahi-radius-lg);
+	padding: var(--shahi-space-md);
+	box-shadow: var(--shahi-shadow-sm);
+	transition: all var(--shahi-transition-base);
 }
 
 .shahi-card:hover {
-    border-color: var(--shahi-border-accent);
-    box-shadow: var(--shahi-shadow-md);
-    transform: translateY(-2px);
+	border-color: var(--shahi-border-accent);
+	box-shadow: var(--shahi-shadow-md);
+	transform: translateY(-2px);
 }
 
 .shahi-card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: var(--shahi-space-md);
-    padding-bottom: var(--shahi-space-sm);
-    border-bottom: 1px solid var(--shahi-border-color);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: var(--shahi-space-md);
+	padding-bottom: var(--shahi-space-sm);
+	border-bottom: 1px solid var(--shahi-border-color);
 }
 
 .shahi-card-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--shahi-text-primary);
-    margin: 0;
+	font-size: 18px;
+	font-weight: 600;
+	color: var(--shahi-text-primary);
+	margin: 0;
 }
 
 .shahi-card-body {
-    color: var(--shahi-text-secondary);
+	color: var(--shahi-text-secondary);
 }
 
 .shahi-card-footer {
-    margin-top: var(--shahi-space-md);
-    padding-top: var(--shahi-space-sm);
-    border-top: 1px solid var(--shahi-border-color);
+	margin-top: var(--shahi-space-md);
+	padding-top: var(--shahi-space-sm);
+	border-top: 1px solid var(--shahi-border-color);
 }
 
 /* ============================================================================
-   BUTTONS
-   ========================================================================= */
+	BUTTONS
+	========================================================================= */
 
 .shahi-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 20px;
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 1.5;
-    border-radius: var(--shahi-radius-md);
-    border: none;
-    cursor: pointer;
-    transition: all var(--shahi-transition-fast);
-    text-decoration: none;
-    gap: 8px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 10px 20px;
+	font-size: 14px;
+	font-weight: 500;
+	line-height: 1.5;
+	border-radius: var(--shahi-radius-md);
+	border: none;
+	cursor: pointer;
+	transition: all var(--shahi-transition-fast);
+	text-decoration: none;
+	gap: 8px;
 }
 
 .shahi-btn:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3);
+	outline: none;
+	box-shadow: 0 0 0 3px rgb(107 142 78 / 30%);
 }
 
 /* Primary Button */
 .shahi-btn-primary {
-    background: var(--shahi-gradient-primary);
-    color: var(--shahi-text-primary);
-    box-shadow: var(--shahi-shadow-sm);
+	background: var(--shahi-gradient-primary);
+	color: var(--shahi-text-primary);
+	box-shadow: var(--shahi-shadow-sm);
 }
 
 .shahi-btn-primary:hover {
-    box-shadow: var(--shahi-shadow-glow);
-    transform: translateY(-1px);
+	box-shadow: var(--shahi-shadow-glow);
+	transform: translateY(-1px);
 }
 
 /* Secondary Button */
 .shahi-btn-secondary {
-    background: var(--shahi-bg-tertiary);
-    color: var(--shahi-text-primary);
-    border: 1px solid var(--shahi-border-color);
+	background: var(--shahi-bg-tertiary);
+	color: var(--shahi-text-primary);
+	border: 1px solid var(--shahi-border-color);
 }
 
 .shahi-btn-secondary:hover {
-    border-color: var(--shahi-accent-primary);
-    background: var(--shahi-bg-elevated);
+	border-color: var(--shahi-accent-primary);
+	background: var(--shahi-bg-elevated);
 }
 
 /* Success Button */
 .shahi-btn-success {
-    background: var(--shahi-gradient-success);
-    color: var(--shahi-text-primary);
+	background: var(--shahi-gradient-success);
+	color: var(--shahi-text-primary);
 }
 
 /* Danger Button */
 .shahi-btn-danger {
-    background: var(--shahi-accent-error);
-    color: var(--shahi-text-primary);
+	background: var(--shahi-accent-error);
+	color: var(--shahi-text-primary);
 }
 
 .shahi-btn-danger:hover {
-    background: #dc2626;
+	background: #dc2626;
 }
 
 /* Small Button */
 .shahi-btn-sm {
-    padding: 6px 12px;
-    font-size: 12px;
+	padding: 6px 12px;
+	font-size: 12px;
 }
 
 /* Large Button */
 .shahi-btn-lg {
-    padding: 14px 28px;
-    font-size: 16px;
+	padding: 14px 28px;
+	font-size: 16px;
 }
 
 /* ============================================================================
-   FORMS & INPUTS
-   ========================================================================= */
+	FORMS & INPUTS
+	========================================================================= */
 
 .shahi-form-group {
-    margin-bottom: var(--shahi-space-md);
+	margin-bottom: var(--shahi-space-md);
 }
 
 .shahi-label {
-    display: block;
-    margin-bottom: var(--shahi-space-xs);
-    color: var(--shahi-text-primary);
-    font-weight: 500;
-    font-size: 14px;
+	display: block;
+	margin-bottom: var(--shahi-space-xs);
+	color: var(--shahi-text-primary);
+	font-weight: 500;
+	font-size: 14px;
 }
 
 .shahi-input,
 .shahi-textarea,
 .shahi-select {
-    width: 100%;
-    padding: 10px 14px;
-    background: var(--shahi-bg-tertiary);
-    border: 1px solid var(--shahi-border-color);
-    border-radius: var(--shahi-radius-md);
-    color: var(--shahi-text-primary);
-    font-size: 14px;
-    transition: all var(--shahi-transition-fast);
+	width: 100%;
+	padding: 10px 14px;
+	background: var(--shahi-bg-tertiary);
+	border: 1px solid var(--shahi-border-color);
+	border-radius: var(--shahi-radius-md);
+	color: var(--shahi-text-primary);
+	font-size: 14px;
+	transition: all var(--shahi-transition-fast);
 }
 
 .shahi-input:focus,
 .shahi-textarea:focus,
 .shahi-select:focus {
-    outline: none;
-    border-color: var(--shahi-accent-primary);
-    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+	outline: none;
+	border-color: var(--shahi-accent-primary);
+	box-shadow: 0 0 0 3px rgb(107 142 78 / 20%);
 }
 
 .shahi-textarea {
-    min-height: 120px;
-    resize: vertical;
+	min-height: 120px;
+	resize: vertical;
 }
 
 .shahi-input::placeholder {
-    color: var(--shahi-text-muted);
+	color: var(--shahi-text-muted);
 }
 
 /* ============================================================================
-   TABLES
-   ========================================================================= */
+	TABLES
+	========================================================================= */
 
 .shahi-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: var(--shahi-bg-secondary);
-    border-radius: var(--shahi-radius-lg);
-    overflow: hidden;
+	width: 100%;
+	border-collapse: collapse;
+	background: var(--shahi-bg-secondary);
+	border-radius: var(--shahi-radius-lg);
+	overflow: hidden;
 }
 
 .shahi-table thead {
-    background: var(--shahi-bg-tertiary);
+	background: var(--shahi-bg-tertiary);
 }
 
 .shahi-table th {
-    padding: 14px 16px;
-    text-align: left;
-    font-weight: 600;
-    color: var(--shahi-text-primary);
-    font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-bottom: 2px solid var(--shahi-border-color);
+	padding: 14px 16px;
+	text-align: left;
+	font-weight: 600;
+	color: var(--shahi-text-primary);
+	font-size: 13px;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	border-bottom: 2px solid var(--shahi-border-color);
 }
 
 .shahi-table td {
-    padding: 14px 16px;
-    color: var(--shahi-text-secondary);
-    border-bottom: 1px solid var(--shahi-border-color);
+	padding: 14px 16px;
+	color: var(--shahi-text-secondary);
+	border-bottom: 1px solid var(--shahi-border-color);
 }
 
 .shahi-table tbody tr:hover {
-    background: var(--shahi-bg-tertiary);
+	background: var(--shahi-bg-tertiary);
 }
 
 .shahi-table tbody tr:last-child td {
-    border-bottom: none;
+	border-bottom: none;
 }
 
 /* ============================================================================
-   BADGES & LABELS
-   ========================================================================= */
+	BADGES & LABELS
+	========================================================================= */
 
 .shahi-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 4px 12px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 500;
-    line-height: 1.5;
+	display: inline-flex;
+	align-items: center;
+	padding: 4px 12px;
+	border-radius: 12px;
+	font-size: 12px;
+	font-weight: 500;
+	line-height: 1.5;
 }
 
 .shahi-badge-primary {
-    background: rgba(96, 165, 250, 0.2);
-    color: var(--shahi-accent-primary);
+	background: rgb(107 142 78 / 20%);
+	color: var(--shahi-accent-primary);
 }
 
 .shahi-badge-success {
-    background: rgba(16, 185, 129, 0.2);
-    color: var(--shahi-accent-success);
+	background: rgb(16 185 129 / 20%);
+	color: var(--shahi-accent-success);
 }
 
 .shahi-badge-warning {
-    background: rgba(245, 158, 11, 0.2);
-    color: var(--shahi-accent-warning);
+	background: rgb(245 158 11 / 20%);
+	color: var(--shahi-accent-warning);
 }
 
 .shahi-badge-error {
-    background: rgba(239, 68, 68, 0.2);
-    color: var(--shahi-accent-error);
+	background: rgb(239 68 68 / 20%);
+	color: var(--shahi-accent-error);
 }
 
 /* ============================================================================
-   ALERTS & NOTICES
-   ========================================================================= */
+	ALERTS & NOTICES
+	========================================================================= */
 
 .shahi-alert {
-    padding: var(--shahi-space-md);
-    border-radius: var(--shahi-radius-md);
-    margin-bottom: var(--shahi-space-md);
-    border-left: 4px solid;
+	padding: var(--shahi-space-md);
+	border-radius: var(--shahi-radius-md);
+	margin-bottom: var(--shahi-space-md);
+	border-left: 4px solid;
 }
 
 .shahi-alert-success {
-    background: rgba(16, 185, 129, 0.1);
-    border-color: var(--shahi-accent-success);
-    color: var(--shahi-accent-success);
+	background: rgb(16 185 129 / 10%);
+	border-color: var(--shahi-accent-success);
+	color: var(--shahi-accent-success);
 }
 
 .shahi-alert-warning {
-    background: rgba(245, 158, 11, 0.1);
-    border-color: var(--shahi-accent-warning);
-    color: var(--shahi-accent-warning);
+	background: rgb(245 158 11 / 10%);
+	border-color: var(--shahi-accent-warning);
+	color: var(--shahi-accent-warning);
 }
 
 .shahi-alert-error {
-    background: rgba(239, 68, 68, 0.1);
-    border-color: var(--shahi-accent-error);
-    color: var(--shahi-accent-error);
+	background: rgb(239 68 68 / 10%);
+	border-color: var(--shahi-accent-error);
+	color: var(--shahi-accent-error);
 }
 
 .shahi-alert-info {
-    background: rgba(96, 165, 250, 0.1);
-    border-color: var(--shahi-accent-primary);
-    color: var(--shahi-accent-primary);
+	background: rgb(107 142 78 / 10%);
+	border-color: var(--shahi-accent-primary);
+	color: var(--shahi-accent-primary);
 }
 
 /* ============================================================================
-   LOADING & SPINNERS
-   ========================================================================= */
+	LOADING & SPINNERS
+	========================================================================= */
 
 .shahi-spinner {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 2px solid rgba(96, 165, 250, 0.2);
-    border-top-color: var(--shahi-accent-primary);
-    border-radius: 50%;
-    animation: shahi-spin 0.6s linear infinite;
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	border: 2px solid rgb(107 142 78 / 20%);
+	border-top-color: var(--shahi-accent-primary);
+	border-radius: 50%;
+	animation: shahi-spin 0.6s linear infinite;
 }
 
 @keyframes shahi-spin {
-    to {
-        transform: rotate(360deg);
-    }
+	to {
+		transform: rotate(360deg);
+	}
 }
 
 .shahi-loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(10, 14, 39, 0.9);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
+	position: fixed;
+	inset: 0;
+	background: rgb(10 14 39 / 90%);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 9999;
 }
 
 .shahi-loading-overlay .shahi-spinner {
-    width: 60px;
-    height: 60px;
-    border-width: 4px;
+	width: 60px;
+	height: 60px;
+	border-width: 4px;
 }
 
 /* ============================================================================
-   UTILITIES
-   ========================================================================= */
+	UTILITIES
+	========================================================================= */
 
 /* Spacing */
 .shahi-mt-sm { margin-top: var(--shahi-space-sm); }
@@ -537,49 +571,49 @@
 .shahi-grid-4 { grid-template-columns: repeat(4, 1fr); }
 
 /* ============================================================================
-   RESPONSIVE
-   ========================================================================= */
+	RESPONSIVE
+	========================================================================= */
 
-@media (max-width: 1024px) {
-    .shahi-grid-4 {
-        grid-template-columns: repeat(2, 1fr);
-    }
+@media (width <= 1024px) {
+	.shahi-grid-4 {
+		grid-template-columns: repeat(2, 1fr);
+	}
 }
 
-@media (max-width: 768px) {
-    .shahi-legalflowsuite-admin {
-        padding: var(--shahi-space-sm);
-    }
-    
-    .shahi-grid-2,
-    .shahi-grid-3,
-    .shahi-grid-4 {
-        grid-template-columns: 1fr;
-    }
-    
-    .shahi-card {
-        padding: var(--shahi-space-sm);
-    }
-    
-    .shahi-legalflowsuite-admin h1 {
-        font-size: 24px;
-    }
+@media (width <= 768px) {
+	.shahi-legalflowsuite-admin {
+		padding: var(--shahi-space-sm);
+	}
+
+	.shahi-grid-2,
+	.shahi-grid-3,
+	.shahi-grid-4 {
+		grid-template-columns: 1fr;
+	}
+
+	.shahi-card {
+		padding: var(--shahi-space-sm);
+	}
+
+	.shahi-legalflowsuite-admin h1 {
+		font-size: 24px;
+	}
 }
 
 /* ============================================================================
-   ACCESSIBILITY
-   ========================================================================= */
+	ACCESSIBILITY
+	========================================================================= */
 
 .shahi-sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border-width: 0;
 }
 
 /* Focus visible for keyboard navigation */
@@ -587,319 +621,12 @@
 .shahi-input:focus-visible,
 .shahi-textarea:focus-visible,
 .shahi-select:focus-visible {
-    outline: 2px solid var(--shahi-accent-primary);
-    outline-offset: 2px;
+	outline: 2px solid var(--shahi-accent-primary);
+	outline-offset: 2px;
 }
 
 
 /* ============================================================================
-   UNIFIED COMPONENT LIBRARY - ACCESSIBILITY SCANNER DESIGN
-   Applied globally to all admin interfaces
-   ========================================================================= */
-
-/* Cards - Unified Design */
-.shahi-card, .slos-card, [class*="-card"] {
-    background: var(--shahi-bg-card, #1e293b) !important;
-    border: 1px solid var(--shahi-border, #334155) !important;
-    border-radius: var(--shahi-radius-lg, 12px) !important;
-    padding: var(--shahi-space-md, 24px) !important;
-    box-shadow: var(--shahi-shadow, 0 4px 20px rgba(59, 130, 246, 0.1)) !important;
-    transition: var(--shahi-transition, all 0.3s cubic-bezier(0.4, 0, 0.2, 1)) !important;
-}
-
-.shahi-card:hover, .slos-card:hover {
-    box-shadow: var(--shahi-hover-shadow, 0 8px 30px rgba(59, 130, 246, 0.25)) !important;
-    border-color: var(--shahi-accent-primary, #3b82f6) !important;
-    transform: translateY(-2px) !important;
-}
-
-/* Stat Cards */
-.shahi-stat-card, .slos-stat-card {
-    background: var(--shahi-bg-card, #1e293b) !important;
-    border: 1px solid var(--shahi-border, #334155) !important;
-    border-radius: var(--shahi-radius-lg, 12px) !important;
-    position: relative;
-    overflow: hidden;
-}
-
-.shahi-stat-card::before, .slos-stat-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: var(--shahi-gradient-primary, linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%)) !important;
-}
-
-/* Buttons - Unified Blue Design */
-.shahi-btn, .slos-btn, [class*="-button"], button[class*="shahi"], button[class*="slos"] {
-    background: var(--shahi-gradient-primary, linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%)) !important;
-    border: none !important;
-    border-radius: var(--shahi-radius-md, 8px) !important;
-    padding: 12px 24px !important;
-    color: #ffffff !important;
-    font-size: 14px !important;
-    font-weight: 600 !important;
-    cursor: pointer !important;
-    transition: var(--shahi-transition, all 0.3s cubic-bezier(0.4, 0, 0.2, 1)) !important;
-}
-
-.shahi-btn:hover, .slos-btn:hover {
-    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4) !important;
-    transform: translateY(-2px) !important;
-}
-
-/* Inputs - Unified Dark Design */
-.shahi-input, .slos-input, input[type="text"].shahi, input[type="text"].slos,
-input[type="email"].shahi, input[type="url"].slos {
-    background: var(--shahi-bg-input, #0f172a) !important;
-    border: 1px solid var(--shahi-border, #334155) !important;
-    border-radius: var(--shahi-radius-md, 8px) !important;
-    padding: 12px 16px !important;
-    color: var(--shahi-text-primary, #ffffff) !important;
-    font-size: 14px !important;
-    transition: var(--shahi-transition, all 0.3s cubic-bezier(0.4, 0, 0.2, 1)) !important;
-}
-
-.shahi-input:focus, .slos-input:focus {
-    outline: none !important;
-    border-color: var(--shahi-accent-primary, #3b82f6) !important;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
-}
-
-/* Progress Circles */
-.shahi-progress-circle, .slos-progress-circle {
-    stroke: var(--shahi-accent-primary, #3b82f6) !important;
-}
-
-/* Status Badges */
-.shahi-badge, .slos-badge, [class*="-badge"] {
-    padding: 4px 12px !important;
-    border-radius: 20px !important;
-    font-size: 12px !important;
-    font-weight: 600 !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 4px !important;
-}
-
-.shahi-badge-success, .slos-badge-success {
-    background: rgba(34, 197, 94, 0.1) !important;
-    color: var(--shahi-success, #22c55e) !important;
-    border: 1px solid rgba(34, 197, 94, 0.3) !important;
-}
-
-.shahi-badge-warning, .slos-badge-warning {
-    background: rgba(245, 158, 11, 0.1) !important;
-    color: var(--shahi-warning, #f59e0b) !important;
-    border: 1px solid rgba(245, 158, 11, 0.3) !important;
-}
-
-.shahi-badge-error, .slos-badge-error {
-    background: rgba(239, 68, 68, 0.1) !important;
-    color: var(--shahi-error, #ef4444) !important;
-    border: 1px solid rgba(239, 68, 68, 0.3) !important;
-}
-
-.shahi-badge-info, .slos-badge-info {
-    background: rgba(59, 130, 246, 0.1) !important;
-    color: var(--shahi-accent-primary, #3b82f6) !important;
-    border: 1px solid rgba(59, 130, 246, 0.3) !important;
-}
-
-/* Tables - Unified Design */
-table.shahi-table, table.slos-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-table.shahi-table th, table.slos-table th {
-    background: var(--shahi-bg-tertiary, #334155) !important;
-    color: var(--shahi-text-primary, #ffffff) !important;
-    padding: 12px 16px !important;
-    text-align: left !important;
-    font-weight: 600 !important;
-    border-bottom: 1px solid var(--shahi-border, #334155) !important;
-}
-
-table.shahi-table td, table.slos-table td {
-    padding: 12px 16px !important;
-    color: var(--shahi-text-secondary, #cbd5e1) !important;
-    border-bottom: 1px solid var(--shahi-border, #334155) !important;
-}
-
-table.shahi-table tr:hover, table.slos-table tr:hover {
-    background: var(--shahi-bg-tertiary, #334155) !important;
-}
-
-
-/* ==================================================
-   GLOBAL THEME OVERRIDE - ACCESSIBILITY SCANNER DESIGN
-   Applied to ALL admin pages for unified appearance
-   ================================================== */
-
-/* Force dark backgrounds everywhere */
-body.wp-admin, .wrap, [class*="shahi-"], [class*="slos-"] {
-    background: var(--shahi-bg-primary, #0f172a) !important;
-}
-
-/* Unified page wrapper */
-.wrap {
-    background: var(--shahi-bg-primary, #0f172a) !important;
-    color: var(--shahi-text-primary, #ffffff) !important;
-}
-
-/* All headings use unified colors */
-h1, h2, h3, h4, h5, h6 {
-    color: var(--shahi-text-primary, #ffffff) !important;
-}
-
-/* All text uses unified colors */
-p, span, div, td, th, li {
-    color: var(--shahi-text-secondary, #cbd5e1);
-}
-
-/* Stats cards unified */
-[class*="-stat"], [class*="-metric"], [class*="-kpi"] {
-    background: var(--shahi-bg-card, #1e293b) !important;
-    border: 1px solid var(--shahi-border, #334155) !important;
-    border-radius: var(--shahi-radius-lg, 12px) !important;
-    box-shadow: var(--shahi-shadow, 0 4px 20px rgba(59, 130, 246, 0.1)) !important;
-}
-
-/* All icons use blue accent */
-.dashicons, [class*="-icon"] {
-    color: var(--shahi-accent-primary, #3b82f6) !important;
-}
-
-/* Progress circles unified */
-circle[class*="progress"], svg[class*="circle"] circle {
-    stroke: var(--shahi-accent-primary, #3b82f6) !important;
-}
-
-/* Tabs unified */
-[class*="-tab"], [class*="-nav"] a {
-    color: var(--shahi-text-secondary, #cbd5e1) !important;
-}
-
-[class*="-tab"].active, [class*="-tab"]:hover,
-[class*="-nav"] a.active, [class*="-nav"] a:hover {
-    color: var(--shahi-accent-primary, #3b82f6) !important;
-    border-color: var(--shahi-accent-primary, #3b82f6) !important;
-}
-
-
-/* ============================================================================
-   GLOBAL THEME ENFORCEMENT - Unified Dark Theme
-   These rules enforce consistent dark theme across ALL plugin interfaces
-   ========================================================================= */
-
-/* Plugin wrapper - dark navy background */
-.shahi-legalflowsuite-admin,
-.slos-wrapper,
-.slos-page-wrap,
-.slos-admin-page,
-.slos-dsr-wrapper,
-.shahi-dashboard-wrap,
-.shahi-compliance-page,
-.shahi-accessibility-wrap,
-.shahi-settings-page,
-.shahi-document-hub-wrap,
-.shahi-legal-docs-wrap {
-    background: var(--shahi-bg-primary, #0f172a) !important;
-    color: var(--shahi-text-primary, #ffffff) !important;
-}
-
-/* All admin containers */
-.wrap[class*="shahi"],
-.wrap[class*="slos"],
-.toplevel_page_shahi-legalflowsuite .wrap,
-[class*="shahi_page_"] .wrap,
-[class*="slos_page_"] .wrap {
-    background: var(--shahi-bg-primary, #0f172a) !important;
-}
-
-/* Force all cards/panels to dark slate */
-[class*="-card"],
-[class*="-panel"],
-[class*="-box"],
-[class*="-container"],
-.postbox {
-    background: var(--shahi-bg-card, #1e293b) !important;
-    border: 1px solid var(--shahi-border, #334155) !important;
-}
-
-/* Force all text to be white/gray */
-.wrap,
-[class*="shahi-"],
-[class*="slos-"],
-[class*="admin-"],
-.postbox,
-h1, h2, h3, h4, h5, h6,
-p, span, div, td, th, li {
-    color: var(--shahi-text-primary, #ffffff) !important;
-}
-
-/* Force inputs to dark theme */
-input[type="text"],
-input[type="email"],
-input[type="number"],
-input[type="password"],
-input[type="search"],
-input[type="url"],
-textarea,
-select {
-    background: var(--shahi-bg-input, #0f172a) !important;
-    border: 1px solid var(--shahi-border, #334155) !important;
-    color: var(--shahi-text-primary, #ffffff) !important;
-}
-
-/* Force buttons to blue gradient */
-button:not(.slos-modal-close),
-.button,
-[class*="-btn"],
-input[type="submit"],
-input[type="button"] {
-    background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%) !important;
-    border: none !important;
-    color: #ffffff !important;
-}
-
-/* Force tables to dark theme */
-table,
-.widefat,
-[class*="-table"] {
-    background: var(--shahi-bg-card, #1e293b) !important;
-    border: 1px solid var(--shahi-border, #334155) !important;
-}
-
-table th,
-.widefat th {
-    background: var(--shahi-bg-secondary, #1e293b) !important;
-    color: var(--shahi-text-primary, #ffffff) !important;
-    border-bottom: 2px solid var(--shahi-accent-primary, #3b82f6) !important;
-}
-
-table td,
-.widefat td {
-    background: var(--shahi-bg-card, #1e293b) !important;
-    color: var(--shahi-text-secondary, #cbd5e1) !important;
-    border-bottom: 1px solid var(--shahi-border, #334155) !important;
-}
-
-/* Remove any light-colored backgrounds */
-*[style*="background:#fff"],
-*[style*="background: #fff"],
-*[style*="background:white"],
-*[style*="background: white"] {
-    background: var(--shahi-bg-card) !important;
-}
-
-/* Remove any black text */
-*[style*="color:#000"],
-*[style*="color: #000"],
-*[style*="color:black"],
-*[style*="color: black"] {
-    color: var(--shahi-text-primary) !important;
-}
+	NOTE: Legacy unified component overrides removed in Phase 1.2
+	All components now use slos-design-system.css variables consistently
+	========================================================================= */

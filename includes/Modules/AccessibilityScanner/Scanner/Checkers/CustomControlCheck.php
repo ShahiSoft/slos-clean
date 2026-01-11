@@ -68,4 +68,3 @@ class CustomControlCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

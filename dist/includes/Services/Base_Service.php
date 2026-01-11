@@ -148,9 +148,9 @@ abstract class Base_Service {
 	 * @return void
 	 */
 	public function clear_errors(): void {
-		$this->errors             = array();
-		$this->validation_errors  = array();
-		$this->messages           = array();
+		$this->errors            = array();
+		$this->validation_errors = array();
+		$this->messages          = array();
 	}
 
 	/**

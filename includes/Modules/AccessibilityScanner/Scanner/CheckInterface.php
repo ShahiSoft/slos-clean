@@ -99,4 +99,3 @@ interface CheckInterface {
 	 */
 	public function check_dom( \DOMDocument $dom, $content );
 }
-

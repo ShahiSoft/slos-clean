@@ -174,8 +174,8 @@ class SkipLinkCheck extends AbstractCheck {
 	 * Check if skip link is positioned early in the document
 	 */
 	private function check_skip_link_position( $dom, $skip_link ) {
-		$xpath             = new \DOMXPath( $dom );
-		$focusable_query   = '//a[@href] | //button | //input | //select | //textarea | //*[@tabindex >= "0"]';
+		$xpath              = new \DOMXPath( $dom );
+		$focusable_query    = '//a[@href] | //button | //input | //select | //textarea | //*[@tabindex >= "0"]';
 		$focusable_elements = $xpath->query( $focusable_query );
 
 		$position = 0;
@@ -200,4 +200,3 @@ class SkipLinkCheck extends AbstractCheck {
 		return null;
 	}
 }
-

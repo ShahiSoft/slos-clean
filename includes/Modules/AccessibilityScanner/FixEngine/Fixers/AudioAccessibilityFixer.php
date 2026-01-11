@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * Class AudioAccessibilityFixer
- * 
+ *
  * Adds accessibility features to audio elements.
  */
 final class AudioAccessibilityFixer extends AbstractFixer {
@@ -35,7 +35,7 @@ final class AudioAccessibilityFixer extends AbstractFixer {
 	}
 
 	public function get_wcag_criteria(): array {
-		return [ '1.2.1', '1.4.2' ];
+		return array( '1.2.1', '1.4.2' );
 	}
 
 	public function get_category(): string {
@@ -46,39 +46,39 @@ final class AudioAccessibilityFixer extends AbstractFixer {
 		return stripos( $content, '<audio' ) !== false;
 	}
 
-	protected function apply_fix( string $content, array $options = [] ): FixResult {
+	protected function apply_fix( string $content, array $options = array() ): FixResult {
 		$doc = $this->parse_html( $content );
-		
+
 		if ( ! $doc ) {
 			return FixResult::error( $this->get_id(), 'Failed to parse HTML', $content );
 		}
 
-		$audios = $this->query( '//audio' );
+		$audios        = $this->query( '//audio' );
 		$fixes_applied = 0;
-		$details = [];
+		$details       = array();
 
 		foreach ( $audios as $audio ) {
-			$fixed_this = false;
-			$fix_details = [ 'src' => $audio->getAttribute( 'src' ) ];
+			$fixed_this  = false;
+			$fix_details = array( 'src' => $audio->getAttribute( 'src' ) );
 
 			// Ensure controls attribute is present
 			if ( ! $audio->hasAttribute( 'controls' ) ) {
 				$audio->setAttribute( 'controls', '' );
 				$fix_details['added_controls'] = true;
-				$fixed_this = true;
+				$fixed_this                    = true;
 			}
 
 			// Prevent autoplay for accessibility
 			if ( $audio->hasAttribute( 'autoplay' ) ) {
 				$audio->removeAttribute( 'autoplay' );
 				$fix_details['removed_autoplay'] = true;
-				$fixed_this = true;
+				$fixed_this                      = true;
 			}
 
 			// Add aria-label if no accessible name
-			$has_accessible_name = $audio->hasAttribute( 'aria-label' ) || 
-								   $audio->hasAttribute( 'aria-labelledby' ) ||
-								   $audio->hasAttribute( 'title' );
+			$has_accessible_name = $audio->hasAttribute( 'aria-label' ) ||
+									$audio->hasAttribute( 'aria-labelledby' ) ||
+									$audio->hasAttribute( 'title' );
 
 			if ( ! $has_accessible_name ) {
 				$src = $audio->getAttribute( 'src' );
@@ -92,27 +92,27 @@ final class AudioAccessibilityFixer extends AbstractFixer {
 
 				// Generate label from filename
 				if ( $src ) {
-					$filename = basename( parse_url( $src, PHP_URL_PATH ) ?: $src );
-					$label = pathinfo( $filename, PATHINFO_FILENAME );
-					$label = str_replace( [ '-', '_' ], ' ', $label );
-					$label = ucwords( $label );
+					$filename = basename( wp_parse_url( $src, PHP_URL_PATH ) ?: $src );
+					$label    = pathinfo( $filename, PATHINFO_FILENAME );
+					$label    = str_replace( array( '-', '_' ), ' ', $label );
+					$label    = ucwords( $label );
 					$audio->setAttribute( 'aria-label', sprintf( __( 'Audio: %s', 'shahi-legalflowsuite' ), $label ) );
 				} else {
 					$audio->setAttribute( 'aria-label', __( 'Audio player', 'shahi-legalflowsuite' ) );
 				}
 				$fix_details['added_label'] = true;
-				$fixed_this = true;
+				$fixed_this                 = true;
 			}
 
 			// Add preload="metadata" for performance and accessibility
 			if ( ! $audio->hasAttribute( 'preload' ) ) {
 				$audio->setAttribute( 'preload', 'metadata' );
 				$fix_details['added_preload'] = true;
-				$fixed_this = true;
+				$fixed_this                   = true;
 			}
 
 			if ( $fixed_this ) {
-				$fixes_applied++;
+				++$fixes_applied;
 				$details[] = $fix_details;
 			}
 		}

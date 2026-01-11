@@ -50,4 +50,3 @@ class LogoImageCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

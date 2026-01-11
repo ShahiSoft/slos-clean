@@ -58,4 +58,3 @@ class RedundantAriaCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

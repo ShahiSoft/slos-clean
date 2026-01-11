@@ -93,6 +93,11 @@ class Security_Module extends Module {
 	 * @return void
 	 */
 	public function init() {
+		// Check if module is dormant (safety check)
+		if ( defined( 'SLOS_DORMANT_MODULES' ) && in_array( 'security', SLOS_DORMANT_MODULES, true ) ) {
+			return;
+		}
+
 		$this->security = new Security();
 
 		// Add rate limiting
@@ -148,7 +153,7 @@ class Security_Module extends Module {
 		$blacklist = $this->get_setting( 'ip_blacklist', array() );
 
 		if ( in_array( $ip, $blacklist, true ) ) {
-			wp_die( __( 'Access denied. Your IP address has been blocked.', 'shahi-legalflowsuite' ) );
+			wp_die( esc_html__( 'Access denied. Your IP address has been blocked.', 'shahi-legalflowsuite' ) );
 		}
 	}
 
@@ -262,4 +267,3 @@ class Security_Module extends Module {
 		return admin_url( 'admin.php?page=shahi-legalflowsuite-settings&tab=security' );
 	}
 }
-

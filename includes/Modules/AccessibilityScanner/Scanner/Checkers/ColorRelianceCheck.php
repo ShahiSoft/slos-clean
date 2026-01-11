@@ -51,4 +51,3 @@ class ColorRelianceCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

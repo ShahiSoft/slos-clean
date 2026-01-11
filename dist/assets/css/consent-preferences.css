@@ -8,8 +8,8 @@
  */
 
 /* ========================================================================
-   Container & Wrapper
-   ======================================================================== */
+	Container & Wrapper
+	======================================================================== */
 
 #slos-consent-preferences {
 	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
@@ -50,15 +50,15 @@
 }
 
 /* ========================================================================
-   Preference Card
-   ======================================================================== */
+	Preference Card
+	======================================================================== */
 
 .slos-pref-card {
 	background: var(--shahi-bg-card);
 	border: 1px solid #ddd;
 	border-radius: 8px;
 	padding: 30px;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+	box-shadow: 0 2px 8px rgb(0 0 0 / 8%);
 }
 
 .slos-theme-dark .slos-pref-card {
@@ -68,8 +68,8 @@
 }
 
 /* ========================================================================
-   Header
-   ======================================================================== */
+	Header
+	======================================================================== */
 
 .slos-pref-header {
 	margin-bottom: 24px;
@@ -78,7 +78,7 @@
 }
 
 .slos-pref-title {
-	margin: 0 0 8px 0;
+	margin: 0 0 8px;
 	font-size: 24px;
 	font-weight: 600;
 	color: #222;
@@ -99,8 +99,8 @@
 }
 
 /* ========================================================================
-   Purposes List
-   ======================================================================== */
+	Purposes List
+	======================================================================== */
 
 .slos-pref-list {
 	display: flex;
@@ -193,8 +193,8 @@
 }
 
 /* ========================================================================
-   Toggle Switch
-   ======================================================================== */
+	Toggle Switch
+	======================================================================== */
 
 .slos-pref-toggle {
 	flex-shrink: 0;
@@ -216,16 +216,13 @@
 .slos-toggle-slider {
 	position: absolute;
 	cursor: pointer;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
+	inset: 0;
 	background-color: #ccc;
 	transition: 0.3s;
 	border-radius: 28px;
 }
 
-.slos-toggle-slider:before {
+.slos-toggle-slider::before {
 	position: absolute;
 	content: "";
 	height: 20px;
@@ -242,10 +239,10 @@ input:checked + .slos-toggle-slider {
 }
 
 input:focus + .slos-toggle-slider {
-	box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.3);
+	box-shadow: 0 0 0 2px rgb(76 175 80 / 30%);
 }
 
-input:checked + .slos-toggle-slider:before {
+input:checked + .slos-toggle-slider::before {
 	transform: translateX(24px);
 }
 
@@ -255,8 +252,8 @@ input:disabled + .slos-toggle-slider {
 }
 
 /* ========================================================================
-   Action Buttons
-   ======================================================================== */
+	Action Buttons
+	======================================================================== */
 
 .slos-pref-actions {
 	display: flex;
@@ -288,7 +285,7 @@ input:disabled + .slos-toggle-slider {
 
 .slos-btn:hover {
 	transform: translateY(-1px);
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+	box-shadow: 0 4px 8px rgb(0 0 0 / 15%);
 }
 
 .slos-btn:active {
@@ -343,15 +340,15 @@ input:disabled + .slos-toggle-slider {
 .slos-btn-spinner {
 	width: 16px;
 	height: 16px;
-	border: 2px solid rgba(255, 255, 255, 0.3);
+	border: 2px solid rgb(255 255 255 / 30%);
 	border-top-color: #fff;
 	border-radius: 50%;
 	animation: slos-spin 0.8s linear infinite;
 }
 
 /* ========================================================================
-   Consent History
-   ======================================================================== */
+	Consent History
+	======================================================================== */
 
 .slos-pref-history {
 	margin-top: 24px;
@@ -486,8 +483,8 @@ input:disabled + .slos-toggle-slider {
 }
 
 /* ========================================================================
-   GDPR Notice
-   ======================================================================== */
+	GDPR Notice
+	======================================================================== */
 
 .slos-gdpr-notice {
 	margin-top: 24px;
@@ -514,8 +511,8 @@ input:disabled + .slos-toggle-slider {
 }
 
 /* ========================================================================
-   Notices
-   ======================================================================== */
+	Notices
+	======================================================================== */
 
 .slos-notice {
 	padding: 12px 16px;
@@ -534,10 +531,10 @@ input:disabled + .slos-toggle-slider {
 }
 
 /* ========================================================================
-   Responsive Design
-   ======================================================================== */
+	Responsive Design
+	======================================================================== */
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
 	.slos-consent-preferences-wrapper {
 		padding: 15px;
 	}
@@ -580,7 +577,7 @@ input:disabled + .slos-toggle-slider {
 	}
 }
 
-@media (max-width: 480px) {
+@media (width <= 480px) {
 	.slos-pref-card {
 		padding: 16px;
 		border-radius: 4px;
@@ -605,8 +602,8 @@ input:disabled + .slos-toggle-slider {
 }
 
 /* ========================================================================
-   Print Styles
-   ======================================================================== */
+	Print Styles
+	======================================================================== */
 
 @media print {
 	.slos-pref-actions,
@@ -625,8 +622,8 @@ input:disabled + .slos-toggle-slider {
 }
 
 /* ========================================================================
-   Accessibility
-   ======================================================================== */
+	Accessibility
+	======================================================================== */
 
 .slos-pref-item:focus-within {
 	outline: 2px solid #4CAF50;
@@ -634,7 +631,7 @@ input:disabled + .slos-toggle-slider {
 }
 
 .slos-toggle-switch input:focus + .slos-toggle-slider {
-	box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+	box-shadow: 0 0 0 3px rgb(76 175 80 / 30%);
 }
 
 .slos-btn:focus {

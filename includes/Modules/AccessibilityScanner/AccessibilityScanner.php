@@ -10,6 +10,8 @@
 
 namespace ShahiLegalFlowSuite\Modules\AccessibilityScanner;
 
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
+
 use ShahiLegalFlowSuite\Modules\Module;
 use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Scanner\ScannerEngine;
 use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Services\BackupService;
@@ -189,7 +191,7 @@ class AccessibilityScanner extends Module {
 	 * @return void
 	 */
 	public function init() {
-		$this->scanner = new ScannerEngine();
+		$this->scanner        = new ScannerEngine();
 		$this->backup_service = new BackupService();
 		$this->register_checks();
 
@@ -223,7 +225,7 @@ class AccessibilityScanner extends Module {
 		add_action( 'wp_ajax_slos_scan_single_post', array( $this, 'ajax_scan_single_post' ) );
 		add_action( 'wp_ajax_slos_generate_alt_text', array( $this, 'ajax_generate_alt_text' ) );
 		add_action( 'wp_ajax_slos_generate_statement', array( $this, 'ajax_generate_statement' ) );
-		
+
 		// Autofix AJAX handlers - only register if autofix is not dormant
 		if ( ! ( defined( 'SLOS_DORMANT_AUTOFIX' ) && SLOS_DORMANT_AUTOFIX ) ) {
 			add_action( 'wp_ajax_slos_fix_single_issue', array( $this, 'ajax_fix_single_issue' ) );
@@ -236,14 +238,14 @@ class AccessibilityScanner extends Module {
 		add_action( 'wp_ajax_slos_consolidate_scan_results', array( $this, 'ajax_consolidate_scan_results' ) );
 		add_action( 'wp_ajax_slos_audit_media_library', array( $this, 'ajax_audit_media_library' ) );
 		add_action( 'wp_ajax_slos_publish_statement', array( $this, 'ajax_publish_statement' ) );
-		
+
 		// Autofix and rollback handlers - only register if autofix is not dormant
 		if ( ! ( defined( 'SLOS_DORMANT_AUTOFIX' ) && SLOS_DORMANT_AUTOFIX ) ) {
 			add_action( 'wp_ajax_slos_autofix_single', array( $this, 'ajax_autofix_single_fixer' ) );
 			add_action( 'wp_ajax_slos_rollback_fixes', array( $this, 'ajax_rollback_fixes' ) );
 			add_action( 'wp_ajax_slos_check_backup_exists', array( $this, 'ajax_check_backup_exists' ) );
 		}
-		
+
 		add_action( 'wp_ajax_slos_get_detailed_scan_report', array( $this, 'ajax_get_detailed_scan_report' ) );
 		add_action( 'wp_ajax_slos_save_scanner_config', array( $this, 'ajax_save_scanner_config' ) );
 		add_action( 'wp_ajax_slos_schedule_email_report', array( $this, 'ajax_schedule_email_report' ) );
@@ -395,7 +397,7 @@ class AccessibilityScanner extends Module {
 	private function build_accessibility_statement_raw( $org_name, $contact_email, $wcag_target, $statement_date, $commitment ) {
 		$date_formatted = ! empty( $statement_date ) ? gmdate( 'F j, Y', strtotime( $statement_date ) ) : gmdate( 'F j, Y' );
 
-		$text = "ACCESSIBILITY STATEMENT\n\n";
+		$text  = "ACCESSIBILITY STATEMENT\n\n";
 		$text .= $org_name . ' is committed to ensuring digital accessibility for people with disabilities. We are continually improving the user experience for everyone and applying the relevant accessibility standards.' . "\n\n";
 		$text .= "CONFORMANCE STATUS\n";
 		$text .= 'We strive to conform to ' . $wcag_target . ' of the Web Content Accessibility Guidelines (WCAG).' . "\n\n";
@@ -457,15 +459,21 @@ class AccessibilityScanner extends Module {
 		// Use lightweight query - only get IDs and titles, skip get_permalink (slow)
 		// Allow optional limit for quick scan requests and prioritize recent content
 		global $wpdb;
-		$limit       = isset( $_POST['limit'] ) ? intval( $_POST['limit'] ) : 0;
-		$limit_clause = $limit > 0 ? $wpdb->prepare( ' LIMIT %d', $limit ) : '';
-		$results = $wpdb->get_results(
-			"SELECT ID, post_title FROM {$wpdb->posts} 
-             WHERE post_type IN ('post', 'page') 
-             AND post_status = 'publish' 
-             ORDER BY post_date DESC" . $limit_clause,
-			ARRAY_A
+		$limit = isset( $_POST['limit'] ) ? intval( $_POST['limit'] ) : 0;
+
+		$sql = $limit > 0
+			? $wpdb->prepare(
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- esc_sql() used for table name
+				'SELECT ID, post_title FROM ' . esc_sql( $wpdb->posts ) . " WHERE post_type IN ('post', 'page') AND post_status = %s ORDER BY post_date DESC LIMIT %d",
+				'publish',
+				$limit
+			)
+		: $wpdb->prepare(
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- esc_sql() used for table name
+			'SELECT ID, post_title FROM ' . esc_sql( $wpdb->posts ) . " WHERE post_type IN ('post', 'page') AND post_status = %s ORDER BY post_date DESC",
 		);
+
+		$results = $wpdb->get_results( $sql, ARRAY_A );
 
 		$data = array();
 		foreach ( $results as $row ) {
@@ -655,10 +663,10 @@ class AccessibilityScanner extends Module {
 
 		// Check if statement page already exists
 		$existing = get_page_by_path( 'accessibility-statement' );
-		
+
 		// Check if pre-generated content was provided
 		$statement_content = isset( $_POST['statement_content'] ) ? wp_kses_post( wp_unslash( $_POST['statement_content'] ) ) : '';
-		
+
 		// If no pre-generated content, generate from form data
 		if ( empty( $statement_content ) ) {
 			$org_name       = sanitize_text_field( wp_unslash( $_POST['org_name'] ?? '' ) );
@@ -680,7 +688,7 @@ class AccessibilityScanner extends Module {
 				$commitment
 			);
 		}
-		
+
 		// If page exists, update it
 		if ( $existing ) {
 			$page_id = wp_update_post(
@@ -690,11 +698,11 @@ class AccessibilityScanner extends Module {
 					'post_author'  => get_current_user_id(),
 				)
 			);
-			
+
 			if ( is_wp_error( $page_id ) ) {
 				wp_send_json_error( $page_id->get_error_message() );
 			}
-			
+
 			wp_send_json_success(
 				array(
 					'page_id'   => $existing->ID,
@@ -747,7 +755,7 @@ class AccessibilityScanner extends Module {
 		$date_formatted = ! empty( $statement_date ) ? gmdate( 'F j, Y', strtotime( $statement_date ) ) : gmdate( 'F j, Y' );
 		$site_url       = home_url();
 
-		$html = '<!-- wp:heading {"level":1} -->' . "\n";
+		$html  = '<!-- wp:heading {"level":1} -->' . "\n";
 		$html .= '<h1 class="wp-block-heading">' . __( 'Accessibility Statement', 'shahi-legalflowsuite' ) . '</h1>' . "\n";
 		$html .= '<!-- /wp:heading -->' . "\n\n";
 
@@ -966,11 +974,11 @@ class AccessibilityScanner extends Module {
 			)
 		);
 
-		$consolidated    = array();
-		$total_issues    = 0;
-		$total_critical  = 0;
-		$pages_scanned   = 0;
-		$issues_by_type  = array(); // Track issues by checker type
+		$consolidated   = array();
+		$total_issues   = 0;
+		$total_critical = 0;
+		$pages_scanned  = 0;
+		$issues_by_type = array(); // Track issues by checker type
 
 		foreach ( $posts as $post_id ) {
 			$post         = get_post( $post_id );
@@ -1080,7 +1088,7 @@ class AccessibilityScanner extends Module {
 
 		// Save to scan history for trends chart
 		$this->save_scan_to_history( $pages_scanned, $total_issues, $total_critical, $average_score );
-		
+
 		// Save last scan time
 		update_option( 'slos_last_scan_time', current_time( 'mysql' ) );
 	}
@@ -1095,28 +1103,28 @@ class AccessibilityScanner extends Module {
 	 */
 	private function save_scan_to_history( $pages_scanned, $total_issues, $total_critical, $score ) {
 		$history = get_option( 'slos_accessibility_scan_history', array() );
-		
+
 		// Generate unique ID for this scan
 		$scan_id = wp_generate_uuid4();
-		
+
 		// Create history entry
 		$entry = array(
-			'id'             => $scan_id,
-			'date'           => current_time( 'mysql' ),
-			'timestamp'      => time(),
-			'score'          => intval( $score ),
-			'issues'         => intval( $total_issues ),
-			'critical'       => intval( $total_critical ),
-			'pages_scanned'  => intval( $pages_scanned ),
-			'wcag_level'     => get_option( 'slos_wcag_level', 'AA' ),
+			'id'            => $scan_id,
+			'date'          => current_time( 'mysql' ),
+			'timestamp'     => time(),
+			'score'         => intval( $score ),
+			'issues'        => intval( $total_issues ),
+			'critical'      => intval( $total_critical ),
+			'pages_scanned' => intval( $pages_scanned ),
+			'wcag_level'    => get_option( 'slos_wcag_level', 'AA' ),
 		);
-		
+
 		// Add to beginning of array (most recent first)
 		array_unshift( $history, $entry );
-		
+
 		// Keep only last 100 scans to prevent database bloat
 		$history = array_slice( $history, 0, 100 );
-		
+
 		update_option( 'slos_accessibility_scan_history', $history );
 	}
 
@@ -1127,78 +1135,78 @@ class AccessibilityScanner extends Module {
 	 */
 	private function get_check_mapping() {
 		return array(
-			'missing-alt-text'    => MissingAltTextCheck::class,
-			'empty-alt-text'      => EmptyAltTextCheck::class,
-			'missing-h1'          => MissingH1Check::class,
-			'skipped-heading'     => SkippedHeadingLevelCheck::class,
-			'empty-link'          => EmptyLinkCheck::class,
-			'generic-link'        => GenericLinkTextCheck::class,
-			'missing-label'       => MissingFormLabelCheck::class,
-			'redundant-alt'       => RedundantAltTextCheck::class,
-			'empty-heading'       => EmptyHeadingCheck::class,
-			'new-window'          => NewWindowLinkCheck::class,
-			'positive-tabindex'   => PositiveTabIndexCheck::class,
-			'image-map'           => ImageMapAltCheck::class,
-			'iframe-title'        => IframeTitleCheck::class,
-			'button-label'        => ButtonLabelCheck::class,
-			'table-header'        => TableHeaderCheck::class,
-			'alt-quality'         => AltTextQualityCheck::class,
-			'decorative-image'    => DecorativeImageCheck::class,
-			'complex-image'       => ComplexImageCheck::class,
-			'svg-access'          => SvgAccessibilityCheck::class,
-			'bg-image'            => BackgroundImageCheck::class,
-			'logo-image'          => LogoImageCheck::class,
-			'multiple-h1'         => MultipleH1Check::class,
-			'heading-visual'      => HeadingVisualCheck::class,
-			'heading-length'      => HeadingLengthCheck::class,
-			'heading-unique'      => HeadingUniquenessCheck::class,
-			'heading-nesting'     => HeadingNestingCheck::class,
-			'fieldset-legend'     => FieldsetLegendCheck::class,
-			'autocomplete'        => AutocompleteCheck::class,
-			'input-type'          => InputTypeCheck::class,
-			'placeholder-label'   => PlaceholderLabelCheck::class,
-			'custom-control'      => CustomControlCheck::class,
-			'orphaned-label'      => OrphanedLabelCheck::class,
-			'required-attr'       => RequiredAttributeCheck::class,
-			'error-message'       => ErrorMessageCheck::class,
-			'form-aria'           => FormAriaCheck::class,
-			'link-dest'           => LinkDestinationCheck::class,
-			'skip-link'           => SkipLinkCheck::class,
-			'download-link'       => DownloadLinkCheck::class,
-			'external-link'       => ExternalLinkCheck::class,
-			'contrast'            => TextColorContrastCheck::class,
-			'focus-indicator'     => FocusIndicatorCheck::class,
-			'color-reliance'      => ColorRelianceCheck::class,
-			'complex-contrast'    => ComplexContrastCheck::class,
-			'keyboard-trap'       => KeyboardTrapCheck::class,
-			'focus-order'         => FocusOrderCheck::class,
-			'interactive-element' => InteractiveElementCheck::class,
-			'modal-access'        => ModalAccessibilityCheck::class,
-			'widget-keyboard'     => CustomWidgetKeyboardCheck::class,
-			'aria-role'           => AriaRoleCheck::class,
-			'aria-attr'           => AriaAttributeCheck::class,
-			'landmark-role'       => LandmarkRoleCheck::class,
-			'redundant-aria'      => RedundantAriaCheck::class,
-			'hidden-content'      => HiddenContentCheck::class,
-			'semantic-html'       => SemanticHtmlCheck::class,
-			'live-region'         => LiveRegionCheck::class,
-			'aria-state'          => AriaStateCheck::class,
-			'invalid-aria'        => InvalidAriaCombinationCheck::class,
-			'page-structure'      => PageStructureCheck::class,
-			'video-access'        => VideoAccessibilityCheck::class,
-			'audio-access'        => AudioAccessibilityCheck::class,
-			'media-alt'           => MediaAlternativeCheck::class,
-			'table-caption'       => TableCaptionCheck::class,
-			'complex-table'       => ComplexTableCheck::class,
-			'layout-table'        => LayoutTableCheck::class,
-			'empty-cell'          => EmptyTableCellCheck::class,
-			'viewport'            => ViewportCheck::class,
-			'touch-target'        => TouchTargetCheck::class,
-			'touch-gesture'       => TouchGestureCheck::class,
-			'language-change'     => LanguageChangeCheck::class,
-			'animation-pause'     => AnimationPauseCheck::class,
-			'timing-control'      => TimingControlCheck::class,
-			'status-message'      => StatusMessageCheck::class,
+			'missing-alt-text'     => MissingAltTextCheck::class,
+			'empty-alt-text'       => EmptyAltTextCheck::class,
+			'missing-h1'           => MissingH1Check::class,
+			'skipped-heading'      => SkippedHeadingLevelCheck::class,
+			'empty-link'           => EmptyLinkCheck::class,
+			'generic-link'         => GenericLinkTextCheck::class,
+			'missing-label'        => MissingFormLabelCheck::class,
+			'redundant-alt'        => RedundantAltTextCheck::class,
+			'empty-heading'        => EmptyHeadingCheck::class,
+			'new-window'           => NewWindowLinkCheck::class,
+			'positive-tabindex'    => PositiveTabIndexCheck::class,
+			'image-map'            => ImageMapAltCheck::class,
+			'iframe-title'         => IframeTitleCheck::class,
+			'button-label'         => ButtonLabelCheck::class,
+			'table-header'         => TableHeaderCheck::class,
+			'alt-quality'          => AltTextQualityCheck::class,
+			'decorative-image'     => DecorativeImageCheck::class,
+			'complex-image'        => ComplexImageCheck::class,
+			'svg-access'           => SvgAccessibilityCheck::class,
+			'bg-image'             => BackgroundImageCheck::class,
+			'logo-image'           => LogoImageCheck::class,
+			'multiple-h1'          => MultipleH1Check::class,
+			'heading-visual'       => HeadingVisualCheck::class,
+			'heading-length'       => HeadingLengthCheck::class,
+			'heading-unique'       => HeadingUniquenessCheck::class,
+			'heading-nesting'      => HeadingNestingCheck::class,
+			'fieldset-legend'      => FieldsetLegendCheck::class,
+			'autocomplete'         => AutocompleteCheck::class,
+			'input-type'           => InputTypeCheck::class,
+			'placeholder-label'    => PlaceholderLabelCheck::class,
+			'custom-control'       => CustomControlCheck::class,
+			'orphaned-label'       => OrphanedLabelCheck::class,
+			'required-attr'        => RequiredAttributeCheck::class,
+			'error-message'        => ErrorMessageCheck::class,
+			'form-aria'            => FormAriaCheck::class,
+			'link-dest'            => LinkDestinationCheck::class,
+			'skip-link'            => SkipLinkCheck::class,
+			'download-link'        => DownloadLinkCheck::class,
+			'external-link'        => ExternalLinkCheck::class,
+			'contrast'             => TextColorContrastCheck::class,
+			'focus-indicator'      => FocusIndicatorCheck::class,
+			'color-reliance'       => ColorRelianceCheck::class,
+			'complex-contrast'     => ComplexContrastCheck::class,
+			'keyboard-trap'        => KeyboardTrapCheck::class,
+			'focus-order'          => FocusOrderCheck::class,
+			'interactive-element'  => InteractiveElementCheck::class,
+			'modal-access'         => ModalAccessibilityCheck::class,
+			'widget-keyboard'      => CustomWidgetKeyboardCheck::class,
+			'aria-role'            => AriaRoleCheck::class,
+			'aria-attr'            => AriaAttributeCheck::class,
+			'landmark-role'        => LandmarkRoleCheck::class,
+			'redundant-aria'       => RedundantAriaCheck::class,
+			'hidden-content'       => HiddenContentCheck::class,
+			'semantic-html'        => SemanticHtmlCheck::class,
+			'live-region'          => LiveRegionCheck::class,
+			'aria-state'           => AriaStateCheck::class,
+			'invalid-aria'         => InvalidAriaCombinationCheck::class,
+			'page-structure'       => PageStructureCheck::class,
+			'video-access'         => VideoAccessibilityCheck::class,
+			'audio-access'         => AudioAccessibilityCheck::class,
+			'media-alt'            => MediaAlternativeCheck::class,
+			'table-caption'        => TableCaptionCheck::class,
+			'complex-table'        => ComplexTableCheck::class,
+			'layout-table'         => LayoutTableCheck::class,
+			'empty-cell'           => EmptyTableCellCheck::class,
+			'viewport'             => ViewportCheck::class,
+			'touch-target'         => TouchTargetCheck::class,
+			'touch-gesture'        => TouchGestureCheck::class,
+			'language-change'      => LanguageChangeCheck::class,
+			'animation-pause'      => AnimationPauseCheck::class,
+			'timing-control'       => TimingControlCheck::class,
+			'status-message'       => StatusMessageCheck::class,
 			'error-identification' => ErrorIdentificationCheck::class,
 		);
 	}
@@ -1343,7 +1351,7 @@ class AccessibilityScanner extends Module {
 			echo '<ul style="list-style: none; padding: 0;">';
 			foreach ( $results as $check_id => $result ) {
 				$color = $result['severity'] === 'critical' ? '#d63638' : '#dba617';
-				echo '<li style="margin-bottom: 10px; border-left: 4px solid ' . $color . '; padding-left: 10px;">';
+				echo '<li style="margin-bottom: 10px; border-left: 4px solid ' . esc_attr( $color ) . '; padding-left: 10px;">';
 				echo '<strong>' . esc_html( $result['description'] ) . '</strong>';
 				echo '<ul style="margin-top: 5px; padding-left: 15px;">';
 				foreach ( $result['issues'] as $issue ) {
@@ -1487,6 +1495,7 @@ class AccessibilityScanner extends Module {
 
 		wp_send_json_success(
 			array(
+				/* translators: %d: number of issues fixed */
 				'message'         => sprintf( __( '%d issue(s) fixed successfully!', 'shahi-legalflowsuite' ), $fixed_count ),
 				'fixed_count'     => $fixed_count,
 				'content_changed' => $content_changed,
@@ -1599,7 +1608,7 @@ class AccessibilityScanner extends Module {
 			}
 
 			// Only process successful fixes with fixed_count > 0
-			$fixed_issues[] = array(
+			$fixed_issues[]     = array(
 				'type'        => $issue_type,
 				'count'       => $fixed_count,
 				'description' => $this->get_issue_description( $issue_type ),
@@ -1657,8 +1666,8 @@ class AccessibilityScanner extends Module {
 		}
 
 		// Get the new issue count for this page
-		$new_results    = get_option( 'slos_last_scan_results', array() );
-		$new_page_data  = null;
+		$new_results      = get_option( 'slos_last_scan_results', array() );
+		$new_page_data    = null;
 		$new_issues_count = 0;
 		$new_score        = 100;
 
@@ -1673,18 +1682,18 @@ class AccessibilityScanner extends Module {
 
 		// Build response
 		$response = array(
-			'success'              => true,
-			'message'              => $this->build_fix_message( $fixed_count_total, count( $failed_issues ), count( $manual_fix_required ) ),
-			'fixed_count'          => count( $fixed_issues ),
-			'failed_count'         => count( $failed_issues ),
-			'manual_required'      => count( $manual_fix_required ),
-			'total_issues_fixed'   => $fixed_count_total,
-			'content_changed'      => $content_changed,
-			'new_issues_count'     => $new_issues_count,
-			'new_score'            => $new_score,
-			'fixed_details'        => $fixed_issues,
-			'failed_details'       => $failed_issues,
-			'manual_fix_guidance'  => $this->get_manual_fix_guidance( $manual_fix_required ),
+			'success'             => true,
+			'message'             => $this->build_fix_message( $fixed_count_total, count( $failed_issues ), count( $manual_fix_required ) ),
+			'fixed_count'         => count( $fixed_issues ),
+			'failed_count'        => count( $failed_issues ),
+			'manual_required'     => count( $manual_fix_required ),
+			'total_issues_fixed'  => $fixed_count_total,
+			'content_changed'     => $content_changed,
+			'new_issues_count'    => $new_issues_count,
+			'new_score'           => $new_score,
+			'fixed_details'       => $fixed_issues,
+			'failed_details'      => $failed_issues,
+			'manual_fix_guidance' => $this->get_manual_fix_guidance( $manual_fix_required ),
 		);
 
 		wp_send_json_success( $response );
@@ -1718,9 +1727,10 @@ class AccessibilityScanner extends Module {
 	 */
 	private function build_fix_message( $fixed, $failed, $manual ) {
 		if ( $fixed > 0 && $failed === 0 && $manual === 0 ) {
+				/* translators: %d: number of issues fixed */
 			return sprintf( _n( '%d issue was automatically fixed!', '%d issues were automatically fixed!', $fixed, 'shahi-legalflowsuite' ), $fixed );
 		} elseif ( $fixed > 0 && ( $failed > 0 || $manual > 0 ) ) {
-			return sprintf( __( '%d issues fixed. %d issues require manual attention.', 'shahi-legalflowsuite' ), $fixed, $failed + $manual );
+			return sprintf( /* translators: 1: number of issues fixed, 2: number of issues requiring manual attention */  __( '%1$d issues fixed. %2$d issues require manual attention.', 'shahi-legalflowsuite' ), $fixed, $failed + $manual );
 		} elseif ( $fixed === 0 && ( $failed > 0 || $manual > 0 ) ) {
 			return __( 'No issues could be automatically fixed. Manual intervention required.', 'shahi-legalflowsuite' );
 		}
@@ -2041,106 +2051,106 @@ class AccessibilityScanner extends Module {
 		// CanonicalIds::canonicalize() inside FixEngine.
 		return array(
 			// Image-related checks (scan result keys => canonical/alias IDs)
-			'missing-alt-text'    => 'missing-alt-text',
-			'empty-alt-text'      => 'empty-alt-text',
-			'redundant-alt'       => 'redundant-alt-text',
-			'alt-quality'         => 'alt-text-quality',
-			'decorative-image'    => 'decorative-image',
-			'complex-image'       => 'complex-image',
-			'svg-access'          => 'svg-accessibility',
-			'bg-image'            => 'background-image',
-			'logo-image'          => 'logo-image',
-			'image-map'           => 'image-map-alt',
+			'missing-alt-text'     => 'missing-alt-text',
+			'empty-alt-text'       => 'empty-alt-text',
+			'redundant-alt'        => 'redundant-alt-text',
+			'alt-quality'          => 'alt-text-quality',
+			'decorative-image'     => 'decorative-image',
+			'complex-image'        => 'complex-image',
+			'svg-access'           => 'svg-accessibility',
+			'bg-image'             => 'background-image',
+			'logo-image'           => 'logo-image',
+			'image-map'            => 'image-map-alt',
 
 			// Heading-related checks
-			'missing-h1'          => 'missing-h1',
-			'multiple-h1'         => 'multiple-h1',
-			'skipped-heading'     => 'skipped-heading-level',
-			'empty-heading'       => 'empty-heading',
-			'heading-length'      => 'heading-length',
-			'heading-unique'      => 'heading-uniqueness',
-			'heading-visual'      => 'heading-visual',
-			'heading-nesting'     => 'heading-nesting',
+			'missing-h1'           => 'missing-h1',
+			'multiple-h1'          => 'multiple-h1',
+			'skipped-heading'      => 'skipped-heading-level',
+			'empty-heading'        => 'empty-heading',
+			'heading-length'       => 'heading-length',
+			'heading-unique'       => 'heading-uniqueness',
+			'heading-visual'       => 'heading-visual',
+			'heading-nesting'      => 'heading-nesting',
 
 			// Form-related checks
-			'missing-label'       => 'missing-form-label',
-			'placeholder-label'   => 'placeholder-label',
-			'orphaned-label'      => 'orphaned-label',
-			'fieldset-legend'     => 'fieldset-legend',
-			'autocomplete'        => 'autocomplete-attribute',
-			'input-type'          => 'input-type',
-			'required-attr'       => 'required-attribute',
-			'error-message'       => 'error-message',
-			'form-aria'           => 'form-aria',
-			'custom-control'      => 'custom-control',
+			'missing-label'        => 'missing-form-label',
+			'placeholder-label'    => 'placeholder-label',
+			'orphaned-label'       => 'orphaned-label',
+			'fieldset-legend'      => 'fieldset-legend',
+			'autocomplete'         => 'autocomplete-attribute',
+			'input-type'           => 'input-type',
+			'required-attr'        => 'required-attribute',
+			'error-message'        => 'error-message',
+			'form-aria'            => 'form-aria',
+			'custom-control'       => 'custom-control',
 
 			// Link-related checks
-			'empty-link'          => 'empty-link',
-			'generic-link'        => 'generic-link-text',
-			'new-window'          => 'new-window-link',
-			'download-link'       => 'download-link',
-			'external-link'       => 'external-link',
-			'link-dest'           => 'link-destination',
-			'skip-link'           => 'skip-link',
+			'empty-link'           => 'empty-link',
+			'generic-link'         => 'generic-link-text',
+			'new-window'           => 'new-window-link',
+			'download-link'        => 'download-link',
+			'external-link'        => 'external-link',
+			'link-dest'            => 'link-destination',
+			'skip-link'            => 'skip-link',
 
 			// ARIA-related checks
-			'aria-role'           => 'aria-role',
-			'aria-attr'           => 'aria-attribute',
-			'aria-state'          => 'aria-state',
-			'redundant-aria'      => 'redundant-aria',
-			'invalid-aria'        => 'invalid-aria-combination',
-			'landmark-role'       => 'landmark-role',
-			'hidden-content'      => 'hidden-content',
-			'live-region'         => 'live-region',
+			'aria-role'            => 'aria-role',
+			'aria-attr'            => 'aria-attribute',
+			'aria-state'           => 'aria-state',
+			'redundant-aria'       => 'redundant-aria',
+			'invalid-aria'         => 'invalid-aria-combination',
+			'landmark-role'        => 'landmark-role',
+			'hidden-content'       => 'hidden-content',
+			'live-region'          => 'live-region',
 
 			// Table-related checks
-			'table-header'        => 'table-header',
-			'table-caption'       => 'table-caption',
-			'complex-table'       => 'complex-table',
-			'layout-table'        => 'layout-table',
-			'empty-cell'          => 'empty-table-cell',
+			'table-header'         => 'table-header',
+			'table-caption'        => 'table-caption',
+			'complex-table'        => 'complex-table',
+			'layout-table'         => 'layout-table',
+			'empty-cell'           => 'empty-table-cell',
 
 			// Keyboard & Interaction
-			'positive-tabindex'   => 'positive-tabindex',
-			'keyboard-trap'       => 'keyboard-trap',
-			'focus-order'         => 'focus-order',
-			'focus-indicator'     => 'focus-indicator',
-			'interactive-element' => 'interactive-element',
-			'modal-access'        => 'modal-accessibility',
-			'widget-keyboard'     => 'interactive-element',
+			'positive-tabindex'    => 'positive-tabindex',
+			'keyboard-trap'        => 'keyboard-trap',
+			'focus-order'          => 'focus-order',
+			'focus-indicator'      => 'focus-indicator',
+			'interactive-element'  => 'interactive-element',
+			'modal-access'         => 'modal-accessibility',
+			'widget-keyboard'      => 'interactive-element',
 
 			// Color & Contrast
-			'contrast'            => 'text-color-contrast',
-			'color-reliance'      => 'color-reliance',
-			'complex-contrast'    => 'complex-contrast',
+			'contrast'             => 'text-color-contrast',
+			'color-reliance'       => 'color-reliance',
+			'complex-contrast'     => 'complex-contrast',
 
 			// Mobile & Viewport
-			'touch-target'        => 'touch-target',
-			'touch-gesture'       => 'touch-gesture',
-			'viewport'            => 'viewport-check',
+			'touch-target'         => 'touch-target',
+			'touch-gesture'        => 'touch-gesture',
+			'viewport'             => 'viewport-check',
 
 			// Semantic & Structure
-			'semantic-html'       => 'semantic-html',
-			'page-structure'      => 'page-structure',
+			'semantic-html'        => 'semantic-html',
+			'page-structure'       => 'page-structure',
 
 			// Media & Other
-			'button-label'        => 'button-label',
-			'iframe-title'        => 'iframe-title',
-			'video-access'        => 'video-accessibility',
-			'audio-access'        => 'audio-accessibility',
-			'media-alt'           => 'media-alternative',
+			'button-label'         => 'button-label',
+			'iframe-title'         => 'iframe-title',
+			'video-access'         => 'video-accessibility',
+			'audio-access'         => 'audio-accessibility',
+			'media-alt'            => 'media-alternative',
 
 			// Advanced
-			'language-change'     => 'language-change',
-			'animation-pause'     => 'animation-pause',
-			'timing-control'      => 'timing-control',
-			'status-message'      => 'status-message',
+			'language-change'      => 'language-change',
+			'animation-pause'      => 'animation-pause',
+			'timing-control'       => 'timing-control',
+			'status-message'       => 'status-message',
 			'error-identification' => 'error-identification',
 
 			// Handle scan results that might use longer forms
-			'video-accessibility' => 'video-accessibility',
-			'audio-accessibility' => 'audio-accessibility',
-			'media-alternative'   => 'media-alternative',
+			'video-accessibility'  => 'video-accessibility',
+			'audio-accessibility'  => 'audio-accessibility',
+			'media-alternative'    => 'media-alternative',
 		);
 	}
 
@@ -2224,7 +2234,7 @@ class AccessibilityScanner extends Module {
 			$content_changed = false;
 
 			if ( $page_id > 0 && class_exists( '\ShahiLegalFlowSuite\Modules\AccessibilityScanner\FixEngine\Bootstrap' ) ) {
-				$engine  = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\FixEngine\Bootstrap::get_engine();
+				$engine = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\FixEngine\Bootstrap::get_engine();
 				$engine->initialize();
 				$session = $engine->fix_post( $page_id, array( $fixer_id ) );
 
@@ -2402,7 +2412,7 @@ class AccessibilityScanner extends Module {
 		if ( ! empty( $scan_results ) && is_array( $scan_results ) ) {
 			foreach ( $scan_results as $check_id => $result ) {
 				if ( ! empty( $result['issues'] ) && is_array( $result['issues'] ) ) {
-					$issue_count  = count( $result['issues'] );
+					$issue_count   = count( $result['issues'] );
 					$total_issues += $issue_count;
 
 					$issues[] = array(
@@ -2438,21 +2448,21 @@ class AccessibilityScanner extends Module {
 	 */
 	private function get_fix_tip( $check_id ) {
 		$tips = array(
-			'missing-alt-text'      => 'Add descriptive alt attributes to all images. Describe what the image shows, not just "image" or "photo".',
-			'button-label'          => 'Ensure all buttons have visible text or aria-label attributes that describe their purpose.',
-			'table-header'          => 'Add <th> elements with scope attributes to table rows to identify headers.',
-			'video-accessibility'   => 'Provide captions for videos using <track> elements with WebVTT files.',
-			'media-alternative'     => 'Add text transcripts for audio content and alternative descriptions for media.',
-			'form-label'            => 'Associate every form input with a <label> element using the for/id attributes.',
-			'heading-structure'     => 'Use heading levels (h1-h6) in proper order without skipping levels.',
-			'link-text'             => 'Use descriptive link text instead of "click here" or "read more". Describe the destination.',
-			'color-contrast'        => 'Ensure text has sufficient contrast ratio: 4.5:1 for normal text, 3:1 for large text.',
-			'aria-labels'           => 'Add appropriate ARIA labels and roles to custom interactive elements.',
-			'keyboard-access'       => 'Ensure all interactive elements are keyboard accessible using Tab and Enter keys.',
-			'table-caption'         => 'Add <caption> elements to tables to describe their purpose.',
-			'empty-heading'         => 'Remove empty headings or add meaningful content to them.',
-			'empty-link'            => 'Add descriptive text to links or remove empty link elements.',
-			'skip-link'             => 'Add a "Skip to main content" link at the top of the page for keyboard users.',
+			'missing-alt-text'    => 'Add descriptive alt attributes to all images. Describe what the image shows, not just "image" or "photo".',
+			'button-label'        => 'Ensure all buttons have visible text or aria-label attributes that describe their purpose.',
+			'table-header'        => 'Add <th> elements with scope attributes to table rows to identify headers.',
+			'video-accessibility' => 'Provide captions for videos using <track> elements with WebVTT files.',
+			'media-alternative'   => 'Add text transcripts for audio content and alternative descriptions for media.',
+			'form-label'          => 'Associate every form input with a <label> element using the for/id attributes.',
+			'heading-structure'   => 'Use heading levels (h1-h6) in proper order without skipping levels.',
+			'link-text'           => 'Use descriptive link text instead of "click here" or "read more". Describe the destination.',
+			'color-contrast'      => 'Ensure text has sufficient contrast ratio: 4.5:1 for normal text, 3:1 for large text.',
+			'aria-labels'         => 'Add appropriate ARIA labels and roles to custom interactive elements.',
+			'keyboard-access'     => 'Ensure all interactive elements are keyboard accessible using Tab and Enter keys.',
+			'table-caption'       => 'Add <caption> elements to tables to describe their purpose.',
+			'empty-heading'       => 'Remove empty headings or add meaningful content to them.',
+			'empty-link'          => 'Add descriptive text to links or remove empty link elements.',
+			'skip-link'           => 'Add a "Skip to main content" link at the top of the page for keyboard users.',
 		);
 
 		return $tips[ $check_id ] ?? 'Review the issue details and consult WCAG guidelines for proper implementation.';
@@ -2512,8 +2522,8 @@ class AccessibilityScanner extends Module {
 			$result = $fixer->fix( $content, array( 'post_id' => $page_id ) );
 
 			// Process result (FixResult object)
-			$fixed_count    = $result->get_fixes_applied();
-			$fixed_content  = $result->get_fixed_content();
+			$fixed_count     = $result->get_fixes_applied();
+			$fixed_content   = $result->get_fixed_content();
 			$content_changed = ( $fixed_content !== $content );
 
 			// Guardrail: Ensure we don't mark success if no fixes and no content change
@@ -2538,9 +2548,9 @@ class AccessibilityScanner extends Module {
 
 				// Re-scan the post to get accurate results
 				if ( isset( $this->scanner ) && method_exists( $this->scanner, 'scan' ) ) {
-					$updated_post = get_post( $page_id );
+					$updated_post     = get_post( $page_id );
 					$new_scan_results = $this->scanner->scan( $updated_post->post_content );
-					
+
 					// Get issue count after fix
 					$issues_after = 0;
 					if ( is_array( $new_scan_results ) ) {
@@ -2561,7 +2571,7 @@ class AccessibilityScanner extends Module {
 						$issues_before,
 						$issues_after
 					);
-					
+
 					// Persist scan results and date to post meta
 					update_post_meta( $page_id, '_slos_accessibility_scan_results', $new_scan_results );
 					update_post_meta( $page_id, '_slos_accessibility_scan_date', current_time( 'mysql' ) );
@@ -2610,19 +2620,19 @@ class AccessibilityScanner extends Module {
 	 */
 	private function save_content_backup( $post_id, $content ) {
 		_deprecated_function( __METHOD__, '3.2.0', 'BackupService::save_backup()' );
-		
+
 		// Use BackupService for new backup system
 		$backup_id = $this->backup_service->save_backup( $post_id, $content );
-		
+
 		// Also maintain old post meta for backward compatibility during transition
 		$backup_key = '_slos_accessibility_content_backup';
-		$backup = array(
+		$backup     = array(
 			'content'    => $content,
 			'timestamp'  => current_time( 'timestamp' ),
 			'created_at' => current_time( 'mysql' ),
 		);
 		update_post_meta( $post_id, $backup_key, $backup );
-		
+
 		return (bool) $backup_id;
 	}
 
@@ -2636,7 +2646,7 @@ class AccessibilityScanner extends Module {
 	 */
 	private function get_content_backup( $post_id ) {
 		_deprecated_function( __METHOD__, '3.2.0', 'BackupService::get_latest_backup()' );
-		
+
 		// Try BackupService first (new system)
 		$backup = $this->backup_service->get_latest_backup( $post_id );
 		if ( $backup ) {
@@ -2646,10 +2656,10 @@ class AccessibilityScanner extends Module {
 				'created_at' => $backup['created_at'],
 			);
 		}
-		
+
 		// Fallback to post meta (old system)
 		$backup = get_post_meta( $post_id, '_slos_accessibility_content_backup', true );
-		
+
 		if ( empty( $backup ) || ! is_array( $backup ) ) {
 			return false;
 		}
@@ -2685,9 +2695,9 @@ class AccessibilityScanner extends Module {
 		global $wpdb;
 
 		$table_name = $wpdb->prefix . 'slos_accessibility_fix_history';
-		
+
 		// Check if table exists
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) !== $table_name ) {
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) !== $table_name ) {
 			return false;
 		}
 
@@ -2719,27 +2729,28 @@ class AccessibilityScanner extends Module {
 	 */
 	private function cleanup_old_backups( $ttl_days = 7 ) {
 		_deprecated_function( __METHOD__, '3.2.0', 'BackupService::cleanup_old_backups()' );
-		
+
 		// Use BackupService for database cleanup
 		$deleted = $this->backup_service->cleanup_old_backups( $ttl_days );
-		
+
 		// Also clean up old post meta backups for backward compatibility
 		global $wpdb;
-		$count = 0;
+		$count         = 0;
 		$ttl_timestamp = current_time( 'timestamp' ) - ( $ttl_days * DAY_IN_SECONDS );
 
 		// Get all posts with backups
-		$meta_key = '_slos_accessibility_content_backup';
+		$meta_key           = '_slos_accessibility_content_backup';
 		$posts_with_backups = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT post_id, meta_value FROM {$wpdb->postmeta} WHERE meta_key = %s",
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- esc_sql() used for table name
+				'SELECT post_id, meta_value FROM ' . esc_sql( $wpdb->postmeta ) . ' WHERE meta_key = %s',
 				$meta_key
 			)
 		);
 
 		foreach ( $posts_with_backups as $row ) {
 			$backup = maybe_unserialize( $row->meta_value );
-			
+
 			if ( is_array( $backup ) && isset( $backup['timestamp'] ) ) {
 				if ( $backup['timestamp'] < $ttl_timestamp ) {
 					delete_post_meta( $row->post_id, $meta_key );
@@ -2761,10 +2772,10 @@ class AccessibilityScanner extends Module {
 	 */
 	private function rollback_content( $post_id ) {
 		_deprecated_function( __METHOD__, '3.2.0', 'BackupService::restore_backup()' );
-		
+
 		// Use BackupService to restore
 		$result = $this->backup_service->restore_backup( $post_id );
-		
+
 		if ( is_wp_error( $result ) ) {
 			return $result;
 		}
@@ -2777,7 +2788,7 @@ class AccessibilityScanner extends Module {
 		// Re-scan after rollback
 		if ( isset( $this->scanner ) && method_exists( $this->scanner, 'scan' ) ) {
 			$restored_post = get_post( $post_id );
-			$scan_results = $this->scanner->scan( $restored_post->post_content );
+			$scan_results  = $this->scanner->scan( $restored_post->post_content );
 			update_post_meta( $post_id, '_slos_accessibility_scan_results', $scan_results );
 			update_post_meta( $post_id, '_slos_accessibility_scan_date', current_time( 'mysql' ) );
 
@@ -2789,17 +2800,17 @@ class AccessibilityScanner extends Module {
 		// Log rollback to history (BackupService already handles backup tracking)
 		global $wpdb;
 		$table_name = $wpdb->prefix . 'slos_accessibility_fix_history';
-		
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) === $table_name ) {
+
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) === $table_name ) {
 			$wpdb->insert(
 				$table_name,
 				array(
-					'post_id'    => $post_id,
-					'fixer_id'   => 'rollback',
+					'post_id'     => $post_id,
+					'fixer_id'    => 'rollback',
 					'fixed_count' => 0,
-					'user_id'    => get_current_user_id(),
-					'action'     => 'rollback',
-					'created_at' => current_time( 'mysql' ),
+					'user_id'     => get_current_user_id(),
+					'action'      => 'rollback',
+					'created_at'  => current_time( 'mysql' ),
 				)
 			);
 		}
@@ -2861,11 +2872,11 @@ class AccessibilityScanner extends Module {
 
 		// Use BackupService directly
 		$has_backup = $this->backup_service->has_backup( $post_id );
-		$backup = $has_backup ? $this->backup_service->get_latest_backup( $post_id ) : null;
+		$backup     = $has_backup ? $this->backup_service->get_latest_backup( $post_id ) : null;
 
 		wp_send_json_success(
 			array(
-				'has_backup' => $has_backup,
+				'has_backup'  => $has_backup,
 				'backup_date' => $backup ? $backup['created_at'] : '',
 			)
 		);
@@ -2884,7 +2895,7 @@ class AccessibilityScanner extends Module {
 		}
 
 		// Sanitize WCAG level
-		$wcag_level = isset( $_POST['wcag_level'] ) ? sanitize_text_field( wp_unslash( $_POST['wcag_level'] ) ) : 'AA';
+		$wcag_level     = isset( $_POST['wcag_level'] ) ? sanitize_text_field( wp_unslash( $_POST['wcag_level'] ) ) : 'AA';
 		$allowed_levels = array( 'A', 'AA', 'AAA' );
 		if ( ! in_array( $wcag_level, $allowed_levels, true ) ) {
 			$wcag_level = 'AA';
@@ -2895,17 +2906,17 @@ class AccessibilityScanner extends Module {
 		$scan_post_types = array_map( 'sanitize_key', $scan_post_types );
 
 		// Only keep valid public post types
-		$public_types = get_post_types( array( 'public' => true ), 'names' );
+		$public_types    = get_post_types( array( 'public' => true ), 'names' );
 		$scan_post_types = array_values( array_intersect( $scan_post_types, $public_types ) );
 		if ( empty( $scan_post_types ) ) {
 			$scan_post_types = array( 'post', 'page' );
 		}
 
 		// Sanitize active checkers; reuse same keys as settings page
-		$raw_checkers = isset( $_POST['active_checkers'] ) ? (array) $_POST['active_checkers'] : array();
-		$raw_checkers = array_map( 'sanitize_key', $raw_checkers );
+		$raw_checkers       = isset( $_POST['active_checkers'] ) ? (array) $_POST['active_checkers'] : array();
+		$raw_checkers       = array_map( 'sanitize_key', $raw_checkers );
 		$available_checkers = array_keys( $this->get_check_mapping() );
-		$active_checkers = array_values( array_intersect( $raw_checkers, $available_checkers ) );
+		$active_checkers    = array_values( array_intersect( $raw_checkers, $available_checkers ) );
 		if ( empty( $active_checkers ) ) {
 			$active_checkers = $available_checkers;
 		}
@@ -2936,18 +2947,18 @@ class AccessibilityScanner extends Module {
 			wp_send_json_error( array( 'message' => 'Unauthorized' ) );
 		}
 
-		$email = isset( $_POST['email'] ) ? sanitize_text_field( wp_unslash( $_POST['email'] ) ) : '';
+		$email     = isset( $_POST['email'] ) ? sanitize_text_field( wp_unslash( $_POST['email'] ) ) : '';
 		$frequency = isset( $_POST['frequency'] ) ? sanitize_text_field( wp_unslash( $_POST['frequency'] ) ) : 'weekly';
-		$template = isset( $_POST['template'] ) ? sanitize_text_field( wp_unslash( $_POST['template'] ) ) : 'executive';
+		$template  = isset( $_POST['template'] ) ? sanitize_text_field( wp_unslash( $_POST['template'] ) ) : 'executive';
 
 		if ( empty( $email ) ) {
 			wp_send_json_error( array( 'message' => __( 'Please provide at least one email address.', 'shahi-legalflowsuite' ) ) );
 		}
 
 		// Validate email addresses (support multiple emails separated by commas)
-		$emails = array_map( 'trim', explode( ',', $email ) );
+		$emails       = array_map( 'trim', explode( ',', $email ) );
 		$valid_emails = array();
-		
+
 		foreach ( $emails as $single_email ) {
 			if ( is_email( $single_email ) ) {
 				$valid_emails[] = $single_email;
@@ -2969,17 +2980,17 @@ class AccessibilityScanner extends Module {
 		}
 
 		$settings = array(
-			'email'      => implode( ', ', $valid_emails ),
-			'frequency'  => $frequency,
-			'template'   => $template,
-			'last_sent'  => '',
+			'email'     => implode( ', ', $valid_emails ),
+			'frequency' => $frequency,
+			'template'  => $template,
+			'last_sent' => '',
 		);
 
 		update_option( 'slos_accessibility_report_settings', $settings );
 
 		wp_send_json_success(
 			array(
-				'message'   => sprintf(
+				'message'  => sprintf(
 					/* translators: %d: number of email addresses */
 					_n(
 						'Email report scheduled successfully to %d recipient.',
@@ -2989,7 +3000,7 @@ class AccessibilityScanner extends Module {
 					),
 					count( $valid_emails )
 				),
-				'settings'  => $settings,
+				'settings' => $settings,
 			)
 		);
 	}
@@ -3000,17 +3011,17 @@ class AccessibilityScanner extends Module {
 	 * Runs daily but honours the configured daily/weekly/monthly cadence.
 	 */
 	public function cron_send_accessibility_report() {
-		$settings = get_option( 'slos_accessibility_report_settings', array() );
-		$email    = isset( $settings['email'] ) ? $settings['email'] : '';
+		$settings  = get_option( 'slos_accessibility_report_settings', array() );
+		$email     = isset( $settings['email'] ) ? $settings['email'] : '';
 		$frequency = isset( $settings['frequency'] ) ? $settings['frequency'] : 'weekly';
-		$template = isset( $settings['template'] ) ? $settings['template'] : 'executive';
+		$template  = isset( $settings['template'] ) ? $settings['template'] : 'executive';
 
 		if ( empty( $email ) ) {
 			return;
 		}
 
 		// Parse multiple emails
-		$emails = array_map( 'trim', explode( ',', $email ) );
+		$emails       = array_map( 'trim', explode( ',', $email ) );
 		$valid_emails = array_filter( $emails, 'is_email' );
 
 		if ( empty( $valid_emails ) ) {
@@ -3019,7 +3030,7 @@ class AccessibilityScanner extends Module {
 
 		$now       = current_time( 'timestamp' );
 		$last_sent = ! empty( $settings['last_sent'] ) ? strtotime( $settings['last_sent'] ) : 0;
-		
+
 		// Determine interval based on frequency
 		$interval_days = 7; // default weekly
 		switch ( $frequency ) {
@@ -3047,7 +3058,7 @@ class AccessibilityScanner extends Module {
 		$sent_count = 0;
 		foreach ( $valid_emails as $recipient ) {
 			if ( $reporter->send_email_report( $recipient, $template ) ) {
-				$sent_count++;
+				++$sent_count;
 			}
 		}
 
@@ -3092,14 +3103,14 @@ class AccessibilityScanner extends Module {
 		$enabled = ! empty( $_POST['enabled'] ) && 'true' === $_POST['enabled'];
 
 		// Sanitize and validate widget position
-		$position = isset( $_POST['position'] ) ? sanitize_text_field( $_POST['position'] ) : 'bottom-right';
+		$position        = isset( $_POST['position'] ) ? sanitize_text_field( $_POST['position'] ) : 'bottom-right';
 		$valid_positions = array( 'top-left', 'top-right', 'bottom-left', 'bottom-right' );
 		if ( ! in_array( $position, $valid_positions, true ) ) {
 			$position = 'bottom-right';
 		}
 
 		// Sanitize and validate widget color
-		$color = isset( $_POST['color'] ) ? sanitize_text_field( $_POST['color'] ) : 'blue';
+		$color        = isset( $_POST['color'] ) ? sanitize_text_field( $_POST['color'] ) : 'blue';
 		$valid_colors = array( 'blue', 'green', 'purple', 'orange', 'red', 'teal' );
 		if ( ! in_array( $color, $valid_colors, true ) ) {
 			$color = 'blue';
@@ -3127,7 +3138,7 @@ class AccessibilityScanner extends Module {
 	 */
 	public function cron_cleanup_old_backups() {
 		$count = $this->cleanup_old_backups( 7 );
-		
+
 		// Log cleanup activity
 		if ( $count > 0 ) {
 			error_log( sprintf( 'SLOS: Cleaned up %d old accessibility fix backups', $count ) );
@@ -3155,7 +3166,7 @@ class AccessibilityScanner extends Module {
 		$scan_stats = get_option( 'slos_scan_statistics', array() );
 
 		// Calculate pass rate
-		$pass_rate = $total_issues > 0 && ! empty( $scan_stats['total_checks'] ) 
+		$pass_rate = $total_issues > 0 && ! empty( $scan_stats['total_checks'] )
 			? round( ( ( $scan_stats['total_checks'] - $total_issues ) / $scan_stats['total_checks'] ) * 100, 1 )
 			: 100;
 
@@ -3168,8 +3179,8 @@ class AccessibilityScanner extends Module {
 
 		// Calculate time since last scan
 		$last_scan_timestamp = ! empty( $last_scan ) ? strtotime( $last_scan ) : 0;
-		$hours_since_scan = $last_scan_timestamp > 0 
-			? round( ( time() - $last_scan_timestamp ) / 3600, 1 ) 
+		$hours_since_scan    = $last_scan_timestamp > 0
+			? round( ( time() - $last_scan_timestamp ) / 3600, 1 )
 			: null;
 
 		// Determine freshness status
@@ -3185,26 +3196,26 @@ class AccessibilityScanner extends Module {
 		}
 
 		return array(
-			'total_issues'    => $total_issues,
-			'critical_issues' => $critical_issues,
-			'warning_issues'  => $warning_issues,
-			'notice_issues'   => $notice_issues,
-			'pages_scanned'   => $pages_scanned,
+			'total_issues'        => $total_issues,
+			'critical_issues'     => $critical_issues,
+			'warning_issues'      => $warning_issues,
+			'notice_issues'       => $notice_issues,
+			'pages_scanned'       => $pages_scanned,
 			'accessibility_score' => $score,
-			'pass_rate'       => (float) $pass_rate,
-			'last_scan_time'  => $last_scan,
-			'hours_since_scan' => $hours_since_scan,
-			'scan_freshness'  => $freshness,
-			'by_severity'     => $by_severity,
+			'pass_rate'           => (float) $pass_rate,
+			'last_scan_time'      => $last_scan,
+			'hours_since_scan'    => $hours_since_scan,
+			'scan_freshness'      => $freshness,
+			'by_severity'         => $by_severity,
 		);
 	}
 
 	/**
 	 * AJAX: Check Color Contrast
-	 * 
+	 *
 	 * Calculates the contrast ratio between foreground and background colors
 	 * and checks against WCAG 2.2 standards.
-	 * 
+	 *
 	 * @since 3.1.2
 	 * @return void Sends JSON response
 	 */
@@ -3246,10 +3257,10 @@ class AccessibilityScanner extends Module {
 
 	/**
 	 * Calculate contrast ratio between two colors
-	 * 
+	 *
 	 * Uses WCAG 2.2 formula: (L1 + 0.05) / (L2 + 0.05)
 	 * where L1 is the lighter color and L2 is the darker color.
-	 * 
+	 *
 	 * @since 3.1.2
 	 * @param string $fg Foreground color (hex format)
 	 * @param string $bg Background color (hex format)
@@ -3267,9 +3278,9 @@ class AccessibilityScanner extends Module {
 
 	/**
 	 * Get relative luminance of a color
-	 * 
+	 *
 	 * Implements the WCAG 2.2 relative luminance formula.
-	 * 
+	 *
 	 * @since 3.1.2
 	 * @param string $hex Color in hex format (#RRGGBB or RRGGBB)
 	 * @return float Relative luminance (0-1)
@@ -3294,9 +3305,9 @@ class AccessibilityScanner extends Module {
 
 	/**
 	 * Get contrast recommendation based on ratio
-	 * 
+	 *
 	 * Provides human-readable guidance on WCAG compliance.
-	 * 
+	 *
 	 * @since 3.1.2
 	 * @param float $ratio Contrast ratio
 	 * @return string Recommendation message
@@ -3315,10 +3326,10 @@ class AccessibilityScanner extends Module {
 
 	/**
 	 * AJAX Handler: Check Readability Score (Flesch-Kincaid)
-	 * 
+	 *
 	 * Analyzes text readability using Flesch-Kincaid Grade Level formula.
 	 * WCAG recommends lower secondary education level (grade 7-9) for accessibility.
-	 * 
+	 *
 	 * @since 3.1.2
 	 * @return void
 	 */
@@ -3374,10 +3385,10 @@ class AccessibilityScanner extends Module {
 
 	/**
 	 * Count sentences in text
-	 * 
+	 *
 	 * Splits text by sentence-ending punctuation (.!?) followed by
 	 * uppercase letter or end of string to avoid abbreviations.
-	 * 
+	 *
 	 * @since 3.1.2
 	 * @param string $text Text to analyze
 	 * @return int Number of sentences
@@ -3394,10 +3405,10 @@ class AccessibilityScanner extends Module {
 
 	/**
 	 * Count syllables in text (Flesch-Kincaid method)
-	 * 
+	 *
 	 * Uses vowel group counting algorithm consistent with standard
 	 * Flesch-Kincaid readability calculations.
-	 * 
+	 *
 	 * @since 3.1.2
 	 * @param string $text Text to analyze
 	 * @return int Number of syllables
@@ -3432,9 +3443,9 @@ class AccessibilityScanner extends Module {
 
 	/**
 	 * Calculate Flesch-Kincaid Grade Level
-	 * 
+	 *
 	 * Formula: 0.39 × (words/sentences) + 11.8 × (syllables/words) - 15.59
-	 * 
+	 *
 	 * @since 3.1.2
 	 * @param int $words     Number of words
 	 * @param int $sentences Number of sentences
@@ -3455,10 +3466,10 @@ class AccessibilityScanner extends Module {
 
 	/**
 	 * Get readability interpretation based on grade level
-	 * 
+	 *
 	 * Returns user-friendly message with WCAG compliance status.
 	 * Grade 7-9 (lower secondary) recommended for broad accessibility.
-	 * 
+	 *
 	 * @since 3.1.2
 	 * @param float $grade_level Flesch-Kincaid grade level
 	 * @return array Interpretation details
@@ -3504,10 +3515,10 @@ class AccessibilityScanner extends Module {
 
 	/**
 	 * AJAX Handler: Check Link Text Validator
-	 * 
+	 *
 	 * Validates link text against generic phrases and provides suggestions.
 	 * WCAG 2.4.4 requires link purpose identifiable from link text alone.
-	 * 
+	 *
 	 * @since 3.1.2
 	 * @return void
 	 */
@@ -3543,9 +3554,9 @@ class AccessibilityScanner extends Module {
 
 	/**
 	 * Check if link text is generic
-	 * 
+	 *
 	 * Tests against common non-descriptive link text patterns.
-	 * 
+	 *
 	 * @since 3.1.2
 	 * @param string $link_text Link text to check
 	 * @return bool True if generic
@@ -3572,9 +3583,9 @@ class AccessibilityScanner extends Module {
 
 	/**
 	 * Get matched generic pattern
-	 * 
+	 *
 	 * Returns the specific generic pattern that matched.
-	 * 
+	 *
 	 * @since 3.1.2
 	 * @param string $link_text Link text to check
 	 * @return string|null Matched pattern or null
@@ -3599,9 +3610,9 @@ class AccessibilityScanner extends Module {
 
 	/**
 	 * Get list of generic link text patterns
-	 * 
+	 *
 	 * Common non-descriptive link phrases that fail WCAG 2.4.4.
-	 * 
+	 *
 	 * @since 3.1.2
 	 * @return array Generic patterns
 	 */
@@ -3638,9 +3649,9 @@ class AccessibilityScanner extends Module {
 
 	/**
 	 * Get link text suggestions
-	 * 
+	 *
 	 * Provides context-aware recommendations for better link text.
-	 * 
+	 *
 	 * @since 3.1.2
 	 * @param string      $link_text     Original link text
 	 * @param string|null $pattern_match Matched pattern
@@ -3672,4 +3683,3 @@ class AccessibilityScanner extends Module {
 		return $suggestions;
 	}
 }
-

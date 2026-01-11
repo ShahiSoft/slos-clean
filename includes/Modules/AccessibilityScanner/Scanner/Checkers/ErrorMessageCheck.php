@@ -49,4 +49,3 @@ class ErrorMessageCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

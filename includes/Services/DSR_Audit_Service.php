@@ -115,13 +115,17 @@ class DSR_Audit_Service extends Base_Service {
 	 * @return int|false Log ID or false on failure
 	 */
 	public function log_submission( int $request_id, string $email, string $type ): int|false {
-		return $this->log( $request_id, 'submit', array(
-			'note'     => sprintf( 'Request submitted by %s (Type: %s)', $email, $type ),
-			'metadata' => array(
-				'email' => $email,
-				'type'  => $type,
-			),
-		) );
+		return $this->log(
+			$request_id,
+			'submit',
+			array(
+				'note'     => sprintf( 'Request submitted by %s (Type: %s)', $email, $type ),
+				'metadata' => array(
+					'email' => $email,
+					'type'  => $type,
+				),
+			)
+		);
 	}
 
 	/**
@@ -132,9 +136,13 @@ class DSR_Audit_Service extends Base_Service {
 	 * @return int|false Log ID or false on failure
 	 */
 	public function log_verification( int $request_id ): int|false {
-		return $this->log( $request_id, 'verify', array(
-			'note' => 'Email address verified successfully',
-		) );
+		return $this->log(
+			$request_id,
+			'verify',
+			array(
+				'note' => 'Email address verified successfully',
+			)
+		);
 	}
 
 	/**
@@ -151,14 +159,18 @@ class DSR_Audit_Service extends Base_Service {
 	public function log_status_change( int $request_id, string $old_status, string $new_status, int $actor_id = 0, string $note = '' ): int|false {
 		$default_note = sprintf( 'Status changed from "%s" to "%s"', $old_status, $new_status );
 
-		return $this->log( $request_id, 'status_change', array(
-			'actor_id' => $actor_id ?: null,
-			'note'     => ! empty( $note ) ? $note : $default_note,
-			'metadata' => array(
-				'old_status' => $old_status,
-				'new_status' => $new_status,
-			),
-		) );
+		return $this->log(
+			$request_id,
+			'status_change',
+			array(
+				'actor_id' => $actor_id ?: null,
+				'note'     => ! empty( $note ) ? $note : $default_note,
+				'metadata' => array(
+					'old_status' => $old_status,
+					'new_status' => $new_status,
+				),
+			)
+		);
 	}
 
 	/**
@@ -180,14 +192,18 @@ class DSR_Audit_Service extends Base_Service {
 			$assigner ? ' by ' . $assigner->display_name : ''
 		);
 
-		return $this->log( $request_id, 'assign', array(
-			'actor_id' => $assigned_by ?: null,
-			'note'     => $note,
-			'metadata' => array(
-				'assigned_to' => $assigned_to,
-				'assigned_by' => $assigned_by,
-			),
-		) );
+		return $this->log(
+			$request_id,
+			'assign',
+			array(
+				'actor_id' => $assigned_by ?: null,
+				'note'     => $note,
+				'metadata' => array(
+					'assigned_to' => $assigned_to,
+					'assigned_by' => $assigned_by,
+				),
+			)
+		);
 	}
 
 	/**
@@ -200,10 +216,14 @@ class DSR_Audit_Service extends Base_Service {
 	 * @return int|false Log ID or false on failure
 	 */
 	public function log_note( int $request_id, string $note, int $actor_id = 0 ): int|false {
-		return $this->log( $request_id, 'note_added', array(
-			'actor_id' => $actor_id ?: null,
-			'note'     => $note,
-		) );
+		return $this->log(
+			$request_id,
+			'note_added',
+			array(
+				'actor_id' => $actor_id ?: null,
+				'note'     => $note,
+			)
+		);
 	}
 
 	/**
@@ -216,14 +236,18 @@ class DSR_Audit_Service extends Base_Service {
 	 * @return int|false Log ID or false on failure
 	 */
 	public function log_export_generated( int $request_id, string $format, int $actor_id = 0 ): int|false {
-		return $this->log( $request_id, 'export_generated', array(
-			'actor_id' => $actor_id ?: null,
-			'note'     => sprintf( 'Data export generated in %s format', strtoupper( $format ) ),
-			'metadata' => array(
-				'format'    => $format,
-				'timestamp' => current_time( 'mysql' ),
-			),
-		) );
+		return $this->log(
+			$request_id,
+			'export_generated',
+			array(
+				'actor_id' => $actor_id ?: null,
+				'note'     => sprintf( 'Data export generated in %s format', strtoupper( $format ) ),
+				'metadata' => array(
+					'format'    => $format,
+					'timestamp' => current_time( 'mysql' ),
+				),
+			)
+		);
 	}
 
 	/**
@@ -236,14 +260,18 @@ class DSR_Audit_Service extends Base_Service {
 	 * @return int|false Log ID or false on failure
 	 */
 	public function log_export_download( int $request_id, string $token, string $format ): int|false {
-		return $this->log( $request_id, 'export_downloaded', array(
-			'note'     => sprintf( 'Export file downloaded (%s format)', strtoupper( $format ) ),
-			'metadata' => array(
-				'token'     => substr( $token, 0, 8 ) . '...', // Only log partial token
-				'format'    => $format,
-				'timestamp' => current_time( 'mysql' ),
-			),
-		) );
+		return $this->log(
+			$request_id,
+			'export_downloaded',
+			array(
+				'note'     => sprintf( 'Export file downloaded (%s format)', strtoupper( $format ) ),
+				'metadata' => array(
+					'token'     => substr( $token, 0, 8 ) . '...', // Only log partial token
+					'format'    => $format,
+					'timestamp' => current_time( 'mysql' ),
+				),
+			)
+		);
 	}
 
 	/**
@@ -267,11 +295,15 @@ class DSR_Audit_Service extends Base_Service {
 			$summary['items_skipped'] ?? 0
 		);
 
-		return $this->log( $request_id, 'erasure_executed', array(
-			'actor_id' => $actor_id ?: null,
-			'note'     => $note,
-			'metadata' => $summary,
-		) );
+		return $this->log(
+			$request_id,
+			'erasure_executed',
+			array(
+				'actor_id' => $actor_id ?: null,
+				'note'     => $note,
+				'metadata' => $summary,
+			)
+		);
 	}
 
 	/**
@@ -289,11 +321,15 @@ class DSR_Audit_Service extends Base_Service {
 			$preview['total_items'] ?? 0
 		);
 
-		return $this->log( $request_id, 'erasure_preview', array(
-			'actor_id' => $actor_id ?: null,
-			'note'     => $note,
-			'metadata' => $preview,
-		) );
+		return $this->log(
+			$request_id,
+			'erasure_preview',
+			array(
+				'actor_id' => $actor_id ?: null,
+				'note'     => $note,
+				'metadata' => $preview,
+			)
+		);
 	}
 
 	/**
@@ -310,7 +346,7 @@ class DSR_Audit_Service extends Base_Service {
 		// Enhance logs with user data
 		foreach ( $logs as &$log ) {
 			if ( ! empty( $log['actor_id'] ) ) {
-				$user = get_userdata( $log['actor_id'] );
+				$user              = get_userdata( $log['actor_id'] );
 				$log['actor_name'] = $user ? $user->display_name : 'Unknown User';
 			} else {
 				$log['actor_name'] = 'System';
@@ -336,7 +372,7 @@ class DSR_Audit_Service extends Base_Service {
 		// Enhance logs with user data
 		foreach ( $result['logs'] as &$log ) {
 			if ( ! empty( $log['actor_id'] ) ) {
-				$user = get_userdata( $log['actor_id'] );
+				$user              = get_userdata( $log['actor_id'] );
 				$log['actor_name'] = $user ? $user->display_name : 'Unknown User';
 			} else {
 				$log['actor_name'] = 'System';
@@ -374,7 +410,7 @@ class DSR_Audit_Service extends Base_Service {
 		// Enhance with user data
 		foreach ( $logs as &$log ) {
 			if ( ! empty( $log['actor_id'] ) ) {
-				$user = get_userdata( $log['actor_id'] );
+				$user              = get_userdata( $log['actor_id'] );
 				$log['actor_name'] = $user ? $user->display_name : 'Unknown User';
 			} else {
 				$log['actor_name'] = 'System';
@@ -406,15 +442,15 @@ class DSR_Audit_Service extends Base_Service {
 	 */
 	private function get_action_label( string $action ): string {
 		$labels = array(
-			'submit'             => __( 'Request Submitted', 'shahi-legalflowsuite' ),
-			'verify'             => __( 'Email Verified', 'shahi-legalflowsuite' ),
-			'status_change'      => __( 'Status Changed', 'shahi-legalflowsuite' ),
-			'assign'             => __( 'Request Assigned', 'shahi-legalflowsuite' ),
-			'note_added'         => __( 'Note Added', 'shahi-legalflowsuite' ),
-			'export_generated'   => __( 'Export Generated', 'shahi-legalflowsuite' ),
-			'export_downloaded'  => __( 'Export Downloaded', 'shahi-legalflowsuite' ),
-			'erasure_executed'   => __( 'Erasure Executed', 'shahi-legalflowsuite' ),
-			'erasure_preview'    => __( 'Erasure Preview', 'shahi-legalflowsuite' ),
+			'submit'            => __( 'Request Submitted', 'shahi-legalflowsuite' ),
+			'verify'            => __( 'Email Verified', 'shahi-legalflowsuite' ),
+			'status_change'     => __( 'Status Changed', 'shahi-legalflowsuite' ),
+			'assign'            => __( 'Request Assigned', 'shahi-legalflowsuite' ),
+			'note_added'        => __( 'Note Added', 'shahi-legalflowsuite' ),
+			'export_generated'  => __( 'Export Generated', 'shahi-legalflowsuite' ),
+			'export_downloaded' => __( 'Export Downloaded', 'shahi-legalflowsuite' ),
+			'erasure_executed'  => __( 'Erasure Executed', 'shahi-legalflowsuite' ),
+			'erasure_preview'   => __( 'Erasure Preview', 'shahi-legalflowsuite' ),
 		);
 
 		return $labels[ $action ] ?? ucwords( str_replace( '_', ' ', $action ) );

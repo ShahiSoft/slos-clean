@@ -68,4 +68,3 @@ class EmptyLinkCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

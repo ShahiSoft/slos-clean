@@ -11,8 +11,8 @@
  */
 
 /* ====================================
-   Reset & Base Styles
-   ==================================== */
+	Reset & Base Styles
+	==================================== */
 
 * {
 	margin: 0;
@@ -29,8 +29,8 @@ body {
 }
 
 /* ====================================
-   PDF Wrapper
-   ==================================== */
+	PDF Wrapper
+	==================================== */
 
 .pdf-wrapper {
 	width: 100%;
@@ -38,8 +38,8 @@ body {
 }
 
 /* ====================================
-   Header Section
-   ==================================== */
+	Header Section
+	==================================== */
 
 .pdf-header {
 	border-bottom: 2px solid #0073aa;
@@ -91,8 +91,8 @@ body {
 }
 
 /* ====================================
-   Table of Contents
-   ==================================== */
+	Table of Contents
+	==================================== */
 
 .pdf-toc {
 	background: var(--shahi-bg-secondary);
@@ -113,7 +113,7 @@ body {
 .toc-list {
 	list-style: none;
 	padding-left: 0;
-	margin: 10px 0 0 0;
+	margin: 10px 0 0;
 }
 
 .toc-list li {
@@ -139,8 +139,8 @@ body {
 }
 
 /* ====================================
-   Content Section
-   ==================================== */
+	Content Section
+	==================================== */
 
 .pdf-content {
 	margin: 20px 0;
@@ -342,8 +342,8 @@ body {
 }
 
 /* ====================================
-   Footer Section
-   ==================================== */
+	Footer Section
+	==================================== */
 
 .pdf-footer {
 	position: fixed;
@@ -383,16 +383,16 @@ body {
 }
 
 /* Page numbers (DOMPDF script injection) */
-.pagenum:before {
+.pagenum::before {
 	content: counter(page);
 }
 
 /* ====================================
-   Page Settings
-   ==================================== */
+	Page Settings
+	==================================== */
 
 @page {
-	margin: 80px 50px 60px 50px;
+	margin: 80px 50px 60px;
 }
 
 @page :first {
@@ -400,8 +400,8 @@ body {
 }
 
 /* ====================================
-   Print-Specific Adjustments
-   ==================================== */
+	Print-Specific Adjustments
+	==================================== */
 
 /* Avoid breaking inside elements */
 h1, h2, h3, h4, h5, h6 {
@@ -419,8 +419,8 @@ table, figure {
 }
 
 /* ====================================
-   Special Content Blocks
-   ==================================== */
+	Special Content Blocks
+	==================================== */
 
 /* Notice boxes */
 .notice,
@@ -458,7 +458,7 @@ table, figure {
 .signature-line {
 	border-top: 1px solid #333;
 	width: 200px;
-	margin: 30px 0 5px 0;
+	margin: 30px 0 5px;
 }
 
 .signature-name,
@@ -470,8 +470,8 @@ table, figure {
 }
 
 /* ====================================
-   Utility Classes
-   ==================================== */
+	Utility Classes
+	==================================== */
 
 .text-center {
 	text-align: center;
@@ -502,13 +502,13 @@ table, figure {
 }
 
 /* ====================================
-   Accessibility
-   ==================================== */
+	Accessibility
+	==================================== */
 
 abbr[title] {
 	text-decoration: underline dotted;
 }
 
 /* ====================================
-   End of PDF Styles
-   ==================================== */
+	End of PDF Styles
+	==================================== */

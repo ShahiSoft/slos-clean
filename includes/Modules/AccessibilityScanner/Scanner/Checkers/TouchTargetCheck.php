@@ -178,7 +178,7 @@ class TouchTargetCheck extends AbstractCheck {
 
 		// Check shorthand padding (simplified - single value only)
 		if ( preg_match( '/padding\s*:\s*([\d.]+)(px|em|rem)/i', $style, $matches ) ) {
-			$value = $this->convert_to_pixels( (float) $matches[1], $matches[2] );
+			$value   = $this->convert_to_pixels( (float) $matches[1], $matches[2] );
 			$padding = array(
 				'top'    => $value,
 				'right'  => $value,
@@ -238,4 +238,3 @@ class TouchTargetCheck extends AbstractCheck {
 		}
 	}
 }
-

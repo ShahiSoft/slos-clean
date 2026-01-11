@@ -70,4 +70,3 @@ class HeadingNestingCheck extends AbstractCheck {
 		return false;
 	}
 }
-

@@ -53,10 +53,10 @@ class Autoloader {
 		$relative_path  = str_replace( '\\', '/', $relative_class ) . '.php';
 		$file           = $base_dir . $relative_path;
 
-		// Special case: load built ScannerPage and PagesRequiringAttention from dist 
+		// Special case: load built ScannerPage and PagesRequiringAttention from dist
 		// to avoid relying on potentially out-of-sync source versions.
 		if ( $relative_path === 'Modules/AccessibilityScanner/Admin/ScannerPage.php' ||
-		     $relative_path === 'Modules/AccessibilityScanner/Admin/PagesRequiringAttention.php' ) {
+			$relative_path === 'Modules/AccessibilityScanner/Admin/PagesRequiringAttention.php' ) {
 			$dist_file = SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'dist/includes/' . $relative_path;
 			if ( file_exists( $dist_file ) ) {
 				require_once $dist_file;

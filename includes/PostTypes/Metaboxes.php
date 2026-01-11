@@ -429,4 +429,3 @@ class Metaboxes {
 		return $this->metaboxes;
 	}
 }
-

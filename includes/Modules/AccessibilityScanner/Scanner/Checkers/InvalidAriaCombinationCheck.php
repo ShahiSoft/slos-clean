@@ -51,4 +51,3 @@ class InvalidAriaCombinationCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

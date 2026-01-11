@@ -50,10 +50,31 @@ class Autoloader {
 		}
 
 		$relative_class = substr( $class, $len );
-		$file           = $base_dir . str_replace( '\\', '/', $relative_class ) . '.php';
+		$relative_path  = str_replace( '\\', '/', $relative_class ) . '.php';
+		$file           = $base_dir . $relative_path;
+
+		// Special case: load built ScannerPage and PagesRequiringAttention from dist
+		// to avoid relying on potentially out-of-sync source versions.
+		if ( $relative_path === 'Modules/AccessibilityScanner/Admin/ScannerPage.php' ||
+			$relative_path === 'Modules/AccessibilityScanner/Admin/PagesRequiringAttention.php' ) {
+			$dist_file = SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'dist/includes/' . $relative_path;
+			if ( file_exists( $dist_file ) ) {
+				require_once $dist_file;
+				return;
+			}
+		}
 
 		if ( file_exists( $file ) ) {
 			require_once $file;
+			return;
+		}
+
+		// Fallback for FixEngine classes stored under the AccessibilityScanner module.
+		if ( 0 === strpos( $relative_path, 'FixEngine/' ) ) {
+			$module_file = $base_dir . 'Modules/AccessibilityScanner/' . $relative_path;
+			if ( file_exists( $module_file ) ) {
+				require_once $module_file;
+			}
 		}
 	}
 }

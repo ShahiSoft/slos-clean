@@ -67,7 +67,7 @@ class Modules {
 	public function render() {
 		// Verify user capabilities
 		if ( ! current_user_can( 'manage_shahi_modules' ) ) {
-			wp_die( __( 'You do not have sufficient permissions to access this page.', 'shahi-legalflowsuite' ) );
+			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'shahi-legalflowsuite' ) );
 		}
 
 		// Handle form submission
@@ -312,6 +312,7 @@ class Modules {
 		add_settings_error(
 			'shahi_modules',
 			'modules_saved',
+			/* translators: %d: number of modules updated */
 			sprintf( __( 'Successfully updated %d module(s).', 'shahi-legalflowsuite' ), $updated ),
 			'success'
 		);
@@ -456,6 +457,7 @@ class Modules {
 				$dependencies = $module->get_dependencies();
 				wp_send_json_error(
 					array(
+						/* translators: %s: comma-separated list of required module names */
 						'message' => sprintf(
 							__( 'Cannot enable module. Required dependencies: %s', 'shahi-legalflowsuite' ),
 							implode( ', ', $dependencies )
@@ -469,6 +471,7 @@ class Modules {
 			if ( ! empty( $dependents ) ) {
 				wp_send_json_error(
 					array(
+						/* translators: %s: comma-separated list of dependent module names */
 						'message' => sprintf(
 							__( 'Cannot disable module. Other modules depend on it: %s', 'shahi-legalflowsuite' ),
 							implode( ', ', $dependents )

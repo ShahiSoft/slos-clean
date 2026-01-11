@@ -66,7 +66,7 @@ class Assets {
 
 		// Add filter to prevent style caching during development
 		add_filter( 'style_loader_tag', array( $this, 'add_nocache_to_styles' ), 10, 4 );
-		
+
 		// Add body class for dormant features
 		add_filter( 'admin_body_class', array( $this, 'admin_body_class' ) );
 	}
@@ -167,30 +167,30 @@ class Assets {
 			$this->version
 		);
 
-	// Component Library (depends on design system - Phase 1.3)
-	$this->enqueue_style(
-		'slos-components',
-		'css/slos-components',
-		array( 'slos-design-system' ),
-		$this->version
-	);
+		// Component Library (depends on design system - Phase 1.3)
+		$this->enqueue_style(
+			'slos-components',
+			'css/slos-components',
+			array( 'slos-design-system' ),
+			$this->version
+		);
 
-	// Browser & Accessibility Enhancements (Phase 6 - Tasks 15 & 16)
-	// WCAG 2.1 AA compliance, keyboard navigation, cross-browser compatibility
-	$this->enqueue_style(
-		'slos-browser-a11y-enhancements',
-		'css/slos-browser-a11y-enhancements',
-		array( 'slos-design-system', 'slos-components' ),
-		$this->version
-	);
+		// Browser & Accessibility Enhancements (Phase 6 - Tasks 15 & 16)
+		// WCAG 2.1 AA compliance, keyboard navigation, cross-browser compatibility
+		$this->enqueue_style(
+			'slos-browser-a11y-enhancements',
+			'css/slos-browser-a11y-enhancements',
+			array( 'slos-design-system', 'slos-components' ),
+			$this->version
+		);
 
-	// Global admin styles (loaded on all plugin pages)
-	$this->enqueue_style(
-		'shahi-admin-global',
-		'css/admin-global',
-		array( 'slos-design-system', 'slos-components', 'slos-browser-a11y-enhancements' ),
-		$this->version
-	);
+		// Global admin styles (loaded on all plugin pages)
+		$this->enqueue_style(
+			'shahi-admin-global',
+			'css/admin-global',
+			array( 'slos-design-system', 'slos-components', 'slos-browser-a11y-enhancements' ),
+			$this->version
+		);
 
 		// Add inline CSS for admin menu highlighting
 		$this->add_admin_menu_style();
@@ -284,14 +284,13 @@ class Assets {
 				array(),
 				$this->version
 			);
-
-			// Chart.js for trends visualization
+			// Chart.js for trends visualization - bundled locally for WordPress.org compliance
 			wp_enqueue_script(
 				'chartjs',
-				'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js',
+				SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/js/vendor/chart.umd.min.js',
 				array(),
 				'4.4.1',
-				false
+				true
 			);
 		} elseif ( $this->is_settings_page( $hook ) ) {
 			$this->enqueue_style(
@@ -327,7 +326,7 @@ class Assets {
 				array(),
 				$this->version
 			);
-			
+
 			// Dormant features CSS - hide autofix UI when dormant
 			if ( defined( 'SLOS_DORMANT_AUTOFIX' ) && SLOS_DORMANT_AUTOFIX ) {
 				wp_enqueue_style(
@@ -614,14 +613,13 @@ class Assets {
 				$this->version,
 				true
 			);
-
-			// Chart.js for trends visualization (must load before dashboard scripts)
+			// Chart.js for trends visualization - bundled locally for WordPress.org compliance
 			wp_enqueue_script(
 				'chartjs',
-				'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js',
+				SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/js/vendor/chart.umd.min.js',
 				array(),
 				'4.4.1',
-				false
+				true
 			);
 
 			// Also add accessibility-specific scripts if needed
@@ -1065,6 +1063,7 @@ class Assets {
 				'noDataFound'     => __( 'No valid data found in file.', 'shahi-legalflowsuite' ),
 				'parseError'      => __( 'Error parsing file', 'shahi-legalflowsuite' ),
 				'readError'       => __( 'Error reading file.', 'shahi-legalflowsuite' ),
+				/* translators: %d: number of records being imported */
 				'importing'       => __( 'Importing %d records...', 'shahi-legalflowsuite' ),
 				'imported'        => __( 'Imported', 'shahi-legalflowsuite' ),
 				'skipped'         => __( 'Skipped', 'shahi-legalflowsuite' ),
@@ -1307,6 +1306,7 @@ class Assets {
 			$href      = $href . $separator . 't=' . time();
 
 			// Rebuild tag with no-cache headers
+			// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- Filter callback modifying enqueued stylesheet
 			$tag = sprintf(
 				'<link rel="stylesheet" id="%s-css" href="%s" type="text/css" media="%s" />' . "\n",
 				esc_attr( $handle ),
@@ -1408,14 +1408,14 @@ class Assets {
 				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
 				'nonce'   => wp_create_nonce( 'slos_scanner_nonce' ),
 				'i18n'    => array(
-					'initializing'   => __( 'Initializing...', 'shahi-legalflowsuite' ),
-					'fetching'       => __( 'Fetching pages to scan...', 'shahi-legalflowsuite' ),
-					'scanning'       => __( 'Scanning', 'shahi-legalflowsuite' ),
-					'complete'       => __( 'Scan complete!', 'shahi-legalflowsuite' ),
-					'cancelled'      => __( 'Scan cancelled', 'shahi-legalflowsuite' ),
-					'error'          => __( 'Error', 'shahi-legalflowsuite' ),
-					'noPages'        => __( 'No pages found to scan', 'shahi-legalflowsuite' ),
-					'confirmCancel'  => __( 'Are you sure you want to cancel the scan?', 'shahi-legalflowsuite' ),
+					'initializing'  => __( 'Initializing...', 'shahi-legalflowsuite' ),
+					'fetching'      => __( 'Fetching pages to scan...', 'shahi-legalflowsuite' ),
+					'scanning'      => __( 'Scanning', 'shahi-legalflowsuite' ),
+					'complete'      => __( 'Scan complete!', 'shahi-legalflowsuite' ),
+					'cancelled'     => __( 'Scan cancelled', 'shahi-legalflowsuite' ),
+					'error'         => __( 'Error', 'shahi-legalflowsuite' ),
+					'noPages'       => __( 'No pages found to scan', 'shahi-legalflowsuite' ),
+					'confirmCancel' => __( 'Are you sure you want to cancel the scan?', 'shahi-legalflowsuite' ),
 				),
 			)
 		);
@@ -1452,6 +1452,7 @@ class Assets {
 					'cancelled'   => __( 'Cancelled', 'shahi-legalflowsuite' ),
 					'error'       => __( 'Error', 'shahi-legalflowsuite' ),
 					'noIssues'    => __( 'No issues found', 'shahi-legalflowsuite' ),
+					/* translators: %d: number of issues fixed */
 					'fixedIssues' => __( 'Fixed %d issue(s)', 'shahi-legalflowsuite' ),
 				),
 			)

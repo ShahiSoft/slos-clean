@@ -1,0 +1,28 @@
+{
+	"php.validate.executablePath": "php",
+	"php.validate.run": "onType",
+	"phpcs.enable": true,
+	"phpcs.standard": "WordPress",
+	"phpcs.executablePath": "./vendor/bin/phpcs",
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.formatOnSave": true,
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": "explicit",
+		"source.fixAll.stylelint": "explicit",
+		"source.fixAll.phpcs": "explicit"
+	},
+	"files.associations": {
+		"*.php": "php",
+		"*.js": "javascript",
+		"*.css": "css"
+	},
+	"search.exclude": {
+		"**/vendor/**": true,
+		"**/node_modules/**": true,
+		"**/dist/**": true
+	},
+	"emmet.includeLanguages": {
+		"php": "html"
+	},
+	"intelephense.diagnostics.enable": false
+}

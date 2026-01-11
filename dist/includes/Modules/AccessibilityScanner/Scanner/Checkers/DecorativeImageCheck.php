@@ -58,8 +58,8 @@ class DecorativeImageCheck extends AbstractCheck {
 		return $issues;
 	}
 
-	private function get_element_html( $node ) {
-		return $node->ownerDocument->saveHTML( $node );
+	protected function get_element_html( $node, $max_length = 200 ) {
+		$html = $node->ownerDocument->saveHTML( $node );
+		return strlen( $html ) > $max_length ? substr( $html, 0, $max_length ) . '...' : $html;
 	}
 }
-

@@ -109,7 +109,7 @@ class Placeholder_Mapper extends Base_Service {
 		$map = array();
 
 		// Company fields (Step 1)
-		$company = $profile['company'] ?? array();
+		$company                     = $profile['company'] ?? array();
 		$map['company_legal_name']   = $company['legal_name'] ?? '';
 		$map['company_trading_name'] = $company['trading_name'] ?? $company['legal_name'] ?? '';
 		$map['company_registration'] = $company['registration_number'] ?? '';
@@ -118,103 +118,151 @@ class Placeholder_Mapper extends Base_Service {
 		$map['industry']             = $company['industry'] ?? '';
 
 		// Address
-		$address               = $company['address'] ?? array();
-		$map['company_street'] = $address['street'] ?? '';
-		$map['company_city']   = $address['city'] ?? '';
-		$map['company_state']  = $address['state'] ?? '';
-		$map['company_postal'] = $address['postal_code'] ?? '';
-		$map['company_country'] = $this->get_country_name( $address['country'] ?? '' );
+		$address                     = $company['address'] ?? array();
+		$map['company_street']       = $address['street'] ?? '';
+		$map['company_city']         = $address['city'] ?? '';
+		$map['company_state']        = $address['state'] ?? '';
+		$map['company_postal']       = $address['postal_code'] ?? '';
+		$map['company_country']      = $this->get_country_name( $address['country'] ?? '' );
 		$map['company_country_code'] = $address['country'] ?? '';
-		$map['company_address'] = $this->format_address( $address );
+		$map['company_address']      = $this->format_address( $address );
 
 		// Contacts (Step 2)
-		$contacts = $profile['contacts'] ?? array();
+		$contacts                   = $profile['contacts'] ?? array();
 		$map['legal_contact_email'] = $contacts['legal_email'] ?? '';
 		$map['support_email']       = $contacts['support_email'] ?? $contacts['legal_email'] ?? '';
 		$map['contact_phone']       = $contacts['phone'] ?? '';
 
 		// DPO
-		$dpo               = $contacts['dpo'] ?? array();
-		$map['dpo_name']   = $dpo['name'] ?? __( 'Data Protection Officer', 'shahi-legalflowsuite' );
-		$map['dpo_email']  = $dpo['email'] ?? '';
-		$map['dpo_phone']  = $dpo['phone'] ?? '';
+		$dpo                = $contacts['dpo'] ?? array();
+		$map['dpo_name']    = $dpo['name'] ?? __( 'Data Protection Officer', 'shahi-legalflowsuite' );
+		$map['dpo_email']   = $dpo['email'] ?? '';
+		$map['dpo_phone']   = $dpo['phone'] ?? '';
 		$map['dpo_address'] = $dpo['address'] ?? $map['company_address'];
 
 		// Website (Step 3)
-		$website = $profile['website'] ?? array();
-		$map['site_url']             = $website['url'] ?? get_site_url();
-		$map['app_name']             = $website['app_name'] ?? get_bloginfo( 'name' );
-		$map['service_description']  = $website['service_description'] ?? '';
-		$map['target_audience']      = $website['target_audience'] ?? '';
+		$website                    = $profile['website'] ?? array();
+		$map['site_url']            = $website['url'] ?? get_site_url();
+		$map['app_name']            = $website['app_name'] ?? get_bloginfo( 'name' );
+		$map['service_description'] = $website['service_description'] ?? '';
+		$map['target_audience']     = $website['target_audience'] ?? '';
 
 		// Data Collection (Step 4)
-		$data_collection = $profile['data_collection'] ?? array();
-		$map['data_types']       = $this->format_list( $data_collection['personal_data_types'] ?? array() );
-		$map['data_types_array'] = $data_collection['personal_data_types'] ?? array();
-		$map['data_purposes']    = $this->format_list( $data_collection['purposes'] ?? array() );
+		$data_collection            = $profile['data_collection'] ?? array();
+		$map['data_types']          = $this->format_list( $data_collection['personal_data_types'] ?? array() );
+		$map['data_types_array']    = $data_collection['personal_data_types'] ?? array();
+		$map['data_purposes']       = $this->format_list( $data_collection['purposes'] ?? array() );
 		$map['data_purposes_array'] = $data_collection['purposes'] ?? array();
-		$map['lawful_bases']     = $this->format_list( $data_collection['lawful_bases'] ?? array() );
-		$map['lawful_bases_array'] = $data_collection['lawful_bases'] ?? array();
-		$map['special_categories'] = $data_collection['special_categories'] ?? false;
-		$map['children_data']    = $data_collection['children_data'] ?? false;
-		$map['minimum_age']      = $data_collection['minimum_age'] ?? 16;
+		$map['lawful_bases']        = $this->format_list( $data_collection['lawful_bases'] ?? array() );
+		$map['lawful_bases_array']  = $data_collection['lawful_bases'] ?? array();
+		$map['special_categories']  = $data_collection['special_categories'] ?? false;
+		$map['children_data']       = $data_collection['children_data'] ?? false;
+		$map['minimum_age']         = $data_collection['minimum_age'] ?? 16;
 
 		// Third Parties (Step 5)
-		$third_parties = $profile['third_parties'] ?? array();
+		$third_parties                 = $profile['third_parties'] ?? array();
 		$map['third_party_processors'] = $third_parties['processors'] ?? array();
 		$map['third_party_partners']   = $third_parties['partners'] ?? array();
 		$map['has_third_parties']      = ! empty( $third_parties['processors'] ) || ! empty( $third_parties['partners'] );
 
 		// Cookies (Step 6)
-		$cookies = $profile['cookies'] ?? array();
-		$map['essential_cookies']  = $cookies['essential'] ?? array();
-		$map['analytics_cookies']  = $cookies['analytics'] ?? array();
-		$map['marketing_cookies']  = $cookies['marketing'] ?? array();
-		$map['functional_cookies'] = $cookies['functional'] ?? array();
-		$map['has_analytics_cookies'] = ! empty( $cookies['analytics'] );
-		$map['has_marketing_cookies'] = ! empty( $cookies['marketing'] );
+		$cookies                       = $profile['cookies'] ?? array();
+		$map['essential_cookies']      = $cookies['essential'] ?? array();
+		$map['analytics_cookies']      = $cookies['analytics'] ?? array();
+		$map['marketing_cookies']      = $cookies['marketing'] ?? array();
+		$map['functional_cookies']     = $cookies['functional'] ?? array();
+		$map['has_analytics_cookies']  = ! empty( $cookies['analytics'] );
+		$map['has_marketing_cookies']  = ! empty( $cookies['marketing'] );
 		$map['has_functional_cookies'] = ! empty( $cookies['functional'] );
 
 		// Legal (Step 7)
-		$legal = $profile['legal'] ?? array();
-		$map['jurisdiction']      = $this->get_country_name( $legal['primary_jurisdiction'] ?? '' );
-		$map['jurisdiction_code'] = $legal['primary_jurisdiction'] ?? '';
-		$map['gdpr_applies']      = $legal['gdpr_applies'] ?? false;
-		$map['ccpa_applies']      = $legal['ccpa_applies'] ?? false;
-		$map['lgpd_applies']      = $legal['lgpd_applies'] ?? false;
+		$legal                        = $profile['legal'] ?? array();
+		$map['jurisdiction']          = $this->get_country_name( $legal['primary_jurisdiction'] ?? '' );
+		$map['jurisdiction_code']     = $legal['primary_jurisdiction'] ?? '';
+		$map['gdpr_applies']          = $legal['gdpr_applies'] ?? false;
+		$map['ccpa_applies']          = $legal['ccpa_applies'] ?? false;
+		$map['lgpd_applies']          = $legal['lgpd_applies'] ?? false;
 		$map['supervisory_authority'] = $legal['supervisory_authority'] ?? '';
 
 		// EU Representative
-		$eu_rep = $legal['representative_eu'] ?? array();
+		$eu_rep                = $legal['representative_eu'] ?? array();
 		$map['eu_rep_name']    = $eu_rep['name'] ?? '';
 		$map['eu_rep_email']   = $eu_rep['email'] ?? '';
 		$map['eu_rep_address'] = $eu_rep['address'] ?? '';
 		$map['has_eu_rep']     = ! empty( $eu_rep['name'] );
 
 		// UK Representative
-		$uk_rep = $legal['representative_uk'] ?? array();
+		$uk_rep                = $legal['representative_uk'] ?? array();
 		$map['uk_rep_name']    = $uk_rep['name'] ?? '';
 		$map['uk_rep_email']   = $uk_rep['email'] ?? '';
 		$map['uk_rep_address'] = $uk_rep['address'] ?? '';
 		$map['has_uk_rep']     = ! empty( $uk_rep['name'] );
 
 		// Retention (Step 8)
-		$retention = $profile['retention'] ?? array();
-		$map['retention_period']   = $this->format_retention_period( $retention['default_period'] ?? '' );
+		$retention                    = $profile['retention'] ?? array();
+		$map['retention_period']      = $this->format_retention_period( $retention['default_period'] ?? '' );
 		$map['retention_by_category'] = $retention['by_category'] ?? array();
-		$map['deletion_policy']    = $retention['deletion_policy'] ?? '';
-		$map['backup_retention']   = $retention['backup_retention'] ?? '';
+		$map['deletion_policy']       = $retention['deletion_policy'] ?? '';
+		$map['backup_retention']      = $retention['backup_retention'] ?? '';
 
 		// Security
-		$security = $profile['security'] ?? array();
-		$map['security_measures'] = $this->format_list( $security['measures'] ?? array() );
+		$security                       = $profile['security'] ?? array();
+		$map['security_measures']       = $this->format_list( $security['measures'] ?? array() );
 		$map['security_measures_array'] = $security['measures'] ?? array();
-		$map['certifications']    = $this->format_list( $security['certifications'] ?? array() );
-		$map['breach_procedure']  = $security['breach_procedure'] ?? '';
+		$map['certifications']          = $this->format_list( $security['certifications'] ?? array() );
+		$map['breach_procedure']        = $security['breach_procedure'] ?? '';
 
 		// User Rights
-		$user_rights = $profile['user_rights'] ?? array();
+		$user_rights               = $profile['user_rights'] ?? array();
 		$map['response_timeframe'] = $user_rights['response_timeframe'] ?? 30;
+
+		// E-Commerce (Step 9)
+		$ecommerce                     = $profile['ecommerce'] ?? array();
+		$map['ecommerce_enabled']      = ! empty( $ecommerce['enabled'] );
+		$map['sells_physical']         = ! empty( $ecommerce['sells_physical'] );
+		$map['sells_digital']          = ! empty( $ecommerce['sells_digital'] );
+		$map['sells_subscriptions']    = ! empty( $ecommerce['sells_subscriptions'] );
+		$map['sells_services']         = ! empty( $ecommerce['sells_services'] );
+		$map['shipping_regions']       = $this->format_list( $ecommerce['shipping_regions'] ?? array() );
+		$map['shipping_regions_array'] = $ecommerce['shipping_regions'] ?? array();
+		$map['shipping_timeframe']     = $ecommerce['shipping_timeframe'] ?? '';
+		$map['return_window']          = $this->format_return_window( $ecommerce['return_window'] ?? '' );
+		$map['refund_timeframe']       = $ecommerce['refund_timeframe'] ?? '7-10 business days';
+		$map['warranty_period']        = $this->format_warranty_period( $ecommerce['warranty_period'] ?? '' );
+		$map['has_warranty']           = ! empty( $ecommerce['warranty_period'] ) && 'none' !== $ecommerce['warranty_period'];
+		$map['billing_cycle']          = $this->format_billing_cycle( $ecommerce['billing_cycle'] ?? '' );
+		$map['cancellation_notice']    = $ecommerce['cancellation_notice'] ?? '';
+		$map['has_affiliate']          = ! empty( $ecommerce['has_affiliate'] );
+		$map['affiliate_commission']   = $ecommerce['affiliate_commission'] ?? '';
+		$map['affiliate_cookie']       = $ecommerce['affiliate_cookie'] ?? '30 days';
+
+		// Software & API (Step 10)
+		$software                          = $profile['software'] ?? array();
+		$map['has_downloadable']           = ! empty( $software['has_downloadable'] );
+		$map['license_type']               = $this->format_license_type( $software['license_type'] ?? '' );
+		$map['license_restrictions']       = $this->format_list( $software['restrictions'] ?? array() );
+		$map['license_restrictions_array'] = $software['restrictions'] ?? array();
+		$map['has_api']                    = ! empty( $software['has_api'] );
+		$map['api_rate_limit']             = $software['api_rate_limit'] ?? '';
+		$map['api_authentication']         = $this->format_list( $software['api_authentication'] ?? array() );
+		$map['api_authentication_array']   = $software['api_authentication'] ?? array();
+		$map['api_usage_limits']           = $software['api_usage_limits'] ?? '';
+
+		// Community & Content (Step 11)
+		$community                 = $profile['community'] ?? array();
+		$map['has_user_accounts']  = ! empty( $community['has_user_accounts'] );
+		$map['has_forums']         = ! empty( $community['has_forums'] );
+		$map['has_comments']       = ! empty( $community['has_comments'] );
+		$map['has_ugc']            = ! empty( $community['has_ugc'] );
+		$map['content_moderation'] = $community['content_moderation'] ?? '';
+		$map['age_restricted']     = ! empty( $community['age_restricted'] );
+		$map['age_verification']   = $community['age_verification'] ?? '';
+		$map['dmca_agent_name']    = $community['dmca_agent_name'] ?? '';
+		$map['dmca_agent_email']   = $community['dmca_agent_email'] ?? $map['legal_contact_email'];
+		$map['dmca_agent_address'] = $community['dmca_agent_address'] ?? $map['company_address'];
+		$map['has_mobile_app']     = ! empty( $community['has_mobile_app'] );
+		$map['app_stores']         = $this->format_list( $community['app_stores'] ?? array() );
+		$map['app_stores_array']   = $community['app_stores'] ?? array();
 
 		// System/WordPress variables
 		$map['site_name']    = get_bloginfo( 'name' );
@@ -222,6 +270,10 @@ class Placeholder_Mapper extends Base_Service {
 		$map['today']        = wp_date( 'F j, Y' );
 		$map['year']         = wp_date( 'Y' );
 		$map['current_date'] = wp_date( get_option( 'date_format' ) );
+
+		// Merge cookie placeholders
+		$cookie_placeholders = $this->get_cookie_placeholders();
+		$map                 = array_merge( $map, $cookie_placeholders );
 
 		/**
 		 * Filter placeholder map before use
@@ -231,6 +283,154 @@ class Placeholder_Mapper extends Base_Service {
 		 * @param array $profile Company profile data.
 		 */
 		return apply_filters( 'slos_placeholder_map', $map, $profile );
+	}
+
+	/**
+	 * Get cookie data placeholders
+	 *
+	 * Provides dynamic cookie data from the cookie scanner for document templates.
+	 *
+	 * @since 3.1.1
+	 * @return array Cookie placeholder map
+	 */
+	protected function get_cookie_placeholders(): array {
+		// Get detected cookies from scanner
+		$inventory = get_option( 'slos_cookie_inventory', array() );
+
+		// Fallback to legacy format if needed
+		if ( empty( $inventory ) ) {
+			$legacy_cookies = get_option( 'slos_detected_cookies', array() );
+			$inventory      = $this->convert_legacy_cookies( $legacy_cookies );
+		}
+
+		// Get scan metadata
+		$scan_meta      = get_option( 'slos_cookie_scan_meta', array() );
+		$last_scan_time = ! empty( $scan_meta['completed_at'] )
+			? wp_date( get_option( 'date_format' ), $scan_meta['completed_at'] )
+			: __( 'Never', 'shahi-legalflowsuite' );
+
+		// Group cookies by category
+		$by_category = array(
+			'necessary'     => array(),
+			'analytics'     => array(),
+			'marketing'     => array(),
+			'functional'    => array(),
+			'uncategorized' => array(),
+		);
+
+		foreach ( $inventory as $cookie ) {
+			$category = $cookie['category'] ?? 'uncategorized';
+			if ( ! isset( $by_category[ $category ] ) ) {
+				$by_category[ $category ] = array();
+			}
+			$by_category[ $category ][] = $cookie;
+		}
+
+		// Build placeholder map
+		$placeholders = array(
+			'cookie_count'               => count( $inventory ),
+			'cookie_categories'          => implode(
+				', ',
+				array_filter(
+					array_keys( $by_category ),
+					function ( $cat ) use ( $by_category ) {
+						return ! empty( $by_category[ $cat ] );
+					}
+				)
+			),
+			'last_cookie_scan_date'      => $last_scan_time,
+
+			// Category-specific HTML tables
+			'cookie_table_all'           => $this->render_cookie_table( $inventory, __( 'All Cookies', 'shahi-legalflowsuite' ) ),
+			'cookie_table_necessary'     => $this->render_cookie_table( $by_category['necessary'], __( 'Strictly Necessary Cookies', 'shahi-legalflowsuite' ) ),
+			'cookie_table_analytics'     => $this->render_cookie_table( $by_category['analytics'], __( 'Analytics Cookies', 'shahi-legalflowsuite' ) ),
+			'cookie_table_marketing'     => $this->render_cookie_table( $by_category['marketing'], __( 'Marketing Cookies', 'shahi-legalflowsuite' ) ),
+			'cookie_table_functional'    => $this->render_cookie_table( $by_category['functional'], __( 'Functional Cookies', 'shahi-legalflowsuite' ) ),
+
+			// Category counts
+			'cookie_count_necessary'     => count( $by_category['necessary'] ),
+			'cookie_count_analytics'     => count( $by_category['analytics'] ),
+			'cookie_count_marketing'     => count( $by_category['marketing'] ),
+			'cookie_count_functional'    => count( $by_category['functional'] ),
+			'cookie_count_uncategorized' => count( $by_category['uncategorized'] ),
+		);
+
+		return $placeholders;
+	}
+
+	/**
+	 * Render cookie table HTML
+	 *
+	 * Generates a formatted HTML table for a list of cookies.
+	 *
+	 * @since 3.1.1
+	 * @param array  $cookies Cookie data array.
+	 * @param string $title   Optional table title.
+	 * @return string HTML table
+	 */
+	protected function render_cookie_table( array $cookies, string $title = '' ): string {
+		if ( empty( $cookies ) ) {
+			return '<p><em>' . esc_html__( 'No cookies in this category.', 'shahi-legalflowsuite' ) . '</em></p>';
+		}
+
+		$html = '';
+
+		if ( ! empty( $title ) ) {
+			$html .= '<h3>' . esc_html( $title ) . '</h3>';
+		}
+
+		$html .= '<table class="slos-cookie-table" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">';
+		$html .= '<thead>';
+		$html .= '<tr style="background: #f5f5f5; border-bottom: 2px solid #ddd;">';
+		$html .= '<th style="padding: 12px; text-align: left; font-weight: 600;">' . esc_html__( 'Cookie Name', 'shahi-legalflowsuite' ) . '</th>';
+		$html .= '<th style="padding: 12px; text-align: left; font-weight: 600;">' . esc_html__( 'Purpose', 'shahi-legalflowsuite' ) . '</th>';
+		$html .= '<th style="padding: 12px; text-align: left; font-weight: 600;">' . esc_html__( 'Provider', 'shahi-legalflowsuite' ) . '</th>';
+		$html .= '<th style="padding: 12px; text-align: left; font-weight: 600;">' . esc_html__( 'Duration', 'shahi-legalflowsuite' ) . '</th>';
+		$html .= '</tr>';
+		$html .= '</thead>';
+		$html .= '<tbody>';
+
+		foreach ( $cookies as $cookie ) {
+			$name     = $cookie['name'] ?? __( 'Unknown', 'shahi-legalflowsuite' );
+			$purpose  = $cookie['purpose'] ?? $cookie['description'] ?? __( 'Not specified', 'shahi-legalflowsuite' );
+			$provider = $cookie['provider'] ?? $cookie['domain'] ?? __( 'Unknown', 'shahi-legalflowsuite' );
+			$duration = $cookie['duration'] ?? $cookie['expiry'] ?? __( 'Session', 'shahi-legalflowsuite' );
+
+			$html .= '<tr style="border-bottom: 1px solid #eee;">';
+			$html .= '<td style="padding: 10px;"><strong>' . esc_html( $name ) . '</strong></td>';
+			$html .= '<td style="padding: 10px;">' . esc_html( $purpose ) . '</td>';
+			$html .= '<td style="padding: 10px;">' . esc_html( $provider ) . '</td>';
+			$html .= '<td style="padding: 10px;">' . esc_html( $duration ) . '</td>';
+			$html .= '</tr>';
+		}
+
+		$html .= '</tbody>';
+		$html .= '</table>';
+
+		return $html;
+	}
+
+	/**
+	 * Convert legacy cookie format to inventory format
+	 *
+	 * @since 3.1.1
+	 * @param array $legacy_cookies Legacy cookies array.
+	 * @return array Inventory format
+	 */
+	protected function convert_legacy_cookies( array $legacy_cookies ): array {
+		$inventory = array();
+
+		foreach ( $legacy_cookies as $cookie_name => $data ) {
+			$inventory[] = array(
+				'name'     => $cookie_name,
+				'category' => $data['category'] ?? 'uncategorized',
+				'purpose'  => $data['purpose'] ?? '',
+				'provider' => $data['domain'] ?? '',
+				'duration' => $data['expiry'] ?? 'Session',
+			);
+		}
+
+		return $inventory;
 	}
 
 	/**
@@ -246,9 +446,9 @@ class Placeholder_Mapper extends Base_Service {
 		return preg_replace_callback(
 			self::CONDITIONAL_PATTERN,
 			function ( $matches ) {
-				$field      = $matches[1];
-				$inner      = $matches[2];
-				$value      = $this->resolve_value( $field );
+				$field = $matches[1];
+				$inner = $matches[2];
+				$value = $this->resolve_value( $field );
 
 				// Check if value is truthy
 				if ( $this->is_truthy( $value ) ) {
@@ -293,7 +493,7 @@ class Placeholder_Mapper extends Base_Service {
 					if ( is_array( $item ) ) {
 						// Array item with properties
 						foreach ( $item as $key => $val ) {
-							$placeholder = '{{' . $item_var . '.' . $key . '}}';
+							$placeholder  = '{{' . $item_var . '.' . $key . '}}';
 							$item_content = str_replace( $placeholder, esc_html( $val ), $item_content );
 						}
 					} else {
@@ -579,6 +779,78 @@ class Placeholder_Mapper extends Base_Service {
 	public function format_retention_period( string $period ): string {
 		$periods = \ShahiLegalFlowSuite\Database\Migrations\Migration_Company_Profile::get_retention_periods();
 		return $periods[ $period ] ?? $period;
+	}
+
+	/**
+	 * Format return window label
+	 *
+	 * @since 4.1.0
+	 * @param string $window Return window code.
+	 * @return string Human-readable label
+	 */
+	public function format_return_window( string $window ): string {
+		$windows = array(
+			'14_days' => __( '14 days', 'shahi-legalflowsuite' ),
+			'30_days' => __( '30 days', 'shahi-legalflowsuite' ),
+			'60_days' => __( '60 days', 'shahi-legalflowsuite' ),
+			'90_days' => __( '90 days', 'shahi-legalflowsuite' ),
+			'none'    => __( 'No returns accepted', 'shahi-legalflowsuite' ),
+		);
+		return $windows[ $window ] ?? $window;
+	}
+
+	/**
+	 * Format warranty period label
+	 *
+	 * @since 4.1.0
+	 * @param string $period Warranty period code.
+	 * @return string Human-readable label
+	 */
+	public function format_warranty_period( string $period ): string {
+		$periods = array(
+			'none'     => __( 'No warranty', 'shahi-legalflowsuite' ),
+			'30_days'  => __( '30 days', 'shahi-legalflowsuite' ),
+			'90_days'  => __( '90 days', 'shahi-legalflowsuite' ),
+			'1_year'   => __( '1 year', 'shahi-legalflowsuite' ),
+			'2_years'  => __( '2 years', 'shahi-legalflowsuite' ),
+			'lifetime' => __( 'Lifetime', 'shahi-legalflowsuite' ),
+		);
+		return $periods[ $period ] ?? $period;
+	}
+
+	/**
+	 * Format billing cycle label
+	 *
+	 * @since 4.1.0
+	 * @param string $cycle Billing cycle code.
+	 * @return string Human-readable label
+	 */
+	public function format_billing_cycle( string $cycle ): string {
+		$cycles = array(
+			'weekly'    => __( 'Weekly', 'shahi-legalflowsuite' ),
+			'monthly'   => __( 'Monthly', 'shahi-legalflowsuite' ),
+			'quarterly' => __( 'Quarterly', 'shahi-legalflowsuite' ),
+			'annually'  => __( 'Annually', 'shahi-legalflowsuite' ),
+		);
+		return $cycles[ $cycle ] ?? $cycle;
+	}
+
+	/**
+	 * Format license type label
+	 *
+	 * @since 4.1.0
+	 * @param string $type License type code.
+	 * @return string Human-readable label
+	 */
+	public function format_license_type( string $type ): string {
+		$types = array(
+			'personal'    => __( 'Personal Use License', 'shahi-legalflowsuite' ),
+			'commercial'  => __( 'Commercial License', 'shahi-legalflowsuite' ),
+			'enterprise'  => __( 'Enterprise License', 'shahi-legalflowsuite' ),
+			'open_source' => __( 'Open Source License', 'shahi-legalflowsuite' ),
+			'saas'        => __( 'Software as a Service (SaaS)', 'shahi-legalflowsuite' ),
+		);
+		return $types[ $type ] ?? $type;
 	}
 
 	/**

@@ -48,4 +48,3 @@ class OrphanedLabelCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

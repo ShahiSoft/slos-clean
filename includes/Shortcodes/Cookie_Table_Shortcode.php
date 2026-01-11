@@ -40,64 +40,70 @@ class Cookie_Table_Shortcode {
 	 * @since 3.1.1
 	 * @param array  $atts    Shortcode attributes.
 	 * @param string $content Shortcode content.
-	 * @return string Rendered HTML
+	 * @return string Rendered HTML.
 	 */
 	public function render( $atts, $content = null ) {
-		// Parse attributes
+		// Avoid unused content parameter.
+		unset( $content );
+
+		// Parse attributes.
 		$atts = shortcode_atts(
 			array(
-				'category' => 'all',        // all, necessary, analytics, marketing, functional
-				'title'    => 'yes',        // Show category title
-				'style'    => 'default',    // default, minimal, compact
+				'category' => 'all',        // all, necessary, analytics, marketing, functional.
+				'title'    => 'yes',        // Show category title.
+				'style'    => 'default',    // default, minimal, compact.
 			),
 			$atts,
 			'slos_cookie_table'
 		);
 
-		// Get cookie inventory
+		// Get cookie inventory.
 		$inventory = get_option( 'slos_cookie_inventory', array() );
 
-		// Fallback to legacy format if needed
+		// Fallback to legacy format if needed.
 		if ( empty( $inventory ) ) {
 			$legacy_cookies = get_option( 'slos_detected_cookies', array() );
-			$inventory = $this->convert_legacy_cookies( $legacy_cookies );
+			$inventory      = $this->convert_legacy_cookies( $legacy_cookies );
 		}
 
-		// Filter by category if specified
+		// Filter by category if specified.
 		if ( 'all' !== $atts['category'] ) {
-			$inventory = array_filter( $inventory, function( $cookie ) use ( $atts ) {
-				$category = $cookie['category'] ?? 'uncategorized';
-				return $category === $atts['category'];
-			} );
+			$inventory = array_filter(
+				$inventory,
+				function ( $cookie ) use ( $atts ) {
+					$category = $cookie['category'] ?? 'uncategorized';
+					return $category === $atts['category'];
+				}
+			);
 		}
 
-		// No cookies found
+		// No cookies found.
 		if ( empty( $inventory ) ) {
 			return '<p class="slos-no-cookies"><em>' . esc_html__( 'No cookies detected in this category.', 'shahi-legalflowsuite' ) . '</em></p>';
 		}
 
-		// Build HTML output
+		// Build HTML output.
 		$html = '<div class="slos-cookie-table-wrapper slos-style-' . esc_attr( $atts['style'] ) . '">';
 
-		// Add title if enabled
+		// Add title if enabled.
 		if ( 'yes' === $atts['title'] ) {
 			$title = $this->get_category_title( $atts['category'] );
 			$html .= '<h3 class="slos-cookie-table-title">' . esc_html( $title ) . '</h3>';
 		}
 
-		// Render table
+		// Render table.
 		$html .= $this->render_table( $inventory, $atts['style'] );
 
-		// Add last updated timestamp
+		// Add last updated timestamp.
 		$scan_meta = get_option( 'slos_cookie_scan_meta', array() );
 		if ( ! empty( $scan_meta['completed_at'] ) ) {
 			$last_scan = wp_date( get_option( 'date_format' ), $scan_meta['completed_at'] );
-			$html .= '<p class="slos-cookie-table-meta"><em>' 
-				. sprintf( 
+			$html     .= '<p class="slos-cookie-table-meta"><em>'
+				. sprintf(
 					/* translators: %s: date of last scan */
-					esc_html__( 'Last updated: %s', 'shahi-legalflowsuite' ), 
-					esc_html( $last_scan ) 
-				) 
+					esc_html__( 'Last updated: %s', 'shahi-legalflowsuite' ),
+					esc_html( $last_scan )
+				)
 				. '</em></p>';
 		}
 
@@ -112,14 +118,14 @@ class Cookie_Table_Shortcode {
 	 * @since 3.1.1
 	 * @param array  $cookies Cookie data.
 	 * @param string $style   Table style.
-	 * @return string HTML table
+	 * @return string HTML table.
 	 */
 	protected function render_table( array $cookies, string $style ): string {
 		$class = 'slos-cookie-table slos-style-' . esc_attr( $style );
-		
+
 		$html = '<table class="' . $class . '">';
-		
-		// Table header
+
+		// Table header.
 		$html .= '<thead>';
 		$html .= '<tr>';
 		$html .= '<th>' . esc_html__( 'Cookie Name', 'shahi-legalflowsuite' ) . '</th>';
@@ -129,7 +135,7 @@ class Cookie_Table_Shortcode {
 		$html .= '</tr>';
 		$html .= '</thead>';
 
-		// Table body
+		// Table body.
 		$html .= '<tbody>';
 		foreach ( $cookies as $cookie ) {
 			$name     = $cookie['name'] ?? __( 'Unknown', 'shahi-legalflowsuite' );

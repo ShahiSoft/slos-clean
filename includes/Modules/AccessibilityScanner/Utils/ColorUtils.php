@@ -273,4 +273,3 @@ class ColorUtils {
 		return null;
 	}
 }
-

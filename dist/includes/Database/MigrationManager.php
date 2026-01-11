@@ -345,4 +345,3 @@ class MigrationManager {
 		return $history;
 	}
 }
-

@@ -77,4 +77,3 @@ class AIService {
 		return new \WP_Error( 'invalid_response', 'Invalid response from AI API' );
 	}
 }
-

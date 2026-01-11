@@ -90,33 +90,33 @@ class Multilingual_Integration {
 		}
 
 		// Consent Banner Strings
-		$this->register_polylang_string( 'banner_heading', __( 'We value your privacy', self::TEXT_DOMAIN ) );
-		$this->register_polylang_string( 'banner_message', __( 'We use cookies to enhance your browsing experience and analyze our traffic. By clicking "Accept All", you consent to our use of cookies.', self::TEXT_DOMAIN ) );
-		$this->register_polylang_string( 'banner_accept_all', __( 'Accept All', self::TEXT_DOMAIN ) );
-		$this->register_polylang_string( 'banner_reject_all', __( 'Reject All', self::TEXT_DOMAIN ) );
-		$this->register_polylang_string( 'banner_customize', __( 'Customize', self::TEXT_DOMAIN ) );
-		$this->register_polylang_string( 'banner_learn_more', __( 'Learn More', self::TEXT_DOMAIN ) );
+		$this->register_polylang_string( 'banner_heading', __( 'We value your privacy', 'shahi-legalflowsuite' ) );
+		$this->register_polylang_string( 'banner_message', __( 'We use cookies to enhance your browsing experience and analyze our traffic. By clicking "Accept All", you consent to our use of cookies.', 'shahi-legalflowsuite' ) );
+		$this->register_polylang_string( 'banner_accept_all', __( 'Accept All', 'shahi-legalflowsuite' ) );
+		$this->register_polylang_string( 'banner_reject_all', __( 'Reject All', 'shahi-legalflowsuite' ) );
+		$this->register_polylang_string( 'banner_customize', __( 'Customize', 'shahi-legalflowsuite' ) );
+		$this->register_polylang_string( 'banner_learn_more', __( 'Learn More', 'shahi-legalflowsuite' ) );
 
 		// Consent Category Labels
-		$this->register_polylang_string( 'category_necessary', __( 'Necessary', self::TEXT_DOMAIN ) );
-		$this->register_polylang_string( 'category_necessary_desc', __( 'Essential cookies required for basic site functionality.', self::TEXT_DOMAIN ) );
-		$this->register_polylang_string( 'category_analytics', __( 'Analytics', self::TEXT_DOMAIN ) );
-		$this->register_polylang_string( 'category_analytics_desc', __( 'Cookies that help us understand how visitors interact with our website.', self::TEXT_DOMAIN ) );
-		$this->register_polylang_string( 'category_marketing', __( 'Marketing', self::TEXT_DOMAIN ) );
-		$this->register_polylang_string( 'category_marketing_desc', __( 'Cookies used to deliver personalized advertisements.', self::TEXT_DOMAIN ) );
-		$this->register_polylang_string( 'category_preferences', __( 'Preferences', self::TEXT_DOMAIN ) );
-		$this->register_polylang_string( 'category_preferences_desc', __( 'Cookies that remember your preferences and settings.', self::TEXT_DOMAIN ) );
+		$this->register_polylang_string( 'category_necessary', __( 'Necessary', 'shahi-legalflowsuite' ) );
+		$this->register_polylang_string( 'category_necessary_desc', __( 'Essential cookies required for basic site functionality.', 'shahi-legalflowsuite' ) );
+		$this->register_polylang_string( 'category_analytics', __( 'Analytics', 'shahi-legalflowsuite' ) );
+		$this->register_polylang_string( 'category_analytics_desc', __( 'Cookies that help us understand how visitors interact with our website.', 'shahi-legalflowsuite' ) );
+		$this->register_polylang_string( 'category_marketing', __( 'Marketing', 'shahi-legalflowsuite' ) );
+		$this->register_polylang_string( 'category_marketing_desc', __( 'Cookies used to deliver personalized advertisements.', 'shahi-legalflowsuite' ) );
+		$this->register_polylang_string( 'category_preferences', __( 'Preferences', 'shahi-legalflowsuite' ) );
+		$this->register_polylang_string( 'category_preferences_desc', __( 'Cookies that remember your preferences and settings.', 'shahi-legalflowsuite' ) );
 
 		// Preferences Modal Strings
-		$this->register_polylang_string( 'preferences_title', __( 'Privacy Preferences', self::TEXT_DOMAIN ) );
-		$this->register_polylang_string( 'preferences_description', __( 'Manage your cookie preferences below. You can enable or disable different types of cookies.', self::TEXT_DOMAIN ) );
-		$this->register_polylang_string( 'preferences_save', __( 'Save Preferences', self::TEXT_DOMAIN ) );
-		$this->register_polylang_string( 'preferences_close', __( 'Close', self::TEXT_DOMAIN ) );
+		$this->register_polylang_string( 'preferences_title', __( 'Privacy Preferences', 'shahi-legalflowsuite' ) );
+		$this->register_polylang_string( 'preferences_description', __( 'Manage your cookie preferences below. You can enable or disable different types of cookies.', 'shahi-legalflowsuite' ) );
+		$this->register_polylang_string( 'preferences_save', __( 'Save Preferences', 'shahi-legalflowsuite' ) );
+		$this->register_polylang_string( 'preferences_close', __( 'Close', 'shahi-legalflowsuite' ) );
 
 		// Action messages
-		$this->register_polylang_string( 'consent_saved', __( 'Your preferences have been saved.', self::TEXT_DOMAIN ) );
-		$this->register_polylang_string( 'consent_updated', __( 'Your consent preferences have been updated.', self::TEXT_DOMAIN ) );
-		$this->register_polylang_string( 'consent_withdrawn', __( 'Your consent has been withdrawn.', self::TEXT_DOMAIN ) );
+		$this->register_polylang_string( 'consent_saved', __( 'Your preferences have been saved.', 'shahi-legalflowsuite' ) );
+		$this->register_polylang_string( 'consent_updated', __( 'Your consent preferences have been updated.', 'shahi-legalflowsuite' ) );
+		$this->register_polylang_string( 'consent_withdrawn', __( 'Your consent has been withdrawn.', 'shahi-legalflowsuite' ) );
 	}
 
 	/**
@@ -170,11 +170,7 @@ class Multilingual_Integration {
 		}
 
 		// Fallback to WordPress translation
-		return __( $default_value, self::TEXT_DOMAIN );
-	}
-
-	/**
-	 * Get current language code
+	// phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText -- Variable contains translatable string key
 	 *
 	 * @since 3.0.1
 	 * @return string Language code (e.g., 'en', 'fr', 'ar')
@@ -268,3 +264,4 @@ class Multilingual_Integration {
 		return '';
 	}
 }
+

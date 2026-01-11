@@ -61,4 +61,3 @@ class ComplexContrastCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

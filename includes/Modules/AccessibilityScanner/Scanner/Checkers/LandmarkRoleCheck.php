@@ -155,7 +155,7 @@ class LandmarkRoleCheck extends AbstractCheck {
 						continue;
 					}
 					if ( ! $this->has_accessible_name( $element ) ) {
-						$unlabeled++;
+						++$unlabeled;
 					}
 				}
 
@@ -225,4 +225,3 @@ class LandmarkRoleCheck extends AbstractCheck {
 		}
 	}
 }
-

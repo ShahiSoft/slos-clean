@@ -45,4 +45,3 @@ class HeadingLengthCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

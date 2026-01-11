@@ -65,4 +65,3 @@ class RequiredAttributeCheck extends AbstractCheck {
 		return null;
 	}
 }
-

@@ -129,8 +129,8 @@ class PDF_Generator {
 			$this->dompdf->loadHtml( $html );
 
 			// Set paper size and orientation
-			$paper_size   = isset( $options['paper_size'] ) ? $options['paper_size'] : 'A4';
-			$orientation  = isset( $options['orientation'] ) ? $options['orientation'] : 'portrait';
+			$paper_size  = isset( $options['paper_size'] ) ? $options['paper_size'] : 'A4';
+			$orientation = isset( $options['orientation'] ) ? $options['orientation'] : 'portrait';
 			$this->dompdf->setPaper( $paper_size, $orientation );
 
 			// Render PDF
@@ -277,7 +277,7 @@ class PDF_Generator {
 		$site_url  = get_site_url();
 		$date      = current_time( 'Y-m-d H:i:s' );
 
-		$footer = '<div class="pdf-footer">';
+		$footer  = '<div class="pdf-footer">';
 		$footer .= sprintf(
 			'<div class="pdf-footer-left">%s</div>',
 			esc_html( $site_name )
@@ -309,7 +309,7 @@ class PDF_Generator {
 			return '';
 		}
 
-		$toc = '<div class="pdf-toc">';
+		$toc  = '<div class="pdf-toc">';
 		$toc .= sprintf( '<h2>%s</h2>', esc_html__( 'Table of Contents', 'shahi-legalflowsuite' ) );
 		$toc .= '<ul class="toc-list">';
 
@@ -321,7 +321,7 @@ class PDF_Generator {
 			// Add ID to heading in content (this would require modifying content)
 			// For simplicity, just list headings
 			$indent_class = 'toc-level-' . $level;
-			$toc .= sprintf(
+			$toc         .= sprintf(
 				'<li class="%s">%s</li>',
 				esc_attr( $indent_class ),
 				esc_html( $heading )
@@ -359,7 +359,7 @@ class PDF_Generator {
 	 * @return string CSS styles
 	 */
 	private function get_pdf_styles() {
-		$css_file = plugin_dir_path( dirname( dirname( __FILE__ ) ) ) . 'assets/css/pdf-styles.css';
+		$css_file = plugin_dir_path( dirname( __DIR__ ) ) . 'assets/css/pdf-styles.css';
 
 		if ( file_exists( $css_file ) ) {
 			$css = file_get_contents( $css_file );

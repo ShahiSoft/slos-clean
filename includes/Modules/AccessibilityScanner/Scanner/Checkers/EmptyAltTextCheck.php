@@ -53,4 +53,3 @@ class EmptyAltTextCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

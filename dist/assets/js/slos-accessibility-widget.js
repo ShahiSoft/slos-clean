@@ -11,7 +11,8 @@ jQuery(document).ready(function($) {
     let letterSpacing = 0;
     
     // Toggle Panel
-    $toggle.on('click', function() {
+    $toggle.on('click', function(e) {
+        e.preventDefault();
         const expanded = $(this).attr('aria-expanded') === 'true';
         $(this).attr('aria-expanded', !expanded);
         $panel.toggleClass('is-open');
@@ -20,7 +21,8 @@ jQuery(document).ready(function($) {
         }
     });
     
-    $close.on('click', function() {
+    $close.on('click', function(e) {
+        e.preventDefault();
         $toggle.attr('aria-expanded', 'false');
         $panel.removeClass('is-open');
         $toggle.focus();
@@ -45,7 +47,8 @@ jQuery(document).ready(function($) {
     }
 
     // Feature Handlers
-    $('.slos-aw-btn').on('click', function() {
+    $('.slos-aw-btn').on('click', function(e) {
+        e.preventDefault();
         const action = $(this).data('action');
         const $btn = $(this);
         trackEvent('feature_click', action);
@@ -486,6 +489,9 @@ jQuery(document).ready(function($) {
     }
 
     // Reset
-    $('#slos-aw-reset').on('click', resetAll);
+    $('#slos-aw-reset').on('click', function(e) {
+        e.preventDefault();
+        resetAll();
+    });
 });
 

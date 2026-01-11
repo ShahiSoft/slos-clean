@@ -11,786 +11,783 @@
  */
 
 /* ============================================================================
-   OVERLAY & MODAL CONTAINER
-   ========================================================================= */
+	OVERLAY & MODAL CONTAINER
+	========================================================================= */
 
 .slos-autofix-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(26, 31, 26, 0.95);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 100001;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-    padding: 1.5rem;
+	position: fixed;
+	inset: 0;
+	background: rgb(26 31 26 / 95%);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 100001;
+	opacity: 0;
+	visibility: hidden;
+	transition: opacity 0.3s ease, visibility 0.3s ease;
+	padding: 1.5rem;
 }
 
 .slos-autofix-overlay.show {
-    opacity: 1;
-    visibility: visible;
+	opacity: 1;
+	visibility: visible;
 }
 
 .slos-autofix-modal {
-    background: var(--slos-surface-secondary, #242b24);
-    border: 1px solid var(--slos-border-primary, rgba(107, 142, 78, 0.2));
-    border-radius: var(--slos-radius-xl, 16px);
-    box-shadow: var(--slos-shadow-xl, 0 20px 25px -5px rgba(0, 0, 0, 0.6));
-    max-width: 580px;
-    width: 100%;
-    max-height: 85vh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    transform: scale(0.9) translateY(20px);
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+	background: var(--slos-surface-secondary, #242b24);
+	border: 1px solid var(--slos-border-primary, rgb(107 142 78 / 20%));
+	border-radius: var(--slos-radius-xl, 16px);
+	box-shadow: var(--slos-shadow-xl, 0 20px 25px -5px rgb(0 0 0 / 60%));
+	max-width: 580px;
+	width: 100%;
+	max-height: 85vh;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	transform: scale(0.9) translateY(20px);
+	transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .slos-autofix-overlay.show .slos-autofix-modal {
-    transform: scale(1) translateY(0);
+	transform: scale(1) translateY(0);
 }
 
 /* ============================================================================
-   MODAL HEADER
-   ========================================================================= */
+	MODAL HEADER
+	========================================================================= */
 
 .slos-autofix-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--slos-space-lg, 1.25rem) var(--slos-space-lg, 1.5rem);
-    border-bottom: 1px solid var(--slos-border-primary, rgba(148, 163, 184, 0.1));
-    background: var(--slos-surface-tertiary, #2d342d);
-    flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: var(--slos-space-lg, 1.25rem) var(--slos-space-lg, 1.5rem);
+	border-bottom: 1px solid var(--slos-border-primary, rgb(148 163 184 / 10%));
+	background: var(--slos-surface-tertiary, #2d342d);
+	flex-shrink: 0;
 }
 
 .slos-autofix-header-title {
-    display: flex;
-    align-items: center;
-    gap: 0.875rem;
+	display: flex;
+	align-items: center;
+	gap: 0.875rem;
 }
 
 .slos-autofix-icon {
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--slos-gradient-primary, linear-gradient(135deg, #6b8e4e 0%, #8ba972 100%));
-    border-radius: var(--slos-radius-md, 12px);
-    color: var(--slos-text-on-accent, #fff);
-    font-size: 20px;
-    box-shadow: var(--slos-shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.4));
+	width: 44px;
+	height: 44px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: var(--slos-gradient-primary, linear-gradient(135deg, #6b8e4e 0%, #8ba972 100%));
+	border-radius: var(--slos-radius-md, 12px);
+	color: var(--slos-text-on-accent, #fff);
+	font-size: 20px;
+	box-shadow: var(--slos-shadow-md, 0 4px 6px -1px rgb(0 0 0 / 40%));
 }
 
 .slos-autofix-icon .dashicons {
-    font-size: 22px;
-    width: 22px;
-    height: 22px;
+	font-size: 22px;
+	width: 22px;
+	height: 22px;
 }
 
 .slos-autofix-header h2 {
-    margin: 0;
-    color: var(--slos-text-primary, #f8fafc);
-    font-size: var(--slos-text-xl, 1.25rem);
-    font-weight: var(--slos-font-semibold, 600);
-    letter-spacing: -0.01em;
+	margin: 0;
+	color: var(--slos-text-primary, #f8fafc);
+	font-size: var(--slos-text-xl, 1.25rem);
+	font-weight: var(--slos-font-semibold, 600);
+	letter-spacing: -0.01em;
 }
 
 .slos-autofix-header-subtitle {
-    font-size: var(--slos-text-sm, 0.8rem);
-    color: var(--slos-text-secondary, #94a3b8);
-    margin-top: 2px;
+	font-size: var(--slos-text-sm, 0.8rem);
+	color: var(--slos-text-secondary, #94a3b8);
+	margin-top: 2px;
 }
 
 .slos-autofix-close {
-    background: rgba(148, 163, 184, 0.1);
-    border: none;
-    color: var(--slos-text-secondary, #94a3b8);
-    font-size: var(--slos-text-xl, 1.25rem);
-    cursor: pointer;
-    padding: 0;
-    line-height: 1;
-    transition: all 0.2s ease;
-    border-radius: var(--slos-radius-sm, 8px);
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+	background: rgb(148 163 184 / 10%);
+	border: none;
+	color: var(--slos-text-secondary, #94a3b8);
+	font-size: var(--slos-text-xl, 1.25rem);
+	cursor: pointer;
+	padding: 0;
+	line-height: 1;
+	transition: all 0.2s ease;
+	border-radius: var(--slos-radius-sm, 8px);
+	width: 36px;
+	height: 36px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .slos-autofix-close:hover {
-    color: var(--slos-text-primary, #f8fafc);
-    background: rgba(239, 68, 68, 0.2);
+	color: var(--slos-text-primary, #f8fafc);
+	background: rgb(239 68 68 / 20%);
 }
 
 .slos-autofix-close:focus {
-    outline: 2px solid var(--slos-accent-primary, #6b8e4e);
-    outline-offset: 2px;
+	outline: 2px solid var(--slos-accent-primary, #6b8e4e);
+	outline-offset: 2px;
 }
 
 /* ============================================================================
-   PROGRESS SECTION
-   ========================================================================= */
+	PROGRESS SECTION
+	========================================================================= */
 
 .slos-autofix-progress-section {
-    padding: var(--slos-space-lg, 1.25rem) var(--slos-space-lg, 1.5rem);
-    border-bottom: 1px solid var(--slos-border-primary, rgba(148, 163, 184, 0.1));
-    flex-shrink: 0;
+	padding: var(--slos-space-lg, 1.25rem) var(--slos-space-lg, 1.5rem);
+	border-bottom: 1px solid var(--slos-border-primary, rgb(148 163 184 / 10%));
+	flex-shrink: 0;
 }
 
 .slos-autofix-progress-wrap {
-    position: relative;
-    width: 100%;
-    height: 10px;
-    background: rgba(148, 163, 184, 0.15);
-    border-radius: var(--slos-radius-full, 999px);
-    overflow: hidden;
-    margin-bottom: 0.75rem;
+	position: relative;
+	width: 100%;
+	height: 10px;
+	background: rgb(148 163 184 / 15%);
+	border-radius: var(--slos-radius-full, 999px);
+	overflow: hidden;
+	margin-bottom: 0.75rem;
 }
 
 .slos-autofix-progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, var(--slos-accent-primary, #6b8e4e) 0%, var(--slos-accent-light, #8ba972) 50%, var(--slos-accent-primary, #6b8e4e) 100%);
-    background-size: 200% 100%;
-    border-radius: var(--slos-radius-full, 999px);
-    width: 0%;
-    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    box-shadow: 0 0 12px rgba(107, 142, 78, 0.4);
+	height: 100%;
+	background: linear-gradient(90deg, var(--slos-accent-primary, #6b8e4e) 0%, var(--slos-accent-light, #8ba972) 50%, var(--slos-accent-primary, #6b8e4e) 100%);
+	background-size: 200% 100%;
+	border-radius: var(--slos-radius-full, 999px);
+	width: 0%;
+	transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+	position: relative;
+	box-shadow: 0 0 12px rgb(107 142 78 / 40%);
 }
 
 .slos-autofix-progress-bar::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    animation: slos-progress-shimmer 2s infinite;
+	content: '';
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(90deg, transparent, rgb(255 255 255 / 30%), transparent);
+	animation: slos-progress-shimmer 2s infinite;
 }
 
 @keyframes slos-progress-shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+	0% { transform: translateX(-100%); }
+	100% { transform: translateX(100%); }
 }
 
 .slos-autofix-progress-text {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: var(--slos-text-sm, 0.875rem);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	font-size: var(--slos-text-sm, 0.875rem);
 }
 
 .slos-autofix-progress-percent {
-    color: var(--slos-accent-light, #8ba972);
-    font-weight: var(--slos-font-semibold, 600);
-    font-variant-numeric: tabular-nums;
+	color: var(--slos-accent-light, #8ba972);
+	font-weight: var(--slos-font-semibold, 600);
+	font-variant-numeric: tabular-nums;
 }
 
 .slos-autofix-progress-status {
-    color: var(--slos-text-secondary, #94a3b8);
+	color: var(--slos-text-secondary, #94a3b8);
 }
 
 /* Processing Animation */
 .slos-autofix-progress-wrap.processing .slos-autofix-progress-bar {
-    animation: slos-progress-pulse 1.5s ease-in-out infinite;
+	animation: slos-progress-pulse 1.5s ease-in-out infinite;
 }
 
 @keyframes slos-progress-pulse {
-    0%, 100% { box-shadow: 0 0 12px rgba(107, 142, 78, 0.4); }
-    50% { box-shadow: 0 0 20px rgba(107, 142, 78, 0.6); }
+	0%, 100% { box-shadow: 0 0 12px rgb(107 142 78 / 40%); }
+	50% { box-shadow: 0 0 20px rgb(107 142 78 / 60%); }
 }
 
 /* ============================================================================
-   FIXER LIST
-   ========================================================================= */
+	FIXER LIST
+	========================================================================= */
 
 .slos-autofix-fixer-section {
-    flex: 1;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
+	flex: 1;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	min-height: 0;
 }
 
 .slos-autofix-fixer-header {
-    padding: 0.875rem var(--slos-space-lg, 1.5rem);
-    font-size: var(--slos-text-xs, 0.75rem);
-    font-weight: var(--slos-font-semibold, 600);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--slos-text-muted, #64748b);
-    background: var(--slos-surface-tertiary, rgba(30, 41, 59, 0.5));
-    border-bottom: 1px solid var(--slos-border-primary, rgba(148, 163, 184, 0.1));
-    flex-shrink: 0;
+	padding: 0.875rem var(--slos-space-lg, 1.5rem);
+	font-size: var(--slos-text-xs, 0.75rem);
+	font-weight: var(--slos-font-semibold, 600);
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	color: var(--slos-text-muted, #64748b);
+	background: var(--slos-surface-tertiary, rgb(30 41 59 / 50%));
+	border-bottom: 1px solid var(--slos-border-primary, rgb(148 163 184 / 10%));
+	flex-shrink: 0;
 }
 
 .slos-autofix-fixer-list {
-    flex: 1;
-    overflow-y: auto;
-    padding: 0.5rem 0;
-    max-height: 280px;
-    /* Modern browsers (Firefox 64+, Chrome 121+) */
-    scrollbar-width: thin;
-    scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
+	flex: 1;
+	overflow-y: auto;
+	padding: 0.5rem 0;
+	max-height: 280px;
+
+	/* Modern browsers (Firefox 64+, Chrome 121+) */
+	scrollbar-width: thin;
+	scrollbar-color: rgb(148 163 184 / 30%) transparent;
 }
 
 /* Webkit/Blink fallback (Chrome <121, Safari, Edge, Opera) */
 .slos-autofix-fixer-list::-webkit-scrollbar {
-    width: 6px;
+	width: 6px;
 }
 
 .slos-autofix-fixer-list::-webkit-scrollbar-track {
-    background: transparent;
+	background: transparent;
 }
 
 .slos-autofix-fixer-list::-webkit-scrollbar-thumb {
-    background: rgba(148, 163, 184, 0.3);
-    border-radius: 3px;
+	background: rgb(148 163 184 / 30%);
+	border-radius: 3px;
 }
 
 .slos-autofix-fixer-list::-webkit-scrollbar-thumb:hover {
-    background: rgba(148, 163, 184, 0.5);
+	background: rgb(148 163 184 / 50%);
 }
 
 .slos-autofix-fixer-item {
-    display: flex;
-    align-items: center;
-    padding: 0.625rem 1.5rem;
-    gap: 0.875rem;
-    transition: background 0.2s ease;
+	display: flex;
+	align-items: center;
+	padding: 0.625rem 1.5rem;
+	gap: 0.875rem;
+	transition: background 0.2s ease;
 }
 
 .slos-autofix-fixer-item:hover {
-    background: rgba(107, 142, 78, 0.05);
+	background: rgb(107 142 78 / 5%);
 }
 
 .slos-autofix-fixer-item.active {
-    background: rgba(107, 142, 78, 0.1);
+	background: rgb(107 142 78 / 10%);
 }
 
 /* Status Icons */
 .slos-autofix-fixer-status {
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    flex-shrink: 0;
-    font-size: 12px;
-    font-weight: 600;
+	width: 24px;
+	height: 24px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	flex-shrink: 0;
+	font-size: 12px;
+	font-weight: 600;
 }
 
 .slos-autofix-fixer-status.pending {
-    background: rgba(148, 163, 184, 0.15);
-    color: var(--slos-text-disabled, #718096);
+	background: rgb(148 163 184 / 15%);
+	color: var(--slos-text-disabled, #718096);
 }
 
 .slos-autofix-fixer-status.pending::before {
-    content: '○';
-    font-size: 14px;
+	content: '○';
+	font-size: 14px;
 }
 
 .slos-autofix-fixer-status.processing {
-    background: rgba(107, 142, 78, 0.2);
-    color: #8ba972;
-    animation: slos-status-pulse 1s ease-in-out infinite;
+	background: rgb(107 142 78 / 20%);
+	color: #8ba972;
+	animation: slos-status-pulse 1s ease-in-out infinite;
 }
 
 .slos-autofix-fixer-status.processing::before {
-    content: '';
-    width: 10px;
-    height: 10px;
-    border: 2px solid currentColor;
-    border-top-color: transparent;
-    border-radius: 50%;
-    animation: slos-spin 0.8s linear infinite;
+	content: '';
+	width: 10px;
+	height: 10px;
+	border: 2px solid currentcolor;
+	border-top-color: transparent;
+	border-radius: 50%;
+	animation: slos-spin 0.8s linear infinite;
 }
 
 @keyframes slos-spin {
-    to { transform: rotate(360deg); }
+	to { transform: rotate(360deg); }
 }
 
 @keyframes slos-status-pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
+	0%, 100% { transform: scale(1); }
+	50% { transform: scale(1.1); }
 }
 
 .slos-autofix-fixer-status.success {
-    background: rgba(34, 197, 94, 0.2);
-    color: #22c55e;
+	background: rgb(34 197 94 / 20%);
+	color: #22c55e;
 }
 
 .slos-autofix-fixer-status.success::before {
-    content: '✓';
+	content: '✓';
 }
 
 .slos-autofix-fixer-status.error {
-    background: rgba(239, 68, 68, 0.2);
-    color: #ef4444;
+	background: rgb(239 68 68 / 20%);
+	color: #ef4444;
 }
 
 .slos-autofix-fixer-status.error::before {
-    content: '✗';
+	content: '✗';
 }
 
 .slos-autofix-fixer-status.skipped {
-    background: rgba(245, 158, 11, 0.2);
-    color: #f59e0b;
+	background: rgb(245 158 11 / 20%);
+	color: #f59e0b;
 }
 
 .slos-autofix-fixer-status.skipped::before {
-    content: '—';
+	content: '—';
 }
 
 /* Fixer Info */
 .slos-autofix-fixer-info {
-    flex: 1;
-    min-width: 0;
+	flex: 1;
+	min-width: 0;
 }
 
 .slos-autofix-fixer-name {
-    color: #e2e8f0;
-    font-size: 0.875rem;
-    font-weight: 500;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+	color: #e2e8f0;
+	font-size: 0.875rem;
+	font-weight: 500;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .slos-autofix-fixer-item.pending .slos-autofix-fixer-name {
-    color: var(--slos-text-tertiary, #a0aec0);
+	color: var(--slos-text-tertiary, #a0aec0);
 }
 
 .slos-autofix-fixer-desc {
-    font-size: 0.75rem;
-    color: var(--slos-text-disabled, #718096);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+	font-size: 0.75rem;
+	color: var(--slos-text-disabled, #718096);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 /* Fixer Count Badge */
 .slos-autofix-fixer-count {
-    font-size: 0.75rem;
-    padding: 0.25rem 0.625rem;
-    border-radius: 999px;
-    font-weight: 500;
-    flex-shrink: 0;
+	font-size: 0.75rem;
+	padding: 0.25rem 0.625rem;
+	border-radius: 999px;
+	font-weight: 500;
+	flex-shrink: 0;
 }
 
 .slos-autofix-fixer-count.success {
-    background: rgba(34, 197, 94, 0.15);
-    color: #22c55e;
+	background: rgb(34 197 94 / 15%);
+	color: #22c55e;
 }
 
 .slos-autofix-fixer-count.error {
-    background: rgba(239, 68, 68, 0.15);
-    color: #ef4444;
+	background: rgb(239 68 68 / 15%);
+	color: #ef4444;
 }
 
 .slos-autofix-fixer-count.skipped {
-    background: rgba(245, 158, 11, 0.15);
-    color: #f59e0b;
+	background: rgb(245 158 11 / 15%);
+	color: #f59e0b;
 }
 
 /* ============================================================================
-   SUMMARY SECTION
-   ========================================================================= */
+	SUMMARY SECTION
+	========================================================================= */
 
 .slos-autofix-summary {
-    padding: var(--slos-space-md, 1rem) var(--slos-space-lg, 1.5rem);
-    border-top: 1px solid var(--slos-border-primary, rgba(148, 163, 184, 0.1));
-    background: var(--slos-surface-tertiary, rgba(30, 41, 59, 0.3));
-    flex-shrink: 0;
+	padding: var(--slos-space-md, 1rem) var(--slos-space-lg, 1.5rem);
+	border-top: 1px solid var(--slos-border-primary, rgb(148 163 184 / 10%));
+	background: var(--slos-surface-tertiary, rgb(30 41 59 / 30%));
+	flex-shrink: 0;
 }
 
 .slos-autofix-summary-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0.75rem;
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 0.75rem;
 }
 
 .slos-autofix-stat {
-    text-align: center;
-    padding: 0.75rem 0.5rem;
-    background: var(--slos-surface-primary, rgba(15, 23, 42, 0.5));
-    border-radius: var(--slos-radius-md, 10px);
-    border: 1px solid var(--slos-border-primary, rgba(148, 163, 184, 0.1));
-    transition: all 0.2s ease;
+	text-align: center;
+	padding: 0.75rem 0.5rem;
+	background: var(--slos-surface-primary, rgb(15 23 42 / 50%));
+	border-radius: var(--slos-radius-md, 10px);
+	border: 1px solid var(--slos-border-primary, rgb(148 163 184 / 10%));
+	transition: all 0.2s ease;
 }
 
 .slos-autofix-stat:hover {
-    border-color: var(--slos-border-hover, rgba(148, 163, 184, 0.2));
+	border-color: var(--slos-border-hover, rgb(148 163 184 / 20%));
 }
 
 .slos-autofix-stat-value {
-    font-size: var(--slos-metric-sm, 2rem);
-    font-weight: var(--slos-metric-weight, 700);
-    font-variant-numeric: tabular-nums;
-    line-height: var(--slos-metric-line-height, 1);
-    margin-bottom: 0.25rem;
+	font-size: var(--slos-metric-sm, 2rem);
+	font-weight: var(--slos-metric-weight, 700);
+	font-variant-numeric: tabular-nums;
+	line-height: var(--slos-metric-line-height, 1);
+	margin-bottom: 0.25rem;
 }
 
 .slos-autofix-stat.fixed .slos-autofix-stat-value {
-    color: #22c55e;
+	color: #22c55e;
 }
 
 .slos-autofix-stat.errors .slos-autofix-stat-value {
-    color: #ef4444;
+	color: #ef4444;
 }
 
 .slos-autofix-stat.skipped .slos-autofix-stat-value {
-    color: #f59e0b;
+	color: #f59e0b;
 }
 
 .slos-autofix-stat.pending .slos-autofix-stat-value {
-    color: var(--slos-text-disabled, #718096);
+	color: var(--slos-text-disabled, #718096);
 }
 
 .slos-autofix-stat-label {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--slos-text-disabled, #718096);
-    font-weight: 500;
+	font-size: 0.7rem;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	color: var(--slos-text-disabled, #718096);
+	font-weight: 500;
 }
 
 /* ============================================================================
-   ACTIONS SECTION
-   ========================================================================= */
+	ACTIONS SECTION
+	========================================================================= */
 
 .slos-autofix-actions {
-    padding: 1rem 1.5rem;
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.75rem;
-    border-top: 1px solid rgba(148, 163, 184, 0.1);
-    flex-shrink: 0;
+	padding: 1rem 1.5rem;
+	display: flex;
+	justify-content: flex-end;
+	gap: 0.75rem;
+	border-top: 1px solid rgb(148 163 184 / 10%);
+	flex-shrink: 0;
 }
 
 .slos-autofix-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.625rem 1.25rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    min-width: 100px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	padding: 0.625rem 1.25rem;
+	font-size: 0.875rem;
+	font-weight: 500;
+	border-radius: 8px;
+	border: none;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	min-width: 100px;
 }
 
 .slos-autofix-btn:focus {
-    outline: 2px solid var(--slos-accent-primary, #6b8e4e);
-    outline-offset: 2px;
+	outline: 2px solid var(--slos-accent-primary, #6b8e4e);
+	outline-offset: 2px;
 }
 
 .slos-autofix-btn-secondary {
-    background: rgba(148, 163, 184, 0.15);
-    color: var(--slos-text-secondary, #cbd5e1);
-    border: 1px solid rgba(148, 163, 184, 0.2);
+	background: rgb(148 163 184 / 15%);
+	color: var(--slos-text-secondary, #cbd5e1);
+	border: 1px solid rgb(148 163 184 / 20%);
 }
 
 .slos-autofix-btn-secondary:hover {
-    background: rgba(148, 163, 184, 0.25);
-    color: var(--slos-text-primary, #f8fafc);
+	background: rgb(148 163 184 / 25%);
+	color: var(--slos-text-primary, #f8fafc);
 }
 
 .slos-autofix-btn-primary {
-    background: var(--slos-gradient-primary, linear-gradient(135deg, #6b8e4e 0%, #5a7a3f 100%));
-    color: var(--slos-text-on-accent, #fff);
-    box-shadow: var(--slos-shadow-md, 0 4px 12px rgba(107, 142, 78, 0.3));
+	background: var(--slos-gradient-primary, linear-gradient(135deg, #6b8e4e 0%, #5a7a3f 100%));
+	color: var(--slos-text-on-accent, #fff);
+	box-shadow: var(--slos-shadow-md, 0 4px 12px rgb(107 142 78 / 30%));
 }
 
 .slos-autofix-btn-primary:hover {
-    background: linear-gradient(135deg, var(--slos-accent-light, #8ba972) 0%, var(--slos-accent-primary, #6b8e4e) 100%);
-    box-shadow: var(--slos-shadow-lg, 0 6px 16px rgba(107, 142, 78, 0.4));
-    transform: translateY(-1px);
+	background: linear-gradient(135deg, var(--slos-accent-light, #8ba972) 0%, var(--slos-accent-primary, #6b8e4e) 100%);
+	box-shadow: var(--slos-shadow-lg, 0 6px 16px rgb(107 142 78 / 40%));
+	transform: translateY(-1px);
 }
 
 .slos-autofix-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none !important;
+	opacity: 0.5;
+	cursor: not-allowed;
+	transform: none !important;
 }
 
 /* Cancel button while processing */
 .slos-autofix-btn-cancel {
-    background: rgba(239, 68, 68, 0.15);
-    color: #ef4444;
-    border: 1px solid rgba(239, 68, 68, 0.3);
+	background: rgb(239 68 68 / 15%);
+	color: #ef4444;
+	border: 1px solid rgb(239 68 68 / 30%);
 }
 
 .slos-autofix-btn-cancel:hover {
-    background: rgba(239, 68, 68, 0.25);
+	background: rgb(239 68 68 / 25%);
 }
 
 /* ============================================================================
-   COMPLETION STATE
-   ========================================================================= */
+	COMPLETION STATE
+	========================================================================= */
 
 .slos-autofix-complete {
-    text-align: center;
-    padding: 1.5rem;
+	text-align: center;
+	padding: 1.5rem;
 }
 
 .slos-autofix-complete-icon {
-    width: 64px;
-    height: 64px;
-    margin: 0 auto 1rem;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 28px;
+	width: 64px;
+	height: 64px;
+	margin: 0 auto 1rem;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 28px;
 }
 
 .slos-autofix-complete-icon.success {
-    background: rgba(34, 197, 94, 0.15);
-    color: #22c55e;
-    box-shadow: 0 0 30px rgba(34, 197, 94, 0.2);
+	background: rgb(34 197 94 / 15%);
+	color: #22c55e;
+	box-shadow: 0 0 30px rgb(34 197 94 / 20%);
 }
 
 .slos-autofix-complete-icon.success::before {
-    content: '✓';
+	content: '✓';
 }
 
 .slos-autofix-complete-icon.partial {
-    background: rgba(245, 158, 11, 0.15);
-    color: #f59e0b;
-    box-shadow: 0 0 30px rgba(245, 158, 11, 0.2);
+	background: rgb(245 158 11 / 15%);
+	color: #f59e0b;
+	box-shadow: 0 0 30px rgb(245 158 11 / 20%);
 }
 
 .slos-autofix-complete-icon.partial::before {
-    content: '!';
+	content: '!';
 }
 
 .slos-autofix-complete-icon.error {
-    background: rgba(239, 68, 68, 0.15);
-    color: #ef4444;
-    box-shadow: 0 0 30px rgba(239, 68, 68, 0.2);
+	background: rgb(239 68 68 / 15%);
+	color: #ef4444;
+	box-shadow: 0 0 30px rgb(239 68 68 / 20%);
 }
 
 .slos-autofix-complete-icon.error::before {
-    content: '✗';
+	content: '✗';
 }
 
 .slos-autofix-complete-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--slos-text-primary, #ffffff);
-    margin: 0 0 0.5rem;
+	font-size: 1.25rem;
+	font-weight: 600;
+	color: var(--slos-text-primary, #fff);
+	margin: 0 0 0.5rem;
 }
 
 .slos-autofix-complete-message {
-    color: var(--slos-text-tertiary, #a0aec0);
-    font-size: 0.875rem;
-    margin: 0;
+	color: var(--slos-text-tertiary, #a0aec0);
+	font-size: 0.875rem;
+	margin: 0;
 }
 
 /* ============================================================================
-   SCREEN READER ONLY
-   ========================================================================= */
+	SCREEN READER ONLY
+	========================================================================= */
 
 .slos-autofix-sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
 }
 
 /* Live region for announcements */
 .slos-autofix-live-region {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
 }
 
 /* ============================================================================
-   REDUCED MOTION
-   ========================================================================= */
+	REDUCED MOTION
+	========================================================================= */
 
 @media (prefers-reduced-motion: reduce) {
-    .slos-autofix-overlay,
-    .slos-autofix-modal,
-    .slos-autofix-progress-bar,
-    .slos-autofix-fixer-status.processing,
-    .slos-autofix-btn {
-        transition: none;
-        animation: none;
-    }
-    
-    .slos-autofix-progress-bar::after {
-        animation: none;
-    }
-    
-    .slos-autofix-fixer-status.processing::before {
-        animation: none;
-    }
+	.slos-autofix-overlay,
+	.slos-autofix-modal,
+	.slos-autofix-progress-bar,
+	.slos-autofix-fixer-status.processing,
+	.slos-autofix-btn {
+		transition: none;
+		animation: none;
+	}
+
+	.slos-autofix-progress-bar::after {
+		animation: none;
+	}
+
+	.slos-autofix-fixer-status.processing::before {
+		animation: none;
+	}
 }
 
 /* ============================================================================
-   HIGH CONTRAST MODE
-   ========================================================================= */
+	HIGH CONTRAST MODE
+	========================================================================= */
 
 @media (prefers-contrast: high), (forced-colors: active) {
-    .slos-autofix-modal {
-        border: 2px solid CanvasText;
-        background: Canvas;
-    }
-    
-    .slos-autofix-fixer-status {
-        border: 2px solid currentColor;
-    }
-    
-    .slos-autofix-btn {
-        border: 2px solid currentColor;
-    }
-    
-    .slos-autofix-progress-bar {
-        background: Highlight;
-    }
+	.slos-autofix-modal {
+		border: 2px solid CanvasText;
+		background: Canvas;
+	}
+
+	.slos-autofix-fixer-status {
+		border: 2px solid currentcolor;
+	}
+
+	.slos-autofix-btn {
+		border: 2px solid currentcolor;
+	}
+
+	.slos-autofix-progress-bar {
+		background: Highlight;
+	}
 }
 
 /* ============================================================================
-   RESPONSIVE
-   ========================================================================= */
+	RESPONSIVE
+	========================================================================= */
 
-@media (max-width: 640px) {
-    .slos-autofix-overlay {
-        padding: 1rem;
-    }
-    
-    .slos-autofix-modal {
-        max-height: 90vh;
-    }
-    
-    .slos-autofix-header {
-        padding: 1rem;
-    }
-    
-    .slos-autofix-header h2 {
-        font-size: 1.1rem;
-    }
-    
-    .slos-autofix-icon {
-        width: 38px;
-        height: 38px;
-    }
-    
-    .slos-autofix-progress-section,
-    .slos-autofix-summary,
-    .slos-autofix-actions {
-        padding: 1rem;
-    }
-    
-    .slos-autofix-fixer-item {
-        padding: 0.5rem 1rem;
-    }
-    
-    .slos-autofix-fixer-list {
-        max-height: 200px;
-    }
-    
-    .slos-autofix-summary-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .slos-autofix-stat-value {
-        font-size: 1.25rem;
-    }
-    
-    .slos-autofix-actions {
-        flex-direction: column-reverse;
-    }
-    
-    .slos-autofix-btn {
-        width: 100%;
-    }
+@media (width <= 640px) {
+	.slos-autofix-overlay {
+		padding: 1rem;
+	}
+
+	.slos-autofix-modal {
+		max-height: 90vh;
+	}
+
+	.slos-autofix-header {
+		padding: 1rem;
+	}
+
+	.slos-autofix-header h2 {
+		font-size: 1.1rem;
+	}
+
+	.slos-autofix-icon {
+		width: 38px;
+		height: 38px;
+	}
+
+	.slos-autofix-progress-section,
+	.slos-autofix-summary,
+	.slos-autofix-actions {
+		padding: 1rem;
+	}
+
+	.slos-autofix-fixer-item {
+		padding: 0.5rem 1rem;
+	}
+
+	.slos-autofix-fixer-list {
+		max-height: 200px;
+	}
+
+	.slos-autofix-summary-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	.slos-autofix-stat-value {
+		font-size: 1.25rem;
+	}
+
+	.slos-autofix-actions {
+		flex-direction: column-reverse;
+	}
+
+	.slos-autofix-btn {
+		width: 100%;
+	}
 }
 
-@media (max-width: 400px) {
-    .slos-autofix-header-subtitle {
-        display: none;
-    }
-    
-    .slos-autofix-fixer-desc {
-        display: none;
-    }
+@media (width <= 400px) {
+	.slos-autofix-header-subtitle {
+		display: none;
+	}
+
+	.slos-autofix-fixer-desc {
+		display: none;
+	}
 }
+
 /* ============================================================================
-   P2 ENHANCEMENTS: ERROR DETAILS & RESCAN STATS
-   ========================================================================= */
+	P2 ENHANCEMENTS: ERROR DETAILS & RESCAN STATS
+	========================================================================= */
 
 .slos-autofix-error-details {
-    margin-top: 8px;
-    padding: 8px 12px;
-    background: rgba(239, 68, 68, 0.1);
-    border-left: 3px solid #ef4444;
-    border-radius: 4px;
-    font-size: 12px;
-    color: #fca5a5;
-    line-height: 1.5;
+	margin-top: 8px;
+	padding: 8px 12px;
+	background: rgb(239 68 68 / 10%);
+	border-left: 3px solid #ef4444;
+	border-radius: 4px;
+	font-size: 12px;
+	color: #fca5a5;
+	line-height: 1.5;
 }
 
 .slos-autofix-error-details strong {
-    color: #fecaca;
-    font-weight: 600;
+	color: #fecaca;
+	font-weight: 600;
 }
 
 .slos-autofix-rescan-stats {
-    animation: slideInDown 0.3s ease-out;
+	animation: slideInDown 0.3s ease-out;
 }
 
 .slos-autofix-all-errors {
-    animation: slideInDown 0.3s ease-out 0.1s both;
+	animation: slideInDown 0.3s ease-out 0.1s both;
 }
 
 @keyframes slideInDown {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+	from {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 
 /* Status indicator for cancelled items */
 .slos-autofix-fixer-item.cancelled {
-    opacity: 0.5;
+	opacity: 0.5;
 }
 
 .slos-autofix-fixer-item.cancelled .slos-autofix-fixer-status {
-    background: #6b7280;
+	background: #6b7280;
 }
 
 .slos-autofix-fixer-item.cancelled .slos-autofix-fixer-status::after {
-    content: '⊘';
-    color: #9ca3af;
+	content: '⊘';
+	color: #9ca3af;
 }

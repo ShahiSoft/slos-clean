@@ -47,4 +47,3 @@ class MissingH1Check extends AbstractCheck {
 		return $issues;
 	}
 }
-

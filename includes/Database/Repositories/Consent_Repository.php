@@ -337,11 +337,15 @@ class Consent_Repository extends Base_Repository {
 		}
 
 		// Sort by created_at DESC
-		usort( $consents, function( $a, $b ) {
-			$a_time = strtotime( $a['created_at'] ?? '' );
-			$b_time = strtotime( $b['created_at'] ?? '' );
-			return $b_time - $a_time;
-		});
+		usort(
+			$consents,
+			function ( $a, $b ) {
+				$a_time = strtotime( $a['created_at'] ?? '' );
+				$b_time = strtotime( $b['created_at'] ?? '' );
+				return $b_time - $a_time;
+			}
+		);
 
 		return $consents;
-	}}
+	}
+}

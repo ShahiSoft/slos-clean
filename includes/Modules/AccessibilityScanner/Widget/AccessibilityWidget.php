@@ -60,9 +60,9 @@ class AccessibilityWidget {
 			'slos-accessibility-widget',
 			'slosWidget',
 			array(
-				'ajax_url'  => admin_url( 'admin-ajax.php' ),
-				'position'  => get_option( 'slos_widget_position', 'bottom-right' ),
-				'color'     => get_option( 'slos_widget_color', 'blue' ),
+				'ajax_url' => admin_url( 'admin-ajax.php' ),
+				'position' => get_option( 'slos_widget_position', 'bottom-right' ),
+				'color'    => get_option( 'slos_widget_color', 'blue' ),
 			)
 		);
 	}
@@ -93,13 +93,13 @@ class AccessibilityWidget {
 			'content_readability',
 			'reset',
 		);
-		$features = get_option( 'slos_widget_features', $feature_defaults );
+		$features         = get_option( 'slos_widget_features', $feature_defaults );
 		if ( ! is_array( $features ) || empty( $features ) ) {
 			$features = $feature_defaults;
 		}
 
-		$position = get_option( 'slos_widget_position', 'bottom-right' );
-		$color    = get_option( 'slos_widget_color', 'blue' );
+		$position       = get_option( 'slos_widget_position', 'bottom-right' );
+		$color          = get_option( 'slos_widget_color', 'blue' );
 		$position_class = 'slos-aw-pos-' . sanitize_html_class( $position );
 		$color_class    = 'slos-aw-theme-' . sanitize_html_class( $color );
 

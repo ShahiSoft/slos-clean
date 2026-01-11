@@ -56,9 +56,9 @@ class QueryOptimizer {
 		// Not in cache, execute queries
 		$table_name = $wpdb->prefix . 'shahi_analytics_events';
 
-		// Check if table exists
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) != $table_name ) {
-			// Table doesn't exist, return zeros
+		// Check if table exists.
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) != $table_name ) {
+			// Table doesn't exist, return zeros.
 			return array(
 				'total_events'    => 0,
 				'unique_users'    => 0,
@@ -139,7 +139,7 @@ class QueryOptimizer {
 
 		$table_name = $wpdb->prefix . 'shahi_analytics_events';
 
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) != $table_name ) {
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) != $table_name ) {
 			return array(
 				array(
 					'type'  => 'Page View',
@@ -314,4 +314,3 @@ class QueryOptimizer {
 		return $exists;
 	}
 }
-

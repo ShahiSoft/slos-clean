@@ -748,6 +748,7 @@ class DSRReports {
 			header( 'Pragma: no-cache' );
 			header( 'Expires: 0' );
 
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- PDF content is already sanitized
 			echo $content;
 			exit;
 		}

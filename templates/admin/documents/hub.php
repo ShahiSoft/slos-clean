@@ -141,12 +141,14 @@ $nonce      = $data['nonce'] ?? '';
 			<?php
 			printf(
 				/* translators: %d: number of outdated documents */
-				esc_html( _n(
-					'%d document is outdated. Your profile has changed since it was generated.',
-					'%d documents are outdated. Your profile has changed since they were generated.',
-					count( $outdated ),
-					'shahi-legalflowsuite'
-				) ),
+				esc_html(
+					_n(
+						'%d document is outdated. Your profile has changed since it was generated.',
+						'%d documents are outdated. Your profile has changed since they were generated.',
+						count( $outdated ),
+						'shahi-legalflowsuite'
+					)
+				),
 				count( $outdated )
 			);
 			?>

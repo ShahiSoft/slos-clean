@@ -11,1011 +11,1011 @@
  */
 
 /* ============================================
-   V3 CONTAINER
-   ============================================ */
+	V3 CONTAINER
+	============================================ */
 .shahi-dashboard-v3 {
-    max-width: 1600px;
-    margin: 0;
-    padding: 0;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #1e1b4b 100%);
-    min-height: 100vh;
+	max-width: 1600px;
+	margin: 0;
+	padding: 0;
+	background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #1e1b4b 100%);
+	min-height: 100vh;
 }
 
 /* ============================================
-   TOP BAR
-   ============================================ */
+	TOP BAR
+	============================================ */
 .shahi-v3-topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem 2rem;
-    background: rgba(30, 41, 59, 0.8);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    position: sticky;
-    top: 32px;
-    z-index: 100;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 1rem 2rem;
+	background: rgb(30 41 59 / 80%);
+	backdrop-filter: blur(12px);
+	backdrop-filter: blur(12px);
+	border-bottom: 1px solid rgb(255 255 255 / 8%);
+	position: sticky;
+	top: 32px;
+	z-index: 100;
 }
 
 .shahi-v3-topbar-left,
 .shahi-v3-topbar-right {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
+	display: flex;
+	align-items: center;
+	gap: 1.5rem;
 }
 
 .shahi-v3-brand {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
 }
 
 .shahi-v3-brand-icon {
-    font-size: 1.5rem;
-    line-height: 1;
+	font-size: 1.5rem;
+	line-height: 1;
 }
 
 .shahi-v3-brand-text {
-    display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.1rem;
 }
 
 .shahi-v3-brand-name {
-    font-size: 1.125rem;
-    font-weight: 700;
-    color: #fff;
-    line-height: 1;
+	font-size: 1.125rem;
+	font-weight: 700;
+	color: #fff;
+	line-height: 1;
 }
 
 .shahi-v3-brand-tag {
-    font-size: 0.65rem;
-    color: rgba(255, 255, 255, 0.5);
-    text-transform: uppercase;
-    letter-spacing: 1px;
+	font-size: 0.65rem;
+	color: rgb(255 255 255 / 50%);
+	text-transform: uppercase;
+	letter-spacing: 1px;
 }
 
 .shahi-v3-breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.7);
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.5rem 1rem;
+	background: rgb(255 255 255 / 5%);
+	border-radius: 8px;
+	font-size: 0.875rem;
+	color: rgb(255 255 255 / 70%);
 }
 
 .shahi-v3-breadcrumb .dashicons {
-    font-size: 16px;
-    width: 16px;
-    height: 16px;
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
 }
 
 .shahi-v3-btn-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 8px;
-    color: rgba(255, 255, 255, 0.7);
-    cursor: pointer;
-    transition: all 0.3s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	background: rgb(255 255 255 / 5%);
+	border: 1px solid rgb(255 255 255 / 8%);
+	border-radius: 8px;
+	color: rgb(255 255 255 / 70%);
+	cursor: pointer;
+	transition: all 0.3s ease;
 }
 
 .shahi-v3-btn-icon:hover {
-    background: rgba(96, 165, 250, 0.1);
-    border-color: rgba(96, 165, 250, 0.3);
-    color: var(--shahi-accent-primary, #60a5fa);
-    transform: translateY(-2px);
+	background: rgb(96 165 250 / 10%);
+	border-color: rgb(96 165 250 / 30%);
+	color: var(--shahi-accent-primary, #60a5fa);
+	transform: translateY(-2px);
 }
 
 .shahi-v3-btn-icon .dashicons {
-    font-size: 18px;
-    width: 18px;
-    height: 18px;
+	font-size: 18px;
+	width: 18px;
+	height: 18px;
 }
 
 /* ============================================
-   HERO SECTION
-   ============================================ */
+	HERO SECTION
+	============================================ */
 .shahi-v3-hero {
-    position: relative;
-    padding: 2.5rem 2rem;
-    margin: 0;
-    overflow: hidden;
+	position: relative;
+	padding: 2.5rem 2rem;
+	margin: 0;
+	overflow: hidden;
 }
 
 .shahi-v3-hero-bg {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(96, 165, 250, 0.1) 0%, rgba(147, 197, 253, 0.1) 100%);
-    opacity: 0.3;
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(135deg, rgb(96 165 250 / 10%) 0%, rgb(147 197 253 / 10%) 100%);
+	opacity: 0.3;
 }
 
 .shahi-v3-hero-content {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    max-width: 1600px;
-    margin: 0 auto;
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	max-width: 1600px;
+	margin: 0 auto;
 }
 
 .shahi-v3-hero-title {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #fff;
-    margin: 0 0 0.5rem 0;
-    line-height: 1.2;
+	font-size: 2rem;
+	font-weight: 700;
+	color: #fff;
+	margin: 0 0 0.5rem;
+	line-height: 1.2;
 }
 
 /* Hero title heart icon - red color */
 .shahi-hero-title [aria-hidden="true"],
 .shahi-v3-hero-title [aria-hidden="true"] {
-    color: #e53935;
+	color: #e53935;
 }
 
 .shahi-v3-hero-subtitle {
-    font-size: 1rem;
-    color: rgba(255, 255, 255, 0.6);
-    margin: 0;
+	font-size: 1rem;
+	color: rgb(255 255 255 / 60%);
+	margin: 0;
 }
 
 .shahi-v3-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    font-size: 0.875rem;
-    font-weight: 600;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.75rem 1.5rem;
+	font-size: 0.875rem;
+	font-weight: 600;
+	border-radius: 8px;
+	border: none;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	text-decoration: none;
 }
 
 .shahi-v3-btn-primary {
-    background: linear-gradient(135deg, var(--shahi-accent-primary, #60a5fa), var(--shahi-accent-secondary, #93c5fd));
-    color: #fff;
-    box-shadow: 0 4px 15px rgba(96, 165, 250, 0.3);
+	background: linear-gradient(135deg, var(--shahi-accent-primary, #60a5fa), var(--shahi-accent-secondary, #93c5fd));
+	color: #fff;
+	box-shadow: 0 4px 15px rgb(96 165 250 / 30%);
 }
 
 .shahi-v3-btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(96, 165, 250, 0.4);
+	transform: translateY(-2px);
+	box-shadow: 0 6px 20px rgb(96 165 250 / 40%);
 }
 
 .shahi-v3-btn .dashicons {
-    font-size: 16px;
-    width: 16px;
-    height: 16px;
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
 }
 
 /* ============================================
-   STATS ROW
-   ============================================ */
+	STATS ROW
+	============================================ */
 .shahi-v3-stats-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.25rem;
-    padding: 0 2rem 2rem 2rem;
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 1.25rem;
+	padding: 0 2rem 2rem;
 }
 
 .shahi-v3-stat-card {
-    position: relative;
-    background: rgba(30, 41, 59, 0.6);
-        -webkit-backdrop-filter: blur(12px);
-        backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 16px;
-    padding: 1.5rem;
-    transition: all 0.3s ease;
-    overflow: hidden;
+	position: relative;
+	background: rgb(30 41 59 / 60%);
+		backdrop-filter: blur(12px);
+		backdrop-filter: blur(12px);
+	border: 1px solid rgb(255 255 255 / 8%);
+	border-radius: 16px;
+	padding: 1.5rem;
+	transition: all 0.3s ease;
+	overflow: hidden;
 }
 
 .shahi-v3-stat-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--shahi-accent-primary, #60a5fa), var(--shahi-accent-secondary, #93c5fd));
-    opacity: 0;
-    transition: opacity 0.3s ease;
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 3px;
+	background: linear-gradient(90deg, var(--shahi-accent-primary, #60a5fa), var(--shahi-accent-secondary, #93c5fd));
+	opacity: 0;
+	transition: opacity 0.3s ease;
 }
 
 .shahi-v3-stat-card:hover {
-    transform: translateY(-4px);
-    border-color: rgba(96, 165, 250, 0.3);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+	transform: translateY(-4px);
+	border-color: rgb(96 165 250 / 30%);
+	box-shadow: 0 12px 30px rgb(0 0 0 / 30%);
 }
 
 .shahi-v3-stat-card:hover::before {
-    opacity: 1;
+	opacity: 1;
 }
 
 .shahi-v3-stat-icon-wrap {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 1rem;
 }
 
 .shahi-v3-stat-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 48px;
-    height: 48px;
-    background: linear-gradient(135deg, rgba(96, 165, 250, 0.15), rgba(147, 197, 253, 0.15));
-    border-radius: 12px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 48px;
+	height: 48px;
+	background: linear-gradient(135deg, rgb(96 165 250 / 15%), rgb(147 197 253 / 15%));
+	border-radius: 12px;
 }
 
 .shahi-v3-stat-icon .dashicons {
-    font-size: 24px;
-    width: 24px;
-    height: 24px;
-    color: var(--shahi-accent-primary, #60a5fa);
+	font-size: 24px;
+	width: 24px;
+	height: 24px;
+	color: var(--shahi-accent-primary, #60a5fa);
 }
 
 .shahi-v3-stat-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    padding: 0.25rem 0.5rem;
-    font-size: 0.7rem;
-    font-weight: 600;
-    background: rgba(16, 185, 129, 0.2);
-    color: #10b981;
-    border-radius: 6px;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25rem;
+	padding: 0.25rem 0.5rem;
+	font-size: 0.7rem;
+	font-weight: 600;
+	background: rgb(16 185 129 / 20%);
+	color: #10b981;
+	border-radius: 6px;
 }
 
 .shahi-v3-stat-badge .dashicons {
-    font-size: 12px;
-    width: 12px;
-    height: 12px;
+	font-size: 12px;
+	width: 12px;
+	height: 12px;
 }
 
 .shahi-v3-stat-label {
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.6);
-    margin: 0 0 0.5rem 0;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+	font-size: 0.8rem;
+	font-weight: 500;
+	color: rgb(255 255 255 / 60%);
+	margin: 0 0 0.5rem;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
 }
 
 .shahi-v3-stat-value {
-    display: flex;
-    align-items: baseline;
-    gap: 0.25rem;
-    margin-bottom: 0.75rem;
+	display: flex;
+	align-items: baseline;
+	gap: 0.25rem;
+	margin-bottom: 0.75rem;
 }
 
 .shahi-v3-stat-number {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #fff;
-    line-height: 1;
+	font-size: 2rem;
+	font-weight: 700;
+	color: #fff;
+	line-height: 1;
 }
 
 .shahi-v3-stat-suffix {
-    font-size: 1.25rem;
-    color: rgba(255, 255, 255, 0.5);
+	font-size: 1.25rem;
+	color: rgb(255 255 255 / 50%);
 }
 
 .shahi-v3-stat-sparkline {
-    height: 30px;
-    opacity: 0.5;
-    display: none;
+	height: 30px;
+	opacity: 0.5;
+	display: none;
 }
 
 .shahi-v3-stat-desc {
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.55);
-    margin: 0.5rem 0 0 0;
-    line-height: 1.4;
-    font-weight: 400;
+	font-size: 0.75rem;
+	color: rgb(255 255 255 / 55%);
+	margin: 0.5rem 0 0;
+	line-height: 1.4;
+	font-weight: 400;
 }
 
 .shahi-v3-sparkline-svg {
-    width: 100%;
-    height: 100%;
+	width: 100%;
+	height: 100%;
 }
 
 .shahi-v3-sparkline-svg polyline {
-    color: var(--shahi-accent-primary, #60a5fa);
+	color: var(--shahi-accent-primary, #60a5fa);
 }
 
 /* ============================================
-   MAIN GRID
-   ============================================ */
+	MAIN GRID
+	============================================ */
 .shahi-v3-main-grid {
-    display: grid;
-    grid-template-columns: 1fr 400px;
-    gap: 1.5rem;
-    padding: 0 2rem 2rem 2rem;
+	display: grid;
+	grid-template-columns: 1fr 400px;
+	gap: 1.5rem;
+	padding: 0 2rem 2rem;
 }
 
 /* ============================================
-   CARD STYLES
-   ============================================ */
+	CARD STYLES
+	============================================ */
 .shahi-v3-card {
-    background: rgba(30, 41, 59, 0.6);
-        -webkit-backdrop-filter: blur(12px);
-        backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 16px;
-    margin-bottom: 1.5rem;
-    transition: all 0.3s ease;
+	background: rgb(30 41 59 / 60%);
+		backdrop-filter: blur(12px);
+		backdrop-filter: blur(12px);
+	border: 1px solid rgb(255 255 255 / 8%);
+	border-radius: 16px;
+	margin-bottom: 1.5rem;
+	transition: all 0.3s ease;
 }
 
 .shahi-v3-card:hover {
-    border-color: rgba(255, 255, 255, 0.12);
+	border-color: rgb(255 255 255 / 12%);
 }
 
 .shahi-v3-card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 1.5rem;
+	border-bottom: 1px solid rgb(255 255 255 / 8%);
 }
 
 .shahi-v3-card-header-left {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
 }
 
 .shahi-v3-card-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    background: linear-gradient(135deg, rgba(96, 165, 250, 0.15), rgba(147, 197, 253, 0.15));
-    border-radius: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	background: linear-gradient(135deg, rgb(96 165 250 / 15%), rgb(147 197 253 / 15%));
+	border-radius: 8px;
 }
 
 .shahi-v3-card-icon .dashicons {
-    font-size: 18px;
-    width: 18px;
-    height: 18px;
-    color: var(--shahi-accent-primary, #60a5fa);
+	font-size: 18px;
+	width: 18px;
+	height: 18px;
+	color: var(--shahi-accent-primary, #60a5fa);
 }
 
 .shahi-v3-card-title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #fff;
-    margin: 0;
+	font-size: 1rem;
+	font-weight: 600;
+	color: #fff;
+	margin: 0;
 }
 
 .shahi-v3-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.25rem 0.6rem;
-    font-size: 0.7rem;
-    font-weight: 600;
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.7);
-    border-radius: 20px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+	display: inline-flex;
+	align-items: center;
+	padding: 0.25rem 0.6rem;
+	font-size: 0.7rem;
+	font-weight: 600;
+	background: rgb(255 255 255 / 10%);
+	color: rgb(255 255 255 / 70%);
+	border-radius: 20px;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
 }
 
 .shahi-v3-badge-success {
-    background: rgba(16, 185, 129, 0.2);
-    color: #10b981;
+	background: rgb(16 185 129 / 20%);
+	color: #10b981;
 }
 
 .shahi-v3-card-link {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: var(--shahi-accent-primary, #60a5fa);
-    text-decoration: none;
-    transition: all 0.3s ease;
+	display: flex;
+	align-items: center;
+	gap: 0.25rem;
+	font-size: 0.8rem;
+	font-weight: 500;
+	color: var(--shahi-accent-primary, #60a5fa);
+	text-decoration: none;
+	transition: all 0.3s ease;
 }
 
 .shahi-v3-card-link:hover {
-    gap: 0.5rem;
+	gap: 0.5rem;
 }
 
 .shahi-v3-card-link .dashicons {
-    font-size: 14px;
-    width: 14px;
-    height: 14px;
+	font-size: 14px;
+	width: 14px;
+	height: 14px;
 }
 
 .shahi-v3-card-body {
-    padding: 1.5rem;
+	padding: 1.5rem;
 }
 
 /* ============================================
-   MODULES GRID
-   ============================================ */
+	MODULES GRID
+	============================================ */
 .shahi-v3-modules-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
 }
 
 .shahi-v3-module-item {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    transition: all 0.3s ease;
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	padding: 1rem;
+	background: rgb(255 255 255 / 3%);
+	border: 1px solid rgb(255 255 255 / 5%);
+	border-radius: 12px;
+	transition: all 0.3s ease;
 }
 
 .shahi-v3-module-item:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(96, 165, 250, 0.2);
-    transform: translateX(4px);
+	background: rgb(255 255 255 / 5%);
+	border-color: rgb(96 165 250 / 20%);
+	transform: translateX(4px);
 }
 
 .shahi-v3-module-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	height: 44px;
+	background: rgb(255 255 255 / 5%);
+	border-radius: 10px;
+	flex-shrink: 0;
 }
 
 .shahi-v3-module-emoji {
-    font-size: 1.5rem;
+	font-size: 1.5rem;
 }
 
 .shahi-v3-module-info {
-    flex: 1;
-    min-width: 0;
+	flex: 1;
+	min-width: 0;
 }
 
 .shahi-v3-module-name {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #fff;
-    margin: 0 0 0.25rem 0;
+	font-size: 0.875rem;
+	font-weight: 600;
+	color: #fff;
+	margin: 0 0 0.25rem;
 }
 
 .shahi-v3-module-desc {
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.5);
-    margin: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+	font-size: 0.75rem;
+	color: rgb(255 255 255 / 50%);
+	margin: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .shahi-v3-module-status {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	flex-shrink: 0;
 }
 
 .shahi-v3-status-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
 }
 
 .shahi-v3-status-dot.active {
-    background: var(--shahi-success, #22c55e);
-    box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
-    animation: pulse-dot 2s infinite;
+	background: var(--shahi-success, #22c55e);
+	box-shadow: 0 0 10px rgb(16 185 129 / 50%);
+	animation: pulse-dot 2s infinite;
 }
 
 .shahi-v3-status-dot.inactive {
-    background: rgba(255, 255, 255, 0.2);
+	background: rgb(255 255 255 / 20%);
 }
 
 @keyframes pulse-dot {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+	0%, 100% { opacity: 1; }
+	50% { opacity: 0.5; }
 }
 
 .shahi-v3-btn-sm {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    border-radius: 6px;
-    text-decoration: none;
-    transition: all 0.3s ease;
+	padding: 0.4rem 0.8rem;
+	font-size: 0.75rem;
+	font-weight: 600;
+	border-radius: 6px;
+	text-decoration: none;
+	transition: all 0.3s ease;
 }
 
 .shahi-v3-btn-ghost {
-    background: transparent;
-    color: var(--shahi-accent-primary, #60a5fa);
-    border: 1px solid rgba(96, 165, 250, 0.3);
+	background: transparent;
+	color: var(--shahi-accent-primary, #60a5fa);
+	border: 1px solid rgb(96 165 250 / 30%);
 }
 
 .shahi-v3-btn-ghost:hover {
-    background: rgba(96, 165, 250, 0.1);
-    border-color: var(--shahi-accent-primary, #60a5fa);
+	background: rgb(96 165 250 / 10%);
+	border-color: var(--shahi-accent-primary, #60a5fa);
 }
 
 .shahi-v3-btn-outline {
-    background: transparent;
-    color: rgba(255, 255, 255, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+	background: transparent;
+	color: rgb(255 255 255 / 60%);
+	border: 1px solid rgb(255 255 255 / 20%);
 }
 
 .shahi-v3-btn-outline:hover {
-    background: rgba(255, 255, 255, 0.05);
-    color: #fff;
-    border-color: rgba(255, 255, 255, 0.4);
+	background: rgb(255 255 255 / 5%);
+	color: #fff;
+	border-color: rgb(255 255 255 / 40%);
 }
 
 /* ============================================
-   ACTIONS GRID
-   ============================================ */
+	ACTIONS GRID
+	============================================ */
 .shahi-v3-actions-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.75rem;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 0.75rem;
 }
 
 .shahi-v3-action-tile {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    padding: 1.25rem 1rem;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    text-decoration: none;
-    transition: all 0.3s ease;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 0.75rem;
+	padding: 1.25rem 1rem;
+	background: rgb(255 255 255 / 3%);
+	border: 1px solid rgb(255 255 255 / 5%);
+	border-radius: 12px;
+	text-decoration: none;
+	transition: all 0.3s ease;
 }
 
 .shahi-v3-action-tile:hover {
-    background: rgba(96, 165, 250, 0.1);
-    border-color: rgba(96, 165, 250, 0.3);
-    transform: translateY(-4px);
+	background: rgb(96 165 250 / 10%);
+	border-color: rgb(96 165 250 / 30%);
+	transform: translateY(-4px);
 }
 
 .shahi-v3-action-icon-wrap {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    background: linear-gradient(135deg, rgba(96, 165, 250, 0.15), rgba(147, 197, 253, 0.15));
-    border-radius: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	height: 44px;
+	background: linear-gradient(135deg, rgb(96 165 250 / 15%), rgb(147 197 253 / 15%));
+	border-radius: 10px;
 }
 
 .shahi-v3-action-icon-wrap .dashicons {
-    font-size: 22px;
-    width: 22px;
-    height: 22px;
-    color: var(--shahi-accent-primary, #60a5fa);
+	font-size: 22px;
+	width: 22px;
+	height: 22px;
+	color: var(--shahi-accent-primary, #60a5fa);
 }
 
 .shahi-v3-action-title {
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: #fff;
-    text-align: center;
+	font-size: 0.8rem;
+	font-weight: 500;
+	color: #fff;
+	text-align: center;
 }
 
 /* ============================================
-   PROGRESS CIRCLE
-   ============================================ */
+	PROGRESS CIRCLE
+	============================================ */
 .shahi-v3-progress-circle-wrap {
-    position: relative;
-    width: 120px;
-    height: 120px;
-    margin: 0 auto 1.5rem auto;
+	position: relative;
+	width: 120px;
+	height: 120px;
+	margin: 0 auto 1.5rem;
 }
 
 .shahi-v3-progress-circle {
-    width: 100%;
-    height: 100%;
+	width: 100%;
+	height: 100%;
 }
 
 .shahi-v3-progress-circle-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	text-align: center;
 }
 
 .shahi-v3-progress-percent {
-    display: block;
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: #fff;
-    line-height: 1;
+	display: block;
+	font-size: 1.75rem;
+	font-weight: 700;
+	color: #fff;
+	line-height: 1;
 }
 
 .shahi-v3-progress-label {
-    display: block;
-    font-size: 0.7rem;
-    color: rgba(255, 255, 255, 0.5);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-top: 0.25rem;
+	display: block;
+	font-size: 0.7rem;
+	color: rgb(255 255 255 / 50%);
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	margin-top: 0.25rem;
 }
 
 /* ============================================
-   CHECKLIST
-   ============================================ */
+	CHECKLIST
+	============================================ */
 .shahi-v3-checklist {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
 }
 
 .shahi-v3-checklist-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 8px;
-    transition: all 0.3s ease;
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	padding: 0.75rem;
+	background: rgb(255 255 255 / 3%);
+	border-radius: 8px;
+	transition: all 0.3s ease;
 }
 
 .shahi-v3-checklist-item:hover {
-    background: rgba(255, 255, 255, 0.05);
+	background: rgb(255 255 255 / 5%);
 }
 
 .shahi-v3-checklist-item.completed {
-    opacity: 0.6;
+	opacity: 0.6;
 }
 
 .shahi-v3-check-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	border-radius: 50%;
+	flex-shrink: 0;
 }
 
 .shahi-v3-checklist-item:not(.completed) .shahi-v3-check-icon {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.4);
+	background: rgb(255 255 255 / 10%);
+	color: rgb(255 255 255 / 40%);
 }
 
 .shahi-v3-checklist-item.completed .shahi-v3-check-icon {
-    background: rgba(16, 185, 129, 0.2);
-    color: #10b981;
+	background: rgb(16 185 129 / 20%);
+	color: #10b981;
 }
 
 .shahi-v3-check-icon .dashicons {
-    font-size: 14px;
-    width: 14px;
-    height: 14px;
+	font-size: 14px;
+	width: 14px;
+	height: 14px;
 }
 
 .shahi-v3-check-text {
-    flex: 1;
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.8);
+	flex: 1;
+	font-size: 0.8rem;
+	color: rgb(255 255 255 / 80%);
 }
 
 .shahi-v3-checklist-item.completed .shahi-v3-check-text {
-    text-decoration: line-through;
-    color: rgba(255, 255, 255, 0.5);
+	text-decoration: line-through;
+	color: rgb(255 255 255 / 50%);
 }
 
 .shahi-v3-check-action {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    background: rgba(96, 165, 250, 0.1);
-    border-radius: 6px;
-    color: var(--shahi-accent-primary, #60a5fa);
-    transition: all 0.3s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	background: rgb(96 165 250 / 10%);
+	border-radius: 6px;
+	color: var(--shahi-accent-primary, #60a5fa);
+	transition: all 0.3s ease;
 }
 
 .shahi-v3-check-action:hover {
-    background: rgba(96, 165, 250, 0.2);
-    transform: translateX(2px);
+	background: rgb(96 165 250 / 20%);
+	transform: translateX(2px);
 }
 
 .shahi-v3-check-action .dashicons {
-    font-size: 14px;
-    width: 14px;
-    height: 14px;
+	font-size: 14px;
+	width: 14px;
+	height: 14px;
 }
 
 /* ============================================
-   ACTIVITY LIST
-   ============================================ */
+	ACTIVITY LIST
+	============================================ */
 .shahi-v3-activity-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
 }
 
 .shahi-v3-activity-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-    padding: 0.75rem;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 8px;
-    transition: all 0.3s ease;
+	display: flex;
+	align-items: flex-start;
+	gap: 0.75rem;
+	padding: 0.75rem;
+	background: rgb(255 255 255 / 3%);
+	border-radius: 8px;
+	transition: all 0.3s ease;
 }
 
 .shahi-v3-activity-item:hover {
-    background: rgba(255, 255, 255, 0.05);
+	background: rgb(255 255 255 / 5%);
 }
 
 .shahi-v3-activity-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    background: rgba(96, 165, 250, 0.1);
-    border-radius: 8px;
-    flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	background: rgb(96 165 250 / 10%);
+	border-radius: 8px;
+	flex-shrink: 0;
 }
 
 .shahi-v3-activity-icon .dashicons {
-    font-size: 16px;
-    width: 16px;
-    height: 16px;
-    color: var(--shahi-accent-primary, #60a5fa);
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
+	color: var(--shahi-accent-primary, #60a5fa);
 }
 
 .shahi-v3-activity-content {
-    flex: 1;
-    min-width: 0;
+	flex: 1;
+	min-width: 0;
 }
 
 .shahi-v3-activity-title {
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: #fff;
-    margin: 0 0 0.25rem 0;
+	font-size: 0.8rem;
+	font-weight: 500;
+	color: #fff;
+	margin: 0 0 0.25rem;
 }
 
 .shahi-v3-activity-desc {
-    font-size: 0.7rem;
-    color: rgba(255, 255, 255, 0.5);
-    margin: 0;
+	font-size: 0.7rem;
+	color: rgb(255 255 255 / 50%);
+	margin: 0;
 }
 
 .shahi-v3-activity-time {
-    font-size: 0.7rem;
-    color: rgba(255, 255, 255, 0.4);
-    white-space: nowrap;
+	font-size: 0.7rem;
+	color: rgb(255 255 255 / 40%);
+	white-space: nowrap;
 }
 
 /* ============================================
-   SUPPORT LIST
-   ============================================ */
+	SUPPORT LIST
+	============================================ */
 .shahi-v3-support-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
 }
 
 .shahi-v3-support-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 8px;
-    text-decoration: none;
-    transition: all 0.3s ease;
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	padding: 0.75rem;
+	background: rgb(255 255 255 / 3%);
+	border-radius: 8px;
+	text-decoration: none;
+	transition: all 0.3s ease;
 }
 
 .shahi-v3-support-item:hover {
-    background: rgba(96, 165, 250, 0.1);
-    transform: translateX(4px);
+	background: rgb(96 165 250 / 10%);
+	transform: translateX(4px);
 }
 
 .shahi-v3-support-item .dashicons:first-child {
-    font-size: 18px;
-    width: 18px;
-    height: 18px;
-    color: var(--shahi-accent-primary, #60a5fa);
+	font-size: 18px;
+	width: 18px;
+	height: 18px;
+	color: var(--shahi-accent-primary, #60a5fa);
 }
 
 .shahi-v3-support-text {
-    flex: 1;
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: #fff;
+	flex: 1;
+	font-size: 0.8rem;
+	font-weight: 500;
+	color: #fff;
 }
 
 .shahi-v3-support-item .dashicons:last-child {
-    font-size: 14px;
-    width: 14px;
-    height: 14px;
-    color: rgba(255, 255, 255, 0.3);
+	font-size: 14px;
+	width: 14px;
+	height: 14px;
+	color: rgb(255 255 255 / 30%);
 }
 
 /* ============================================
-   EMPTY STATE
-   ============================================ */
+	EMPTY STATE
+	============================================ */
 .shahi-v3-empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    text-align: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 2rem;
+	text-align: center;
 }
 
 .shahi-v3-empty-state .dashicons {
-    font-size: 32px;
-    width: 32px;
-    height: 32px;
-    color: rgba(255, 255, 255, 0.2);
-    margin-bottom: 0.75rem;
+	font-size: 32px;
+	width: 32px;
+	height: 32px;
+	color: rgb(255 255 255 / 20%);
+	margin-bottom: 0.75rem;
 }
 
 .shahi-v3-empty-state p {
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.5);
-    margin: 0;
+	font-size: 0.8rem;
+	color: rgb(255 255 255 / 50%);
+	margin: 0;
 }
 
 /* ============================================
-   FOOTER
-   ============================================ */
+	FOOTER
+	============================================ */
 .shahi-v3-footer {
-    padding: 1.5rem 2rem;
-    margin-top: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+	padding: 1.5rem 2rem;
+	margin-top: 1rem;
+	border-top: 1px solid rgb(255 255 255 / 8%);
 }
 
 .shahi-v3-footer-content {
-    text-align: center;
+	text-align: center;
 }
 
 .shahi-v3-footer-text {
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.5);
+	font-size: 0.8rem;
+	color: rgb(255 255 255 / 50%);
 }
 
 /* ============================================
-   RESPONSIVE
-   ============================================ */
-@media (max-width: 1400px) {
-    .shahi-v3-main-grid {
-        grid-template-columns: 1fr 380px;
-    }
+	RESPONSIVE
+	============================================ */
+@media (width <= 1400px) {
+	.shahi-v3-main-grid {
+		grid-template-columns: 1fr 380px;
+	}
 }
 
-@media (max-width: 1200px) {
-    .shahi-v3-main-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .shahi-v3-col-right {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.5rem;
-    }
-    
-    .shahi-v3-col-right .shahi-v3-card {
-        margin-bottom: 0;
-    }
+@media (width <= 1200px) {
+	.shahi-v3-main-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.shahi-v3-col-right {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 1.5rem;
+	}
+
+	.shahi-v3-col-right .shahi-v3-card {
+		margin-bottom: 0;
+	}
 }
 
-@media (max-width: 992px) {
-    .shahi-v3-stats-row {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .shahi-v3-actions-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+@media (width <= 992px) {
+	.shahi-v3-stats-row {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	.shahi-v3-actions-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
 }
 
-@media (max-width: 768px) {
-    .shahi-v3-topbar {
-        padding: 1rem;
-    }
-    
-    .shahi-v3-topbar-left,
-    .shahi-v3-topbar-right {
-        gap: 0.75rem;
-    }
-    
-    .shahi-v3-breadcrumb {
-        display: none;
-    }
-    
-    .shahi-v3-hero {
-        padding: 2rem 1rem;
-    }
-    
-    .shahi-v3-hero-content {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-    }
-    
-    .shahi-v3-stats-row,
-    .shahi-v3-main-grid {
-        padding: 0 1rem 1rem 1rem;
-    }
-    
-    .shahi-v3-stats-row {
-        grid-template-columns: 1fr;
-    }
-    
-    .shahi-v3-col-right {
-        grid-template-columns: 1fr;
-    }
-    
-    .shahi-v3-actions-grid {
-        grid-template-columns: 1fr;
-    }
+@media (width <= 768px) {
+	.shahi-v3-topbar {
+		padding: 1rem;
+	}
+
+	.shahi-v3-topbar-left,
+	.shahi-v3-topbar-right {
+		gap: 0.75rem;
+	}
+
+	.shahi-v3-breadcrumb {
+		display: none;
+	}
+
+	.shahi-v3-hero {
+		padding: 2rem 1rem;
+	}
+
+	.shahi-v3-hero-content {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 1rem;
+	}
+
+	.shahi-v3-stats-row,
+	.shahi-v3-main-grid {
+		padding: 0 1rem 1rem;
+	}
+
+	.shahi-v3-stats-row {
+		grid-template-columns: 1fr;
+	}
+
+	.shahi-v3-col-right {
+		grid-template-columns: 1fr;
+	}
+
+	.shahi-v3-actions-grid {
+		grid-template-columns: 1fr;
+	}
 }
 
-@media (max-width: 480px) {
-    .shahi-v3-topbar-left .shahi-v3-brand-text {
-        display: none;
-    }
-    
-    .shahi-v3-hero-title {
-        font-size: 1.5rem;
-    }
-    
-    .shahi-v3-stat-number {
-        font-size: 1.5rem;
-    }
+@media (width <= 480px) {
+	.shahi-v3-topbar-left .shahi-v3-brand-text {
+		display: none;
+	}
+
+	.shahi-v3-hero-title {
+		font-size: 1.5rem;
+	}
+
+	.shahi-v3-stat-number {
+		font-size: 1.5rem;
+	}
 }
 
 /* ============================================
-   SECTION & CARD INTRO TEXT
-   ============================================ */
+	SECTION & CARD INTRO TEXT
+	============================================ */
 .shahi-v3-section-intro {
-    padding: 0 2rem;
-    margin-bottom: 1rem;
+	padding: 0 2rem;
+	margin-bottom: 1rem;
 }
 
 .shahi-v3-section-desc {
-    font-size: 0.9375rem;
-    line-height: 1.6;
-    color: rgba(255, 255, 255, 0.6);
-    margin: 0;
-    max-width: 900px;
+	font-size: 0.9375rem;
+	line-height: 1.6;
+	color: rgb(255 255 255 / 60%);
+	margin: 0;
+	max-width: 900px;
 }
 
 .shahi-v3-card-intro {
-    font-size: 0.875rem;
-    line-height: 1.6;
-    color: rgba(255, 255, 255, 0.55);
-    margin: 0 0 1.25rem 0;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+	font-size: 0.875rem;
+	line-height: 1.6;
+	color: rgb(255 255 255 / 55%);
+	margin: 0 0 1.25rem;
+	padding-bottom: 1rem;
+	border-bottom: 1px solid rgb(255 255 255 / 6%);
 }
 
 /* Hide sparkline placeholders if any remain */
 .shahi-v3-stat-sparkline {
-    display: none;
+	display: none;
 }

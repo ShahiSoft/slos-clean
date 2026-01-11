@@ -55,4 +55,3 @@ class SvgAccessibilityCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

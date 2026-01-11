@@ -213,6 +213,7 @@ abstract class Base_REST_Controller extends WP_REST_Controller {
 		if ( empty( $value ) && '0' !== $value ) {
 			return $this->error_response(
 				'missing_param',
+				/* translators: %s: parameter name */
 				sprintf( __( 'Missing required parameter: %s', 'shahi-legalflowsuite' ), $param ),
 				400
 			);
@@ -233,6 +234,7 @@ abstract class Base_REST_Controller extends WP_REST_Controller {
 		if ( ! is_numeric( $value ) || $value != (int) $value ) {
 			return $this->error_response(
 				'invalid_param',
+				/* translators: %s: parameter name */
 				sprintf( __( 'Invalid integer parameter: %s', 'shahi-legalflowsuite' ), $param ),
 				400
 			);
@@ -253,6 +255,7 @@ abstract class Base_REST_Controller extends WP_REST_Controller {
 		if ( ! is_email( $value ) ) {
 			return $this->error_response(
 				'invalid_param',
+				/* translators: %s: parameter name */
 				sprintf( __( 'Invalid email parameter: %s', 'shahi-legalflowsuite' ), $param ),
 				400
 			);
@@ -391,6 +394,7 @@ abstract class Base_REST_Controller extends WP_REST_Controller {
 	 */
 	protected function log_request( WP_REST_Request $request, string $action ): void {
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Debug logging only when WP_DEBUG is enabled
 			error_log(
 				sprintf(
 					'[SLOS API] %s - %s %s - User: %d',

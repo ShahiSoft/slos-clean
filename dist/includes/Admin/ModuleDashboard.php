@@ -84,7 +84,7 @@ class ModuleDashboard {
 	public function render() {
 		// Verify user capabilities
 		if ( ! current_user_can( 'manage_shahi_modules' ) ) {
-			wp_die( __( 'You do not have sufficient permissions to access this page.', 'shahi-legalflowsuite' ) );
+			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'shahi-legalflowsuite' ) );
 		}
 
 		// Enqueue module dashboard styles
@@ -421,6 +421,7 @@ class ModuleDashboard {
 
 		wp_send_json_success(
 			array(
+				/* translators: %d: number of modules successfully updated */
 				'message' => sprintf( __( '%d modules updated successfully.', 'shahi-legalflowsuite' ), $success_count ),
 				'results' => $results,
 			)

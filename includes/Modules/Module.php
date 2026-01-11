@@ -329,7 +329,7 @@ abstract class Module {
 		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) === $table ) {
 			$db_result = $wpdb->get_row(
 				$wpdb->prepare(
-					"SELECT is_enabled, settings FROM %i WHERE module_key = %s",
+					'SELECT is_enabled, settings FROM %i WHERE module_key = %s',
 					$table,
 					$this->key
 				),
@@ -351,7 +351,7 @@ abstract class Module {
 	 */
 	protected function save_settings() {
 		global $wpdb;
-		$table = $wpdb->prefix . 'shahi_modules';
+		$table    = $wpdb->prefix . 'shahi_modules';
 		$db_saved = true;
 
 		// Check if table exists.
@@ -373,16 +373,16 @@ abstract class Module {
 		}
 
 		// Persist to option as a secondary store to avoid losing state when the table is missing
-		$option_before   = get_option( 'shahi_modules', array() );
-		$modules_option  = $option_before;
+		$option_before  = get_option( 'shahi_modules', array() );
+		$modules_option = $option_before;
 		if ( ! isset( $modules_option[ $this->key ] ) ) {
 			$modules_option[ $this->key ] = array();
 		}
 
 		$modules_option[ $this->key ]['enabled']  = $this->enabled;
 		$modules_option[ $this->key ]['settings'] = $this->settings;
-		$option_saved = update_option( 'shahi_modules', $modules_option );
-		$option_ok    = $option_saved || $modules_option === $option_before; // unchanged still fine
+		$option_saved                             = update_option( 'shahi_modules', $modules_option );
+		$option_ok                                = $option_saved || $modules_option === $option_before; // unchanged still fine
 
 		return $db_saved || $option_ok;
 	}
@@ -396,7 +396,7 @@ abstract class Module {
 	 */
 	protected function save_enabled_state( $enabled ) {
 		global $wpdb;
-		$table = $wpdb->prefix . 'shahi_modules';
+		$table    = $wpdb->prefix . 'shahi_modules';
 		$db_saved = false;
 
 		// Check if table exists.
@@ -404,7 +404,7 @@ abstract class Module {
 			// Check if record exists.
 			$exists = $wpdb->get_var(
 				$wpdb->prepare(
-					"SELECT COUNT(*) FROM %i WHERE module_key = %s",
+					'SELECT COUNT(*) FROM %i WHERE module_key = %s',
 					$table,
 					$this->key
 				)
@@ -447,8 +447,8 @@ abstract class Module {
 		}
 		$modules_option[ $this->key ]['enabled']  = (bool) $enabled;
 		$modules_option[ $this->key ]['settings'] = $this->settings;
-		$option_saved = update_option( 'shahi_modules', $modules_option );
-		$option_ok    = $option_saved || $modules_option === $option_before;
+		$option_saved                             = update_option( 'shahi_modules', $modules_option );
+		$option_ok                                = $option_saved || $modules_option === $option_before;
 
 		return $db_saved || $option_ok;
 	}
@@ -488,4 +488,3 @@ abstract class Module {
 		);
 	}
 }
-

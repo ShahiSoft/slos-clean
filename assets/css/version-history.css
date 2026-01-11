@@ -7,402 +7,402 @@
 
 /* Version History Container */
 .slos-version-history-wrap {
-    margin-right: 20px;
+	margin-right: 20px;
 }
 
 .slos-doc-title {
-    font-weight: 400;
-    color: #94a3b8;
-    margin-left: 10px;
+	font-weight: 400;
+	color: #94a3b8;
+	margin-left: 10px;
 }
 
 .slos-version-history-container {
-    background: var(--shahi-bg-card);
-    border: 1px solid #334155;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
-    margin-top: 20px;
+	background: var(--shahi-bg-card);
+	border: 1px solid #334155;
+	box-shadow: 0 1px 1px rgb(0 0 0 / 4%);
+	margin-top: 20px;
 }
 
 /* Document Info */
 .slos-doc-info {
-    padding: 20px;
-    border-bottom: 1px solid #334155;
-    background: var(--shahi-bg-secondary);
-    display: flex;
-    gap: 30px;
-    flex-wrap: wrap;
+	padding: 20px;
+	border-bottom: 1px solid #334155;
+	background: var(--shahi-bg-secondary);
+	display: flex;
+	gap: 30px;
+	flex-wrap: wrap;
 }
 
 .slos-info-item strong {
-    margin-right: 5px;
+	margin-right: 5px;
 }
 
 /* Tabs */
 .slos-history-tabs {
-    padding: 0;
+	padding: 0;
 }
 
 .slos-history-tabs .nav-tab-wrapper {
-    margin: 0;
-    border-bottom: 1px solid #334155;
-    background: var(--shahi-bg-secondary);
+	margin: 0;
+	border-bottom: 1px solid #334155;
+	background: var(--shahi-bg-secondary);
 }
 
 .slos-tab-content {
-    display: none;
-    padding: 20px;
+	display: none;
+	padding: 20px;
 }
 
 .slos-tab-content.slos-tab-active {
-    display: block;
+	display: block;
 }
 
 /* Versions Header */
 .slos-versions-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #334155;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+	padding-bottom: 15px;
+	border-bottom: 1px solid #334155;
 }
 
 .slos-version-actions {
-    display: flex;
-    gap: 10px;
+	display: flex;
+	gap: 10px;
 }
 
 .slos-version-filter {
-    display: flex;
-    gap: 15px;
+	display: flex;
+	gap: 15px;
 }
 
 .slos-version-filter label {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 13px;
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	font-size: 13px;
 }
 
 /* Versions Table */
 .slos-versions-table {
-    margin-top: 0;
+	margin-top: 0;
 }
 
 .slos-versions-table .slos-col-compare {
-    width: 60px;
-    text-align: center;
+	width: 60px;
+	text-align: center;
 }
 
 .slos-versions-table .slos-col-version {
-    width: 100px;
+	width: 100px;
 }
 
 .slos-versions-table .slos-col-status {
-    width: 100px;
+	width: 100px;
 }
 
 .slos-versions-table .slos-col-author {
-    width: 120px;
+	width: 120px;
 }
 
 .slos-versions-table .slos-col-date {
-    width: 150px;
+	width: 150px;
 }
 
 .slos-versions-table .slos-col-changelog {
-    width: auto;
+	width: auto;
 }
 
 .slos-versions-table .slos-col-actions {
-    width: 150px;
-    text-align: right;
+	width: 150px;
+	text-align: right;
 }
 
 /* Badges */
 .slos-badge {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 3px;
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    margin-left: 5px;
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 3px;
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	margin-left: 5px;
 }
 
 .slos-badge-current {
-    background: #00a32a;
-    color: #fff;
+	background: #00a32a;
+	color: #fff;
 }
 
 .slos-badge-rollback {
-    background: #dba617;
-    color: #fff;
+	background: #dba617;
+	color: #fff;
 }
 
 /* Audit Log Table */
 .slos-audit-log-table {
-    margin-top: 0;
+	margin-top: 0;
 }
 
 .slos-audit-action {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 3px;
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
+	display: inline-block;
+	padding: 3px 10px;
+	border-radius: 3px;
+	font-size: 12px;
+	font-weight: 600;
+	text-transform: uppercase;
 }
 
 .slos-action-publish {
-    background: #00a32a;
-    color: #fff;
+	background: #00a32a;
+	color: #fff;
 }
 
 .slos-action-rollback {
-    background: #dba617;
-    color: #fff;
+	background: #dba617;
+	color: #fff;
 }
 
 .slos-audit-log-table code {
-    font-size: 11px;
-    color: #94a3b8;
+	font-size: 11px;
+	color: #94a3b8;
 }
 
 /* Modal Sizes */
 .slos-modal-large {
-    max-width: 1200px;
+	max-width: 1200px;
 }
 
 /* Comparison Modal */
 .slos-comparison-header {
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid #334155;
+	margin-bottom: 20px;
+	padding-bottom: 15px;
+	border-bottom: 2px solid #334155;
 }
 
 .slos-comparison-info {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 30px;
 }
 
 .slos-version-info h3 {
-    margin: 0 0 10px 0;
-    font-size: 16px;
+	margin: 0 0 10px;
+	font-size: 16px;
 }
 
 .slos-version-info p {
-    margin: 5px 0;
-    font-size: 13px;
+	margin: 5px 0;
+	font-size: 13px;
 }
 
 .slos-version-left {
-    border-right: 1px solid #334155;
-    padding-right: 15px;
+	border-right: 1px solid #334155;
+	padding-right: 15px;
 }
 
 .slos-version-right {
-    padding-left: 15px;
+	padding-left: 15px;
 }
 
 /* Diff Container */
 .slos-diff-container {
-    background: var(--shahi-bg-secondary);
-    border: 1px solid #334155;
-    border-radius: 3px;
-    padding: 15px;
-    overflow-x: auto;
+	background: var(--shahi-bg-secondary);
+	border: 1px solid #334155;
+	border-radius: 3px;
+	padding: 15px;
+	overflow-x: auto;
 }
 
 .slos-diff-container table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: Consolas, Monaco, monospace;
-    font-size: 12px;
-    line-height: 1.5;
+	width: 100%;
+	border-collapse: collapse;
+	font-family: Consolas, Monaco, monospace;
+	font-size: 12px;
+	line-height: 1.5;
 }
 
 .slos-diff-container th {
-    background: var(--shahi-bg-secondary);
-    padding: 8px;
-    text-align: left;
-    font-weight: 600;
-    border-bottom: 2px solid #334155;
+	background: var(--shahi-bg-secondary);
+	padding: 8px;
+	text-align: left;
+	font-weight: 600;
+	border-bottom: 2px solid #334155;
 }
 
 .slos-diff-container td {
-    padding: 4px 8px;
-    vertical-align: top;
-    border-bottom: 1px solid #334155;
+	padding: 4px 8px;
+	vertical-align: top;
+	border-bottom: 1px solid #334155;
 }
 
 .slos-diff-container .diff-deletedline {
-    background: #fdd;
+	background: #fdd;
 }
 
 .slos-diff-container .diff-addedline {
-    background: #dfd;
+	background: #dfd;
 }
 
 .slos-diff-container .diff-context {
-    background: var(--shahi-bg-secondary);
+	background: var(--shahi-bg-secondary);
 }
 
 .slos-diff-container del {
-    background: #fcc;
-    text-decoration: line-through;
+	background: #fcc;
+	text-decoration: line-through;
 }
 
 .slos-diff-container ins {
-    background: #cfc;
-    text-decoration: none;
+	background: #cfc;
+	text-decoration: none;
 }
 
 /* Version View Modal */
 .slos-version-details {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
 }
 
 .slos-version-meta {
-    padding: 15px;
-    background: var(--shahi-bg-secondary);
-    border: 1px solid #334155;
-    border-radius: 3px;
+	padding: 15px;
+	background: var(--shahi-bg-secondary);
+	border: 1px solid #334155;
+	border-radius: 3px;
 }
 
 .slos-version-meta p {
-    margin: 8px 0;
+	margin: 8px 0;
 }
 
 .slos-version-content h3 {
-    margin: 0 0 10px 0;
-    font-size: 16px;
+	margin: 0 0 10px;
+	font-size: 16px;
 }
 
 .slos-content-preview {
-    padding: 20px;
-    background: var(--shahi-bg-card);
-    border: 1px solid #334155;
-    border-radius: 3px;
-    max-height: 500px;
-    overflow-y: auto;
-    line-height: 1.6;
+	padding: 20px;
+	background: var(--shahi-bg-card);
+	border: 1px solid #334155;
+	border-radius: 3px;
+	max-height: 500px;
+	overflow-y: auto;
+	line-height: 1.6;
 }
 
 .slos-content-preview h1,
 .slos-content-preview h2,
 .slos-content-preview h3 {
-    margin-top: 1.5em;
-    margin-bottom: 0.5em;
+	margin-top: 1.5em;
+	margin-bottom: 0.5em;
 }
 
 .slos-content-preview p {
-    margin-bottom: 1em;
+	margin-bottom: 1em;
 }
 
 .slos-content-preview ul,
 .slos-content-preview ol {
-    margin-bottom: 1em;
-    padding-left: 2em;
+	margin-bottom: 1em;
+	padding-left: 2em;
 }
 
 /* Loading State */
 .slos-loading {
-    text-align: center;
-    padding: 40px;
+	text-align: center;
+	padding: 40px;
 }
 
 .slos-loading .spinner {
-    float: none;
-    margin: 0 auto 15px;
+	float: none;
+	margin: 0 auto 15px;
 }
 
 .slos-loading p {
-    color: #94a3b8;
-    font-size: 14px;
+	color: #94a3b8;
+	font-size: 14px;
 }
 
 /* Button Spacing */
 .slos-versions-table .button {
-    margin-left: 5px;
+	margin-left: 5px;
 }
 
 .slos-versions-table .button:first-child {
-    margin-left: 0;
+	margin-left: 0;
 }
 
 /* Responsive */
-@media (max-width: 782px) {
-    .slos-doc-info {
-        flex-direction: column;
-        gap: 15px;
-    }
+@media (width <= 782px) {
+	.slos-doc-info {
+		flex-direction: column;
+		gap: 15px;
+	}
 
-    .slos-versions-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-    }
+	.slos-versions-header {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 15px;
+	}
 
-    .slos-version-filter {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
+	.slos-version-filter {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 10px;
+	}
 
-    .slos-comparison-info {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
+	.slos-comparison-info {
+		grid-template-columns: 1fr;
+		gap: 20px;
+	}
 
-    .slos-version-left {
-        border-right: none;
-        border-bottom: 1px solid #334155;
-        padding-right: 0;
-        padding-bottom: 15px;
-    }
+	.slos-version-left {
+		border-right: none;
+		border-bottom: 1px solid #334155;
+		padding-right: 0;
+		padding-bottom: 15px;
+	}
 
-    .slos-version-right {
-        padding-left: 0;
-        padding-top: 15px;
-    }
+	.slos-version-right {
+		padding-left: 0;
+		padding-top: 15px;
+	}
 
-    .slos-versions-table .slos-col-actions {
-        text-align: left;
-    }
+	.slos-versions-table .slos-col-actions {
+		text-align: left;
+	}
 
-    .slos-versions-table .button {
-        display: block;
-        width: 100%;
-        margin: 3px 0;
-    }
+	.slos-versions-table .button {
+		display: block;
+		width: 100%;
+		margin: 3px 0;
+	}
 }
 
 /* WordPress Admin Table Overrides */
 .slos-version-history-wrap .wp-list-table {
-    border: 1px solid #334155;
+	border: 1px solid #334155;
 }
 
 .slos-version-history-wrap .wp-list-table thead th {
-    background: var(--shahi-bg-secondary);
+	background: var(--shahi-bg-secondary);
 }
 
 /* Print Styles */
 @media print {
-    .page-title-action,
-    .slos-version-actions,
-    .slos-version-filter,
-    .slos-col-compare,
-    .slos-col-actions,
-    .slos-modal-footer {
-        display: none !important;
-    }
+	.page-title-action,
+	.slos-version-actions,
+	.slos-version-filter,
+	.slos-col-compare,
+	.slos-col-actions,
+	.slos-modal-footer {
+		display: none !important;
+	}
 
-    .slos-version-history-container {
-        border: none;
-        box-shadow: none;
-    }
+	.slos-version-history-container {
+		border: none;
+		box-shadow: none;
+	}
 }

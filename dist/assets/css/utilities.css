@@ -10,8 +10,8 @@
  */
 
 /* ===================================
-   SPACING UTILITIES
-   =================================== */
+	SPACING UTILITIES
+	=================================== */
 
 /* Margin */
 .shahi-m-0 { margin: 0; }
@@ -141,8 +141,8 @@
 .shahi-gap-xl { gap: var(--shahi-space-xl); }
 
 /* ===================================
-   DISPLAY UTILITIES
-   =================================== */
+	DISPLAY UTILITIES
+	=================================== */
 
 .shahi-block { display: block; }
 .shahi-inline-block { display: inline-block; }
@@ -153,8 +153,8 @@
 .shahi-hidden { display: none; }
 
 /* ===================================
-   FLEXBOX UTILITIES
-   =================================== */
+	FLEXBOX UTILITIES
+	=================================== */
 
 .shahi-flex-row { flex-direction: row; }
 .shahi-flex-row-reverse { flex-direction: row-reverse; }
@@ -187,8 +187,8 @@
 .shahi-shrink-0 { flex-shrink: 0; }
 
 /* ===================================
-   GRID UTILITIES
-   =================================== */
+	GRID UTILITIES
+	=================================== */
 
 .shahi-grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
 .shahi-grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -204,8 +204,8 @@
 .shahi-col-span-full { grid-column: 1 / -1; }
 
 /* ===================================
-   TYPOGRAPHY UTILITIES
-   =================================== */
+	TYPOGRAPHY UTILITIES
+	=================================== */
 
 .shahi-text-xs { font-size: var(--shahi-font-size-xs); }
 .shahi-text-sm { font-size: var(--shahi-font-size-sm); }
@@ -248,14 +248,14 @@
 .shahi-leading-loose { line-height: 2; }
 
 .shahi-truncate {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 /* ===================================
-   COLOR UTILITIES
-   =================================== */
+	COLOR UTILITIES
+	=================================== */
 
 .shahi-text-primary { color: var(--shahi-text-primary); }
 .shahi-text-secondary { color: var(--shahi-text-secondary); }
@@ -278,8 +278,8 @@
 .shahi-bg-gradient-reverse { background: var(--shahi-accent-gradient-reverse); }
 
 /* ===================================
-   BORDER UTILITIES
-   =================================== */
+	BORDER UTILITIES
+	=================================== */
 
 .shahi-border { border: 1px solid var(--shahi-border); }
 .shahi-border-0 { border: 0; }
@@ -300,8 +300,8 @@
 .shahi-rounded-full { border-radius: var(--shahi-radius-full); }
 
 /* ===================================
-   SHADOW UTILITIES
-   =================================== */
+	SHADOW UTILITIES
+	=================================== */
 
 .shahi-shadow-none { box-shadow: none; }
 .shahi-shadow { box-shadow: var(--shahi-shadow); }
@@ -311,8 +311,8 @@
 .shahi-shadow-glow-lg { box-shadow: var(--shahi-glow-lg); }
 
 /* ===================================
-   POSITION UTILITIES
-   =================================== */
+	POSITION UTILITIES
+	=================================== */
 
 .shahi-static { position: static; }
 .shahi-relative { position: relative; }
@@ -324,11 +324,11 @@
 .shahi-right-0 { right: 0; }
 .shahi-bottom-0 { bottom: 0; }
 .shahi-left-0 { left: 0; }
-.shahi-inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+.shahi-inset-0 { inset: 0; }
 
 /* ===================================
-   WIDTH & HEIGHT UTILITIES
-   =================================== */
+	WIDTH & HEIGHT UTILITIES
+	=================================== */
 
 .shahi-w-full { width: 100%; }
 .shahi-w-auto { width: auto; }
@@ -356,8 +356,8 @@
 .shahi-min-h-screen { min-height: 100vh; }
 
 /* ===================================
-   OVERFLOW UTILITIES
-   =================================== */
+	OVERFLOW UTILITIES
+	=================================== */
 
 .shahi-overflow-auto { overflow: auto; }
 .shahi-overflow-hidden { overflow: hidden; }
@@ -367,8 +367,8 @@
 .shahi-overflow-y-auto { overflow-y: auto; }
 
 /* ===================================
-   Z-INDEX UTILITIES
-   =================================== */
+	Z-INDEX UTILITIES
+	=================================== */
 
 .shahi-z-0 { z-index: 0; }
 .shahi-z-10 { z-index: 10; }
@@ -381,8 +381,8 @@
 .shahi-z-tooltip { z-index: var(--shahi-z-tooltip); }
 
 /* ===================================
-   OPACITY UTILITIES
-   =================================== */
+	OPACITY UTILITIES
+	=================================== */
 
 .shahi-opacity-0 { opacity: 0; }
 .shahi-opacity-25 { opacity: 0.25; }
@@ -391,8 +391,8 @@
 .shahi-opacity-100 { opacity: 1; }
 
 /* ===================================
-   CURSOR UTILITIES
-   =================================== */
+	CURSOR UTILITIES
+	=================================== */
 
 .shahi-cursor-auto { cursor: auto; }
 .shahi-cursor-pointer { cursor: pointer; }
@@ -402,63 +402,62 @@
 .shahi-cursor-not-allowed { cursor: not-allowed; }
 
 /* ===================================
-   USER SELECT UTILITIES
-   =================================== */
+	USER SELECT UTILITIES
+	=================================== */
 
-.shahi-select-none { -webkit-user-select: none; user-select: none; }
-.shahi-select-text { -webkit-user-select: text; user-select: text; }
-.shahi-select-all { -webkit-user-select: all; user-select: all; }
-.shahi-select-auto { -webkit-user-select: auto; user-select: auto; }
+.shahi-select-none { user-select: none; user-select: none; }
+.shahi-select-text { user-select: text; user-select: text; }
+.shahi-select-all { user-select: all; user-select: all; }
+.shahi-select-auto { user-select: auto; user-select: auto; }
 
 /* ===================================
-   POINTER EVENTS UTILITIES
-   =================================== */
+	POINTER EVENTS UTILITIES
+	=================================== */
 
 .shahi-pointer-events-none { pointer-events: none; }
 .shahi-pointer-events-auto { pointer-events: auto; }
 
 /* ===================================
-   VISIBILITY UTILITIES
-   =================================== */
+	VISIBILITY UTILITIES
+	=================================== */
 
 .shahi-visible { visibility: visible; }
 .shahi-invisible { visibility: hidden; }
 
 /* ===================================
-   RESPONSIVE UTILITIES
-   =================================== */
+	RESPONSIVE UTILITIES
+	=================================== */
 
-@media (max-width: 640px) {
-    .shahi-sm-hidden { display: none; }
-    .shahi-sm-block { display: block; }
-    .shahi-sm-flex { display: flex; }
-    .shahi-sm-grid { display: grid; }
-    .shahi-sm-text-center { text-align: center; }
-    .shahi-sm-grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+@media (width <= 640px) {
+	.shahi-sm-hidden { display: none; }
+	.shahi-sm-block { display: block; }
+	.shahi-sm-flex { display: flex; }
+	.shahi-sm-grid { display: grid; }
+	.shahi-sm-text-center { text-align: center; }
+	.shahi-sm-grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
 }
 
-@media (max-width: 768px) {
-    .shahi-md-hidden { display: none; }
-    .shahi-md-block { display: block; }
-    .shahi-md-flex { display: flex; }
-    .shahi-md-grid { display: grid; }
-    .shahi-md-text-center { text-align: center; }
-    .shahi-md-grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
-    .shahi-md-grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (width <= 768px) {
+	.shahi-md-hidden { display: none; }
+	.shahi-md-block { display: block; }
+	.shahi-md-flex { display: flex; }
+	.shahi-md-grid { display: grid; }
+	.shahi-md-text-center { text-align: center; }
+	.shahi-md-grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+	.shahi-md-grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
-@media (max-width: 1024px) {
-    .shahi-lg-hidden { display: none; }
-    .shahi-lg-block { display: block; }
-    .shahi-lg-flex { display: flex; }
-    .shahi-lg-grid { display: grid; }
+@media (width <= 1024px) {
+	.shahi-lg-hidden { display: none; }
+	.shahi-lg-block { display: block; }
+	.shahi-lg-flex { display: flex; }
+	.shahi-lg-grid { display: grid; }
 }
 
 /* ===================================
-   PRINT UTILITIES
-   =================================== */
+	PRINT UTILITIES
+	=================================== */
 
 @media print {
-    .shahi-print-hidden { display: none !important; }
+	.shahi-print-hidden { display: none !important; }
 }
-

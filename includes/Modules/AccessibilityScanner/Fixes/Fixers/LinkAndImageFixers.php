@@ -150,27 +150,27 @@ class MissingH1Fixer extends BaseFixer {
 			// Find the first H2 and promote it to H1
 			$h2s = $dom->getElementsByTagName( 'h2' );
 			if ( $h2s->length > 0 ) {
-				$first_h2 = $h2s->item( 0 );
-				$h1 = $dom->createElement( 'h1' );
+				$first_h2        = $h2s->item( 0 );
+				$h1              = $dom->createElement( 'h1' );
 				$h1->textContent = $first_h2->textContent;
-				
+
 				// Copy attributes
 				foreach ( $first_h2->attributes as $attr ) {
 					$h1->setAttribute( $attr->nodeName, $attr->nodeValue );
 				}
-				
+
 				$first_h2->parentNode->replaceChild( $h1, $first_h2 );
-				
+
 				return array(
 					'fixed_count' => 1,
 					'content'     => $this->dom_to_html( $dom ),
 				);
 			}
-			
+
 			// No H2 found, insert H1 at the beginning of body
 			$body = $dom->getElementsByTagName( 'body' )->item( 0 );
 			if ( $body ) {
-				$h1 = $dom->createElement( 'h1' );
+				$h1              = $dom->createElement( 'h1' );
 				$h1->textContent = get_the_title() ?: get_bloginfo( 'name' );
 
 				if ( $body->firstChild ) {
@@ -327,9 +327,9 @@ class GenericLinkTextFixer extends BaseFixer {
 
 			if ( in_array( $text, $generic_words ) ) {
 				$href = $link->getAttribute( 'href' );
-				
+
 				// Try to get better text from URL
-				$new_text = $this->generate_link_text( $href, $text );
+				$new_text          = $this->generate_link_text( $href, $text );
 				$link->textContent = $new_text;
 				++$fixed_count;
 			}
@@ -355,7 +355,7 @@ class GenericLinkTextFixer extends BaseFixer {
 				}
 			}
 		}
-		
+
 		// Fallback: extract meaningful text from URL path
 		$path = parse_url( $href, PHP_URL_PATH );
 		if ( $path ) {
@@ -367,7 +367,7 @@ class GenericLinkTextFixer extends BaseFixer {
 				return "Learn more about $slug";
 			}
 		}
-		
+
 		return 'Learn more';
 	}
 }
@@ -427,12 +427,12 @@ class DownloadLinkFixer extends BaseFixer {
 
 		foreach ( $links_array as $link ) {
 			$href = $link->getAttribute( 'href' );
-			
+
 			// Skip if no href
 			if ( empty( $href ) ) {
 				continue;
 			}
-			
+
 			$is_download = false;
 			$file_ext    = '';
 			$href_lower  = strtolower( $href );
@@ -445,11 +445,11 @@ class DownloadLinkFixer extends BaseFixer {
 					break;
 				}
 			}
-			
+
 			// Also check for download attribute
 			if ( ! $is_download && $link->hasAttribute( 'download' ) ) {
 				$is_download = true;
-				$path = parse_url( $href, PHP_URL_PATH );
+				$path        = parse_url( $href, PHP_URL_PATH );
 				if ( $path ) {
 					$path_ext = pathinfo( $path, PATHINFO_EXTENSION );
 					$file_ext = $path_ext ? strtoupper( $path_ext ) : 'FILE';
@@ -492,9 +492,9 @@ class ExternalLinkFixer extends BaseFixer {
 		$dom         = $this->get_dom( $content );
 		$links       = $dom->getElementsByTagName( 'a' );
 		$fixed_count = 0;
-		
+
 		// Get home URL safely
-		$home_url = function_exists( 'home_url' ) ? home_url() : ( isset( $_SERVER['HTTP_HOST'] ) ? '//' . $_SERVER['HTTP_HOST'] : '' );
+		$home_url  = function_exists( 'home_url' ) ? home_url() : ( isset( $_SERVER['HTTP_HOST'] ) ? '//' . $_SERVER['HTTP_HOST'] : '' );
 		$home_host = parse_url( $home_url, PHP_URL_HOST ) ?: '';
 
 		// Convert to array to avoid issues with modifying during iteration
@@ -505,7 +505,7 @@ class ExternalLinkFixer extends BaseFixer {
 
 		foreach ( $links_array as $link ) {
 			$href = $link->getAttribute( 'href' );
-			
+
 			// Skip empty hrefs
 			if ( empty( $href ) ) {
 				continue;
@@ -515,7 +515,7 @@ class ExternalLinkFixer extends BaseFixer {
 			if ( preg_match( '/^(\/(?!\/)|#|mailto:|tel:|javascript:)/i', $href ) ) {
 				continue;
 			}
-			
+
 			// Check if it's an external URL (starts with http/https and different host)
 			$is_external = false;
 			if ( preg_match( '/^https?:\/\//i', $href ) ) {
@@ -524,13 +524,13 @@ class ExternalLinkFixer extends BaseFixer {
 					$is_external = true;
 				}
 			}
-			
+
 			if ( $is_external ) {
 				$text = trim( $link->textContent );
 				// Check if already marked as external
-				if ( strpos( $text, '(external' ) === false && 
-				     strpos( $text, '(opens' ) === false && 
-				     ! $link->hasAttribute( 'aria-label' ) ) {
+				if ( strpos( $text, '(external' ) === false &&
+					strpos( $text, '(opens' ) === false &&
+					! $link->hasAttribute( 'aria-label' ) ) {
 					$link->setAttribute( 'aria-label', $text . ' (external link, opens in new window)' );
 					++$fixed_count;
 				}
@@ -566,15 +566,15 @@ class LinkDestinationFixer extends BaseFixer {
 		}
 
 		foreach ( $links_array as $link ) {
-			$href = $link->hasAttribute( 'href' ) ? trim( $link->getAttribute( 'href' ) ) : '';
+			$href     = $link->hasAttribute( 'href' ) ? trim( $link->getAttribute( 'href' ) ) : '';
 			$modified = false;
-			
+
 			// Fix empty href
 			if ( $href === '' ) {
 				$link->setAttribute( 'href', '#' );
 				$modified = true;
 			}
-			
+
 			// Fix javascript: hrefs (any javascript: including void, functions, etc.)
 			if ( ! $modified && preg_match( '/^javascript:/i', $href ) ) {
 				$link->setAttribute( 'href', '#' );
@@ -588,13 +588,13 @@ class LinkDestinationFixer extends BaseFixer {
 				}
 				$modified = true;
 			}
-			
+
 			// Fix # only hrefs that have no id target
 			if ( ! $modified && $href === '#' && ! $link->hasAttribute( 'role' ) ) {
 				$link->setAttribute( 'role', 'button' );
 				$modified = true;
 			}
-			
+
 			if ( $modified ) {
 				++$fixed_count;
 			}
@@ -618,31 +618,40 @@ class SkipLinkFixer extends BaseFixer {
 		return 'Add skip to main content link'; }
 
 	public function fix( $content ) {
-		$dom = $this->get_dom( $content );
+		$dom         = $this->get_dom( $content );
 		$fixed_count = 0;
-		$body = $dom->getElementsByTagName( 'body' )->item( 0 );
-		
+		$body        = $dom->getElementsByTagName( 'body' )->item( 0 );
+
 		if ( ! $body ) {
-			return array( 'fixed_count' => 0, 'content' => $content );
+			return array(
+				'fixed_count' => 0,
+				'content'     => $content,
+			);
 		}
-		
+
 		// Check if skip link already exists anywhere in the content
-		$xpath = new \DOMXPath( $dom );
+		$xpath         = new \DOMXPath( $dom );
 		$existing_skip = $xpath->query( "//a[contains(@class, 'skip-link') or contains(@class, 'skip-to') or @id='skip-link']" );
-		
+
 		if ( $existing_skip->length > 0 ) {
-			return array( 'fixed_count' => 0, 'content' => $content );
+			return array(
+				'fixed_count' => 0,
+				'content'     => $content,
+			);
 		}
-		
+
 		// Also check text content for "skip to"
 		$skip_text_check = $xpath->query( "//a[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'skip to')]" );
 		if ( $skip_text_check->length > 0 ) {
-			return array( 'fixed_count' => 0, 'content' => $content );
+			return array(
+				'fixed_count' => 0,
+				'content'     => $content,
+			);
 		}
-		
+
 		// Find or create main content target
 		$main_content = $xpath->query( "//main | //*[@role='main'] | //*[@id='main'] | //*[@id='main-content'] | //*[@id='content']" );
-		
+
 		$target_id = 'main-content';
 		if ( $main_content->length > 0 ) {
 			$main = $main_content->item( 0 );
@@ -653,7 +662,7 @@ class SkipLinkFixer extends BaseFixer {
 			}
 		} else {
 			// No main found, create an ID on the first substantial element
-			$first_content = $xpath->query( "//div | //article | //section" );
+			$first_content = $xpath->query( '//div | //article | //section' );
 			if ( $first_content->length > 0 ) {
 				$first = $first_content->item( 0 );
 				if ( ! $first->hasAttribute( 'id' ) ) {
@@ -663,13 +672,13 @@ class SkipLinkFixer extends BaseFixer {
 				}
 			}
 		}
-		
+
 		// Create skip link element
 		$skip_link = $dom->createElement( 'a', 'Skip to main content' );
 		$skip_link->setAttribute( 'href', '#' . $target_id );
 		$skip_link->setAttribute( 'class', 'skip-link screen-reader-text' );
 		$skip_link->setAttribute( 'style', 'position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;' );
-		
+
 		// Insert at beginning of body
 		if ( $body->firstChild ) {
 			$body->insertBefore( $skip_link, $body->firstChild );
@@ -677,11 +686,10 @@ class SkipLinkFixer extends BaseFixer {
 			$body->appendChild( $skip_link );
 		}
 		$fixed_count = 1;
-		
+
 		return array(
 			'fixed_count' => $fixed_count,
 			'content'     => $this->dom_to_html( $dom ),
 		);
 	}
 }
-

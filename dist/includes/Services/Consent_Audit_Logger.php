@@ -36,6 +36,22 @@ class Consent_Audit_Logger extends Base_Service {
 	private $table_name;
 
 	/**
+	 * Allowed consent logging methods
+	 *
+	 * @since 3.1.1
+	 * @var array
+	 */
+	private $allowed_methods = array(
+		'banner',              // Consent via banner interaction
+		'preferences_center',  // Consent via preferences center
+		'admin_manual',        // Manual consent entry by admin
+		'api',                 // Programmatic API consent
+		'import',              // Bulk imported consent
+		'website',             // Legacy website method (backward compat)
+		'admin',               // Legacy admin method (backward compat)
+	);
+
+	/**
 	 * Constructor
 	 *
 	 * @since 3.0.1
@@ -50,6 +66,8 @@ class Consent_Audit_Logger extends Base_Service {
 	 * Log a consent action
 	 *
 	 * @since 3.0.1
+	 * @since 3.1.1 Extended method taxonomy with banner, preferences_center, admin_manual, api, import
+	 *
 	 * @param array $data {
 	 *     Log data
 	 *
@@ -59,7 +77,7 @@ class Consent_Audit_Logger extends Base_Service {
 	 *     @type string $action         Action performed (grant|withdraw|update|import|export)
 	 *     @type array  $previous_state Previous state before action
 	 *     @type array  $new_state      New state after action
-	 *     @type string $method         Method used (banner|api|admin|import)
+	 *     @type string $method         Method used (banner|preferences_center|admin_manual|api|import|website|admin)
 	 *     @type string $ip_address     IP address of user
 	 *     @type string $user_agent     User agent string
 	 * }
@@ -75,7 +93,7 @@ class Consent_Audit_Logger extends Base_Service {
 			'action'         => '',
 			'previous_state' => null,
 			'new_state'      => null,
-			'method'         => '',
+			'method'         => 'website',
 			'ip_address'     => '',
 			'user_agent'     => '',
 		);
@@ -85,6 +103,22 @@ class Consent_Audit_Logger extends Base_Service {
 		// Validate required fields
 		if ( empty( $data['action'] ) ) {
 			return false;
+		}
+
+		// Validate method taxonomy
+		if ( ! empty( $data['method'] ) && ! in_array( $data['method'], $this->allowed_methods, true ) ) {
+			// Log warning but continue with fallback
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				error_log(
+					sprintf(
+						'Invalid consent logging method "%s" provided. Allowed: %s',
+						$data['method'],
+						implode( ', ', $this->allowed_methods )
+					)
+				);
+			}
+			// Fallback to website for unknown methods
+			$data['method'] = 'website';
 		}
 
 		// Prepare data for insertion
@@ -454,5 +488,24 @@ class Consent_Audit_Logger extends Base_Service {
 		}
 
 		return $stats;
+	}
+
+	/**
+	 * Get allowed consent logging methods
+	 *
+	 * Returns list of valid method values for consent logging.
+	 *
+	 * @since 3.1.1
+	 * @return array Array of allowed method strings
+	 */
+	public function get_allowed_methods(): array {
+		/**
+		 * Filter allowed consent logging methods
+		 *
+		 * @since 3.1.1
+		 * @param array $methods Default allowed methods
+		 * @return array Filtered methods
+		 */
+		return apply_filters( 'slos_consent_logging_methods', $this->allowed_methods );
 	}
 }

@@ -57,4 +57,3 @@ class InteractiveElementCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

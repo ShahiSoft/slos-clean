@@ -285,26 +285,26 @@ class AriaRoleCheck extends AbstractCheck {
 
 		// Native element to implicit role mapping
 		$implicit_roles = array(
-			'button'   => 'button',
-			'a'        => 'link',
-			'nav'      => 'navigation',
-			'main'     => 'main',
-			'header'   => 'banner',
-			'footer'   => 'contentinfo',
-			'aside'    => 'complementary',
-			'article'  => 'article',
-			'form'     => 'form',
-			'table'    => 'table',
-			'ul'       => 'list',
-			'ol'       => 'list',
-			'li'       => 'listitem',
-			'img'      => 'img',
-			'h1'       => 'heading',
-			'h2'       => 'heading',
-			'h3'       => 'heading',
-			'h4'       => 'heading',
-			'h5'       => 'heading',
-			'h6'       => 'heading',
+			'button'  => 'button',
+			'a'       => 'link',
+			'nav'     => 'navigation',
+			'main'    => 'main',
+			'header'  => 'banner',
+			'footer'  => 'contentinfo',
+			'aside'   => 'complementary',
+			'article' => 'article',
+			'form'    => 'form',
+			'table'   => 'table',
+			'ul'      => 'list',
+			'ol'      => 'list',
+			'li'      => 'listitem',
+			'img'     => 'img',
+			'h1'      => 'heading',
+			'h2'      => 'heading',
+			'h3'      => 'heading',
+			'h4'      => 'heading',
+			'h5'      => 'heading',
+			'h6'      => 'heading',
 		);
 
 		if ( isset( $implicit_roles[ $tag ] ) ) {
@@ -322,4 +322,3 @@ class AriaRoleCheck extends AbstractCheck {
 		}
 	}
 }
-

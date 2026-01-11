@@ -89,14 +89,13 @@ abstract class BaseFixer {
 	 * Return fix result in standard format
 	 *
 	 * @param string $content Fixed content
-	 * @param int $fixes_applied Number of fixes applied
+	 * @param int    $fixes_applied Number of fixes applied
 	 * @return array Standard result format
 	 */
 	protected function return_result( $content, $fixes_applied = 0 ) {
 		return array(
-			'content'        => $content,
-			'fixes_applied'  => $fixes_applied,
+			'content'       => $content,
+			'fixes_applied' => $fixes_applied,
 		);
 	}
 }
-

@@ -52,4 +52,3 @@ class CustomWidgetKeyboardCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

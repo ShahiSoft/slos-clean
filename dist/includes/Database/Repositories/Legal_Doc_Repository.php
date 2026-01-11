@@ -429,12 +429,12 @@ class Legal_Doc_Repository extends Base_Repository {
 		$version_column = $this->version_column();
 
 		$insert_data = array(
-			'doc_id'            => $doc_id,
-			$version_column     => $data['version'] ?? $doc->version,
-			'content'           => $data['content'] ?? $doc->content,
-			'metadata'          => wp_json_encode( $metadata ),
-			'created_at'        => current_time( 'mysql' ),
-			'created_by'        => $user_id,
+			'doc_id'        => $doc_id,
+			$version_column => $data['version'] ?? $doc->version,
+			'content'       => $data['content'] ?? $doc->content,
+			'metadata'      => wp_json_encode( $metadata ),
+			'created_at'    => current_time( 'mysql' ),
+			'created_by'    => $user_id,
 		);
 
 		$insert_formats = array( '%d', '%s', '%s', '%s', '%s', '%d' );
@@ -638,10 +638,10 @@ class Legal_Doc_Repository extends Base_Repository {
 		$minor = (int) ( $parts[1] ?? 0 );
 
 		if ( 'major' === $type ) {
-			$major++;
+			++$major;
 			$minor = 0;
 		} else {
-			$minor++;
+			++$minor;
 		}
 
 		return "{$major}.{$minor}";

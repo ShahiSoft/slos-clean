@@ -61,4 +61,3 @@ class TableCaptionCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

@@ -10,8 +10,11 @@
 
 namespace ShahiLegalFlowSuite\Modules\AccessibilityScanner;
 
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
+
 use ShahiLegalFlowSuite\Modules\Module;
 use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Scanner\ScannerEngine;
+use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Services\BackupService;
 use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Scanner\Checkers\MissingAltTextCheck;
 use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Scanner\Checkers\EmptyAltTextCheck;
 use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Scanner\Checkers\MissingH1Check;
@@ -113,6 +116,13 @@ class AccessibilityScanner extends Module {
 	private $scanner;
 
 	/**
+	 * Backup Service Instance
+	 *
+	 * @var BackupService
+	 */
+	private $backup_service;
+
+	/**
 	 * Get module unique key
 	 *
 	 * @since 1.0.0
@@ -181,7 +191,8 @@ class AccessibilityScanner extends Module {
 	 * @return void
 	 */
 	public function init() {
-		$this->scanner = new ScannerEngine();
+		$this->scanner        = new ScannerEngine();
+		$this->backup_service = new BackupService();
 		$this->register_checks();
 
 		// Initialize Widget
@@ -214,16 +225,47 @@ class AccessibilityScanner extends Module {
 		add_action( 'wp_ajax_slos_scan_single_post', array( $this, 'ajax_scan_single_post' ) );
 		add_action( 'wp_ajax_slos_generate_alt_text', array( $this, 'ajax_generate_alt_text' ) );
 		add_action( 'wp_ajax_slos_generate_statement', array( $this, 'ajax_generate_statement' ) );
-		add_action( 'wp_ajax_slos_fix_single_issue', array( $this, 'ajax_fix_single_issue' ) );
-		add_action( 'wp_ajax_slos_fix_all_issues', array( $this, 'ajax_fix_all_issues' ) );
-		add_action( 'wp_ajax_slos_toggle_autofix', array( $this, 'ajax_toggle_autofix' ) );
+
+		// Autofix AJAX handlers - only register if autofix is not dormant
+		if ( ! ( defined( 'SLOS_DORMANT_AUTOFIX' ) && SLOS_DORMANT_AUTOFIX ) ) {
+			add_action( 'wp_ajax_slos_fix_single_issue', array( $this, 'ajax_fix_single_issue' ) );
+			add_action( 'wp_ajax_slos_fix_all_issues', array( $this, 'ajax_fix_all_issues' ) );
+			add_action( 'wp_ajax_slos_toggle_autofix', array( $this, 'ajax_toggle_autofix' ) );
+		}
 		add_action( 'wp_ajax_slos_get_page_issues', array( $this, 'ajax_get_page_issues' ) );
 		add_action( 'wp_ajax_slos_get_page_fixable_issues', array( $this, 'ajax_get_page_fixable_issues' ) );
 		add_action( 'wp_ajax_slos_run_full_scan', array( $this, 'ajax_run_full_scan' ) );
 		add_action( 'wp_ajax_slos_consolidate_scan_results', array( $this, 'ajax_consolidate_scan_results' ) );
 		add_action( 'wp_ajax_slos_audit_media_library', array( $this, 'ajax_audit_media_library' ) );
 		add_action( 'wp_ajax_slos_publish_statement', array( $this, 'ajax_publish_statement' ) );
-		add_action( 'wp_ajax_slos_autofix_single', array( $this, 'ajax_autofix_single_fixer' ) );
+
+		// Autofix and rollback handlers - only register if autofix is not dormant
+		if ( ! ( defined( 'SLOS_DORMANT_AUTOFIX' ) && SLOS_DORMANT_AUTOFIX ) ) {
+			add_action( 'wp_ajax_slos_autofix_single', array( $this, 'ajax_autofix_single_fixer' ) );
+			add_action( 'wp_ajax_slos_rollback_fixes', array( $this, 'ajax_rollback_fixes' ) );
+			add_action( 'wp_ajax_slos_check_backup_exists', array( $this, 'ajax_check_backup_exists' ) );
+		}
+
+		add_action( 'wp_ajax_slos_get_detailed_scan_report', array( $this, 'ajax_get_detailed_scan_report' ) );
+		add_action( 'wp_ajax_slos_save_scanner_config', array( $this, 'ajax_save_scanner_config' ) );
+		add_action( 'wp_ajax_slos_schedule_email_report', array( $this, 'ajax_schedule_email_report' ) );
+		add_action( 'wp_ajax_slos_toggle_widget', array( $this, 'ajax_toggle_widget' ) );
+		add_action( 'wp_ajax_slos_save_widget_config', array( $this, 'ajax_save_widget_config' ) );
+		add_action( 'wp_ajax_slos_check_color_contrast', array( $this, 'ajax_check_color_contrast' ) );
+		add_action( 'wp_ajax_slos_check_readability', array( $this, 'ajax_check_readability' ) );
+		add_action( 'wp_ajax_slos_check_link_text', array( $this, 'ajax_check_link_text' ) );
+
+		// Schedule cleanup cron job if not already scheduled
+		if ( ! wp_next_scheduled( 'slos_cleanup_old_backups' ) ) {
+			wp_schedule_event( time(), 'daily', 'slos_cleanup_old_backups' );
+		}
+		add_action( 'slos_cleanup_old_backups', array( $this, 'cron_cleanup_old_backups' ) );
+
+		// Schedule periodic accessibility email reports (daily driver, frequency handled in callback)
+		if ( ! wp_next_scheduled( 'slos_send_accessibility_report' ) ) {
+			wp_schedule_event( time(), 'daily', 'slos_send_accessibility_report' );
+		}
+		add_action( 'slos_send_accessibility_report', array( $this, 'cron_send_accessibility_report' ) );
 	}
 
 	/**
@@ -355,7 +397,7 @@ class AccessibilityScanner extends Module {
 	private function build_accessibility_statement_raw( $org_name, $contact_email, $wcag_target, $statement_date, $commitment ) {
 		$date_formatted = ! empty( $statement_date ) ? gmdate( 'F j, Y', strtotime( $statement_date ) ) : gmdate( 'F j, Y' );
 
-		$text = "ACCESSIBILITY STATEMENT\n\n";
+		$text  = "ACCESSIBILITY STATEMENT\n\n";
 		$text .= $org_name . ' is committed to ensuring digital accessibility for people with disabilities. We are continually improving the user experience for everyone and applying the relevant accessibility standards.' . "\n\n";
 		$text .= "CONFORMANCE STATUS\n";
 		$text .= 'We strive to conform to ' . $wcag_target . ' of the Web Content Accessibility Guidelines (WCAG).' . "\n\n";
@@ -417,15 +459,21 @@ class AccessibilityScanner extends Module {
 		// Use lightweight query - only get IDs and titles, skip get_permalink (slow)
 		// Allow optional limit for quick scan requests and prioritize recent content
 		global $wpdb;
-		$limit        = isset( $_POST['limit'] ) ? intval( $_POST['limit'] ) : 0;
-		$limit_clause = $limit > 0 ? $wpdb->prepare( ' LIMIT %d', $limit ) : '';
-		$results = $wpdb->get_results(
-			"SELECT ID, post_title FROM {$wpdb->posts} 
-             WHERE post_type IN ('post', 'page') 
-             AND post_status = 'publish' 
-             ORDER BY post_date DESC" . $limit_clause,
-			ARRAY_A
-		);
+		$limit = isset( $_POST['limit'] ) ? intval( $_POST['limit'] ) : 0;
+
+		$sql = $limit > 0
+			? $wpdb->prepare(
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- esc_sql() used for table name
+			"SELECT ID, post_title FROM " . esc_sql( $wpdb->posts ) . " WHERE post_type IN ('post', 'page') AND post_status = %s ORDER BY post_date DESC LIMIT %d",
+			'publish',
+			$limit
+		)
+		: $wpdb->prepare(
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- esc_sql() used for table name
+			"SELECT ID, post_title FROM " . esc_sql( $wpdb->posts ) . " WHERE post_type IN ('post', 'page') AND post_status = %s ORDER BY post_date DESC",
+			);
+
+		$results = $wpdb->get_results( $sql, ARRAY_A );
 
 		$data = array();
 		foreach ( $results as $row ) {
@@ -615,44 +663,64 @@ class AccessibilityScanner extends Module {
 
 		// Check if statement page already exists
 		$existing = get_page_by_path( 'accessibility-statement' );
+
+		// Check if pre-generated content was provided
+		$statement_content = isset( $_POST['statement_content'] ) ? wp_kses_post( wp_unslash( $_POST['statement_content'] ) ) : '';
+
+		// If no pre-generated content, generate from form data
+		if ( empty( $statement_content ) ) {
+			$org_name       = sanitize_text_field( wp_unslash( $_POST['org_name'] ?? '' ) );
+			$contact_email  = sanitize_email( wp_unslash( $_POST['contact_email'] ?? '' ) );
+			$wcag_target    = sanitize_text_field( wp_unslash( $_POST['wcag_target'] ?? 'WCAG 2.2 Level AA' ) );
+			$statement_date = sanitize_text_field( wp_unslash( $_POST['statement_date'] ?? '' ) );
+			$commitment     = sanitize_textarea_field( wp_unslash( $_POST['commitment'] ?? '' ) );
+
+			if ( empty( $org_name ) ) {
+				wp_send_json_error( __( 'Organization name is required or statement content must be provided.', 'shahi-legalflowsuite' ) );
+			}
+
+			// Build statement HTML
+			$statement_content = $this->build_accessibility_statement(
+				$org_name,
+				$contact_email,
+				$wcag_target,
+				$statement_date,
+				$commitment
+			);
+		}
+
+		// If page exists, update it
 		if ( $existing ) {
+			$page_id = wp_update_post(
+				array(
+					'ID'           => $existing->ID,
+					'post_content' => $statement_content,
+					'post_author'  => get_current_user_id(),
+				)
+			);
+
+			if ( is_wp_error( $page_id ) ) {
+				wp_send_json_error( $page_id->get_error_message() );
+			}
+
 			wp_send_json_success(
 				array(
-					'page_url'  => get_permalink( $existing->ID ),
-					'edit_url'  => get_edit_post_link( $existing->ID, 'raw' ),
-					'message'   => __( 'Accessibility Statement page already exists.', 'shahi-legalflowsuite' ),
-					'exists'    => true,
+					'page_id'   => $existing->ID,
+					'view_link' => get_permalink( $existing->ID ),
+					'edit_link' => get_edit_post_link( $existing->ID, 'raw' ),
+					'message'   => __( 'Accessibility Statement page updated successfully.', 'shahi-legalflowsuite' ),
+					'updated'   => true,
 				)
 			);
 			return;
 		}
 
-		// Generate statement content
-		$org_name       = sanitize_text_field( wp_unslash( $_POST['org_name'] ?? '' ) );
-		$contact_email  = sanitize_email( wp_unslash( $_POST['contact_email'] ?? '' ) );
-		$wcag_target    = sanitize_text_field( wp_unslash( $_POST['wcag_target'] ?? 'WCAG 2.1 Level AA' ) );
-		$statement_date = sanitize_text_field( wp_unslash( $_POST['statement_date'] ?? '' ) );
-		$commitment     = sanitize_textarea_field( wp_unslash( $_POST['commitment'] ?? '' ) );
-
-		if ( empty( $org_name ) ) {
-			wp_send_json_error( __( 'Organization name is required.', 'shahi-legalflowsuite' ) );
-		}
-
-		// Build statement HTML
-		$statement = $this->build_accessibility_statement(
-			$org_name,
-			$contact_email,
-			$wcag_target,
-			$statement_date,
-			$commitment
-		);
-
-		// Create the page
+		// Create new page
 		$page_id = wp_insert_post(
 			array(
 				'post_title'   => __( 'Accessibility Statement', 'shahi-legalflowsuite' ),
 				'post_name'    => 'accessibility-statement',
-				'post_content' => $statement,
+				'post_content' => $statement_content,
 				'post_status'  => 'publish',
 				'post_type'    => 'page',
 				'post_author'  => get_current_user_id(),
@@ -665,10 +733,10 @@ class AccessibilityScanner extends Module {
 
 		wp_send_json_success(
 			array(
-				'page_id'  => $page_id,
-				'page_url' => get_permalink( $page_id ),
-				'edit_url' => get_edit_post_link( $page_id, 'raw' ),
-				'message'  => __( 'Accessibility Statement page created successfully.', 'shahi-legalflowsuite' ),
+				'page_id'   => $page_id,
+				'view_link' => get_permalink( $page_id ),
+				'edit_link' => get_edit_post_link( $page_id, 'raw' ),
+				'message'   => __( 'Accessibility Statement page created successfully.', 'shahi-legalflowsuite' ),
 			)
 		);
 	}
@@ -687,14 +755,14 @@ class AccessibilityScanner extends Module {
 		$date_formatted = ! empty( $statement_date ) ? gmdate( 'F j, Y', strtotime( $statement_date ) ) : gmdate( 'F j, Y' );
 		$site_url       = home_url();
 
-		$html = '<!-- wp:heading {"level":1} -->' . "\n";
+		$html  = '<!-- wp:heading {"level":1} -->' . "\n";
 		$html .= '<h1 class="wp-block-heading">' . __( 'Accessibility Statement', 'shahi-legalflowsuite' ) . '</h1>' . "\n";
 		$html .= '<!-- /wp:heading -->' . "\n\n";
 
 		$html .= '<!-- wp:paragraph -->' . "\n";
 		$html .= '<p>' . sprintf(
 			/* translators: 1: Organization name, 2: Site URL */
-			__( '%1$s is committed to ensuring digital accessibility for people with disabilities. We are continually improving the user experience for everyone and applying the relevant accessibility standards.', 'shahi-legalflowsuite' ),
+			__( '%1$s is committed to ensuring digital accessibility for people with disabilities. We are continually improving the user experience for everyone and applying the relevant accessibility standards for %2$s.', 'shahi-legalflowsuite' ),
 			esc_html( $org_name ),
 			esc_url( $site_url )
 		) . '</p>' . "\n";
@@ -728,6 +796,22 @@ class AccessibilityScanner extends Module {
 		$html .= '<li>' . __( 'Employ formal accessibility quality assurance methods.', 'shahi-legalflowsuite' ) . '</li>' . "\n";
 		$html .= '</ul>' . "\n";
 		$html .= '<!-- /wp:list -->' . "\n\n";
+
+		$html .= '<!-- wp:heading -->' . "\n";
+		$html .= '<h2 class="wp-block-heading">' . __( 'Compatibility with browsers and assistive technology', 'shahi-legalflowsuite' ) . '</h2>' . "\n";
+		$html .= '<!-- /wp:heading -->' . "\n\n";
+
+		$html .= '<!-- wp:paragraph -->' . "\n";
+		$html .= '<p>' . __( 'Our goal is to support the latest versions of major browsers and assistive technologies, including Chrome, Firefox, Safari, Edge, and modern screen readers.', 'shahi-legalflowsuite' ) . '</p>' . "\n";
+		$html .= '<!-- /wp:paragraph -->' . "\n\n";
+
+		$html .= '<!-- wp:heading -->' . "\n";
+		$html .= '<h2 class="wp-block-heading">' . __( 'Assessment approach', 'shahi-legalflowsuite' ) . '</h2>' . "\n";
+		$html .= '<!-- /wp:heading -->' . "\n\n";
+
+		$html .= '<!-- wp:paragraph -->' . "\n";
+		$html .= '<p>' . __( 'We assess the accessibility of this website through continuous automated scanning, manual reviews, and user feedback.', 'shahi-legalflowsuite' ) . '</p>' . "\n";
+		$html .= '<!-- /wp:paragraph -->' . "\n\n";
 
 		if ( ! empty( $commitment ) ) {
 			$html .= '<!-- wp:heading -->' . "\n";
@@ -778,9 +862,15 @@ class AccessibilityScanner extends Module {
 			wp_send_json_error( 'Unauthorized' );
 		}
 
+		// Use configured post types if available, otherwise default to posts and pages
+		$post_types = get_option( 'slos_scan_post_types', array( 'post', 'page' ) );
+		if ( empty( $post_types ) || ! is_array( $post_types ) ) {
+			$post_types = array( 'post', 'page' );
+		}
+
 		$posts = get_posts(
 			array(
-				'post_type'      => array( 'post', 'page' ),
+				'post_type'      => $post_types,
 				'posts_per_page' => -1,
 				'post_status'    => 'publish',
 			)
@@ -884,11 +974,11 @@ class AccessibilityScanner extends Module {
 			)
 		);
 
-		$consolidated    = array();
-		$total_issues    = 0;
-		$total_critical  = 0;
-		$pages_scanned   = 0;
-		$issues_by_type  = array(); // Track issues by checker type
+		$consolidated   = array();
+		$total_issues   = 0;
+		$total_critical = 0;
+		$pages_scanned  = 0;
+		$issues_by_type = array(); // Track issues by checker type
 
 		foreach ( $posts as $post_id ) {
 			$post         = get_post( $post_id );
@@ -998,7 +1088,7 @@ class AccessibilityScanner extends Module {
 
 		// Save to scan history for trends chart
 		$this->save_scan_to_history( $pages_scanned, $total_issues, $total_critical, $average_score );
-		
+
 		// Save last scan time
 		update_option( 'slos_last_scan_time', current_time( 'mysql' ) );
 	}
@@ -1013,28 +1103,28 @@ class AccessibilityScanner extends Module {
 	 */
 	private function save_scan_to_history( $pages_scanned, $total_issues, $total_critical, $score ) {
 		$history = get_option( 'slos_accessibility_scan_history', array() );
-		
+
 		// Generate unique ID for this scan
 		$scan_id = wp_generate_uuid4();
-		
+
 		// Create history entry
 		$entry = array(
-			'id'             => $scan_id,
-			'date'           => current_time( 'mysql' ),
-			'timestamp'      => time(),
-			'score'          => intval( $score ),
-			'issues'         => intval( $total_issues ),
-			'critical'       => intval( $total_critical ),
-			'pages_scanned'  => intval( $pages_scanned ),
-			'wcag_level'     => get_option( 'slos_wcag_level', 'AA' ),
+			'id'            => $scan_id,
+			'date'          => current_time( 'mysql' ),
+			'timestamp'     => time(),
+			'score'         => intval( $score ),
+			'issues'        => intval( $total_issues ),
+			'critical'      => intval( $total_critical ),
+			'pages_scanned' => intval( $pages_scanned ),
+			'wcag_level'    => get_option( 'slos_wcag_level', 'AA' ),
 		);
-		
+
 		// Add to beginning of array (most recent first)
 		array_unshift( $history, $entry );
-		
+
 		// Keep only last 100 scans to prevent database bloat
 		$history = array_slice( $history, 0, 100 );
-		
+
 		update_option( 'slos_accessibility_scan_history', $history );
 	}
 
@@ -1045,78 +1135,78 @@ class AccessibilityScanner extends Module {
 	 */
 	private function get_check_mapping() {
 		return array(
-			'missing-alt-text'    => MissingAltTextCheck::class,
-			'empty-alt-text'      => EmptyAltTextCheck::class,
-			'missing-h1'          => MissingH1Check::class,
-			'skipped-heading'     => SkippedHeadingLevelCheck::class,
-			'empty-link'          => EmptyLinkCheck::class,
-			'generic-link'        => GenericLinkTextCheck::class,
-			'missing-label'       => MissingFormLabelCheck::class,
-			'redundant-alt'       => RedundantAltTextCheck::class,
-			'empty-heading'       => EmptyHeadingCheck::class,
-			'new-window'          => NewWindowLinkCheck::class,
-			'positive-tabindex'   => PositiveTabIndexCheck::class,
-			'image-map'           => ImageMapAltCheck::class,
-			'iframe-title'        => IframeTitleCheck::class,
-			'button-label'        => ButtonLabelCheck::class,
-			'table-header'        => TableHeaderCheck::class,
-			'alt-quality'         => AltTextQualityCheck::class,
-			'decorative-image'    => DecorativeImageCheck::class,
-			'complex-image'       => ComplexImageCheck::class,
-			'svg-access'          => SvgAccessibilityCheck::class,
-			'bg-image'            => BackgroundImageCheck::class,
-			'logo-image'          => LogoImageCheck::class,
-			'multiple-h1'         => MultipleH1Check::class,
-			'heading-visual'      => HeadingVisualCheck::class,
-			'heading-length'      => HeadingLengthCheck::class,
-			'heading-unique'      => HeadingUniquenessCheck::class,
-			'heading-nesting'     => HeadingNestingCheck::class,
-			'fieldset-legend'     => FieldsetLegendCheck::class,
-			'autocomplete'        => AutocompleteCheck::class,
-			'input-type'          => InputTypeCheck::class,
-			'placeholder-label'   => PlaceholderLabelCheck::class,
-			'custom-control'      => CustomControlCheck::class,
-			'orphaned-label'      => OrphanedLabelCheck::class,
-			'required-attr'       => RequiredAttributeCheck::class,
-			'error-message'       => ErrorMessageCheck::class,
-			'form-aria'           => FormAriaCheck::class,
-			'link-dest'           => LinkDestinationCheck::class,
-			'skip-link'           => SkipLinkCheck::class,
-			'download-link'       => DownloadLinkCheck::class,
-			'external-link'       => ExternalLinkCheck::class,
-			'contrast'            => TextColorContrastCheck::class,
-			'focus-indicator'     => FocusIndicatorCheck::class,
-			'color-reliance'      => ColorRelianceCheck::class,
-			'complex-contrast'    => ComplexContrastCheck::class,
-			'keyboard-trap'       => KeyboardTrapCheck::class,
-			'focus-order'         => FocusOrderCheck::class,
-			'interactive-element' => InteractiveElementCheck::class,
-			'modal-access'        => ModalAccessibilityCheck::class,
-			'widget-keyboard'     => CustomWidgetKeyboardCheck::class,
-			'aria-role'           => AriaRoleCheck::class,
-			'aria-attr'           => AriaAttributeCheck::class,
-			'landmark-role'       => LandmarkRoleCheck::class,
-			'redundant-aria'      => RedundantAriaCheck::class,
-			'hidden-content'      => HiddenContentCheck::class,
-			'semantic-html'       => SemanticHtmlCheck::class,
-			'live-region'         => LiveRegionCheck::class,
-			'aria-state'          => AriaStateCheck::class,
-			'invalid-aria'        => InvalidAriaCombinationCheck::class,
-			'page-structure'      => PageStructureCheck::class,
-			'video-access'        => VideoAccessibilityCheck::class,
-			'audio-access'        => AudioAccessibilityCheck::class,
-			'media-alt'           => MediaAlternativeCheck::class,
-			'table-caption'       => TableCaptionCheck::class,
-			'complex-table'       => ComplexTableCheck::class,
-			'layout-table'        => LayoutTableCheck::class,
-			'empty-cell'          => EmptyTableCellCheck::class,
-			'viewport'            => ViewportCheck::class,
-			'touch-target'        => TouchTargetCheck::class,
-			'touch-gesture'       => TouchGestureCheck::class,
-			'language-change'     => LanguageChangeCheck::class,
-			'animation-pause'     => AnimationPauseCheck::class,
-			'timing-control'      => TimingControlCheck::class,
-			'status-message'      => StatusMessageCheck::class,
+			'missing-alt-text'     => MissingAltTextCheck::class,
+			'empty-alt-text'       => EmptyAltTextCheck::class,
+			'missing-h1'           => MissingH1Check::class,
+			'skipped-heading'      => SkippedHeadingLevelCheck::class,
+			'empty-link'           => EmptyLinkCheck::class,
+			'generic-link'         => GenericLinkTextCheck::class,
+			'missing-label'        => MissingFormLabelCheck::class,
+			'redundant-alt'        => RedundantAltTextCheck::class,
+			'empty-heading'        => EmptyHeadingCheck::class,
+			'new-window'           => NewWindowLinkCheck::class,
+			'positive-tabindex'    => PositiveTabIndexCheck::class,
+			'image-map'            => ImageMapAltCheck::class,
+			'iframe-title'         => IframeTitleCheck::class,
+			'button-label'         => ButtonLabelCheck::class,
+			'table-header'         => TableHeaderCheck::class,
+			'alt-quality'          => AltTextQualityCheck::class,
+			'decorative-image'     => DecorativeImageCheck::class,
+			'complex-image'        => ComplexImageCheck::class,
+			'svg-access'           => SvgAccessibilityCheck::class,
+			'bg-image'             => BackgroundImageCheck::class,
+			'logo-image'           => LogoImageCheck::class,
+			'multiple-h1'          => MultipleH1Check::class,
+			'heading-visual'       => HeadingVisualCheck::class,
+			'heading-length'       => HeadingLengthCheck::class,
+			'heading-unique'       => HeadingUniquenessCheck::class,
+			'heading-nesting'      => HeadingNestingCheck::class,
+			'fieldset-legend'      => FieldsetLegendCheck::class,
+			'autocomplete'         => AutocompleteCheck::class,
+			'input-type'           => InputTypeCheck::class,
+			'placeholder-label'    => PlaceholderLabelCheck::class,
+			'custom-control'       => CustomControlCheck::class,
+			'orphaned-label'       => OrphanedLabelCheck::class,
+			'required-attr'        => RequiredAttributeCheck::class,
+			'error-message'        => ErrorMessageCheck::class,
+			'form-aria'            => FormAriaCheck::class,
+			'link-dest'            => LinkDestinationCheck::class,
+			'skip-link'            => SkipLinkCheck::class,
+			'download-link'        => DownloadLinkCheck::class,
+			'external-link'        => ExternalLinkCheck::class,
+			'contrast'             => TextColorContrastCheck::class,
+			'focus-indicator'      => FocusIndicatorCheck::class,
+			'color-reliance'       => ColorRelianceCheck::class,
+			'complex-contrast'     => ComplexContrastCheck::class,
+			'keyboard-trap'        => KeyboardTrapCheck::class,
+			'focus-order'          => FocusOrderCheck::class,
+			'interactive-element'  => InteractiveElementCheck::class,
+			'modal-access'         => ModalAccessibilityCheck::class,
+			'widget-keyboard'      => CustomWidgetKeyboardCheck::class,
+			'aria-role'            => AriaRoleCheck::class,
+			'aria-attr'            => AriaAttributeCheck::class,
+			'landmark-role'        => LandmarkRoleCheck::class,
+			'redundant-aria'       => RedundantAriaCheck::class,
+			'hidden-content'       => HiddenContentCheck::class,
+			'semantic-html'        => SemanticHtmlCheck::class,
+			'live-region'          => LiveRegionCheck::class,
+			'aria-state'           => AriaStateCheck::class,
+			'invalid-aria'         => InvalidAriaCombinationCheck::class,
+			'page-structure'       => PageStructureCheck::class,
+			'video-access'         => VideoAccessibilityCheck::class,
+			'audio-access'         => AudioAccessibilityCheck::class,
+			'media-alt'            => MediaAlternativeCheck::class,
+			'table-caption'        => TableCaptionCheck::class,
+			'complex-table'        => ComplexTableCheck::class,
+			'layout-table'         => LayoutTableCheck::class,
+			'empty-cell'           => EmptyTableCellCheck::class,
+			'viewport'             => ViewportCheck::class,
+			'touch-target'         => TouchTargetCheck::class,
+			'touch-gesture'        => TouchGestureCheck::class,
+			'language-change'      => LanguageChangeCheck::class,
+			'animation-pause'      => AnimationPauseCheck::class,
+			'timing-control'       => TimingControlCheck::class,
+			'status-message'       => StatusMessageCheck::class,
 			'error-identification' => ErrorIdentificationCheck::class,
 		);
 	}
@@ -1261,7 +1351,7 @@ class AccessibilityScanner extends Module {
 			echo '<ul style="list-style: none; padding: 0;">';
 			foreach ( $results as $check_id => $result ) {
 				$color = $result['severity'] === 'critical' ? '#d63638' : '#dba617';
-				echo '<li style="margin-bottom: 10px; border-left: 4px solid ' . $color . '; padding-left: 10px;">';
+				echo '<li style="margin-bottom: 10px; border-left: 4px solid ' . esc_attr( $color ) . '; padding-left: 10px;">';
 				echo '<strong>' . esc_html( $result['description'] ) . '</strong>';
 				echo '<ul style="margin-top: 5px; padding-left: 15px;">';
 				foreach ( $result['issues'] as $issue ) {
@@ -1405,7 +1495,8 @@ class AccessibilityScanner extends Module {
 
 		wp_send_json_success(
 			array(
-				'message'         => sprintf( __( '%d issue(s) fixed successfully!', 'shahi-legalflowsuite' ), $fixed_count ),
+				/* translators: %d: number of issues fixed */
+			'message'         => sprintf( __( '%d issue(s) fixed successfully!', 'shahi-legalflowsuite' ), $fixed_count ),
 				'fixed_count'     => $fixed_count,
 				'content_changed' => $content_changed,
 			)
@@ -1465,6 +1556,12 @@ class AccessibilityScanner extends Module {
 		// Get the fixer instance
 		$fixer = new AccessibilityFixer();
 
+		// Get issue count before fixes
+		$issues_before = count( $page_data['issues'] );
+
+		// Save content backup before applying fixes
+		$this->save_content_backup( $post_id, $post->post_content );
+
 		// Track progress
 		$fixed_issues        = array();
 		$failed_issues       = array();
@@ -1494,24 +1591,41 @@ class AccessibilityScanner extends Module {
 						'message' => $error_msg,
 					);
 				}
-			} else {
-				$fixed_count = $result['fixed_count'] ?? 0;
-				if ( $fixed_count > 0 ) {
-					$fixed_issues[]     = array(
-						'type'        => $issue_type,
-						'count'       => $fixed_count,
-						'description' => $this->get_issue_description( $issue_type ),
-					);
-					$fixed_count_total += $fixed_count;
-				} else {
-					// Fixer ran but didn't fix anything
-					$manual_fix_required[] = array(
-						'type'    => $issue_type,
-						'reason'  => 'Issue could not be automatically fixed',
-						'message' => 'Manual intervention required',
-					);
-				}
+				// Short-circuit: Skip to next issue type on error
+				continue;
 			}
+
+			$fixed_count = $result['fixed_count'] ?? 0;
+
+			// Short-circuit: If no fixes applied, skip history tracking and mark as manual
+			if ( $fixed_count === 0 ) {
+				$manual_fix_required[] = array(
+					'type'    => $issue_type,
+					'reason'  => 'Issue could not be automatically fixed',
+					'message' => 'Manual intervention required',
+				);
+				continue;
+			}
+
+			// Only process successful fixes with fixed_count > 0
+			$fixed_issues[]     = array(
+				'type'        => $issue_type,
+				'count'       => $fixed_count,
+				'description' => $this->get_issue_description( $issue_type ),
+			);
+			$fixed_count_total += $fixed_count;
+
+			// Save individual fix history (only when fixes were applied)
+			$updated_post = get_post( $post_id );
+			$this->save_fix_history(
+				$post_id,
+				$issue_type,
+				$fixed_count,
+				$original_content,
+				$updated_post->post_content,
+				null,
+				null
+			);
 		}
 
 		// Check if content was actually modified
@@ -1522,6 +1636,28 @@ class AccessibilityScanner extends Module {
 		if ( $content_changed && $fixed_count_total > 0 ) {
 			// Re-scan the post
 			$new_scan_results = $this->scanner->scan( $updated_post->post_content );
+
+			// Calculate issues after fixes
+			$issues_after = 0;
+			if ( is_array( $new_scan_results ) ) {
+				foreach ( $new_scan_results as $result ) {
+					if ( isset( $result['issues'] ) && is_array( $result['issues'] ) ) {
+						$issues_after += count( $result['issues'] );
+					}
+				}
+			}
+
+			// Save combined fix history for bulk operation
+			$this->save_fix_history(
+				$post_id,
+				'bulk_fix_all',
+				$fixed_count_total,
+				$original_content,
+				$updated_post->post_content,
+				$issues_before,
+				$issues_after
+			);
+
 			update_post_meta( $post_id, '_slos_accessibility_scan_results', $new_scan_results );
 			update_post_meta( $post_id, '_slos_accessibility_scan_date', current_time( 'mysql' ) );
 
@@ -1530,8 +1666,8 @@ class AccessibilityScanner extends Module {
 		}
 
 		// Get the new issue count for this page
-		$new_results    = get_option( 'slos_last_scan_results', array() );
-		$new_page_data  = null;
+		$new_results      = get_option( 'slos_last_scan_results', array() );
+		$new_page_data    = null;
 		$new_issues_count = 0;
 		$new_score        = 100;
 
@@ -1546,18 +1682,18 @@ class AccessibilityScanner extends Module {
 
 		// Build response
 		$response = array(
-			'success'              => true,
-			'message'              => $this->build_fix_message( $fixed_count_total, count( $failed_issues ), count( $manual_fix_required ) ),
-			'fixed_count'          => count( $fixed_issues ),
-			'failed_count'         => count( $failed_issues ),
-			'manual_required'      => count( $manual_fix_required ),
-			'total_issues_fixed'   => $fixed_count_total,
-			'content_changed'      => $content_changed,
-			'new_issues_count'     => $new_issues_count,
-			'new_score'            => $new_score,
-			'fixed_details'        => $fixed_issues,
-			'failed_details'       => $failed_issues,
-			'manual_fix_guidance'  => $this->get_manual_fix_guidance( $manual_fix_required ),
+			'success'             => true,
+			'message'             => $this->build_fix_message( $fixed_count_total, count( $failed_issues ), count( $manual_fix_required ) ),
+			'fixed_count'         => count( $fixed_issues ),
+			'failed_count'        => count( $failed_issues ),
+			'manual_required'     => count( $manual_fix_required ),
+			'total_issues_fixed'  => $fixed_count_total,
+			'content_changed'     => $content_changed,
+			'new_issues_count'    => $new_issues_count,
+			'new_score'           => $new_score,
+			'fixed_details'       => $fixed_issues,
+			'failed_details'      => $failed_issues,
+			'manual_fix_guidance' => $this->get_manual_fix_guidance( $manual_fix_required ),
 		);
 
 		wp_send_json_success( $response );
@@ -1591,9 +1727,10 @@ class AccessibilityScanner extends Module {
 	 */
 	private function build_fix_message( $fixed, $failed, $manual ) {
 		if ( $fixed > 0 && $failed === 0 && $manual === 0 ) {
-			return sprintf( _n( '%d issue was automatically fixed!', '%d issues were automatically fixed!', $fixed, 'shahi-legalflowsuite' ), $fixed );
+				/* translators: %d: number of issues fixed */
+	return sprintf( _n( '%d issue was automatically fixed!', '%d issues were automatically fixed!', $fixed, 'shahi-legalflowsuite' ), $fixed );
 		} elseif ( $fixed > 0 && ( $failed > 0 || $manual > 0 ) ) {
-			return sprintf( __( '%d issues fixed. %d issues require manual attention.', 'shahi-legalflowsuite' ), $fixed, $failed + $manual );
+			return sprintf( /* translators: 1: number of issues fixed, 2: number of issues requiring manual attention */  __( '%1$d issues fixed. %2$d issues require manual attention.', 'shahi-legalflowsuite' ), $fixed, $failed + $manual );
 		} elseif ( $fixed === 0 && ( $failed > 0 || $manual > 0 ) ) {
 			return __( 'No issues could be automatically fixed. Manual intervention required.', 'shahi-legalflowsuite' );
 		}
@@ -1842,7 +1979,11 @@ class AccessibilityScanner extends Module {
 
 	/**
 	 * AJAX: Get fixable issues for a page
-	 * Returns only the fixers that have issues on this page
+	 *
+	 * Determines which fixers are relevant for the given page based on the
+	 * stored scan results. The response includes only fixers that have
+	 * detected issues on this page so the frontend can run a targeted set
+	 * by default.
 	 *
 	 * @since 3.2.0
 	 */
@@ -1904,110 +2045,112 @@ class AccessibilityScanner extends Module {
 	 * @return array Associative array of checker_id => fixer_id
 	 */
 	private function get_check_to_fixer_mapping() {
-		// Return EXACT mapping based on what scan results use as keys
-		// and what FixerRegistry actually has registered
+		// Map scan checker IDs to canonical FixEngine IDs.
+		// Right-hand side values are canonical IDs defined in
+		// FixEngine\CanonicalIds; any legacy aliases are handled via
+		// CanonicalIds::canonicalize() inside FixEngine.
 		return array(
-			// Image-related checks (scan result keys => fixer IDs)
-			'missing-alt-text'    => 'missing-alt-text',
-			'empty-alt-text'      => 'empty-alt-text',
-			'redundant-alt'       => 'redundant-alt',
-			'alt-quality'         => 'alt-quality',
-			'decorative-image'    => 'decorative-image',
-			'complex-image'       => 'complex-image',
-			'svg-access'          => 'svg-access',
-			'bg-image'            => 'bg-image',
-			'logo-image'          => 'logo-image',
-			'image-map'           => 'image-map',
+			// Image-related checks (scan result keys => canonical/alias IDs)
+			'missing-alt-text'     => 'missing-alt-text',
+			'empty-alt-text'       => 'empty-alt-text',
+			'redundant-alt'        => 'redundant-alt-text',
+			'alt-quality'          => 'alt-text-quality',
+			'decorative-image'     => 'decorative-image',
+			'complex-image'        => 'complex-image',
+			'svg-access'           => 'svg-accessibility',
+			'bg-image'             => 'background-image',
+			'logo-image'           => 'logo-image',
+			'image-map'            => 'image-map-alt',
 
 			// Heading-related checks
-			'missing-h1'          => 'missing-h1',
-			'multiple-h1'         => 'multiple-h1',
-			'skipped-heading'     => 'skipped-heading',
-			'empty-heading'       => 'empty-heading',
-			'heading-length'      => 'heading-length',
-			'heading-unique'      => 'heading-unique',
-			'heading-visual'      => 'heading-visual',
-			'heading-nesting'     => 'heading-nesting',
+			'missing-h1'           => 'missing-h1',
+			'multiple-h1'          => 'multiple-h1',
+			'skipped-heading'      => 'skipped-heading-level',
+			'empty-heading'        => 'empty-heading',
+			'heading-length'       => 'heading-length',
+			'heading-unique'       => 'heading-uniqueness',
+			'heading-visual'       => 'heading-visual',
+			'heading-nesting'      => 'heading-nesting',
 
 			// Form-related checks
-			'missing-label'       => 'missing-label',
-			'placeholder-label'   => 'placeholder-label',
-			'orphaned-label'      => 'orphaned-label',
-			'fieldset-legend'     => 'fieldset-legend',
-			'autocomplete'        => 'autocomplete',
-			'input-type'          => 'input-type',
-			'required-attr'       => 'required-attr',
-			'error-message'       => 'error-message',
-			'form-aria'           => 'form-aria',
-			'custom-control'      => 'custom-control',
+			'missing-label'        => 'missing-form-label',
+			'placeholder-label'    => 'placeholder-label',
+			'orphaned-label'       => 'orphaned-label',
+			'fieldset-legend'      => 'fieldset-legend',
+			'autocomplete'         => 'autocomplete-attribute',
+			'input-type'           => 'input-type',
+			'required-attr'        => 'required-attribute',
+			'error-message'        => 'error-message',
+			'form-aria'            => 'form-aria',
+			'custom-control'       => 'custom-control',
 
 			// Link-related checks
-			'empty-link'          => 'empty-link',
-			'generic-link'        => 'generic-link',
-			'new-window'          => 'new-window',
-			'download-link'       => 'download-link',
-			'external-link'       => 'external-link',
-			'link-dest'           => 'link-dest',
-			'skip-link'           => 'skip-link',
+			'empty-link'           => 'empty-link',
+			'generic-link'         => 'generic-link-text',
+			'new-window'           => 'new-window-link',
+			'download-link'        => 'download-link',
+			'external-link'        => 'external-link',
+			'link-dest'            => 'link-destination',
+			'skip-link'            => 'skip-link',
 
 			// ARIA-related checks
-			'aria-role'           => 'aria-role',
-			'aria-attr'           => 'aria-attr',
-			'aria-state'          => 'aria-state',
-			'redundant-aria'      => 'redundant-aria',
-			'invalid-aria'        => 'invalid-aria',
-			'landmark-role'       => 'landmark-role',
-			'hidden-content'      => 'hidden-content',
-			'live-region'         => 'live-region',
+			'aria-role'            => 'aria-role',
+			'aria-attr'            => 'aria-attribute',
+			'aria-state'           => 'aria-state',
+			'redundant-aria'       => 'redundant-aria',
+			'invalid-aria'         => 'invalid-aria-combination',
+			'landmark-role'        => 'landmark-role',
+			'hidden-content'       => 'hidden-content',
+			'live-region'          => 'live-region',
 
 			// Table-related checks
-			'table-header'        => 'table-header',
-			'table-caption'       => 'table-caption',
-			'complex-table'       => 'complex-table',
-			'layout-table'        => 'layout-table',
-			'empty-cell'          => 'empty-cell',
+			'table-header'         => 'table-header',
+			'table-caption'        => 'table-caption',
+			'complex-table'        => 'complex-table',
+			'layout-table'         => 'layout-table',
+			'empty-cell'           => 'empty-table-cell',
 
 			// Keyboard & Interaction
-			'positive-tabindex'   => 'positive-tabindex',
-			'keyboard-trap'       => 'keyboard-trap',
-			'focus-order'         => 'focus-order',
-			'focus-indicator'     => 'focus-indicator',
-			'interactive-element' => 'interactive-element',
-			'modal-access'        => 'modal-access',
-			'widget-keyboard'     => 'widget-keyboard',
+			'positive-tabindex'    => 'positive-tabindex',
+			'keyboard-trap'        => 'keyboard-trap',
+			'focus-order'          => 'focus-order',
+			'focus-indicator'      => 'focus-indicator',
+			'interactive-element'  => 'interactive-element',
+			'modal-access'         => 'modal-accessibility',
+			'widget-keyboard'      => 'interactive-element',
 
 			// Color & Contrast
-			'contrast'            => 'contrast',
-			'color-reliance'      => 'color-reliance',
-			'complex-contrast'    => 'complex-contrast',
+			'contrast'             => 'text-color-contrast',
+			'color-reliance'       => 'color-reliance',
+			'complex-contrast'     => 'complex-contrast',
 
 			// Mobile & Viewport
-			'touch-target'        => 'touch-target',
-			'touch-gesture'       => 'touch-gesture',
-			'viewport'            => 'viewport',
+			'touch-target'         => 'touch-target',
+			'touch-gesture'        => 'touch-gesture',
+			'viewport'             => 'viewport-check',
 
 			// Semantic & Structure
-			'semantic-html'       => 'semantic-html',
-			'page-structure'      => 'page-structure',
+			'semantic-html'        => 'semantic-html',
+			'page-structure'       => 'page-structure',
 
 			// Media & Other
-			'button-label'        => 'button-label',
-			'iframe-title'        => 'iframe-title',
-			'video-access'        => 'video-access',
-			'audio-access'        => 'audio-access',
-			'media-alt'           => 'media-alt',
+			'button-label'         => 'button-label',
+			'iframe-title'         => 'iframe-title',
+			'video-access'         => 'video-accessibility',
+			'audio-access'         => 'audio-accessibility',
+			'media-alt'            => 'media-alternative',
 
 			// Advanced
-			'language-change'     => 'language-change',
-			'animation-pause'     => 'animation-pause',
-			'timing-control'      => 'timing-control',
-			'status-message'      => 'status-message',
+			'language-change'      => 'language-change',
+			'animation-pause'      => 'animation-pause',
+			'timing-control'       => 'timing-control',
+			'status-message'       => 'status-message',
 			'error-identification' => 'error-identification',
 
 			// Handle scan results that might use longer forms
-			'video-accessibility' => 'video-access',
-			'audio-accessibility' => 'audio-access',
-			'media-alternative'   => 'media-alt',
+			'video-accessibility'  => 'video-accessibility',
+			'audio-accessibility'  => 'audio-accessibility',
+			'media-alternative'    => 'media-alternative',
 		);
 	}
 
@@ -2045,32 +2188,297 @@ class AccessibilityScanner extends Module {
 			wp_send_json_error( array( 'message' => 'Missing fixer ID' ) );
 		}
 
-		// Initialize fixer registry
-		if ( ! class_exists( '\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry' ) ) {
-			wp_send_json(
+		try {
+			// If page_id provided, get content from the post
+			if ( $page_id > 0 ) {
+				$post = get_post( $page_id );
+				if ( $post ) {
+					$content = $post->post_content;
+				}
+			}
+
+			// If no content, skip
+			if ( empty( $content ) ) {
+				wp_send_json(
+					array(
+						'skipped' => true,
+						'reason'  => 'no-content',
+						'message' => 'No content to process',
+					)
+				);
+				return;
+			}
+
+			// Get issue count before fix
+			$issues_before = null;
+			if ( $page_id > 0 ) {
+				$scan_results_before = get_post_meta( $page_id, '_slos_accessibility_scan_results', true );
+				if ( is_array( $scan_results_before ) ) {
+					$issues_before = 0;
+					foreach ( $scan_results_before as $result ) {
+						if ( isset( $result['issues'] ) && is_array( $result['issues'] ) ) {
+							$issues_before += count( $result['issues'] );
+						}
+					}
+				}
+			}
+
+			// Save content backup before fixing
+			if ( $page_id > 0 ) {
+				$this->save_content_backup( $page_id, $content );
+			}
+
+			// Prefer the canonical FixEngine for executing the fixer when available
+			$fixed_count     = 0;
+			$fixed_content   = $content;
+			$content_changed = false;
+
+			if ( $page_id > 0 && class_exists( '\ShahiLegalFlowSuite\Modules\AccessibilityScanner\FixEngine\Bootstrap' ) ) {
+				$engine = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\FixEngine\Bootstrap::get_engine();
+				$engine->initialize();
+				$session = $engine->fix_post( $page_id, array( $fixer_id ) );
+
+				$stats           = $session->get_stats();
+				$fixed_count     = isset( $stats['total_fixes'] ) ? (int) $stats['total_fixes'] : 0;
+				$fixed_content   = $session->get_final_content();
+				$content_changed = $session->has_changes();
+			} else {
+				// Strict single-pipeline mode: do not silently fall back to the legacy FixerRegistry.
+				//
+				// By default, if FixEngine is unavailable for any reason, we now treat the
+				// request as skipped rather than proxying to the legacy system. This enforces
+				// FixEngine as the single source of truth for all autofix execution.
+				//
+				// If a site explicitly opts in to legacy fallback (for example, for
+				// emergency debugging on a misconfigured environment), it can define the
+				// SLOS_ENABLE_LEGACY_FIXERS constant to true before this plugin loads.
+				if ( defined( 'SLOS_ENABLE_LEGACY_FIXERS' ) && SLOS_ENABLE_LEGACY_FIXERS ) {
+					$fixer = null;
+
+					if ( class_exists( '\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry' ) ) {
+						\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::init();
+						$fixer = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::get_fixer( $fixer_id );
+					}
+
+					// No fixer found in legacy registry
+					if ( ! $fixer ) {
+						wp_send_json(
+							array(
+								'skipped' => true,
+								'reason'  => 'fixer-unavailable',
+								'message' => 'Fixer not found: ' . esc_html( $fixer_id ),
+							)
+						);
+						return;
+					}
+
+					$result = $fixer->fix( $content );
+
+					if ( is_array( $result ) && isset( $result['content'] ) ) {
+						$fixed_count     = $result['fixed_count'] ?? $result['fixes_applied'] ?? 0;
+						$fixed_content   = $result['content'];
+						$content_changed = ( $fixed_content !== $content );
+					}
+				} else {
+					// Legacy fallback is disabled and FixEngine is unavailable: report a
+					// skipped result so callers can surface a clear message to the user.
+					wp_send_json(
+						array(
+							'skipped' => true,
+							'reason'  => 'fixengine-unavailable',
+							'message' => 'Autofix is temporarily unavailable because the FixEngine bootstrap could not be loaded.',
+						)
+					);
+					return;
+				}
+			}
+
+			// Guardrail: Ensure we don't mark success if no fixes and no content change
+			if ( $fixed_count === 0 && ! $content_changed ) {
+				wp_send_json(
+					array(
+						'skipped' => true,
+						'reason'  => 'no-issues',
+						'message' => 'No issues found',
+					)
+				);
+				return;
+			}
+
+			// If page_id provided and content changed, save the post and re-scan
+			if ( $page_id > 0 && $content_changed && $fixed_count > 0 ) {
+				// When using FixEngine, the post content is already updated, but we
+				// still rely on the updated content for re-scan and history.
+				wp_update_post(
+					array(
+						'ID'           => $page_id,
+						'post_content' => $fixed_content,
+					)
+				);
+
+				// Re-scan the post to get accurate results
+				if ( isset( $this->scanner ) && method_exists( $this->scanner, 'scan' ) ) {
+					$updated_post     = get_post( $page_id );
+					$new_scan_results = $this->scanner->scan( $updated_post->post_content );
+
+					// Get issue count after fix
+					$issues_after = 0;
+					if ( is_array( $new_scan_results ) ) {
+						foreach ( $new_scan_results as $result ) {
+							if ( isset( $result['issues'] ) && is_array( $result['issues'] ) ) {
+								$issues_after += count( $result['issues'] );
+							}
+						}
+					}
+
+					// Save fix history to database (keeps existing reporting in sync)
+					$this->save_fix_history(
+						$page_id,
+						$fixer_id,
+						$fixed_count,
+						$content,
+						$fixed_content,
+						$issues_before,
+						$issues_after
+					);
+
+					// Persist scan results and date to post meta
+					update_post_meta( $page_id, '_slos_accessibility_scan_results', $new_scan_results );
+					update_post_meta( $page_id, '_slos_accessibility_scan_date', current_time( 'mysql' ) );
+
+					// Reconsolidate all results to keep counts in sync
+					if ( method_exists( $this, 'consolidate_scan_results' ) ) {
+						$this->consolidate_scan_results();
+					}
+				}
+			}
+
+			if ( $fixed_count > 0 ) {
+				wp_send_json_success(
+					array(
+						'fixed_count'     => $fixed_count,
+						'content_changed' => $content_changed,
+					)
+				);
+			} else {
+				wp_send_json(
+					array(
+						'skipped' => true,
+						'reason'  => 'no-issues',
+						'message' => 'No issues found',
+					)
+				);
+			}
+		} catch ( \Exception $e ) {
+			wp_send_json_error(
 				array(
-					'skipped' => true,
-					'message' => 'Fixer system not available',
+					'message' => $e->getMessage(),
 				)
 			);
-			return;
+		}
+	}
+
+	/**
+	 * AJAX: Get detailed scan report for a specific page
+	 *
+	 * @since 3.2.0
+	 */
+	public function ajax_get_detailed_scan_report() {
+		check_ajax_referer( 'slos_scanner_nonce', 'nonce' );
+
+		if ( ! $this->user_can_manage_accessibility() ) {
+			wp_send_json_error( array( 'message' => 'Unauthorized' ) );
 		}
 
-		\ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::init();
+		$post_id = intval( $_POST['post_id'] ?? 0 );
 
-		// Get the fixer
-		$fixer = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\FixerRegistry::get_fixer( $fixer_id );
-
-		if ( ! $fixer ) {
-			wp_send_json(
-				array(
-					'skipped' => true,
-					'message' => 'Fixer not found',
-				)
-			);
-			return;
+		if ( empty( $post_id ) ) {
+			wp_send_json_error( array( 'message' => 'Missing post ID' ) );
 		}
 
+		// Get scan results for this page
+		$scan_results = get_post_meta( $post_id, '_slos_accessibility_scan_results', true );
+		$scan_date    = get_post_meta( $post_id, '_slos_accessibility_scan_date', true );
+		$post         = get_post( $post_id );
+
+		if ( ! $post ) {
+			wp_send_json_error( array( 'message' => 'Post not found' ) );
+		}
+
+		// Prepare response data
+		$total_issues = 0;
+		$issues       = array();
+
+		if ( ! empty( $scan_results ) && is_array( $scan_results ) ) {
+			foreach ( $scan_results as $check_id => $result ) {
+				if ( ! empty( $result['issues'] ) && is_array( $result['issues'] ) ) {
+					$issue_count   = count( $result['issues'] );
+					$total_issues += $issue_count;
+
+					$issues[] = array(
+						'name'        => $result['name'] ?? ucwords( str_replace( array( '-', '_' ), ' ', $check_id ) ),
+						'description' => $result['description'] ?? 'Accessibility issue detected',
+						'severity'    => $result['severity'] ?? 'minor',
+						'count'       => $issue_count,
+						'fix_tip'     => $this->get_fix_tip( $check_id ),
+					);
+				}
+			}
+		}
+
+		// Calculate score
+		$score = $total_issues === 0 ? 100 : max( 0, 100 - ( $total_issues * 2 ) );
+
+		wp_send_json_success(
+			array(
+				'page_title'   => $post->post_title,
+				'score'        => $score,
+				'total_issues' => $total_issues,
+				'scan_date'    => $scan_date ? date_i18n( 'M j, Y g:i A', strtotime( $scan_date ) ) : 'Never scanned',
+				'issues'       => $issues,
+			)
+		);
+	}
+
+	/**
+	 * Get fix tip for a specific check
+	 *
+	 * @param string $check_id Check identifier
+	 * @return string Fix tip
+	 */
+	private function get_fix_tip( $check_id ) {
+		$tips = array(
+			'missing-alt-text'    => 'Add descriptive alt attributes to all images. Describe what the image shows, not just "image" or "photo".',
+			'button-label'        => 'Ensure all buttons have visible text or aria-label attributes that describe their purpose.',
+			'table-header'        => 'Add <th> elements with scope attributes to table rows to identify headers.',
+			'video-accessibility' => 'Provide captions for videos using <track> elements with WebVTT files.',
+			'media-alternative'   => 'Add text transcripts for audio content and alternative descriptions for media.',
+			'form-label'          => 'Associate every form input with a <label> element using the for/id attributes.',
+			'heading-structure'   => 'Use heading levels (h1-h6) in proper order without skipping levels.',
+			'link-text'           => 'Use descriptive link text instead of "click here" or "read more". Describe the destination.',
+			'color-contrast'      => 'Ensure text has sufficient contrast ratio: 4.5:1 for normal text, 3:1 for large text.',
+			'aria-labels'         => 'Add appropriate ARIA labels and roles to custom interactive elements.',
+			'keyboard-access'     => 'Ensure all interactive elements are keyboard accessible using Tab and Enter keys.',
+			'table-caption'       => 'Add <caption> elements to tables to describe their purpose.',
+			'empty-heading'       => 'Remove empty headings or add meaningful content to them.',
+			'empty-link'          => 'Add descriptive text to links or remove empty link elements.',
+			'skip-link'           => 'Add a "Skip to main content" link at the top of the page for keyboard users.',
+		);
+
+		return $tips[ $check_id ] ?? 'Review the issue details and consult WCAG guidelines for proper implementation.';
+	}
+
+	/**
+	 * Handle fix request using new FixEngine
+	 *
+	 * @since 3.3.0
+	 * @param object $engine The FixEngine instance
+	 * @param object $fixer The fixer instance
+	 * @param string $fixer_id The fixer ID
+	 * @param int    $page_id The page ID
+	 * @param string $content The content to fix
+	 */
+	private function handle_fix_engine_request( $engine, $fixer, $fixer_id, $page_id, $content ) {
 		try {
 			// If page_id provided, get content from the post
 			if ( $page_id > 0 ) {
@@ -2091,46 +2499,104 @@ class AccessibilityScanner extends Module {
 				return;
 			}
 
-			// Run the fixer
-			$result = $fixer->fix( $content );
-
-			// Check result
-			if ( is_array( $result ) && isset( $result['content'] ) ) {
-				$fixed_count    = $result['fixes_applied'] ?? 0;
-				$fixed_content  = $result['content'];
-				$content_changed = ( $fixed_content !== $content );
-
-				// If page_id provided and content changed, save the post
-				if ( $page_id > 0 && $content_changed && $fixed_count > 0 ) {
-					wp_update_post(
-						array(
-							'ID'           => $page_id,
-							'post_content' => $fixed_content,
-						)
-					);
+			// Get issue count before fix
+			$issues_before = null;
+			if ( $page_id > 0 ) {
+				$scan_results_before = get_post_meta( $page_id, '_slos_accessibility_scan_results', true );
+				if ( is_array( $scan_results_before ) ) {
+					$issues_before = 0;
+					foreach ( $scan_results_before as $result ) {
+						if ( isset( $result['issues'] ) && is_array( $result['issues'] ) ) {
+							$issues_before += count( $result['issues'] );
+						}
+					}
 				}
+			}
 
-				if ( $fixed_count > 0 ) {
-					wp_send_json_success(
-						array(
-							'fixed_count'     => $fixed_count,
-							'content_changed' => $content_changed,
-						)
-					);
-				} else {
-					wp_send_json(
-						array(
-							'skipped' => true,
-							'message' => 'No issues found',
-						)
-					);
-				}
-			} else {
-				// Fixer returned unexpected format
+			// Save content backup before fixing
+			if ( $page_id > 0 ) {
+				$this->save_content_backup( $page_id, $content );
+			}
+
+			// Run the fixer using new FixEngine
+			$result = $fixer->fix( $content, array( 'post_id' => $page_id ) );
+
+			// Process result (FixResult object)
+			$fixed_count     = $result->get_fixes_applied();
+			$fixed_content   = $result->get_fixed_content();
+			$content_changed = ( $fixed_content !== $content );
+
+			// Guardrail: Ensure we don't mark success if no fixes and no content change
+			if ( $fixed_count === 0 && ! $content_changed ) {
 				wp_send_json(
 					array(
 						'skipped' => true,
-						'message' => 'No fixes applied',
+						'message' => $result->get_message() ?: 'No issues found',
+					)
+				);
+				return;
+			}
+
+			// If page_id provided and content changed, save the post
+			if ( $page_id > 0 && $content_changed && $fixed_count > 0 ) {
+				wp_update_post(
+					array(
+						'ID'           => $page_id,
+						'post_content' => $fixed_content,
+					)
+				);
+
+				// Re-scan the post to get accurate results
+				if ( isset( $this->scanner ) && method_exists( $this->scanner, 'scan' ) ) {
+					$updated_post     = get_post( $page_id );
+					$new_scan_results = $this->scanner->scan( $updated_post->post_content );
+
+					// Get issue count after fix
+					$issues_after = 0;
+					if ( is_array( $new_scan_results ) ) {
+						foreach ( $new_scan_results as $scan_result ) {
+							if ( isset( $scan_result['issues'] ) && is_array( $scan_result['issues'] ) ) {
+								$issues_after += count( $scan_result['issues'] );
+							}
+						}
+					}
+
+					// Save fix history to database
+					$this->save_fix_history(
+						$page_id,
+						$fixer_id,
+						$fixed_count,
+						$content,
+						$fixed_content,
+						$issues_before,
+						$issues_after
+					);
+
+					// Persist scan results and date to post meta
+					update_post_meta( $page_id, '_slos_accessibility_scan_results', $new_scan_results );
+					update_post_meta( $page_id, '_slos_accessibility_scan_date', current_time( 'mysql' ) );
+
+					// Reconsolidate all results to keep counts in sync
+					if ( method_exists( $this, 'consolidate_scan_results' ) ) {
+						$this->consolidate_scan_results();
+					}
+				}
+			}
+
+			if ( $fixed_count > 0 ) {
+				wp_send_json_success(
+					array(
+						'fixed_count'     => $fixed_count,
+						'content_changed' => $content_changed,
+						'fixer_name'      => $fixer->get_name(),
+						'details'         => $result->get_details(),
+					)
+				);
+			} else {
+				wp_send_json(
+					array(
+						'skipped' => true,
+						'message' => 'No issues found',
 					)
 				);
 			}
@@ -2142,5 +2608,1078 @@ class AccessibilityScanner extends Module {
 			);
 		}
 	}
-}
 
+	/**
+	 * Save content backup before applying fixes
+	 *
+	 * @since 3.1.1
+	 * @deprecated 3.2.0 Use BackupService::save_backup() instead
+	 * @param int    $post_id Post ID
+	 * @param string $content Original content
+	 * @return bool True on success, false on failure
+	 */
+	private function save_content_backup( $post_id, $content ) {
+		_deprecated_function( __METHOD__, '3.2.0', 'BackupService::save_backup()' );
+
+		// Use BackupService for new backup system
+		$backup_id = $this->backup_service->save_backup( $post_id, $content );
+
+		// Also maintain old post meta for backward compatibility during transition
+		$backup_key = '_slos_accessibility_content_backup';
+		$backup     = array(
+			'content'    => $content,
+			'timestamp'  => current_time( 'timestamp' ),
+			'created_at' => current_time( 'mysql' ),
+		);
+		update_post_meta( $post_id, $backup_key, $backup );
+
+		return (bool) $backup_id;
+	}
+
+	/**
+	 * Get content backup for rollback
+	 *
+	 * @since 3.1.1
+	 * @deprecated 3.2.0 Use BackupService::get_latest_backup() instead
+	 * @param int $post_id Post ID
+	 * @return array|false Backup data or false if not found
+	 */
+	private function get_content_backup( $post_id ) {
+		_deprecated_function( __METHOD__, '3.2.0', 'BackupService::get_latest_backup()' );
+
+		// Try BackupService first (new system)
+		$backup = $this->backup_service->get_latest_backup( $post_id );
+		if ( $backup ) {
+			return array(
+				'content'    => $backup['original_content'],
+				'timestamp'  => strtotime( $backup['created_at'] ),
+				'created_at' => $backup['created_at'],
+			);
+		}
+
+		// Fallback to post meta (old system)
+		$backup = get_post_meta( $post_id, '_slos_accessibility_content_backup', true );
+
+		if ( empty( $backup ) || ! is_array( $backup ) ) {
+			return false;
+		}
+
+		return $backup;
+	}
+
+	/**
+	 * Delete content backup (after successful fix or TTL expiration)
+	 *
+	 * @since 3.1.1
+	 * @param int $post_id Post ID
+	 * @return bool True on success, false on failure
+	 */
+	private function delete_content_backup( $post_id ) {
+		return delete_post_meta( $post_id, '_slos_accessibility_content_backup' );
+	}
+
+	/**
+	 * Save fix history to database
+	 *
+	 * @since 3.1.1
+	 * @param int    $post_id       Post ID
+	 * @param string $fixer_id      Fixer identifier
+	 * @param int    $fixed_count   Number of fixes applied
+	 * @param string $content_before Original content
+	 * @param string $content_after  Fixed content
+	 * @param int    $issues_before  Issue count before fix
+	 * @param int    $issues_after   Issue count after fix
+	 * @return int|false Insert ID on success, false on failure
+	 */
+	private function save_fix_history( $post_id, $fixer_id, $fixed_count, $content_before, $content_after, $issues_before = null, $issues_after = null ) {
+		global $wpdb;
+
+		$table_name = $wpdb->prefix . 'slos_accessibility_fix_history';
+
+		// Check if table exists
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) !== $table_name ) {
+			return false;
+		}
+
+		$data = array(
+			'post_id'             => $post_id,
+			'fixer_id'            => $fixer_id,
+			'fixed_count'         => $fixed_count,
+			'content_hash_before' => md5( $content_before ),
+			'content_hash_after'  => md5( $content_after ),
+			'issues_before'       => $issues_before,
+			'issues_after'        => $issues_after,
+			'user_id'             => get_current_user_id(),
+			'action'              => 'auto_fix',
+			'created_at'          => current_time( 'mysql' ),
+		);
+
+		$result = $wpdb->insert( $table_name, $data );
+
+		return $result ? $wpdb->insert_id : false;
+	}
+
+	/**
+	 * Cleanup old backups (TTL mechanism)
+	 *
+	 * @since 3.1.1
+	 * @deprecated 3.2.0 Use BackupService::cleanup_old_backups() instead
+	 * @param int $ttl_days Number of days to keep backups (default 7)
+	 * @return int Number of backups cleaned up
+	 */
+	private function cleanup_old_backups( $ttl_days = 7 ) {
+		_deprecated_function( __METHOD__, '3.2.0', 'BackupService::cleanup_old_backups()' );
+
+		// Use BackupService for database cleanup
+		$deleted = $this->backup_service->cleanup_old_backups( $ttl_days );
+
+		// Also clean up old post meta backups for backward compatibility
+		global $wpdb;
+		$count         = 0;
+		$ttl_timestamp = current_time( 'timestamp' ) - ( $ttl_days * DAY_IN_SECONDS );
+
+		// Get all posts with backups
+		$meta_key           = '_slos_accessibility_content_backup';
+		$posts_with_backups = $wpdb->get_results(
+			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- esc_sql() used for table name
+				'SELECT post_id, meta_value FROM ' . esc_sql( $wpdb->postmeta ) . ' WHERE meta_key = %s',
+				$meta_key
+			)
+		);
+
+		foreach ( $posts_with_backups as $row ) {
+			$backup = maybe_unserialize( $row->meta_value );
+
+			if ( is_array( $backup ) && isset( $backup['timestamp'] ) ) {
+				if ( $backup['timestamp'] < $ttl_timestamp ) {
+					delete_post_meta( $row->post_id, $meta_key );
+					++$count;
+				}
+			}
+		}
+
+		return $deleted + $count;
+	}
+
+	/**
+	 * Rollback post content to backup
+	 *
+	 * @since 3.1.1
+	 * @deprecated 3.2.0 Use BackupService::restore_backup() instead
+	 * @param int $post_id Post ID
+	 * @return bool|WP_Error True on success, WP_Error on failure
+	 */
+	private function rollback_content( $post_id ) {
+		_deprecated_function( __METHOD__, '3.2.0', 'BackupService::restore_backup()' );
+
+		// Use BackupService to restore
+		$result = $this->backup_service->restore_backup( $post_id );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		$post = get_post( $post_id );
+		if ( ! $post ) {
+			return new \WP_Error( 'post_not_found', 'Post not found' );
+		}
+
+		// Re-scan after rollback
+		if ( isset( $this->scanner ) && method_exists( $this->scanner, 'scan' ) ) {
+			$restored_post = get_post( $post_id );
+			$scan_results  = $this->scanner->scan( $restored_post->post_content );
+			update_post_meta( $post_id, '_slos_accessibility_scan_results', $scan_results );
+			update_post_meta( $post_id, '_slos_accessibility_scan_date', current_time( 'mysql' ) );
+
+			if ( method_exists( $this, 'consolidate_scan_results' ) ) {
+				$this->consolidate_scan_results();
+			}
+		}
+
+		// Log rollback to history (BackupService already handles backup tracking)
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'slos_accessibility_fix_history';
+
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) === $table_name ) {
+			$wpdb->insert(
+				$table_name,
+				array(
+					'post_id'     => $post_id,
+					'fixer_id'    => 'rollback',
+					'fixed_count' => 0,
+					'user_id'     => get_current_user_id(),
+					'action'      => 'rollback',
+					'created_at'  => current_time( 'mysql' ),
+				)
+			);
+		}
+
+		return true;
+	}
+
+	/**
+	 * AJAX: Rollback accessibility fixes
+	 *
+	 * @since 3.1.1
+	 */
+	public function ajax_rollback_fixes() {
+		// Accept either the original autofix nonce or the scanner nonce for compatibility
+		if ( ! check_ajax_referer( 'slos_autofix_nonce', 'nonce', false ) && ! check_ajax_referer( 'slos_scanner_nonce', 'nonce', false ) ) {
+			wp_send_json_error( array( 'message' => 'Invalid nonce' ) );
+		}
+
+		if ( ! $this->user_can_manage_accessibility() ) {
+			wp_send_json_error( array( 'message' => 'Unauthorized' ) );
+		}
+
+		$post_id = intval( $_POST['post_id'] ?? 0 );
+
+		if ( empty( $post_id ) ) {
+			wp_send_json_error( array( 'message' => 'Missing post ID' ) );
+		}
+
+		$result = $this->rollback_content( $post_id );
+
+		if ( is_wp_error( $result ) ) {
+			wp_send_json_error( array( 'message' => $result->get_error_message() ) );
+		}
+
+		wp_send_json_success(
+			array(
+				'message' => 'Content successfully rolled back to previous version',
+			)
+		);
+	}
+
+	/**
+	 * AJAX handler to check if backup exists for a post
+	 *
+	 * @since 3.1.1
+	 */
+	public function ajax_check_backup_exists() {
+		check_ajax_referer( 'slos_scanner_nonce', 'nonce' );
+
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			wp_send_json_error( array( 'message' => 'Insufficient permissions' ) );
+		}
+
+		$post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
+
+		if ( ! $post_id ) {
+			wp_send_json_error( array( 'message' => 'Invalid post ID' ) );
+		}
+
+		// Use BackupService directly
+		$has_backup = $this->backup_service->has_backup( $post_id );
+		$backup     = $has_backup ? $this->backup_service->get_latest_backup( $post_id ) : null;
+
+		wp_send_json_success(
+			array(
+				'has_backup'  => $has_backup,
+				'backup_date' => $backup ? $backup['created_at'] : '',
+			)
+		);
+	}
+
+	/**
+	 * AJAX: Save scanner configuration from Tools page
+	 *
+	 * Mirrors the Accessibility Settings page but scoped to the Tools UI.
+	 */
+	public function ajax_save_scanner_config() {
+		check_ajax_referer( 'slos_scanner_nonce', 'nonce' );
+
+		if ( ! $this->user_can_manage_accessibility() ) {
+			wp_send_json_error( array( 'message' => 'Unauthorized' ) );
+		}
+
+		// Sanitize WCAG level
+		$wcag_level     = isset( $_POST['wcag_level'] ) ? sanitize_text_field( wp_unslash( $_POST['wcag_level'] ) ) : 'AA';
+		$allowed_levels = array( 'A', 'AA', 'AAA' );
+		if ( ! in_array( $wcag_level, $allowed_levels, true ) ) {
+			$wcag_level = 'AA';
+		}
+
+		// Sanitize post types
+		$scan_post_types = isset( $_POST['scan_post_types'] ) ? (array) $_POST['scan_post_types'] : array( 'post', 'page' );
+		$scan_post_types = array_map( 'sanitize_key', $scan_post_types );
+
+		// Only keep valid public post types
+		$public_types    = get_post_types( array( 'public' => true ), 'names' );
+		$scan_post_types = array_values( array_intersect( $scan_post_types, $public_types ) );
+		if ( empty( $scan_post_types ) ) {
+			$scan_post_types = array( 'post', 'page' );
+		}
+
+		// Sanitize active checkers; reuse same keys as settings page
+		$raw_checkers       = isset( $_POST['active_checkers'] ) ? (array) $_POST['active_checkers'] : array();
+		$raw_checkers       = array_map( 'sanitize_key', $raw_checkers );
+		$available_checkers = array_keys( $this->get_check_mapping() );
+		$active_checkers    = array_values( array_intersect( $raw_checkers, $available_checkers ) );
+		if ( empty( $active_checkers ) ) {
+			$active_checkers = $available_checkers;
+		}
+
+		update_option( 'slos_wcag_level', $wcag_level );
+		update_option( 'slos_scan_post_types', $scan_post_types );
+		update_option( 'slos_active_checkers', $active_checkers );
+
+		wp_send_json_success(
+			array(
+				'wcag_level'      => $wcag_level,
+				'scan_post_types' => $scan_post_types,
+				'active_checkers' => $active_checkers,
+			)
+		);
+	}
+
+	/**
+	 * AJAX: Schedule accessibility email reports
+	 *
+	 * Stores report settings and relies on cron_send_accessibility_report()
+	 * to send periodic summaries.
+	 */
+	public function ajax_schedule_email_report() {
+		check_ajax_referer( 'slos_scanner_nonce', 'nonce' );
+
+		if ( ! $this->user_can_manage_accessibility() ) {
+			wp_send_json_error( array( 'message' => 'Unauthorized' ) );
+		}
+
+		$email     = isset( $_POST['email'] ) ? sanitize_text_field( wp_unslash( $_POST['email'] ) ) : '';
+		$frequency = isset( $_POST['frequency'] ) ? sanitize_text_field( wp_unslash( $_POST['frequency'] ) ) : 'weekly';
+		$template  = isset( $_POST['template'] ) ? sanitize_text_field( wp_unslash( $_POST['template'] ) ) : 'executive';
+
+		if ( empty( $email ) ) {
+			wp_send_json_error( array( 'message' => __( 'Please provide at least one email address.', 'shahi-legalflowsuite' ) ) );
+		}
+
+		// Validate email addresses (support multiple emails separated by commas)
+		$emails       = array_map( 'trim', explode( ',', $email ) );
+		$valid_emails = array();
+
+		foreach ( $emails as $single_email ) {
+			if ( is_email( $single_email ) ) {
+				$valid_emails[] = $single_email;
+			}
+		}
+
+		if ( empty( $valid_emails ) ) {
+			wp_send_json_error( array( 'message' => __( 'Please provide at least one valid email address.', 'shahi-legalflowsuite' ) ) );
+		}
+
+		$allowed_frequencies = array( 'daily', 'weekly', 'monthly' );
+		if ( ! in_array( $frequency, $allowed_frequencies, true ) ) {
+			$frequency = 'weekly';
+		}
+
+		$allowed_templates = array( 'executive', 'technical', 'combined' );
+		if ( ! in_array( $template, $allowed_templates, true ) ) {
+			$template = 'executive';
+		}
+
+		$settings = array(
+			'email'     => implode( ', ', $valid_emails ),
+			'frequency' => $frequency,
+			'template'  => $template,
+			'last_sent' => '',
+		);
+
+		update_option( 'slos_accessibility_report_settings', $settings );
+
+		wp_send_json_success(
+			array(
+				'message'  => sprintf(
+					/* translators: %d: number of email addresses */
+					_n(
+						'Email report scheduled successfully to %d recipient.',
+						'Email report scheduled successfully to %d recipients.',
+						count( $valid_emails ),
+						'shahi-legalflowsuite'
+					),
+					count( $valid_emails )
+				),
+				'settings' => $settings,
+			)
+		);
+	}
+
+	/**
+	 * Cron callback: send periodic accessibility email report.
+	 *
+	 * Runs daily but honours the configured daily/weekly/monthly cadence.
+	 */
+	public function cron_send_accessibility_report() {
+		$settings  = get_option( 'slos_accessibility_report_settings', array() );
+		$email     = isset( $settings['email'] ) ? $settings['email'] : '';
+		$frequency = isset( $settings['frequency'] ) ? $settings['frequency'] : 'weekly';
+		$template  = isset( $settings['template'] ) ? $settings['template'] : 'executive';
+
+		if ( empty( $email ) ) {
+			return;
+		}
+
+		// Parse multiple emails
+		$emails       = array_map( 'trim', explode( ',', $email ) );
+		$valid_emails = array_filter( $emails, 'is_email' );
+
+		if ( empty( $valid_emails ) ) {
+			return;
+		}
+
+		$now       = current_time( 'timestamp' );
+		$last_sent = ! empty( $settings['last_sent'] ) ? strtotime( $settings['last_sent'] ) : 0;
+
+		// Determine interval based on frequency
+		$interval_days = 7; // default weekly
+		switch ( $frequency ) {
+			case 'daily':
+				$interval_days = 1;
+				break;
+			case 'monthly':
+				$interval_days = 30;
+				break;
+		}
+
+		// Check if enough time has passed since last report
+		if ( $last_sent && ( $now - $last_sent ) < ( DAY_IN_SECONDS * $interval_days ) ) {
+			return;
+		}
+
+		// Get reporter instance
+		if ( ! class_exists( 'ShahiLegalFlowSuite\Modules\AccessibilityScanner\Reporting\AccessibilityReporter' ) ) {
+			return;
+		}
+
+		$reporter = new \ShahiLegalFlowSuite\Modules\AccessibilityScanner\Reporting\AccessibilityReporter();
+
+		// Send to all recipients
+		$sent_count = 0;
+		foreach ( $valid_emails as $recipient ) {
+			if ( $reporter->send_email_report( $recipient, $template ) ) {
+				++$sent_count;
+			}
+		}
+
+		// Update last sent time if at least one email was sent successfully
+		if ( $sent_count > 0 ) {
+			$settings['last_sent'] = current_time( 'mysql' );
+			update_option( 'slos_accessibility_report_settings', $settings );
+		}
+	}
+
+	/**
+	 * AJAX: Toggle accessibility widget enabled/disabled
+	 *
+	 * @since 3.1.1
+	 */
+	public function ajax_toggle_widget() {
+		check_ajax_referer( 'slos_scanner_nonce', 'nonce' );
+
+		if ( ! $this->user_can_manage_accessibility() ) {
+			wp_send_json_error( 'Unauthorized' );
+		}
+
+		$enabled = ! empty( $_POST['enabled'] ) && 'true' === $_POST['enabled'];
+		update_option( 'slos_widget_enabled', $enabled );
+
+		wp_send_json_success( array( 'enabled' => $enabled ) );
+	}
+
+	/**
+	 * AJAX: Save comprehensive widget configuration
+	 *
+	 * @since 3.1.1
+	 */
+	public function ajax_save_widget_config() {
+		check_ajax_referer( 'slos_scanner_nonce', 'nonce' );
+
+		if ( ! $this->user_can_manage_accessibility() ) {
+			wp_send_json_error( array( 'message' => __( 'Unauthorized access.', 'shahi-legalflowsuite' ) ) );
+		}
+
+		// Sanitize and validate widget enabled
+		$enabled = ! empty( $_POST['enabled'] ) && 'true' === $_POST['enabled'];
+
+		// Sanitize and validate widget position
+		$position        = isset( $_POST['position'] ) ? sanitize_text_field( $_POST['position'] ) : 'bottom-right';
+		$valid_positions = array( 'top-left', 'top-right', 'bottom-left', 'bottom-right' );
+		if ( ! in_array( $position, $valid_positions, true ) ) {
+			$position = 'bottom-right';
+		}
+
+		// Sanitize and validate widget color
+		$color        = isset( $_POST['color'] ) ? sanitize_text_field( $_POST['color'] ) : 'blue';
+		$valid_colors = array( 'blue', 'green', 'purple', 'orange', 'red', 'teal' );
+		if ( ! in_array( $color, $valid_colors, true ) ) {
+			$color = 'blue';
+		}
+
+		// Update widget options (removed features - all features enabled by default)
+		update_option( 'slos_widget_enabled', $enabled );
+		update_option( 'slos_widget_position', $position );
+		update_option( 'slos_widget_color', $color );
+
+		wp_send_json_success(
+			array(
+				'message'  => __( 'Widget configuration saved successfully.', 'shahi-legalflowsuite' ),
+				'enabled'  => $enabled,
+				'position' => $position,
+				'color'    => $color,
+			)
+		);
+	}
+
+	/**
+	 * Cron job to cleanup old backups (TTL 7 days)
+	 *
+	 * @since 3.1.1
+	 */
+	public function cron_cleanup_old_backups() {
+		$count = $this->cleanup_old_backups( 7 );
+
+		// Log cleanup activity
+		if ( $count > 0 ) {
+			error_log( sprintf( 'SLOS: Cleaned up %d old accessibility fix backups', $count ) );
+		}
+	}
+
+	/**
+	 * Get accessibility statistics for Ops Dashboard
+	 *
+	 * Returns summary stats: total issues, issue breakdown by severity, pages scanned, last scan time.
+	 *
+	 * @since 3.1.1 (Phase 2.1)
+	 * @return array Accessibility statistics
+	 */
+	public function get_ops_statistics(): array {
+		$total_issues    = (int) get_option( 'slos_accessibility_issues_total', 0 );
+		$critical_issues = (int) get_option( 'slos_accessibility_issues_critical', 0 );
+		$warning_issues  = (int) get_option( 'slos_accessibility_issues_warning', 0 );
+		$notice_issues   = (int) get_option( 'slos_accessibility_issues_notice', 0 );
+		$pages_scanned   = (int) get_option( 'slos_accessibility_pages_scanned', 0 );
+		$score           = (int) get_option( 'slos_accessibility_score', 0 );
+		$last_scan       = get_option( 'slos_last_scan_time', '' );
+
+		// Get scan statistics for more detailed breakdown
+		$scan_stats = get_option( 'slos_scan_statistics', array() );
+
+		// Calculate pass rate
+		$pass_rate = $total_issues > 0 && ! empty( $scan_stats['total_checks'] )
+			? round( ( ( $scan_stats['total_checks'] - $total_issues ) / $scan_stats['total_checks'] ) * 100, 1 )
+			: 100;
+
+		// Issue severity breakdown
+		$by_severity = array(
+			'critical' => $critical_issues,
+			'warning'  => $warning_issues,
+			'notice'   => $notice_issues,
+		);
+
+		// Calculate time since last scan
+		$last_scan_timestamp = ! empty( $last_scan ) ? strtotime( $last_scan ) : 0;
+		$hours_since_scan    = $last_scan_timestamp > 0
+			? round( ( time() - $last_scan_timestamp ) / 3600, 1 )
+			: null;
+
+		// Determine freshness status
+		$freshness = 'never';
+		if ( $hours_since_scan !== null ) {
+			if ( $hours_since_scan < 24 ) {
+				$freshness = 'fresh';
+			} elseif ( $hours_since_scan < 168 ) { // 7 days
+				$freshness = 'recent';
+			} else {
+				$freshness = 'stale';
+			}
+		}
+
+		return array(
+			'total_issues'        => $total_issues,
+			'critical_issues'     => $critical_issues,
+			'warning_issues'      => $warning_issues,
+			'notice_issues'       => $notice_issues,
+			'pages_scanned'       => $pages_scanned,
+			'accessibility_score' => $score,
+			'pass_rate'           => (float) $pass_rate,
+			'last_scan_time'      => $last_scan,
+			'hours_since_scan'    => $hours_since_scan,
+			'scan_freshness'      => $freshness,
+			'by_severity'         => $by_severity,
+		);
+	}
+
+	/**
+	 * AJAX: Check Color Contrast
+	 *
+	 * Calculates the contrast ratio between foreground and background colors
+	 * and checks against WCAG 2.2 standards.
+	 *
+	 * @since 3.1.2
+	 * @return void Sends JSON response
+	 */
+	public function ajax_check_color_contrast() {
+		check_ajax_referer( 'slos_scanner_nonce', 'nonce' );
+
+		if ( ! $this->user_can_manage_accessibility() ) {
+			wp_send_json_error( 'Unauthorized' );
+		}
+
+		$fg_color = sanitize_text_field( wp_unslash( $_POST['fg_color'] ?? '' ) );
+		$bg_color = sanitize_text_field( wp_unslash( $_POST['bg_color'] ?? '' ) );
+
+		if ( empty( $fg_color ) || empty( $bg_color ) ) {
+			wp_send_json_error( __( 'Both colors are required.', 'shahi-legalflowsuite' ) );
+		}
+
+		// Calculate contrast ratio
+		$ratio = $this->calculate_contrast_ratio( $fg_color, $bg_color );
+
+		// WCAG 2.2 standards
+		$wcag_aa_normal  = $ratio >= 4.5;
+		$wcag_aa_large   = $ratio >= 3.0;
+		$wcag_aaa_normal = $ratio >= 7.0;
+		$wcag_aaa_large  = $ratio >= 4.5;
+
+		wp_send_json_success(
+			array(
+				'ratio'           => round( $ratio, 2 ),
+				'wcag_aa_normal'  => $wcag_aa_normal,
+				'wcag_aa_large'   => $wcag_aa_large,
+				'wcag_aaa_normal' => $wcag_aaa_normal,
+				'wcag_aaa_large'  => $wcag_aaa_large,
+				'passes_aa'       => $wcag_aa_normal,
+				'recommendation'  => $this->get_contrast_recommendation( $ratio ),
+			)
+		);
+	}
+
+	/**
+	 * Calculate contrast ratio between two colors
+	 *
+	 * Uses WCAG 2.2 formula: (L1 + 0.05) / (L2 + 0.05)
+	 * where L1 is the lighter color and L2 is the darker color.
+	 *
+	 * @since 3.1.2
+	 * @param string $fg Foreground color (hex format)
+	 * @param string $bg Background color (hex format)
+	 * @return float Contrast ratio
+	 */
+	private function calculate_contrast_ratio( $fg, $bg ) {
+		$fg_luminance = $this->get_relative_luminance( $fg );
+		$bg_luminance = $this->get_relative_luminance( $bg );
+
+		$lighter = max( $fg_luminance, $bg_luminance );
+		$darker  = min( $fg_luminance, $bg_luminance );
+
+		return ( $lighter + 0.05 ) / ( $darker + 0.05 );
+	}
+
+	/**
+	 * Get relative luminance of a color
+	 *
+	 * Implements the WCAG 2.2 relative luminance formula.
+	 *
+	 * @since 3.1.2
+	 * @param string $hex Color in hex format (#RRGGBB or RRGGBB)
+	 * @return float Relative luminance (0-1)
+	 */
+	private function get_relative_luminance( $hex ) {
+		// Remove # if present
+		$hex = ltrim( $hex, '#' );
+
+		// Convert hex to RGB (0-255)
+		$r = hexdec( substr( $hex, 0, 2 ) ) / 255;
+		$g = hexdec( substr( $hex, 2, 2 ) ) / 255;
+		$b = hexdec( substr( $hex, 4, 2 ) ) / 255;
+
+		// Apply sRGB to linear RGB conversion
+		$r = $r <= 0.03928 ? $r / 12.92 : pow( ( $r + 0.055 ) / 1.055, 2.4 );
+		$g = $g <= 0.03928 ? $g / 12.92 : pow( ( $g + 0.055 ) / 1.055, 2.4 );
+		$b = $b <= 0.03928 ? $b / 12.92 : pow( ( $b + 0.055 ) / 1.055, 2.4 );
+
+		// Calculate relative luminance
+		return 0.2126 * $r + 0.7152 * $g + 0.0722 * $b;
+	}
+
+	/**
+	 * Get contrast recommendation based on ratio
+	 *
+	 * Provides human-readable guidance on WCAG compliance.
+	 *
+	 * @since 3.1.2
+	 * @param float $ratio Contrast ratio
+	 * @return string Recommendation message
+	 */
+	private function get_contrast_recommendation( $ratio ) {
+		if ( $ratio >= 7.0 ) {
+			return __( 'Excellent! Passes WCAG AAA for all text sizes.', 'shahi-legalflowsuite' );
+		} elseif ( $ratio >= 4.5 ) {
+			return __( 'Good! Passes WCAG AA for normal text.', 'shahi-legalflowsuite' );
+		} elseif ( $ratio >= 3.0 ) {
+			return __( 'Acceptable for large text only (18pt+).', 'shahi-legalflowsuite' );
+		} else {
+			return __( 'Fails WCAG standards. Increase contrast.', 'shahi-legalflowsuite' );
+		}
+	}
+
+	/**
+	 * AJAX Handler: Check Readability Score (Flesch-Kincaid)
+	 *
+	 * Analyzes text readability using Flesch-Kincaid Grade Level formula.
+	 * WCAG recommends lower secondary education level (grade 7-9) for accessibility.
+	 *
+	 * @since 3.1.2
+	 * @return void
+	 */
+	public function ajax_check_readability() {
+		check_ajax_referer( 'slos_scanner_nonce', 'nonce' );
+
+		if ( ! $this->user_can_manage_accessibility() ) {
+			wp_send_json_error( __( 'Unauthorized', 'shahi-legalflowsuite' ) );
+		}
+
+		$text = isset( $_POST['text'] ) ? wp_unslash( $_POST['text'] ) : '';
+
+		if ( empty( $text ) ) {
+			wp_send_json_error( __( 'Text is required.', 'shahi-legalflowsuite' ) );
+		}
+
+		// Calculate readability metrics
+		$words     = str_word_count( $text );
+		$sentences = $this->count_sentences( $text );
+		$syllables = $this->count_syllables( $text );
+
+		if ( $words === 0 || $sentences === 0 ) {
+			wp_send_json_error( __( 'Please provide valid text with complete sentences.', 'shahi-legalflowsuite' ) );
+		}
+
+		// Calculate Flesch-Kincaid Grade Level
+		$grade_level = $this->calculate_flesch_kincaid( $words, $sentences, $syllables );
+
+		// Calculate Flesch Reading Ease Score
+		// Formula: 206.835 - 1.015 × (words/sentences) - 84.6 × (syllables/words)
+		$asl          = $words / $sentences;
+		$asw          = $syllables / $words;
+		$flesch_score = 206.835 - ( 1.015 * $asl ) - ( 84.6 * $asw );
+		$flesch_score = max( 0, min( 100, $flesch_score ) ); // Clamp between 0-100
+
+		// Get interpretation
+		$interpretation = $this->get_readability_interpretation( $grade_level );
+
+		wp_send_json_success(
+			array(
+				'grade_level'    => $grade_level,
+				'word_count'     => $words,
+				'sentence_count' => $sentences,
+				'syllable_count' => $syllables,
+				'flesch_score'   => $flesch_score,
+				'interpretation' => $interpretation['text'],
+				'level_name'     => $interpretation['level'],
+				'passes_wcag'    => $interpretation['passes'],
+				'recommendation' => $interpretation['recommendation'],
+			)
+		);
+	}
+
+	/**
+	 * Count sentences in text
+	 *
+	 * Splits text by sentence-ending punctuation (.!?) followed by
+	 * uppercase letter or end of string to avoid abbreviations.
+	 *
+	 * @since 3.1.2
+	 * @param string $text Text to analyze
+	 * @return int Number of sentences
+	 */
+	private function count_sentences( $text ) {
+		// Remove extra whitespace
+		$text = trim( $text );
+
+		// Count sentences ending with . ! ? (but not abbreviations like Dr. or Mr.)
+		$sentences = preg_split( '/[.!?]+(?=\s+[A-Z]|$)/', $text, -1, PREG_SPLIT_NO_EMPTY );
+
+		return max( 1, count( $sentences ) );
+	}
+
+	/**
+	 * Count syllables in text (Flesch-Kincaid method)
+	 *
+	 * Uses vowel group counting algorithm consistent with standard
+	 * Flesch-Kincaid readability calculations.
+	 *
+	 * @since 3.1.2
+	 * @param string $text Text to analyze
+	 * @return int Number of syllables
+	 */
+	private function count_syllables( $text ) {
+		// Convert to lowercase and remove non-alphabetic characters
+		$text = strtolower( $text );
+		$text = preg_replace( '/[^a-z\s]/', ' ', $text );
+
+		// Split into words
+		$words = preg_split( '/\s+/', $text, -1, PREG_SPLIT_NO_EMPTY );
+
+		$syllable_count = 0;
+
+		foreach ( $words as $word ) {
+			// Remove trailing 'e' and 'es' if not sole vowels
+			$word = preg_replace( '/(?:[^laeiouy]es|ed|[^laeiouy]e)$/', '', $word );
+
+			// Remove leading 'y'
+			$word = preg_replace( '/^y/', '', $word );
+
+			// Count vowel groups (consecutive vowels count as one)
+			preg_match_all( '/[aeiouy]{1,2}/', $word, $matches );
+			$syllables = count( $matches[0] );
+
+			// Every word has at least one syllable
+			$syllable_count += max( 1, $syllables );
+		}
+
+		return max( 1, $syllable_count );
+	}
+
+	/**
+	 * Calculate Flesch-Kincaid Grade Level
+	 *
+	 * Formula: 0.39 × (words/sentences) + 11.8 × (syllables/words) - 15.59
+	 *
+	 * @since 3.1.2
+	 * @param int $words     Number of words
+	 * @param int $sentences Number of sentences
+	 * @param int $syllables Number of syllables
+	 * @return float Grade level (0-18+)
+	 */
+	private function calculate_flesch_kincaid( $words, $sentences, $syllables ) {
+		// Flesch-Kincaid Grade Level formula:
+		// 0.39 × (words / sentences) + 11.8 × (syllables / words) - 15.59
+		$asl = $words / $sentences; // Average Sentence Length
+		$asw = $syllables / $words; // Average Syllables per Word
+
+		$grade = ( 0.39 * $asl ) + ( 11.8 * $asw ) - 15.59;
+
+		// Round to 1 decimal place and ensure non-negative
+		return max( 0, round( $grade, 1 ) );
+	}
+
+	/**
+	 * Get readability interpretation based on grade level
+	 *
+	 * Returns user-friendly message with WCAG compliance status.
+	 * Grade 7-9 (lower secondary) recommended for broad accessibility.
+	 *
+	 * @since 3.1.2
+	 * @param float $grade_level Flesch-Kincaid grade level
+	 * @return array Interpretation details
+	 */
+	private function get_readability_interpretation( $grade_level ) {
+		if ( $grade_level <= 6 ) {
+			return array(
+				'level'          => __( 'Easy (Elementary)', 'shahi-legalflowsuite' ),
+				'text'           => __( 'Very easy to read. Easily understood by 11-12 year olds.', 'shahi-legalflowsuite' ),
+				'passes'         => true,
+				'recommendation' => __( 'Excellent! This text is highly accessible.', 'shahi-legalflowsuite' ),
+			);
+		} elseif ( $grade_level <= 8 ) {
+			return array(
+				'level'          => __( 'Standard (Middle School)', 'shahi-legalflowsuite' ),
+				'text'           => __( 'Easy to read. Conversational English for consumers.', 'shahi-legalflowsuite' ),
+				'passes'         => true,
+				'recommendation' => __( 'Good! Meets WCAG recommendation for broad accessibility.', 'shahi-legalflowsuite' ),
+			);
+		} elseif ( $grade_level <= 10 ) {
+			return array(
+				'level'          => __( 'Fairly Difficult (Early High School)', 'shahi-legalflowsuite' ),
+				'text'           => __( 'Fairly difficult to read. Requires some secondary education.', 'shahi-legalflowsuite' ),
+				'passes'         => false,
+				'recommendation' => __( 'Consider simplifying for better accessibility.', 'shahi-legalflowsuite' ),
+			);
+		} elseif ( $grade_level <= 12 ) {
+			return array(
+				'level'          => __( 'Difficult (High School)', 'shahi-legalflowsuite' ),
+				'text'           => __( 'Difficult to read. Requires high school level education.', 'shahi-legalflowsuite' ),
+				'passes'         => false,
+				'recommendation' => __( 'Simplify content for better accessibility.', 'shahi-legalflowsuite' ),
+			);
+		} else {
+			return array(
+				'level'          => __( 'Very Difficult (College+)', 'shahi-legalflowsuite' ),
+				'text'           => __( 'Very difficult to read. Best understood by college graduates.', 'shahi-legalflowsuite' ),
+				'passes'         => false,
+				'recommendation' => __( 'Strongly recommend simplifying for accessibility.', 'shahi-legalflowsuite' ),
+			);
+		}
+	}
+
+	/**
+	 * AJAX Handler: Check Link Text Validator
+	 *
+	 * Validates link text against generic phrases and provides suggestions.
+	 * WCAG 2.4.4 requires link purpose identifiable from link text alone.
+	 *
+	 * @since 3.1.2
+	 * @return void
+	 */
+	public function ajax_check_link_text() {
+		check_ajax_referer( 'slos_scanner_nonce', 'nonce' );
+
+		if ( ! $this->user_can_manage_accessibility() ) {
+			wp_send_json_error( __( 'Unauthorized', 'shahi-legalflowsuite' ) );
+		}
+
+		$link_text = isset( $_POST['link_text'] ) ? sanitize_text_field( wp_unslash( $_POST['link_text'] ) ) : '';
+
+		if ( empty( $link_text ) ) {
+			wp_send_json_error( __( 'Link text is required.', 'shahi-legalflowsuite' ) );
+		}
+
+		// Check against generic patterns
+		$is_generic    = $this->is_generic_link_text( $link_text );
+		$pattern_match = $this->get_matched_generic_pattern( $link_text );
+		$suggestions   = $this->get_link_text_suggestions( $link_text, $pattern_match );
+
+		wp_send_json_success(
+			array(
+				'link_text'      => $link_text,
+				'is_descriptive' => ! $is_generic,
+				'is_generic'     => $is_generic,
+				'pattern_match'  => $pattern_match,
+				'suggestions'    => $suggestions,
+				'passes_wcag'    => ! $is_generic,
+			)
+		);
+	}
+
+	/**
+	 * Check if link text is generic
+	 *
+	 * Tests against common non-descriptive link text patterns.
+	 *
+	 * @since 3.1.2
+	 * @param string $link_text Link text to check
+	 * @return bool True if generic
+	 */
+	private function is_generic_link_text( $link_text ) {
+		$text = strtolower( trim( $link_text ) );
+
+		// Too short
+		if ( strlen( $text ) < 4 ) {
+			return true;
+		}
+
+		// Check against generic patterns
+		$generic_patterns = $this->get_generic_link_patterns();
+
+		foreach ( $generic_patterns as $pattern ) {
+			if ( $text === $pattern || strpos( $text, $pattern ) !== false ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get matched generic pattern
+	 *
+	 * Returns the specific generic pattern that matched.
+	 *
+	 * @since 3.1.2
+	 * @param string $link_text Link text to check
+	 * @return string|null Matched pattern or null
+	 */
+	private function get_matched_generic_pattern( $link_text ) {
+		$text = strtolower( trim( $link_text ) );
+
+		if ( strlen( $text ) < 4 ) {
+			return 'too_short';
+		}
+
+		$generic_patterns = $this->get_generic_link_patterns();
+
+		foreach ( $generic_patterns as $pattern ) {
+			if ( $text === $pattern || strpos( $text, $pattern ) !== false ) {
+				return $pattern;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get list of generic link text patterns
+	 *
+	 * Common non-descriptive link phrases that fail WCAG 2.4.4.
+	 *
+	 * @since 3.1.2
+	 * @return array Generic patterns
+	 */
+	private function get_generic_link_patterns() {
+		return array(
+			'click here',
+			'click',
+			'here',
+			'read more',
+			'more',
+			'learn more',
+			'link',
+			'this link',
+			'this page',
+			'this website',
+			'go',
+			'go here',
+			'see more',
+			'view more',
+			'details',
+			'more details',
+			'info',
+			'more info',
+			'information',
+			'continue',
+			'next',
+			'download',
+			'file',
+			'page',
+			'website',
+			'site',
+		);
+	}
+
+	/**
+	 * Get link text suggestions
+	 *
+	 * Provides context-aware recommendations for better link text.
+	 *
+	 * @since 3.1.2
+	 * @param string      $link_text     Original link text
+	 * @param string|null $pattern_match Matched pattern
+	 * @return array Suggestions
+	 */
+	private function get_link_text_suggestions( $link_text, $pattern_match ) {
+		$suggestions = array();
+
+		if ( $pattern_match === 'too_short' ) {
+			$suggestions[] = __( 'Use at least 4 characters to describe the link destination.', 'shahi-legalflowsuite' );
+			$suggestions[] = __( 'Example: Instead of "Go", use "Go to contact page"', 'shahi-legalflowsuite' );
+		} elseif ( in_array( $pattern_match, array( 'click here', 'click' ), true ) ) {
+			$suggestions[] = __( 'Replace "click here" with a description of the destination.', 'shahi-legalflowsuite' );
+			$suggestions[] = __( 'Example: "View our accessibility policy" or "Download annual report"', 'shahi-legalflowsuite' );
+		} elseif ( in_array( $pattern_match, array( 'read more', 'more', 'learn more' ), true ) ) {
+			$suggestions[] = __( 'Include what the user will read more about.', 'shahi-legalflowsuite' );
+			$suggestions[] = __( 'Example: "Read more about our services" or "Learn more about WCAG 2.2"', 'shahi-legalflowsuite' );
+		} elseif ( in_array( $pattern_match, array( 'here', 'link', 'this link' ), true ) ) {
+			$suggestions[] = __( 'Describe the link destination instead of using directional words.', 'shahi-legalflowsuite' );
+			$suggestions[] = __( 'Example: "Contact support team" or "Product documentation"', 'shahi-legalflowsuite' );
+		} elseif ( in_array( $pattern_match, array( 'details', 'info', 'information' ), true ) ) {
+			$suggestions[] = __( 'Specify what details or information the link provides.', 'shahi-legalflowsuite' );
+			$suggestions[] = __( 'Example: "Pricing details" or "Technical specifications"', 'shahi-legalflowsuite' );
+		} else {
+			$suggestions[] = __( 'Make link text descriptive of the destination or action.', 'shahi-legalflowsuite' );
+			$suggestions[] = __( 'Link text should make sense when read out of context.', 'shahi-legalflowsuite' );
+		}
+
+		return $suggestions;
+	}
+}

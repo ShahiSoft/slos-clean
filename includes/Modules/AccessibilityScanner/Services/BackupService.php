@@ -99,11 +99,13 @@ class BackupService implements BackupServiceInterface {
 		$result = $this->wpdb->insert( $table, $data, $format );
 
 		if ( $result === false ) {
-			error_log( sprintf(
-				'BackupService: Failed to save backup for post %d. Error: %s',
-				$post_id,
-				$this->wpdb->last_error
-			) );
+			error_log(
+				sprintf(
+					'BackupService: Failed to save backup for post %d. Error: %s',
+					$post_id,
+					$this->wpdb->last_error
+				)
+			);
 			return false;
 		}
 
@@ -127,7 +129,8 @@ class BackupService implements BackupServiceInterface {
 
 		$backup = $this->wpdb->get_row(
 			$this->wpdb->prepare(
-				"SELECT * FROM {$table} WHERE id = %d",
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- esc_sql() used for table name
+				'SELECT * FROM ' . esc_sql( $table ) . ' WHERE id = %d',
 				$backup_id
 			),
 			ARRAY_A
@@ -157,7 +160,8 @@ class BackupService implements BackupServiceInterface {
 
 		$backup = $this->wpdb->get_row(
 			$this->wpdb->prepare(
-				"SELECT * FROM {$table} WHERE post_id = %d ORDER BY created_at DESC LIMIT 1",
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- esc_sql() used for table name
+				'SELECT * FROM ' . esc_sql( $table ) . ' WHERE post_id = %d ORDER BY created_at DESC LIMIT 1',
 				$post_id
 			),
 			ARRAY_A
@@ -193,7 +197,8 @@ class BackupService implements BackupServiceInterface {
 
 		$backups = $this->wpdb->get_results(
 			$this->wpdb->prepare(
-				"SELECT * FROM {$table} WHERE post_id = %d ORDER BY created_at DESC LIMIT %d",
+				'SELECT * FROM %i WHERE post_id = %d ORDER BY created_at DESC LIMIT %d',
+				$table,
 				$post_id,
 				$limit
 			),
@@ -272,22 +277,25 @@ class BackupService implements BackupServiceInterface {
 			$days_to_keep = 30;
 		}
 
-		$table = $this->get_table_name();
+		$table          = $this->get_table_name();
 		$date_threshold = gmdate( 'Y-m-d H:i:s', strtotime( "-{$days_to_keep} days" ) );
 
 		$deleted = $this->wpdb->query(
 			$this->wpdb->prepare(
-				"DELETE FROM {$table} WHERE created_at < %s",
+				'DELETE FROM %i WHERE created_at < %s',
+				$table,
 				$date_threshold
 			)
 		);
 
 		if ( $deleted > 0 ) {
-			error_log( sprintf(
-				'BackupService: Cleaned up %d old backups (older than %d days)',
-				$deleted,
-				$days_to_keep
-			) );
+			error_log(
+				sprintf(
+					'BackupService: Cleaned up %d old backups (older than %d days)',
+					$deleted,
+					$days_to_keep
+				)
+			);
 		}
 
 		return (int) $deleted;
@@ -310,7 +318,8 @@ class BackupService implements BackupServiceInterface {
 
 		$count = $this->wpdb->get_var(
 			$this->wpdb->prepare(
-				"SELECT COUNT(*) FROM {$table} WHERE post_id = %d",
+				'SELECT COUNT(*) FROM %i WHERE post_id = %d',
+				$table,
 				$post_id
 			)
 		);
@@ -328,11 +337,11 @@ class BackupService implements BackupServiceInterface {
 	public function get_statistics() {
 		$table = $this->get_table_name();
 
-		$total = $this->wpdb->get_var( "SELECT COUNT(*) FROM {$table}" );
-		$total_size = $this->wpdb->get_var( "SELECT SUM(LENGTH(original_content)) FROM {$table}" );
-		$unique_posts = $this->wpdb->get_var( "SELECT COUNT(DISTINCT post_id) FROM {$table}" );
-		$oldest = $this->wpdb->get_var( "SELECT MIN(created_at) FROM {$table}" );
-		$newest = $this->wpdb->get_var( "SELECT MAX(created_at) FROM {$table}" );
+		$total        = $this->wpdb->get_var( $this->wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table ) );
+		$total_size   = $this->wpdb->get_var( $this->wpdb->prepare( 'SELECT SUM(LENGTH(original_content)) FROM %i', $table ) );
+		$unique_posts = $this->wpdb->get_var( $this->wpdb->prepare( 'SELECT COUNT(DISTINCT post_id) FROM %i', $table ) );
+		$oldest       = $this->wpdb->get_var( $this->wpdb->prepare( 'SELECT MIN(created_at) FROM %i', $table ) );
+		$newest       = $this->wpdb->get_var( $this->wpdb->prepare( 'SELECT MAX(created_at) FROM %i', $table ) );
 
 		return array(
 			'total_backups'    => (int) $total,
@@ -356,7 +365,7 @@ class BackupService implements BackupServiceInterface {
 	 */
 	private function format_backup_data( $backup ) {
 		if ( ! empty( $backup['metadata'] ) ) {
-			$metadata = json_decode( $backup['metadata'], true );
+			$metadata           = json_decode( $backup['metadata'], true );
 			$backup['metadata'] = is_array( $metadata ) ? $metadata : array();
 		} else {
 			$backup['metadata'] = array();

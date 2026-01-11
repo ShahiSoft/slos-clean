@@ -60,48 +60,48 @@ class Profile_Validator extends Base_Service {
 	 * @var array
 	 */
 	protected $field_labels = array(
-		'company.legal_name'              => 'Company Legal Name',
-		'company.trading_name'            => 'Trading Name',
-		'company.registration_number'     => 'Registration Number',
-		'company.vat_number'              => 'VAT Number',
-		'company.address.street'          => 'Street Address',
-		'company.address.city'            => 'City',
-		'company.address.state'           => 'State/Province',
-		'company.address.postal_code'     => 'Postal Code',
-		'company.address.country'         => 'Country',
-		'company.business_type'           => 'Business Type',
-		'company.industry'                => 'Industry',
-		'contacts.legal_email'            => 'Legal Contact Email',
-		'contacts.support_email'          => 'Support Email',
-		'contacts.phone'                  => 'Phone Number',
-		'contacts.dpo.name'               => 'DPO Name',
-		'contacts.dpo.email'              => 'DPO Email',
-		'contacts.dpo.phone'              => 'DPO Phone',
-		'contacts.dpo.address'            => 'DPO Address',
-		'website.url'                     => 'Website URL',
-		'website.app_name'                => 'Application Name',
-		'website.service_description'     => 'Service Description',
-		'website.target_audience'         => 'Target Audience',
+		'company.legal_name'                  => 'Company Legal Name',
+		'company.trading_name'                => 'Trading Name',
+		'company.registration_number'         => 'Registration Number',
+		'company.vat_number'                  => 'VAT Number',
+		'company.address.street'              => 'Street Address',
+		'company.address.city'                => 'City',
+		'company.address.state'               => 'State/Province',
+		'company.address.postal_code'         => 'Postal Code',
+		'company.address.country'             => 'Country',
+		'company.business_type'               => 'Business Type',
+		'company.industry'                    => 'Industry',
+		'contacts.legal_email'                => 'Legal Contact Email',
+		'contacts.support_email'              => 'Support Email',
+		'contacts.phone'                      => 'Phone Number',
+		'contacts.dpo.name'                   => 'DPO Name',
+		'contacts.dpo.email'                  => 'DPO Email',
+		'contacts.dpo.phone'                  => 'DPO Phone',
+		'contacts.dpo.address'                => 'DPO Address',
+		'website.url'                         => 'Website URL',
+		'website.app_name'                    => 'Application Name',
+		'website.service_description'         => 'Service Description',
+		'website.target_audience'             => 'Target Audience',
 		'data_collection.personal_data_types' => 'Personal Data Types Collected',
-		'data_collection.purposes'        => 'Data Processing Purposes',
-		'data_collection.lawful_bases'    => 'Lawful Bases for Processing',
-		'data_collection.special_categories' => 'Special Category Data',
-		'data_collection.children_data'   => 'Children\'s Data',
-		'data_collection.minimum_age'     => 'Minimum Age',
-		'third_parties.processors'        => 'Third-Party Processors',
-		'third_parties.partners'          => 'Partners',
-		'cookies.essential'               => 'Essential Cookies',
-		'cookies.analytics'               => 'Analytics Cookies',
-		'cookies.marketing'               => 'Marketing Cookies',
-		'cookies.functional'              => 'Functional Cookies',
-		'legal.primary_jurisdiction'      => 'Primary Jurisdiction',
-		'legal.gdpr_applies'              => 'GDPR Applicability',
-		'legal.ccpa_applies'              => 'CCPA Applicability',
-		'legal.lgpd_applies'              => 'LGPD Applicability',
-		'legal.supervisory_authority'     => 'Supervisory Authority',
-		'retention.default_period'        => 'Default Retention Period',
-		'retention.deletion_policy'       => 'Deletion Policy',
-		'retention.backup_retention'      => 'Backup Retention',
+		'data_collection.purposes'            => 'Data Processing Purposes',
+		'data_collection.lawful_bases'        => 'Lawful Bases for Processing',
+		'data_collection.special_categories'  => 'Special Category Data',
+		'data_collection.children_data'       => 'Children\'s Data',
+		'data_collection.minimum_age'         => 'Minimum Age',
+		'third_parties.processors'            => 'Third-Party Processors',
+		'third_parties.partners'              => 'Partners',
+		'cookies.essential'                   => 'Essential Cookies',
+		'cookies.analytics'                   => 'Analytics Cookies',
+		'cookies.marketing'                   => 'Marketing Cookies',
+		'cookies.functional'                  => 'Functional Cookies',
+		'legal.primary_jurisdiction'          => 'Primary Jurisdiction',
+		'legal.gdpr_applies'                  => 'GDPR Applicability',
+		'legal.ccpa_applies'                  => 'CCPA Applicability',
+		'legal.lgpd_applies'                  => 'LGPD Applicability',
+		'legal.supervisory_authority'         => 'Supervisory Authority',
+		'retention.default_period'            => 'Default Retention Period',
+		'retention.deletion_policy'           => 'Deletion Policy',
+		'retention.backup_retention'          => 'Backup Retention',
 	);
 
 	/**
@@ -328,7 +328,7 @@ class Profile_Validator extends Base_Service {
 		foreach ( $this->mandatory_fields as $field ) {
 			$value = $this->get_nested_value( $profile, $field );
 			if ( $this->has_value( $value ) ) {
-				$completed++;
+				++$completed;
 			}
 		}
 
@@ -362,7 +362,7 @@ class Profile_Validator extends Base_Service {
 			foreach ( $step_fields as $field ) {
 				$value = $this->get_nested_value( $profile, $field );
 				if ( $this->has_value( $value ) ) {
-					$completed++;
+					++$completed;
 				} else {
 					$missing_fields[] = array(
 						'field' => $field,
@@ -372,11 +372,11 @@ class Profile_Validator extends Base_Service {
 			}
 
 			$details[ $step ] = array(
-				'step'       => $step,
-				'total'      => $total,
-				'completed'  => $completed,
-				'percentage' => $total > 0 ? (int) round( ( $completed / $total ) * 100 ) : 100,
-				'missing'    => $missing_fields,
+				'step'        => $step,
+				'total'       => $total,
+				'completed'   => $completed,
+				'percentage'  => $total > 0 ? (int) round( ( $completed / $total ) * 100 ) : 100,
+				'missing'     => $missing_fields,
 				'is_complete' => $completed >= $total,
 			);
 		}

@@ -158,7 +158,7 @@ class KeyboardTrapCheck extends AbstractCheck {
 				);
 			} elseif ( $focusable->length === 1 ) {
 				// Check if the single element is a close button
-				$single = $focusable->item( 0 );
+				$single          = $focusable->item( 0 );
 				$is_close_button = $this->is_close_button( $single );
 
 				if ( ! $is_close_button ) {
@@ -264,4 +264,3 @@ class KeyboardTrapCheck extends AbstractCheck {
 		}
 	}
 }
-

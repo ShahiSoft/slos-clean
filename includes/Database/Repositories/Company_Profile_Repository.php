@@ -372,62 +372,62 @@ class Company_Profile_Repository extends Base_Repository {
 
 		$placeholders = array(
 			// Company.
-			'business_name'        => $profile['company']['legal_name'] ?? '',
-			'trading_name'         => $profile['company']['trading_name'] ?? '',
-			'company_registration' => $profile['company']['registration_number'] ?? '',
-			'vat_number'           => $profile['company']['vat_number'] ?? '',
-			'company_address'      => $this->format_address( $profile['company']['address'] ?? array() ),
-			'company_country'      => $profile['company']['address']['country'] ?? '',
-			'business_type'        => $profile['company']['business_type'] ?? '',
-			'industry'             => $profile['company']['industry'] ?? '',
+			'business_name'         => $profile['company']['legal_name'] ?? '',
+			'trading_name'          => $profile['company']['trading_name'] ?? '',
+			'company_registration'  => $profile['company']['registration_number'] ?? '',
+			'vat_number'            => $profile['company']['vat_number'] ?? '',
+			'company_address'       => $this->format_address( $profile['company']['address'] ?? array() ),
+			'company_country'       => $profile['company']['address']['country'] ?? '',
+			'business_type'         => $profile['company']['business_type'] ?? '',
+			'industry'              => $profile['company']['industry'] ?? '',
 
 			// Contacts.
-			'legal_contact'        => $profile['contacts']['legal_email'] ?? '',
-			'support_email'        => $profile['contacts']['support_email'] ?? '',
-			'company_phone'        => $profile['contacts']['phone'] ?? '',
-			'dpo_name'             => $profile['contacts']['dpo']['name'] ?? '',
-			'dpo_email'            => $profile['contacts']['dpo']['email'] ?? '',
-			'dpo_phone'            => $profile['contacts']['dpo']['phone'] ?? '',
-			'dpo_address'          => $profile['contacts']['dpo']['address'] ?? '',
+			'legal_contact'         => $profile['contacts']['legal_email'] ?? '',
+			'support_email'         => $profile['contacts']['support_email'] ?? '',
+			'company_phone'         => $profile['contacts']['phone'] ?? '',
+			'dpo_name'              => $profile['contacts']['dpo']['name'] ?? '',
+			'dpo_email'             => $profile['contacts']['dpo']['email'] ?? '',
+			'dpo_phone'             => $profile['contacts']['dpo']['phone'] ?? '',
+			'dpo_address'           => $profile['contacts']['dpo']['address'] ?? '',
 
 			// Website.
-			'site_url'             => $profile['website']['url'] ?? get_bloginfo( 'url' ),
-			'site_name'            => $profile['website']['app_name'] ?? get_bloginfo( 'name' ),
-			'service_description'  => $profile['website']['service_description'] ?? '',
+			'site_url'              => $profile['website']['url'] ?? get_bloginfo( 'url' ),
+			'site_name'             => $profile['website']['app_name'] ?? get_bloginfo( 'name' ),
+			'service_description'   => $profile['website']['service_description'] ?? '',
 
 			// Legal.
-			'jurisdiction'         => $profile['legal']['primary_jurisdiction'] ?? '',
+			'jurisdiction'          => $profile['legal']['primary_jurisdiction'] ?? '',
 			'supervisory_authority' => $profile['legal']['supervisory_authority'] ?? '',
-			'eu_representative'    => $this->format_representative( $profile['legal']['representative_eu'] ?? array() ),
-			'uk_representative'    => $this->format_representative( $profile['legal']['representative_uk'] ?? array() ),
+			'eu_representative'     => $this->format_representative( $profile['legal']['representative_eu'] ?? array() ),
+			'uk_representative'     => $this->format_representative( $profile['legal']['representative_uk'] ?? array() ),
 
 			// Retention.
-			'retention_period'     => $profile['retention']['default_period'] ?? '',
-			'deletion_policy'      => $profile['retention']['deletion_policy'] ?? '',
+			'retention_period'      => $profile['retention']['default_period'] ?? '',
+			'deletion_policy'       => $profile['retention']['deletion_policy'] ?? '',
 
 			// User Rights.
-			'response_timeframe'   => $profile['user_rights']['response_timeframe'] ?? 30,
+			'response_timeframe'    => $profile['user_rights']['response_timeframe'] ?? 30,
 
 			// Third Parties - formatted lists.
-			'analytics_providers'  => $this->format_list( $profile['third_parties']['analytics'] ?? array() ),
-			'payment_processors'   => $this->format_list( $profile['third_parties']['payment'] ?? array() ),
-			'marketing_providers'  => $this->format_list( $profile['third_parties']['marketing'] ?? array() ),
-			'hosting_providers'    => $this->format_list( $profile['third_parties']['hosting'] ?? array() ),
+			'analytics_providers'   => $this->format_list( $profile['third_parties']['analytics'] ?? array() ),
+			'payment_processors'    => $this->format_list( $profile['third_parties']['payment'] ?? array() ),
+			'marketing_providers'   => $this->format_list( $profile['third_parties']['marketing'] ?? array() ),
+			'hosting_providers'     => $this->format_list( $profile['third_parties']['hosting'] ?? array() ),
 
 			// Cookies - formatted lists.
-			'essential_cookies'    => $this->format_cookie_list( $profile['cookies']['essential'] ?? array() ),
-			'analytics_cookies'    => $this->format_cookie_list( $profile['cookies']['analytics'] ?? array() ),
-			'marketing_cookies'    => $this->format_cookie_list( $profile['cookies']['marketing'] ?? array() ),
-			'preference_cookies'   => $this->format_cookie_list( $profile['cookies']['preferences'] ?? array() ),
+			'essential_cookies'     => $this->format_cookie_list( $profile['cookies']['essential'] ?? array() ),
+			'analytics_cookies'     => $this->format_cookie_list( $profile['cookies']['analytics'] ?? array() ),
+			'marketing_cookies'     => $this->format_cookie_list( $profile['cookies']['marketing'] ?? array() ),
+			'preference_cookies'    => $this->format_cookie_list( $profile['cookies']['preferences'] ?? array() ),
 
 			// Data Collection.
-			'personal_data_types'  => $this->format_list( $profile['data_collection']['personal_data_types'] ?? array() ),
-			'data_purposes'        => $this->format_list( $profile['data_collection']['purposes'] ?? array() ),
-			'minimum_age'          => $profile['data_collection']['minimum_age'] ?? 16,
+			'personal_data_types'   => $this->format_list( $profile['data_collection']['personal_data_types'] ?? array() ),
+			'data_purposes'         => $this->format_list( $profile['data_collection']['purposes'] ?? array() ),
+			'minimum_age'           => $profile['data_collection']['minimum_age'] ?? 16,
 
 			// Dynamic.
-			'effective_date'       => current_time( 'Y-m-d' ),
-			'last_updated'         => current_time( 'F j, Y' ),
+			'effective_date'        => current_time( 'Y-m-d' ),
+			'last_updated'          => current_time( 'F j, Y' ),
 		);
 
 		return apply_filters( 'slos_profile_placeholder_values', $placeholders, $profile );
@@ -443,8 +443,8 @@ class Company_Profile_Repository extends Base_Repository {
 		$default = Migration_Company_Profile::get_default_profile_structure();
 
 		// Keep some auto-detected values.
-		$default['website']['url']      = get_bloginfo( 'url' );
-		$default['website']['app_name'] = get_bloginfo( 'name' );
+		$default['website']['url']            = get_bloginfo( 'url' );
+		$default['website']['app_name']       = get_bloginfo( 'name' );
 		$default['contacts']['support_email'] = get_bloginfo( 'admin_email' );
 
 		$this->cached_profile = null;
@@ -469,8 +469,10 @@ class Company_Profile_Repository extends Base_Repository {
 		return $this->create_default_profile();
 	}
 
-	/* ========================================= */
-	/* Private Helper Methods                    */
+	/*
+	========================================= */
+	/*
+	Private Helper Methods                    */
 	/* ========================================= */
 
 	/**
@@ -540,7 +542,7 @@ class Company_Profile_Repository extends Base_Repository {
 			}
 
 			if ( ! $this->is_empty_value( $value ) ) {
-				$filled++;
+				++$filled;
 			}
 		}
 
@@ -556,32 +558,32 @@ class Company_Profile_Repository extends Base_Repository {
 	private function get_required_fields(): array {
 		return array(
 			// Company (Step 1).
-			'company.legal_name'         => __( 'Company Legal Name', 'shahi-legalflowsuite' ),
-			'company.address.street'     => __( 'Company Street Address', 'shahi-legalflowsuite' ),
-			'company.address.city'       => __( 'Company City', 'shahi-legalflowsuite' ),
-			'company.address.country'    => __( 'Company Country', 'shahi-legalflowsuite' ),
-			'company.business_type'      => __( 'Business Type', 'shahi-legalflowsuite' ),
+			'company.legal_name'                  => __( 'Company Legal Name', 'shahi-legalflowsuite' ),
+			'company.address.street'              => __( 'Company Street Address', 'shahi-legalflowsuite' ),
+			'company.address.city'                => __( 'Company City', 'shahi-legalflowsuite' ),
+			'company.address.country'             => __( 'Company Country', 'shahi-legalflowsuite' ),
+			'company.business_type'               => __( 'Business Type', 'shahi-legalflowsuite' ),
 
 			// Contacts (Step 2).
-			'contacts.legal_email'       => __( 'Legal Contact Email', 'shahi-legalflowsuite' ),
-			'contacts.dpo.email'         => __( 'DPO Email', 'shahi-legalflowsuite' ),
+			'contacts.legal_email'                => __( 'Legal Contact Email', 'shahi-legalflowsuite' ),
+			'contacts.dpo.email'                  => __( 'DPO Email', 'shahi-legalflowsuite' ),
 
 			// Website (Step 3).
-			'website.url'                => __( 'Website URL', 'shahi-legalflowsuite' ),
-			'website.service_description' => __( 'Service Description', 'shahi-legalflowsuite' ),
+			'website.url'                         => __( 'Website URL', 'shahi-legalflowsuite' ),
+			'website.service_description'         => __( 'Service Description', 'shahi-legalflowsuite' ),
 
 			// Data Collection (Step 4).
 			'data_collection.personal_data_types' => __( 'Personal Data Types Collected', 'shahi-legalflowsuite' ),
-			'data_collection.purposes'   => __( 'Data Processing Purposes', 'shahi-legalflowsuite' ),
+			'data_collection.purposes'            => __( 'Data Processing Purposes', 'shahi-legalflowsuite' ),
 
 			// Cookies (Step 6) - at least essential cookies.
-			'cookies.essential'          => __( 'Essential Cookies', 'shahi-legalflowsuite' ),
+			'cookies.essential'                   => __( 'Essential Cookies', 'shahi-legalflowsuite' ),
 
 			// Legal (Step 7).
-			'legal.primary_jurisdiction' => __( 'Primary Jurisdiction', 'shahi-legalflowsuite' ),
+			'legal.primary_jurisdiction'          => __( 'Primary Jurisdiction', 'shahi-legalflowsuite' ),
 
 			// Retention (Step 8).
-			'retention.default_period'   => __( 'Default Retention Period', 'shahi-legalflowsuite' ),
+			'retention.default_period'            => __( 'Default Retention Period', 'shahi-legalflowsuite' ),
 		);
 	}
 
@@ -673,13 +675,15 @@ class Company_Profile_Repository extends Base_Repository {
 	 * @return string Formatted address
 	 */
 	private function format_address( array $address ): string {
-		$parts = array_filter( array(
-			$address['street'] ?? '',
-			$address['city'] ?? '',
-			$address['state'] ?? '',
-			$address['postal_code'] ?? '',
-			$address['country'] ?? '',
-		) );
+		$parts = array_filter(
+			array(
+				$address['street'] ?? '',
+				$address['city'] ?? '',
+				$address['state'] ?? '',
+				$address['postal_code'] ?? '',
+				$address['country'] ?? '',
+			)
+		);
 		return implode( ', ', $parts );
 	}
 
@@ -694,11 +698,13 @@ class Company_Profile_Repository extends Base_Repository {
 		if ( empty( $rep['name'] ) ) {
 			return '';
 		}
-		$parts = array_filter( array(
-			$rep['name'] ?? '',
-			$rep['address'] ?? '',
-			$rep['email'] ?? '',
-		) );
+		$parts = array_filter(
+			array(
+				$rep['name'] ?? '',
+				$rep['address'] ?? '',
+				$rep['email'] ?? '',
+			)
+		);
 		return implode( ', ', $parts );
 	}
 

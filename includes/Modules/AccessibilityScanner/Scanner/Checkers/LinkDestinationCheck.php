@@ -56,4 +56,3 @@ class LinkDestinationCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

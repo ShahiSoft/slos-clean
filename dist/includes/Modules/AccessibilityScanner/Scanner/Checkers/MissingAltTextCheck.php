@@ -44,4 +44,3 @@ class MissingAltTextCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

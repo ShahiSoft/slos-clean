@@ -14,7 +14,7 @@
 
 namespace ShahiLegalFlowSuite\Widgets;
 
-// Exit if accessed directly
+// Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -61,16 +61,16 @@ class QuickActionsWidget extends \WP_Widget {
 		$show_modules   = isset( $instance['show_modules'] ) ? (bool) $instance['show_modules'] : true;
 		$show_add_item  = isset( $instance['show_add_item'] ) ? (bool) $instance['show_add_item'] : false;
 
-		echo $args['before_widget'];
+		echo wp_kses_post( $args['before_widget'] );
 
 		if ( $title ) {
-			echo $args['before_title'] . esc_html( $title ) . $args['after_title'];
+			echo wp_kses_post( $args['before_title'] ) . esc_html( $title ) . wp_kses_post( $args['after_title'] );
 		}
 
 		echo '<div class="shahi-widget shahi-quick-actions-widget-content">';
 		echo '<ul class="shahi-actions-list">';
 
-		// Dashboard link
+		// Dashboard link.
 		if ( $show_dashboard ) {
 			$dashboard_url = admin_url( 'admin.php?page=shahi-legalflowsuite' );
 			echo '<li>';
@@ -81,7 +81,7 @@ class QuickActionsWidget extends \WP_Widget {
 			echo '</li>';
 		}
 
-		// Settings link
+		// Settings link.
 		if ( $show_settings ) {
 			$settings_url = admin_url( 'admin.php?page=shahi-legalflowsuite-settings' );
 			echo '<li>';
@@ -92,7 +92,7 @@ class QuickActionsWidget extends \WP_Widget {
 			echo '</li>';
 		}
 
-		// Modules link
+		// Modules link.
 		if ( $show_modules ) {
 			$modules_url = admin_url( 'admin.php?page=shahi-legalflowsuite-modules' );
 			echo '<li>';
@@ -103,7 +103,7 @@ class QuickActionsWidget extends \WP_Widget {
 			echo '</li>';
 		}
 
-		// Add template item link
+		// Add template item link.
 		if ( $show_add_item ) {
 			$add_item_url = admin_url( 'post-new.php?post_type=shahi_legalflowsuite_item' );
 			echo '<li>';
@@ -117,7 +117,7 @@ class QuickActionsWidget extends \WP_Widget {
 		echo '</ul>';
 		echo '</div>';
 
-		echo $args['after_widget'];
+		echo wp_kses_post( $args['after_widget'] );
 	}
 
 	/**

@@ -67,7 +67,7 @@ class Consent_Audit_Logger extends Base_Service {
 	 *
 	 * @since 3.0.1
 	 * @since 3.1.1 Extended method taxonomy with banner, preferences_center, admin_manual, api, import
-	 * 
+	 *
 	 * @param array $data {
 	 *     Log data
 	 *
@@ -109,11 +109,13 @@ class Consent_Audit_Logger extends Base_Service {
 		if ( ! empty( $data['method'] ) && ! in_array( $data['method'], $this->allowed_methods, true ) ) {
 			// Log warning but continue with fallback
 			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-				error_log( sprintf(
-					'Invalid consent logging method "%s" provided. Allowed: %s',
-					$data['method'],
-					implode( ', ', $this->allowed_methods )
-				) );
+				error_log(
+					sprintf(
+						'Invalid consent logging method "%s" provided. Allowed: %s',
+						$data['method'],
+						implode( ', ', $this->allowed_methods )
+					)
+				);
 			}
 			// Fallback to website for unknown methods
 			$data['method'] = 'website';

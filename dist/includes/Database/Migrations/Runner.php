@@ -34,26 +34,27 @@ class Runner {
 	 */
 	public static function run_all() {
 		$migrations_dir = __DIR__;
-		
+
 		$migrations = array(
-			'migration_2025_12_20_consent_table'         => 'Migration_2025_12_20_consent_table',
-			'migration_2025_12_20_consent_logs_table'    => 'Migration_2025_12_20_consent_logs_table',
-			'migration_2025_12_20_dsr_requests_table'    => 'Migration_2025_12_20_dsr_requests_table',
-			'migration_2025_12_20_documents_table'       => 'Migration_2025_12_20_documents_table',
-			'migration_2025_12_20_trackers_table'        => 'Migration_2025_12_20_trackers_table',
-			'migration_2025_12_20_vendors_table'         => 'Migration_2025_12_20_vendors_table',
+			'migration_2025_12_20_consent_table'          => 'Migration_2025_12_20_consent_table',
+			'migration_2025_12_20_consent_logs_table'     => 'Migration_2025_12_20_consent_logs_table',
+			'migration_2025_12_20_dsr_requests_table'     => 'Migration_2025_12_20_dsr_requests_table',
+			'migration_2025_12_20_documents_table'        => 'Migration_2025_12_20_documents_table',
+			'migration_2025_12_20_trackers_table'         => 'Migration_2025_12_20_trackers_table',
+			'migration_2025_12_20_vendors_table'          => 'Migration_2025_12_20_vendors_table',
 			'migration_2025_12_20_form_submissions_table' => 'Migration_2025_12_20_form_submissions_table',
-			'migration_2025_12_20_form_issues_table'     => 'Migration_2025_12_20_form_issues_table',
-			'Migration_Company_Profile'                  => 'Migration_Company_Profile',
+			'migration_2025_12_20_form_issues_table'      => 'Migration_2025_12_20_form_issues_table',
+			'migration_2025_12_29_accessibility_fix_history_table' => 'Migration_2025_12_29_accessibility_fix_history_table',
+			'Migration_Company_Profile'                   => 'Migration_Company_Profile',
 		);
 
 		$results = array();
 		foreach ( $migrations as $file_name => $class_name ) {
 			$file_path = $migrations_dir . '/' . $file_name . '.php';
-			
+
 			if ( file_exists( $file_path ) ) {
 				require_once $file_path;
-				
+
 				$class = __NAMESPACE__ . '\\' . $class_name;
 				if ( class_exists( $class ) ) {
 					$success                = $class::up();
@@ -77,27 +78,28 @@ class Runner {
 	 */
 	public static function rollback_all() {
 		$migrations_dir = __DIR__;
-		
+
 		// Reverse order to handle dependencies
 		$migrations = array(
-			'Migration_Company_Profile'                  => 'Migration_Company_Profile',
-			'migration_2025_12_20_form_issues_table'     => 'Migration_2025_12_20_form_issues_table',
+			'Migration_Company_Profile'                   => 'Migration_Company_Profile',
+			'migration_2025_12_29_accessibility_fix_history_table' => 'Migration_2025_12_29_accessibility_fix_history_table',
+			'migration_2025_12_20_form_issues_table'      => 'Migration_2025_12_20_form_issues_table',
 			'migration_2025_12_20_form_submissions_table' => 'Migration_2025_12_20_form_submissions_table',
-			'migration_2025_12_20_vendors_table'         => 'Migration_2025_12_20_vendors_table',
-			'migration_2025_12_20_trackers_table'        => 'Migration_2025_12_20_trackers_table',
-			'migration_2025_12_20_documents_table'       => 'Migration_2025_12_20_documents_table',
-			'migration_2025_12_20_dsr_requests_table'    => 'Migration_2025_12_20_dsr_requests_table',
-			'migration_2025_12_20_consent_logs_table'    => 'Migration_2025_12_20_consent_logs_table',
-			'migration_2025_12_20_consent_table'         => 'Migration_2025_12_20_consent_table',
+			'migration_2025_12_20_vendors_table'          => 'Migration_2025_12_20_vendors_table',
+			'migration_2025_12_20_trackers_table'         => 'Migration_2025_12_20_trackers_table',
+			'migration_2025_12_20_documents_table'        => 'Migration_2025_12_20_documents_table',
+			'migration_2025_12_20_dsr_requests_table'     => 'Migration_2025_12_20_dsr_requests_table',
+			'migration_2025_12_20_consent_logs_table'     => 'Migration_2025_12_20_consent_logs_table',
+			'migration_2025_12_20_consent_table'          => 'Migration_2025_12_20_consent_table',
 		);
 
 		$results = array();
 		foreach ( $migrations as $file_name => $class_name ) {
 			$file_path = $migrations_dir . '/' . $file_name . '.php';
-			
+
 			if ( file_exists( $file_path ) ) {
 				require_once $file_path;
-				
+
 				$class = __NAMESPACE__ . '\\' . $class_name;
 				if ( class_exists( $class ) ) {
 					$success                = $class::down();
@@ -130,6 +132,7 @@ class Runner {
 			$wpdb->prefix . 'slos_vendors',
 			$wpdb->prefix . 'slos_form_submissions',
 			$wpdb->prefix . 'slos_form_issues',
+			$wpdb->prefix . 'slos_accessibility_fix_history',
 			$wpdb->prefix . 'slos_company_profile',
 		);
 
@@ -159,6 +162,7 @@ class Runner {
 			$wpdb->prefix . 'slos_vendors',
 			$wpdb->prefix . 'slos_form_submissions',
 			$wpdb->prefix . 'slos_form_issues',
+			$wpdb->prefix . 'slos_accessibility_fix_history',
 			$wpdb->prefix . 'slos_company_profile',
 		);
 

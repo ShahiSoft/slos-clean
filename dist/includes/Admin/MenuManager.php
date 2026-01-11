@@ -271,15 +271,17 @@ class MenuManager {
 
 		// Hidden utility pages (not visible in menu, accessible via direct URL)
 
-		// DSR Request Detail page (hidden)
-		add_submenu_page(
-			null,
-			__( 'DSR Request Detail', 'shahi-legalflowsuite' ),
-			__( 'DSR Request Detail', 'shahi-legalflowsuite' ),
-			'slos_manage_dsr',
-			self::MENU_SLUG . '-dsr-detail',
-			array( $this->get_dsr_detail(), 'render' )
-		);
+		// DSR Request Detail page (hidden) - only register if DSR module is not dormant
+		if ( ! ( defined( 'SLOS_DORMANT_MODULES' ) && in_array( 'dsr-portal', SLOS_DORMANT_MODULES, true ) ) ) {
+			add_submenu_page(
+				null,
+				__( 'DSR Request Detail', 'shahi-legalflowsuite' ),
+				__( 'DSR Request Detail', 'shahi-legalflowsuite' ),
+				'slos_manage_dsr',
+				self::MENU_SLUG . '-dsr-detail',
+				array( $this->get_dsr_detail(), 'render' )
+			);
+		}
 
 		// Banner Settings page (hidden, linked from Compliance module)
 		add_submenu_page(
@@ -466,9 +468,15 @@ class MenuManager {
 	 */
 	public function add_body_classes( $classes ) {
 		if ( $this->is_plugin_page() ) {
+			// Add plugin-specific class
 			$classes .= ' shahi-legalflowsuite-admin';
+
+			// Add page-specific class
 			$page     = $this->get_current_page();
 			$classes .= ' shahi-page-' . str_replace( self::MENU_SLUG . '-', '', $page );
+
+			// Add SLOS admin page class for background patterns (Phase 7)
+			$classes .= ' slos-admin-page';
 		}
 
 		return $classes;

@@ -1,0 +1,288 @@
+/**
+ * ShahiTemplate - Modules Page JavaScript
+ * 
+ * Handles AJAX module toggling, bulk operations, and real-time UI updates
+ * for the modules management page.
+ *
+ * @package    ShahiTemplate
+ * @version    1.0.0
+ */
+
+(function($) {
+    'use strict';
+
+    /**
+     * Modules Manager Object
+     */
+    const ShahiModules = {
+        
+        /**
+         * Initialize the modules page functionality
+         */
+        init: function() {
+            this.bindEvents();
+            this.initTooltips();
+        },
+        
+        /**
+         * Bind event handlers
+         */
+        bindEvents: function() {
+            // Individual module toggle
+            $('.shahi-module-toggle').on('change', this.handleModuleToggle.bind(this));
+            
+            // Enable all modules
+            $('#shahi-enable-all-modules').on('click', this.enableAllModules.bind(this));
+            
+            // Disable all modules
+            $('#shahi-disable-all-modules').on('click', this.disableAllModules.bind(this));
+        },
+        
+        /**
+         * Initialize tooltips
+         */
+        initTooltips: function() {
+            // Add tooltip functionality if needed
+            $('.shahi-module-card').each(function() {
+                const $card = $(this);
+                const $toggle = $card.find('.shahi-module-toggle');
+                
+                $toggle.on('mouseenter', function() {
+                    const isEnabled = $(this).is(':checked');
+                    const tooltip = isEnabled ? 'Disable Module' : 'Enable Module';
+                    // Could implement actual tooltip here
+                });
+            });
+        },
+        
+        /**
+         * Handle individual module toggle
+         */
+        handleModuleToggle: function(e) {
+            const $checkbox = $(e.currentTarget);
+            const $card = $checkbox.closest('.shahi-module-card');
+            const moduleKey = $checkbox.data('module-key');
+            const enabled = $checkbox.is(':checked');
+            
+            // Add loading state
+            $card.addClass('shahi-module-loading');
+            
+            // Send AJAX request
+            $.ajax({
+                url: shahiModulesData.ajaxUrl,
+                type: 'POST',
+                data: {
+                    action: 'shahi_toggle_module',
+                    nonce: shahiModulesData.toggleNonce,
+                    module_key: moduleKey,
+                    enabled: enabled
+                },
+                success: (response) => {
+                    this.handleToggleSuccess(response, $card, $checkbox, enabled);
+                },
+                error: (xhr, status, error) => {
+                    this.handleToggleError(error, $card, $checkbox, enabled);
+                },
+                complete: () => {
+                    $card.removeClass('shahi-module-loading');
+                }
+            });
+        },
+        
+        /**
+         * Handle successful module toggle
+         */
+        handleToggleSuccess: function(response, $card, $checkbox, enabled) {
+            if (response.success) {
+                // Update card visual state
+                if (enabled) {
+                    $card.addClass('shahi-module-active');
+                } else {
+                    $card.removeClass('shahi-module-active');
+                }
+                
+                // Update statistics
+                this.updateStatistics(enabled);
+                
+                // Show success notification
+                this.showNotification(response.data.message, 'success');
+                
+                // Add success animation
+                this.animateCardSuccess($card);
+            } else {
+                // Revert checkbox state
+                $checkbox.prop('checked', !enabled);
+                
+                // Show error notification
+                this.showNotification(response.data.message || 'Failed to toggle module.', 'error');
+            }
+        },
+        
+        /**
+         * Handle module toggle error
+         */
+        handleToggleError: function(error, $card, $checkbox, enabled) {
+            // Revert checkbox state
+            $checkbox.prop('checked', !enabled);
+            
+            // Show error notification
+            this.showNotification('An error occurred. Please try again.', 'error');
+            
+            console.error('Module toggle error:', error);
+        },
+        
+        /**
+         * Enable all modules
+         */
+        enableAllModules: function(e) {
+            e.preventDefault();
+            
+            if (!confirm('Are you sure you want to enable all modules?')) {
+                return;
+            }
+            
+            const $modules = $('.shahi-module-toggle:not(:checked)');
+            
+            if ($modules.length === 0) {
+                this.showNotification('All modules are already enabled.', 'info');
+                return;
+            }
+            
+            // Enable each module
+            $modules.each((index, element) => {
+                setTimeout(() => {
+                    $(element).prop('checked', true).trigger('change');
+                }, index * 200); // Stagger the requests
+            });
+        },
+        
+        /**
+         * Disable all modules
+         */
+        disableAllModules: function(e) {
+            e.preventDefault();
+            
+            if (!confirm('Are you sure you want to disable all modules? Some features may become unavailable.')) {
+                return;
+            }
+            
+            const $modules = $('.shahi-module-toggle:checked');
+            
+            if ($modules.length === 0) {
+                this.showNotification('All modules are already disabled.', 'info');
+                return;
+            }
+            
+            // Disable each module
+            $modules.each((index, element) => {
+                setTimeout(() => {
+                    $(element).prop('checked', false).trigger('change');
+                }, index * 200); // Stagger the requests
+            });
+        },
+        
+        /**
+         * Update statistics counters
+         */
+        updateStatistics: function(enabled) {
+            const $totalValue = $('.shahi-modules-stats .shahi-stat-card:nth-child(1) .shahi-stat-value');
+            const $activeValue = $('.shahi-modules-stats .shahi-stat-card:nth-child(2) .shahi-stat-value');
+            const $inactiveValue = $('.shahi-modules-stats .shahi-stat-card:nth-child(3) .shahi-stat-value');
+            
+            const total = parseInt($totalValue.text());
+            let active = parseInt($activeValue.text());
+            let inactive = parseInt($inactiveValue.text());
+            
+            if (enabled) {
+                active++;
+                inactive--;
+            } else {
+                active--;
+                inactive++;
+            }
+            
+            // Animate the change
+            this.animateValue($activeValue, active);
+            this.animateValue($inactiveValue, inactive);
+        },
+        
+        /**
+         * Animate number value change
+         */
+        animateValue: function($element, newValue) {
+            const currentValue = parseInt($element.text());
+            
+            $({ value: currentValue }).animate({ value: newValue }, {
+                duration: 500,
+                easing: 'swing',
+                step: function() {
+                    $element.text(Math.ceil(this.value));
+                },
+                complete: function() {
+                    $element.text(newValue);
+                }
+            });
+        },
+        
+        /**
+         * Show notification message
+         */
+        showNotification: function(message, type = 'success') {
+            // Use ShahiNotify if available
+            if (typeof ShahiNotify !== 'undefined') {
+                ShahiNotify.show(message, type);
+                return;
+            }
+            
+            // Fallback to WordPress admin notices
+            const noticeClass = type === 'success' ? 'notice-success' : 
+                               type === 'error' ? 'notice-error' : 
+                               'notice-info';
+            
+            const $notice = $('<div>', {
+                class: `notice ${noticeClass} is-dismissible`,
+                html: `<p>${message}</p>`
+            });
+            
+            $('.shahi-modules-page').prepend($notice);
+            
+            // Auto-dismiss after 5 seconds
+            setTimeout(() => {
+                $notice.fadeOut(() => $notice.remove());
+            }, 5000);
+        },
+        
+        /**
+         * Animate card success
+         */
+        animateCardSuccess: function($card) {
+            // Add scale animation
+            $card.css({
+                transform: 'scale(1.05)',
+                transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+            });
+            
+            setTimeout(() => {
+                $card.css({
+                    transform: 'scale(1)'
+                });
+            }, 300);
+        }
+    };
+    
+    /**
+     * Initialize on document ready
+     */
+    $(document).ready(function() {
+        // Check if we're on the modules page
+        if ($('.shahi-modules-page').length) {
+            ShahiModules.init();
+        }
+    });
+    
+    /**
+     * Expose to global scope for potential extensions
+     */
+    window.ShahiModules = ShahiModules;
+
+})(jQuery);

@@ -60,4 +60,3 @@ class EmptyHeadingCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

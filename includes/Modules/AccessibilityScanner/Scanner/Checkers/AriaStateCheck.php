@@ -54,4 +54,3 @@ class AriaStateCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

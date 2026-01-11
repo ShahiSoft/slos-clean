@@ -54,4 +54,3 @@ class SkippedHeadingLevelCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

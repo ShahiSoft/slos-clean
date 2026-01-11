@@ -81,7 +81,7 @@ class ModuleShortcode {
 
 		// Validate module name
 		if ( empty( $module_name ) ) {
-			return '<p class="shahi-error">' . esc_html__( 'Module name is required.', 'shahitemplate' ) . '</p>';
+			return '<p class="shahi-error">' . esc_html__( 'Module name is required.', 'shahi-legalflowsuite' ) . '</p>';
 		}
 
 		// Get module data
@@ -89,7 +89,7 @@ class ModuleShortcode {
 
 		if ( ! $module ) {
 			return '<p class="shahi-error">' . sprintf(
-				esc_html__( 'Module "%s" not found.', 'shahitemplate' ),
+				esc_html__( 'Module "%s" not found.', 'shahi-legalflowsuite' ),
 				esc_html( $module_name )
 			) . '</p>';
 		}
@@ -110,7 +110,7 @@ class ModuleShortcode {
 				<span class="shahi-module-name"><?php echo esc_html( $module['title'] ); ?></span>
 				<?php if ( $show_status ) : ?>
 					<span class="shahi-module-status <?php echo esc_attr( $module['enabled'] ? 'enabled' : 'disabled' ); ?>">
-						<?php echo esc_html( $module['enabled'] ? __( 'Enabled', 'shahitemplate' ) : __( 'Disabled', 'shahitemplate' ) ); ?>
+						<?php echo esc_html( $module['enabled'] ? __( 'Enabled', 'shahi-legalflowsuite' ) : __( 'Disabled', 'shahi-legalflowsuite' ) ); ?>
 					</span>
 				<?php endif; ?>
 			</div>
@@ -124,7 +124,7 @@ class ModuleShortcode {
 			<?php if ( $show_link ) : ?>
 				<div class="shahi-module-link">
 					<a href="<?php echo esc_url( $module['link'] ); ?>" class="shahi-module-link-button">
-						<?php esc_html_e( 'Configure Module', 'shahitemplate' ); ?> &rarr;
+						<?php esc_html_e( 'Configure Module', 'shahi-legalflowsuite' ); ?> &rarr;
 					</a>
 				</div>
 			<?php endif; ?>

@@ -65,4 +65,3 @@ class AutocompleteCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

@@ -54,4 +54,3 @@ class BackgroundImageCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

@@ -22,11 +22,14 @@ class AccessibilitySettings {
 	public function register_settings() {
 		register_setting( 'slos_accessibility_settings', 'slos_active_checkers' );
 		register_setting( 'slos_accessibility_settings', 'slos_active_fixes' );
+		register_setting( 'slos_accessibility_settings', 'slos_widget_features' );
+		register_setting( 'slos_accessibility_settings', 'slos_widget_position' );
+		register_setting( 'slos_accessibility_settings', 'slos_widget_color' );
 	}
 
 	public function render() {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( __( 'You do not have sufficient permissions to access this page.', 'shahi-legalflowsuite' ) );
+			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'shahi-legalflowsuite' ) );
 		}
 
 		// Check if module is enabled
@@ -79,6 +82,14 @@ class AccessibilitySettings {
 	 * @return void
 	 */
 	private function render_settings_content( $checkers, $fixes, $active_checkers, $active_fixes ) {
+		$widget_elements = $this->get_widget_elements();
+		$widget_features = get_option( 'slos_widget_features', array_keys( $widget_elements ) );
+		if ( ! is_array( $widget_features ) || empty( $widget_features ) ) {
+			$widget_features = array_keys( $widget_elements );
+		}
+		$widget_position = get_option( 'slos_widget_position', 'bottom-right' );
+		$widget_color    = get_option( 'slos_widget_color', 'blue' );
+
 		?>
 		<style>
 		.slos-settings-v3 {
@@ -205,6 +216,19 @@ class AccessibilitySettings {
 			transform: translateY(-1px);
 			box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 		}
+		.slos-settings-v3 .slos-widget-select {
+			width: 100%;
+			padding: 8px 12px;
+			background: var(--slos-card-bg);
+			border: 1px solid var(--slos-border);
+			border-radius: 6px;
+			color: var(--slos-text-primary);
+			font-size: 13px;
+		}
+		.slos-settings-v3 .slos-widget-select:focus {
+			outline: none;
+			border-color: var(--slos-accent);
+		}
 		@media (max-width: 900px) {
 			.slos-settings-v3 .slos-settings-grid {
 				grid-template-columns: 1fr;
@@ -250,6 +274,7 @@ class AccessibilitySettings {
 					</div>
 
 					<!-- Automated Fixes Card -->
+					<?php if ( ! defined( 'SLOS_DORMANT_AUTOFIX' ) || ! SLOS_DORMANT_AUTOFIX ) : ?>
 					<div class="slos-settings-card">
 						<div class="slos-card-header">
 							<div>
@@ -277,6 +302,55 @@ class AccessibilitySettings {
 										<span><?php echo esc_html( $label ); ?></span>
 									</label>
 								<?php endforeach; ?>
+							</div>
+						</div>
+					</div>
+					<?php endif; ?>
+
+					<!-- Accessibility Widget Card -->
+					<div class="slos-settings-card">
+						<div class="slos-card-header">
+							<div>
+								<h3>
+									<span class="dashicons dashicons-visibility"></span>
+									<?php esc_html_e( 'Accessibility Widget', 'shahi-legalflowsuite' ); ?>
+								</h3>
+								<p><?php esc_html_e( 'Choose which controls are available in the frontend accessibility widget and how it appears.', 'shahi-legalflowsuite' ); ?></p>
+							</div>
+						</div>
+						<div class="slos-card-body">
+							<div class="slos-checkbox-grid">
+								<?php foreach ( $widget_elements as $key => $label ) : ?>
+									<label class="slos-checkbox-item">
+										<input type="checkbox" name="slos_widget_features[]" value="<?php echo esc_attr( $key ); ?>" <?php checked( in_array( $key, $widget_features, true ) ); ?>>
+										<span><?php echo esc_html( $label ); ?></span>
+									</label>
+								<?php endforeach; ?>
+							</div>
+							<div style="margin-top:16px; display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+								<div>
+									<label for="slos_widget_position" style="display:block; font-size:13px; font-weight:500; color:var(--slos-text-secondary); margin-bottom:6px;">
+										<?php esc_html_e( 'Widget Position', 'shahi-legalflowsuite' ); ?>
+									</label>
+									<select id="slos_widget_position" name="slos_widget_position" class="slos-widget-select">
+										<option value="bottom-right" <?php selected( $widget_position, 'bottom-right' ); ?>><?php esc_html_e( 'Bottom Right', 'shahi-legalflowsuite' ); ?></option>
+										<option value="bottom-left" <?php selected( $widget_position, 'bottom-left' ); ?>><?php esc_html_e( 'Bottom Left', 'shahi-legalflowsuite' ); ?></option>
+										<option value="top-right" <?php selected( $widget_position, 'top-right' ); ?>><?php esc_html_e( 'Top Right', 'shahi-legalflowsuite' ); ?></option>
+										<option value="top-left" <?php selected( $widget_position, 'top-left' ); ?>><?php esc_html_e( 'Top Left', 'shahi-legalflowsuite' ); ?></option>
+									</select>
+								</div>
+								<div>
+									<label for="slos_widget_color" style="display:block; font-size:13px; font-weight:500; color:var(--slos-text-secondary); margin-bottom:6px;">
+										<?php esc_html_e( 'Color Theme', 'shahi-legalflowsuite' ); ?>
+									</label>
+									<select id="slos_widget_color" name="slos_widget_color" class="slos-widget-select">
+										<option value="blue" <?php selected( $widget_color, 'blue' ); ?>><?php esc_html_e( 'Blue', 'shahi-legalflowsuite' ); ?></option>
+										<option value="green" <?php selected( $widget_color, 'green' ); ?>><?php esc_html_e( 'Green', 'shahi-legalflowsuite' ); ?></option>
+										<option value="purple" <?php selected( $widget_color, 'purple' ); ?>><?php esc_html_e( 'Purple', 'shahi-legalflowsuite' ); ?></option>
+										<option value="orange" <?php selected( $widget_color, 'orange' ); ?>><?php esc_html_e( 'Orange', 'shahi-legalflowsuite' ); ?></option>
+										<option value="dark" <?php selected( $widget_color, 'dark' ); ?>><?php esc_html_e( 'Dark', 'shahi-legalflowsuite' ); ?></option>
+									</select>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -310,104 +384,185 @@ class AccessibilitySettings {
 	private function get_available_checkers() {
 		// This should ideally come from the ScannerEngine, but hardcoding for now based on implementation
 		return array(
-			'missing-alt-text'    => 'Missing Alt Text',
-			'empty-alt-text'      => 'Empty Alt Text',
-			'missing-h1'          => 'Missing H1 Heading',
-			'skipped-heading'     => 'Skipped Heading Levels',
-			'empty-link'          => 'Empty Links',
-			'generic-link'        => 'Generic Link Text',
-			'missing-label'       => 'Missing Form Labels',
-			'redundant-alt'       => 'Redundant Alt Text',
-			'empty-heading'       => 'Empty Headings',
-			'new-window'          => 'New Window Links',
-			'positive-tabindex'   => 'Positive TabIndex',
-			'image-map'           => 'Image Map Alt Text',
-			'iframe-title'        => 'Iframe Titles',
-			'button-label'        => 'Button Labels',
-			'table-header'        => 'Table Headers',
-			'alt-quality'         => 'Alt Text Quality',
-			'decorative-image'    => 'Decorative Images',
-			'complex-image'       => 'Complex Images',
-			'svg-access'          => 'SVG Accessibility',
-			'bg-image'            => 'Background Images',
-			'logo-image'          => 'Logo Images',
-			'multiple-h1'         => 'Multiple H1 Headings',
-			'heading-visual'      => 'Visual Headings',
-			'heading-length'      => 'Heading Length',
-			'heading-unique'      => 'Unique Headings',
-			'heading-nesting'     => 'Heading Nesting',
-			'fieldset-legend'     => 'Fieldset Legends',
-			'autocomplete'        => 'Autocomplete Attributes',
-			'input-type'          => 'Input Types',
-			'placeholder-label'   => 'Placeholder as Label',
-			'custom-control'      => 'Custom Controls',
-			'orphaned-label'      => 'Orphaned Labels',
-			'required-attr'       => 'Required Attributes',
-			'error-message'       => 'Error Messages',
-			'form-aria'           => 'Form ARIA',
-			'link-dest'           => 'Link Destinations',
-			'skip-link'           => 'Skip Links',
-			'download-link'       => 'Download Links',
-			'external-link'       => 'External Links',
-			'contrast'            => 'Color Contrast',
-			'focus-indicator'     => 'Focus Indicators',
-			'color-reliance'      => 'Color Reliance',
-			'complex-contrast'    => 'Complex Contrast',
-			'keyboard-trap'       => 'Keyboard Traps',
-			'focus-order'         => 'Focus Order',
-			'interactive-element' => 'Interactive Elements',
-			'modal-access'        => 'Modal Accessibility',
-			'widget-keyboard'     => 'Widget Keyboard Access',
-			'aria-role'           => 'ARIA Roles',
-			'aria-attr'           => 'ARIA Attributes',
-			'landmark-role'       => 'Landmark Roles',
-			'redundant-aria'      => 'Redundant ARIA',
-			'hidden-content'      => 'Hidden Content',
-			'semantic-html'       => 'Semantic HTML',
-			'live-region'         => 'Live Regions',
-			'aria-state'          => 'ARIA States',
-			'invalid-aria'        => 'Invalid ARIA Combinations',
-			'page-structure'      => 'Page Structure',
-			'video-access'        => 'Video Accessibility',
-			'audio-access'        => 'Audio Accessibility',
-			'media-alt'           => 'Media Alternatives',
-			'table-caption'       => 'Table Captions',
-			'complex-table'       => 'Complex Tables',
-			'layout-table'        => 'Layout Tables',
-			'empty-cell'          => 'Empty Table Cells',
-			'viewport'            => 'Viewport Configuration',
-			'touch-target'        => 'Touch Targets',
-			'touch-gesture'       => 'Touch Gestures',
+			'missing-alt-text'     => 'Missing Alt Text',
+			'empty-alt-text'       => 'Empty Alt Text',
+			'missing-h1'           => 'Missing H1 Heading',
+			'skipped-heading'      => 'Skipped Heading Levels',
+			'empty-link'           => 'Empty Links',
+			'generic-link'         => 'Generic Link Text',
+			'missing-label'        => 'Missing Form Labels',
+			'redundant-alt'        => 'Redundant Alt Text',
+			'empty-heading'        => 'Empty Headings',
+			'new-window'           => 'New Window Links',
+			'positive-tabindex'    => 'Positive TabIndex',
+			'image-map'            => 'Image Map Alt Text',
+			'iframe-title'         => 'Iframe Titles',
+			'button-label'         => 'Button Labels',
+			'table-header'         => 'Table Headers',
+			'alt-quality'          => 'Alt Text Quality',
+			'decorative-image'     => 'Decorative Images',
+			'complex-image'        => 'Complex Images',
+			'svg-access'           => 'SVG Accessibility',
+			'bg-image'             => 'Background Images',
+			'logo-image'           => 'Logo Images',
+			'multiple-h1'          => 'Multiple H1 Headings',
+			'heading-visual'       => 'Visual Headings',
+			'heading-length'       => 'Heading Length',
+			'heading-unique'       => 'Unique Headings',
+			'heading-nesting'      => 'Heading Nesting',
+			'fieldset-legend'      => 'Fieldset Legends',
+			'autocomplete'         => 'Autocomplete Attributes',
+			'input-type'           => 'Input Types',
+			'placeholder-label'    => 'Placeholder as Label',
+			'custom-control'       => 'Custom Controls',
+			'orphaned-label'       => 'Orphaned Labels',
+			'required-attr'        => 'Required Attributes',
+			'error-message'        => 'Error Messages',
+			'form-aria'            => 'Form ARIA',
+			'link-dest'            => 'Link Destinations',
+			'skip-link'            => 'Skip Links',
+			'download-link'        => 'Download Links',
+			'external-link'        => 'External Links',
+			'contrast'             => 'Color Contrast',
+			'focus-indicator'      => 'Focus Indicators',
+			'color-reliance'       => 'Color Reliance',
+			'complex-contrast'     => 'Complex Contrast',
+			'keyboard-trap'        => 'Keyboard Traps',
+			'focus-order'          => 'Focus Order',
+			'interactive-element'  => 'Interactive Elements',
+			'modal-access'         => 'Modal Accessibility',
+			'widget-keyboard'      => 'Widget Keyboard Access',
+			'aria-role'            => 'ARIA Roles',
+			'aria-attr'            => 'ARIA Attributes',
+			'landmark-role'        => 'Landmark Roles',
+			'redundant-aria'       => 'Redundant ARIA',
+			'hidden-content'       => 'Hidden Content',
+			'semantic-html'        => 'Semantic HTML',
+			'live-region'          => 'Live Regions',
+			'aria-state'           => 'ARIA States',
+			'invalid-aria'         => 'Invalid ARIA Combinations',
+			'page-structure'       => 'Page Structure',
+			'video-access'         => 'Video Accessibility',
+			'audio-access'         => 'Audio Accessibility',
+			'media-alt'            => 'Media Alternatives',
+			'table-caption'        => 'Table Captions',
+			'complex-table'        => 'Complex Tables',
+			'layout-table'         => 'Layout Tables',
+			'empty-cell'           => 'Empty Table Cells',
+			'viewport'             => 'Viewport Configuration',
+			'touch-target'         => 'Touch Targets',
+			'touch-gesture'        => 'Touch Gestures',
+			// Phase 3: New Checkers (WCAG Coverage Enhancement)
+			'language-change'      => 'Language Changes',
+			'animation-pause'      => 'Animation Pause Controls',
+			'timing-control'       => 'Timing Controls',
+			'status-message'       => 'Status Messages',
+			'error-identification' => 'Error Identification',
 		);
+
+		// Filter out dormant checkers
+		if ( defined( 'SLOS_DORMANT_CHECKERS' ) && is_array( SLOS_DORMANT_CHECKERS ) ) {
+			// Map settings keys to checker IDs
+			$key_to_id_map = array(
+				'complex-image'       => 'complex-image',
+				'logo-image'          => 'logo-image',
+				'bg-image'            => 'background-image',
+				'decorative-image'    => 'decorative-image',
+				'svg-access'          => 'missing-svg-title',
+				'heading-length'      => 'heading-length',
+				'heading-nesting'     => 'heading-nesting',
+				'heading-unique'      => 'heading-uniqueness',
+				'heading-visual'      => 'heading-visual',
+				'download-link'       => 'download-link',
+				'external-link'       => 'external-link',
+				'input-type'          => 'input-type',
+				'placeholder-label'   => 'placeholder-label',
+				'custom-control'      => 'custom-control',
+				'orphaned-label'      => 'orphaned-label',
+				'form-aria'           => 'form-aria',
+				'complex-table'       => 'complex-table',
+				'layout-table'        => 'layout-table',
+				'media-alt'           => 'media-alternative',
+				'interactive-element' => 'interactive-element',
+				'modal-access'        => 'modal-accessibility',
+				'widget-keyboard'     => 'custom-widget-keyboard',
+				'color-reliance'      => 'color-reliance',
+				'complex-contrast'    => 'complex-contrast',
+				'touch-target'        => 'touch-target',
+				'touch-gesture'       => 'touch-gesture',
+				'viewport'            => 'improper-viewport',
+				'aria-state'          => 'aria-state',
+				'invalid-aria'        => 'invalid-aria-combination',
+				'hidden-content'      => 'hidden-content',
+				'live-region'         => 'live-region',
+				'redundant-aria'      => 'redundant-aria',
+				'language-change'     => 'language-change',
+				'animation-pause'     => 'animation-pause',
+				'timing-control'      => 'timing-control',
+			);
+
+			foreach ( $all_checkers as $key => $label ) {
+				$checker_id = isset( $key_to_id_map[ $key ] ) ? $key_to_id_map[ $key ] : $key;
+				if ( in_array( $checker_id, SLOS_DORMANT_CHECKERS, true ) ) {
+					unset( $all_checkers[ $key ] );
+				}
+			}
+		}
+
+		return $all_checkers;
 	}
 
 	private function get_available_fixes() {
 		return array(
-			'add_skip_links'          => 'Add Skip Links',
-			'fix_focus_outlines'      => 'Fix Focus Outlines',
-			'fix_link_underlines'     => 'Force Link Underlines',
-			'block_new_window'        => 'Block New Window Links',
-			'fix_language_attributes' => 'Add Language Attributes',
-			'fix_viewport_meta'       => 'Fix Viewport Meta',
-			'label_search_fields'     => 'Label Search Fields',
-			'label_comment_fields'    => 'Label Comment Fields',
-			'add_page_titles'         => 'Add Page Titles',
-			'fix_tab_index'           => 'Fix Tab Index',
-			'remove_title_attributes' => 'Remove Title Attributes',
-			'add_alt_placeholders'    => 'Add Alt Text Placeholders',
-			'add_aria_landmarks'      => 'Add ARIA Landmarks',
-			'fix_empty_links'         => 'Fix Empty Links',
-			'add_heading_structure'   => 'Add Heading Structure',
-			'add_table_headers'       => 'Add Table Headers',
-			'add_form_labels'         => 'Add Form Labels',
-			'fix_color_contrast'      => 'Fix Color Contrast',
-			'fix_link_warnings'       => 'Add Link Warnings',
-			'fix_image_maps'          => 'Fix Image Maps',
-			'add_button_labels'       => 'Add Button Labels',
-			'fix_list_semantics'      => 'Fix List Semantics',
-			'add_live_regions'        => 'Add Live Regions',
-			'fix_modal_dialogs'       => 'Fix Modal Dialogs',
-			'generate_transcripts'    => 'Generate Transcripts',
+			'add_skip_links'           => 'Add Skip Links',
+			'fix_focus_outlines'       => 'Fix Focus Outlines',
+			'fix_link_underlines'      => 'Force Link Underlines',
+			'block_new_window'         => 'Block New Window Links',
+			'fix_language_attributes'  => 'Add Language Attributes',
+			'fix_viewport_meta'        => 'Fix Viewport Meta',
+			'label_search_fields'      => 'Label Search Fields',
+			'label_comment_fields'     => 'Label Comment Fields',
+			'add_page_titles'          => 'Add Page Titles',
+			'fix_tab_index'            => 'Fix Tab Index',
+			'remove_title_attributes'  => 'Remove Title Attributes',
+			'add_alt_placeholders'     => 'Add Alt Text Placeholders',
+			'add_aria_landmarks'       => 'Add ARIA Landmarks',
+			'fix_empty_links'          => 'Fix Empty Links',
+			'add_heading_structure'    => 'Add Heading Structure',
+			'add_table_headers'        => 'Add Table Headers',
+			'add_form_labels'          => 'Add Form Labels',
+			'fix_color_contrast'       => 'Fix Color Contrast',
+			'fix_link_warnings'        => 'Add Link Warnings',
+			'fix_image_maps'           => 'Fix Image Maps',
+			'add_button_labels'        => 'Add Button Labels',
+			'fix_list_semantics'       => 'Fix List Semantics',
+			'add_live_regions'         => 'Add Live Regions',
+			'fix_modal_dialogs'        => 'Fix Modal Dialogs',
+			'generate_transcripts'     => 'Generate Transcripts',
+			// Phase 3: New Auto-Fixers (WCAG Coverage Enhancement)
+			'fix_language_changes'     => 'Fix Language Changes',
+			'fix_animation_controls'   => 'Fix Animation Controls',
+			'fix_timing_controls'      => 'Fix Timing Controls',
+			'fix_status_messages'      => 'Fix Status Messages',
+			'fix_error_identification' => 'Fix Error Identification',
+		);
+	}
+
+	/**
+	 * Get available accessibility widget feature groups
+	 *
+	 * @since 3.1.1
+	 * @return array
+	 */
+	private function get_widget_elements() {
+		return array(
+			'profiles'               => __( 'Accessibility Profiles panel', 'shahi-legalflowsuite' ),
+			'content_adjustments'    => __( 'Content adjustments (text size, cursor, highlights)', 'shahi-legalflowsuite' ),
+			'text_spacing'           => __( 'Text spacing & alignment controls', 'shahi-legalflowsuite' ),
+			'color_contrast'         => __( 'Color & contrast and color-blindness tools', 'shahi-legalflowsuite' ),
+			'navigation_interaction' => __( 'Navigation & interaction helpers', 'shahi-legalflowsuite' ),
+			'content_readability'    => __( 'Content & readability tools', 'shahi-legalflowsuite' ),
+			'reset'                  => __( '"Reset all" button', 'shahi-legalflowsuite' ),
 		);
 	}
 }

@@ -83,4 +83,3 @@ class PlaceholderLabelCheck extends AbstractCheck {
 		return null;
 	}
 }
-

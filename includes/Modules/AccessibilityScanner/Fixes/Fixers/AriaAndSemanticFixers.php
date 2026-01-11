@@ -16,15 +16,75 @@ class AriaRoleFixer extends BaseFixer {
 
 	// Valid ARIA roles per WAI-ARIA spec
 	private static $valid_roles = array(
-		'alert', 'alertdialog', 'application', 'article', 'banner', 'button', 'cell', 'checkbox',
-		'columnheader', 'combobox', 'complementary', 'contentinfo', 'definition', 'dialog', 'directory',
-		'document', 'feed', 'figure', 'form', 'grid', 'gridcell', 'group', 'heading', 'img', 'link',
-		'list', 'listbox', 'listitem', 'log', 'main', 'marquee', 'math', 'menu', 'menubar', 'menuitem',
-		'menuitemcheckbox', 'menuitemradio', 'navigation', 'none', 'note', 'option', 'presentation',
-		'progressbar', 'radio', 'radiogroup', 'region', 'row', 'rowgroup', 'rowheader', 'scrollbar',
-		'search', 'searchbox', 'separator', 'slider', 'spinbutton', 'status', 'switch', 'tab',
-		'table', 'tablist', 'tabpanel', 'term', 'textbox', 'timer', 'toolbar', 'tooltip', 'tree',
-		'treegrid', 'treeitem'
+		'alert',
+		'alertdialog',
+		'application',
+		'article',
+		'banner',
+		'button',
+		'cell',
+		'checkbox',
+		'columnheader',
+		'combobox',
+		'complementary',
+		'contentinfo',
+		'definition',
+		'dialog',
+		'directory',
+		'document',
+		'feed',
+		'figure',
+		'form',
+		'grid',
+		'gridcell',
+		'group',
+		'heading',
+		'img',
+		'link',
+		'list',
+		'listbox',
+		'listitem',
+		'log',
+		'main',
+		'marquee',
+		'math',
+		'menu',
+		'menubar',
+		'menuitem',
+		'menuitemcheckbox',
+		'menuitemradio',
+		'navigation',
+		'none',
+		'note',
+		'option',
+		'presentation',
+		'progressbar',
+		'radio',
+		'radiogroup',
+		'region',
+		'row',
+		'rowgroup',
+		'rowheader',
+		'scrollbar',
+		'search',
+		'searchbox',
+		'separator',
+		'slider',
+		'spinbutton',
+		'status',
+		'switch',
+		'tab',
+		'table',
+		'tablist',
+		'tabpanel',
+		'term',
+		'textbox',
+		'timer',
+		'toolbar',
+		'tooltip',
+		'tree',
+		'treegrid',
+		'treeitem',
 	);
 
 	public function fix( $content ) {
@@ -36,7 +96,7 @@ class AriaRoleFixer extends BaseFixer {
 		$elements_with_role = $xpath->query( '//*[@role]' );
 		foreach ( $elements_with_role as $element ) {
 			$role = strtolower( trim( $element->getAttribute( 'role' ) ) );
-			
+
 			// Check if role is invalid
 			if ( ! in_array( $role, self::$valid_roles, true ) ) {
 				// Remove invalid role - better than leaving an invalid one
@@ -253,8 +313,8 @@ class AriaStateFixer extends BaseFixer {
 
 		foreach ( $tabs as $tab ) {
 			// Determine if active.
-			$class      = $tab->getAttribute( 'class' );
-			$is_active  = preg_match( '/\b(active|selected|current)\b/i', $class );
+			$class     = $tab->getAttribute( 'class' );
+			$is_active = preg_match( '/\b(active|selected|current)\b/i', $class );
 
 			$tab->setAttribute( 'aria-selected', $is_active ? 'true' : 'false' );
 
@@ -751,11 +811,11 @@ class PageStructureFixer extends BaseFixer {
 		$id    = strtolower( $element->getAttribute( 'id' ) );
 
 		$label_hints = array(
-			'primary'   => 'Primary navigation',
-			'main'      => 'Main navigation',
-			'secondary' => 'Secondary navigation',
-			'footer'    => 'Footer navigation',
-			'social'    => 'Social links',
+			'primary'    => 'Primary navigation',
+			'main'       => 'Main navigation',
+			'secondary'  => 'Secondary navigation',
+			'footer'     => 'Footer navigation',
+			'social'     => 'Social links',
 			'breadcrumb' => 'Breadcrumb',
 			'pagination' => 'Pagination',
 		);
@@ -910,4 +970,3 @@ class MediaAlternativeFixer extends BaseFixer {
 		);
 	}
 }
-

@@ -56,7 +56,7 @@ class Dashboard {
 	 */
 	public function render() {
 		// Verify user capabilities.
-		if ( ! current_user_can( 'manage_shahi_template' ) ) {
+		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'shahi-legalflowsuite' ) );
 		}
 
@@ -95,9 +95,9 @@ class Dashboard {
 			'short_name'  => 'SLOS',
 			'version'     => defined( 'SHAHI_LEGALFLOWSUITE_VERSION' ) ? SHAHI_LEGALFLOWSUITE_VERSION : '3.0.1',
 			'description' => __( 'A comprehensive legal operations management suite for WordPress, featuring DSR management, consent compliance, legal document handling, and accessibility scanning.', 'shahi-legalflowsuite' ),
-			'author'      => __( 'Shahi Digital', 'shahi-legalflowsuite' ),
-			'author_url'  => 'https://shahidigital.com',
-			'plugin_url'  => 'https://shahidigital.com/plugins/legalflowsuite',
+			'author'      => __( 'ShahiSoft', 'shahi-legalflowsuite' ),
+			'author_url'  => 'https://shahisoft.store',
+			'plugin_url'  => 'https://shahisoft.store/index.php/shahilandin/complyflow/',
 			'license'     => 'GPL-3.0+',
 			'php_version' => PHP_VERSION,
 			'wp_version'  => get_bloginfo( 'version' ),
@@ -175,35 +175,35 @@ class Dashboard {
 				'title'       => __( 'Documentation', 'shahi-legalflowsuite' ),
 				'description' => __( 'Comprehensive guides and tutorials', 'shahi-legalflowsuite' ),
 				'icon'        => 'dashicons-book',
-				'url'         => admin_url( 'admin.php?page=shahi-legalflowsuite-support' ),
-				'external'    => false,
+				'url'         => 'https://shahisoft.store/index.php/knowledge-base/?product=shahi-legalflowsuite',
+				'external'    => true,
 			),
 			array(
 				'title'       => __( 'Knowledge Base', 'shahi-legalflowsuite' ),
 				'description' => __( 'FAQs and troubleshooting', 'shahi-legalflowsuite' ),
 				'icon'        => 'dashicons-lightbulb',
-				'url'         => '#', // Placeholder - user will add later.
+				'url'         => 'https://shahisoft.store/index.php/knowledge-base/?product=shahi-legalflowsuite',
 				'external'    => true,
 			),
 			array(
 				'title'       => __( 'Video Tutorials', 'shahi-legalflowsuite' ),
 				'description' => __( 'Step-by-step video guides', 'shahi-legalflowsuite' ),
 				'icon'        => 'dashicons-video-alt3',
-				'url'         => '#', // Placeholder - user will add later.
+				'url'         => 'https://shahisoft.store/index.php/knowledge-base/?product=shahi-legalflowsuite',
 				'external'    => true,
 			),
 			array(
 				'title'       => __( 'Get Support', 'shahi-legalflowsuite' ),
 				'description' => __( 'Contact our support team', 'shahi-legalflowsuite' ),
 				'icon'        => 'dashicons-sos',
-				'url'         => admin_url( 'admin.php?page=shahi-legalflowsuite-support' ),
-				'external'    => false,
+				'url'         => 'https://shahisoft.store/index.php/my-tickets/',
+				'external'    => true,
 			),
 			array(
 				'title'       => __( 'Feature Request', 'shahi-legalflowsuite' ),
 				'description' => __( 'Suggest new features', 'shahi-legalflowsuite' ),
 				'icon'        => 'dashicons-megaphone',
-				'url'         => '#', // Placeholder - user will add later.
+				'url'         => 'https://shahisoft.store/index.php/my-tickets/',
 				'external'    => true,
 			),
 			array(
@@ -295,7 +295,11 @@ class Dashboard {
 			return 0;
 		}
 
-		$count = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$count = $wpdb->get_var(
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->prepare( 'SELECT COUNT(*) FROM ' . esc_sql( $table ) )
+		);
 		return (int) $count;
 	}
 
@@ -314,13 +318,17 @@ class Dashboard {
 			return __( 'N/A', 'shahi-legalflowsuite' );
 		}
 
-		$last_time = $wpdb->get_var( $wpdb->prepare( 'SELECT created_at FROM %i ORDER BY created_at DESC LIMIT 1', $table ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$last_time = $wpdb->get_var(
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->prepare( 'SELECT created_at FROM ' . esc_sql( $table ) . ' ORDER BY created_at DESC LIMIT 1' )
+		);
 
 		if ( ! $last_time ) {
 			return __( 'N/A', 'shahi-legalflowsuite' );
 		}
 
-		return human_time_diff( strtotime( $last_time ), current_time( 'timestamp' ) ) . ' ' . __( 'ago', 'shahi-legalflowsuite' );
+		return human_time_diff( strtotime( $last_time ), time() ) . ' ' . __( 'ago', 'shahi-legalflowsuite' );
 	}
 
 	/**
@@ -451,10 +459,11 @@ class Dashboard {
 			return array();
 		}
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$results = $wpdb->get_results(
 			$wpdb->prepare(
-				'SELECT event_type, event_data, created_at FROM %i ORDER BY created_at DESC LIMIT %d',
-				$table,
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				'SELECT event_type, event_data, created_at FROM ' . esc_sql( $table ) . ' ORDER BY created_at DESC LIMIT %d',
 				$limit
 			)
 		);
@@ -468,7 +477,7 @@ class Dashboard {
 			$activity[] = array(
 				'title'       => $this->format_event_title( $event->event_type ),
 				'description' => $this->format_event_description( $event ),
-				'time'        => human_time_diff( strtotime( $event->created_at ), current_time( 'timestamp' ) ) . ' ' . __( 'ago', 'shahi-legalflowsuite' ),
+				'time'        => human_time_diff( strtotime( $event->created_at ), time() ) . ' ' . __( 'ago', 'shahi-legalflowsuite' ),
 				'icon'        => $this->get_event_icon( $event->event_type ),
 				'type'        => $event->event_type,
 			);
@@ -517,6 +526,7 @@ class Dashboard {
 				return isset( $data['module_name'] ) ? $data['module_name'] : __( 'Unknown module', 'shahi-legalflowsuite' );
 
 			case 'settings_updated':
+				/* translators: %s: settings section name */
 				return isset( $data['section'] ) ? sprintf( __( 'Section: %s', 'shahi-legalflowsuite' ), $data['section'] ) : __( 'General settings', 'shahi-legalflowsuite' );
 
 			default:

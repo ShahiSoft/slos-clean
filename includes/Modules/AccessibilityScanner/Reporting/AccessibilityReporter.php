@@ -104,8 +104,8 @@ class AccessibilityReporter {
 			wp_send_json_error( array( 'message' => __( 'Unauthorized access.', 'shahi-legalflowsuite' ) ) );
 		}
 
-		$email = isset( $_POST['email'] ) ? sanitize_text_field( wp_unslash( $_POST['email'] ) ) : '';
-	$template = isset( $_POST['template'] ) ? sanitize_text_field( $_POST['template'] ) : 'executive';
+		$email    = isset( $_POST['email'] ) ? sanitize_text_field( wp_unslash( $_POST['email'] ) ) : '';
+		$template = isset( $_POST['template'] ) ? sanitize_text_field( $_POST['template'] ) : 'executive';
 		if ( empty( $email ) || ! is_email( $email ) ) {
 			wp_send_json_error( array( 'message' => __( 'Please provide a valid email address.', 'shahi-legalflowsuite' ) ) );
 		}
@@ -157,18 +157,18 @@ class AccessibilityReporter {
 		header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
 
 		$output = fopen( 'php://output', 'w' );
-		
+
 		// Enhanced CSV headers
 		fputcsv( $output, array( 'Post ID', 'Title', 'URL', 'Post Type', 'Scan Date', 'Overall Score', 'Issue Type', 'Severity', 'WCAG Criterion', 'Description', 'Message', 'Element', 'Line Number', 'Fixable' ) );
 
 		foreach ( $data as $row ) {
 			$score = isset( $row['results']['score'] ) ? $row['results']['score'] : 'N/A';
-			
+
 			foreach ( $row['results'] as $check_id => $result ) {
 				if ( 'score' === $check_id ) {
 					continue;
 				}
-				
+
 				if ( ! empty( $result['issues'] ) ) {
 					foreach ( $result['issues'] as $issue ) {
 						fputcsv(
@@ -205,12 +205,12 @@ class AccessibilityReporter {
 		header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
 
 		$export_data = array(
-			'generated_at' => current_time( 'mysql' ),
+			'generated_at'   => current_time( 'mysql' ),
 			'report_version' => '1.0',
-			'site_url' => get_site_url(),
-			'site_name' => get_bloginfo( 'name' ),
-			'statistics' => get_option( 'slos_scan_statistics', array() ),
-			'pages' => $data,
+			'site_url'       => get_site_url(),
+			'site_name'      => get_bloginfo( 'name' ),
+			'statistics'     => get_option( 'slos_scan_statistics', array() ),
+			'pages'          => $data,
 		);
 
 		echo json_encode( $export_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES );
@@ -228,10 +228,10 @@ class AccessibilityReporter {
 			throw new \Exception( __( 'PDF library not available.', 'shahi-legalflowsuite' ) );
 		}
 
-		$data = $this->get_all_scan_results();
+		$data  = $this->get_all_scan_results();
 		$stats = get_option( 'slos_scan_statistics', array() );
-		
-		$html = ( 'executive' === $template ) 
+
+		$html = ( 'executive' === $template )
 			? $this->generate_executive_summary_html( $data, $stats )
 			: $this->generate_technical_details_html( $data, $stats );
 
@@ -259,13 +259,13 @@ class AccessibilityReporter {
 	 */
 	private function generate_executive_summary_html( $data, $stats ) {
 		$site_name = get_bloginfo( 'name' );
-		$site_url = get_site_url();
-		$date = date_i18n( get_option( 'date_format' ) );
-		
-		$average_score = isset( $stats['average_score'] ) ? intval( $stats['average_score'] ) : 0;
-		$total_issues = isset( $stats['total_issues'] ) ? intval( $stats['total_issues'] ) : 0;
+		$site_url  = get_site_url();
+		$date      = date_i18n( get_option( 'date_format' ) );
+
+		$average_score  = isset( $stats['average_score'] ) ? intval( $stats['average_score'] ) : 0;
+		$total_issues   = isset( $stats['total_issues'] ) ? intval( $stats['total_issues'] ) : 0;
 		$total_critical = isset( $stats['total_critical'] ) ? intval( $stats['total_critical'] ) : 0;
-		$pages_scanned = count( $data );
+		$pages_scanned  = count( $data );
 
 		$html = '<!DOCTYPE html>
 <html>
@@ -323,7 +323,7 @@ class AccessibilityReporter {
 	<h2>Key Findings</h2>
 	<div class="recommendation">
 		<strong>Compliance Status:</strong> ';
-		
+
 		if ( $average_score >= 90 ) {
 			$html .= 'Excellent - Your website demonstrates strong accessibility compliance.';
 		} elseif ( $average_score >= 80 ) {
@@ -333,16 +333,16 @@ class AccessibilityReporter {
 		} else {
 			$html .= 'Needs Improvement - Significant accessibility barriers exist that prevent users with disabilities from accessing your content.';
 		}
-		
+
 		$html .= '</div>
 
 	<h2>Top Priority Actions</h2>
 	<ol>';
-		
+
 		if ( $total_critical > 0 ) {
 			$html .= '<li><strong>Address Critical Issues:</strong> ' . esc_html( $total_critical ) . ' critical accessibility barriers must be fixed immediately to prevent legal risk and ensure basic usability.</li>';
 		}
-		
+
 		$html .= '<li><strong>Focus on High-Impact Pages:</strong> Prioritize fixing issues on your most visited pages and conversion-critical content.</li>
 		<li><strong>Implement Auto-Fix Solutions:</strong> Many common issues can be automatically corrected through the accessibility tools available in your dashboard.</li>
 		<li><strong>Regular Monitoring:</strong> Schedule periodic scans to maintain compliance and catch new issues before they impact users.</li>
@@ -369,8 +369,8 @@ class AccessibilityReporter {
 	 */
 	private function generate_technical_details_html( $data, $stats ) {
 		$site_name = get_bloginfo( 'name' );
-		$site_url = get_site_url();
-		$date = date_i18n( get_option( 'date_format' ) );
+		$site_url  = get_site_url();
+		$date      = date_i18n( get_option( 'date_format' ) );
 
 		$html = '<!DOCTYPE html>
 <html>
@@ -424,7 +424,7 @@ class AccessibilityReporter {
 
 					foreach ( $result['issues'] as $issue ) {
 						$severity_class = isset( $result['severity'] ) && 'critical' === $result['severity'] ? 'critical' : 'warning';
-						$html .= '<tr>
+						$html          .= '<tr>
 							<td class="' . $severity_class . '">' . esc_html( isset( $result['severity'] ) ? strtoupper( $result['severity'] ) : 'N/A' ) . '</td>
 							<td>' . esc_html( isset( $result['wcag'] ) ? $result['wcag'] : 'N/A' ) . '</td>
 							<td>' . esc_html( $check_id ) . '</td>
@@ -453,22 +453,25 @@ class AccessibilityReporter {
 	 * @return bool Success status
 	 */
 	public function send_email_report( $email, $template = 'executive' ) {
-		$stats = get_option( 'slos_scan_statistics', array() );
-		$average_score = isset( $stats['average_score'] ) ? intval( $stats['average_score'] ) : 0;
-		$total_issues = isset( $stats['total_issues'] ) ? intval( $stats['total_issues'] ) : 0;
+		$stats          = get_option( 'slos_scan_statistics', array() );
+		$average_score  = isset( $stats['average_score'] ) ? intval( $stats['average_score'] ) : 0;
+		$total_issues   = isset( $stats['total_issues'] ) ? intval( $stats['total_issues'] ) : 0;
 		$total_critical = isset( $stats['total_critical'] ) ? intval( $stats['total_critical'] ) : 0;
-		
+
 		$subject = sprintf(
 			/* translators: %s: date */
 			__( 'Accessibility Compliance Report - %s', 'shahi-legalflowsuite' ),
 			date_i18n( get_option( 'date_format' ) )
 		);
 
-		$message = $this->generate_email_template( $template, array(
-			'average_score' => $average_score,
-			'total_issues' => $total_issues,
-			'total_critical' => $total_critical,
-		) );
+		$message = $this->generate_email_template(
+			$template,
+			array(
+				'average_score'  => $average_score,
+				'total_issues'   => $total_issues,
+				'total_critical' => $total_critical,
+			)
+		);
 
 		$headers = array( 'Content-Type: text/html; charset=UTF-8' );
 
@@ -479,12 +482,12 @@ class AccessibilityReporter {
 	 * Generate email HTML template
 	 *
 	 * @param string $template Template type
-	 * @param array $data Email data
+	 * @param array  $data Email data
 	 * @return string HTML content
 	 */
 	private function generate_email_template( $template, $data ) {
 		$site_name = get_bloginfo( 'name' );
-		$site_url = get_site_url();
+		$site_url  = get_site_url();
 		$admin_url = admin_url( 'admin.php?page=slos-accessibility&tab=tools' );
 
 		$html = '
@@ -530,7 +533,7 @@ class AccessibilityReporter {
 			</div>
 			
 			<p><strong>Status:</strong> ';
-			
+
 		if ( $data['average_score'] >= 80 ) {
 			$html .= 'Good - Your website meets accessibility standards.';
 		} elseif ( $data['average_score'] >= 60 ) {
@@ -538,7 +541,7 @@ class AccessibilityReporter {
 		} else {
 			$html .= 'Needs Improvement - Several accessibility barriers exist.';
 		}
-		
+
 		$html .= '</p>
 			
 			<p>For detailed issue breakdown and automated fixes:</p>

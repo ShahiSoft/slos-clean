@@ -173,24 +173,24 @@ class Settings_REST_Controller extends Base_REST_Controller {
 	 */
 	private function get_default_banner_settings() {
 		return array(
-			'template'          => 'eu', // Phase 2.1.2: Banner template (eu, ccpa, simple, advanced)
-			'position'          => 'bottom',
-			'layout'            => 'bar',
-			'bg_color'          => '#1a1a2e',
-			'text_color'        => '#ffffff',
-			'primary_color'     => '#3b82f6',
-			'title'             => __( 'We value your privacy', 'shahi-legalflowsuite' ),
-			'message'           => __( 'We use cookies to enhance your browsing experience, serve personalized content, and analyze our traffic. By clicking "Accept All", you consent to our use of cookies.', 'shahi-legalflowsuite' ),
-			'accept_text'       => __( 'Accept All', 'shahi-legalflowsuite' ),
-			'reject_text'       => __( 'Reject All', 'shahi-legalflowsuite' ),
-			'settings_text'     => __( 'Cookie Settings', 'shahi-legalflowsuite' ),
-			'icon_position'     => 'left', // Phase 1.4.3: Floating icon position (left or right)
-			'show_reject'       => true,
-			'show_settings'     => true,
-			'auto_hide'         => false,
-			'blur_background'   => false,
+			'template'              => 'eu', // Phase 2.1.2: Banner template (eu, ccpa, simple, advanced)
+			'position'              => 'bottom',
+			'layout'                => 'bar',
+			'bg_color'              => '#1a1a2e',
+			'text_color'            => '#ffffff',
+			'primary_color'         => '#3b82f6',
+			'title'                 => __( 'We value your privacy', 'shahi-legalflowsuite' ),
+			'message'               => __( 'We use cookies to enhance your browsing experience, serve personalized content, and analyze our traffic. By clicking "Accept All", you consent to our use of cookies.', 'shahi-legalflowsuite' ),
+			'accept_text'           => __( 'Accept All', 'shahi-legalflowsuite' ),
+			'reject_text'           => __( 'Reject All', 'shahi-legalflowsuite' ),
+			'settings_text'         => __( 'Cookie Settings', 'shahi-legalflowsuite' ),
+			'icon_position'         => 'left', // Phase 1.4.3: Floating icon position (left or right)
+			'show_reject'           => true,
+			'show_settings'         => true,
+			'auto_hide'             => false,
+			'blur_background'       => false,
 			// Phase 1.4: Category descriptions
-			'show_descriptions' => true,
+			'show_descriptions'     => true,
 			'category_descriptions' => array(
 				'necessary'   => __( 'Essential cookies required for the website to function. Cannot be disabled.', 'shahi-legalflowsuite' ),
 				'functional'  => __( 'Cookies that enhance functionality such as live chat, videos, and social media.', 'shahi-legalflowsuite' ),
@@ -199,23 +199,32 @@ class Settings_REST_Controller extends Base_REST_Controller {
 				'preferences' => __( 'Cookies that remember your settings and preferences for a better experience.', 'shahi-legalflowsuite' ),
 			),
 			// Phase 1.4: Vendor/service transparency
-			'show_vendors'      => false,
-			'vendors'           => array(
+			'show_vendors'          => false,
+			'vendors'               => array(
 				'analytics'   => array(
-					array( 'name' => 'Google Analytics', 'purpose' => 'Website analytics' ),
+					array(
+						'name'    => 'Google Analytics',
+						'purpose' => 'Website analytics',
+					),
 				),
 				'marketing'   => array(
-					array( 'name' => 'Facebook Pixel', 'purpose' => 'Ad targeting' ),
-					array( 'name' => 'Google Ads', 'purpose' => 'Advertisement' ),
+					array(
+						'name'    => 'Facebook Pixel',
+						'purpose' => 'Ad targeting',
+					),
+					array(
+						'name'    => 'Google Ads',
+						'purpose' => 'Advertisement',
+					),
 				),
 				'functional'  => array(),
 				'preferences' => array(),
 			),
 			// Phase 2.3: Privacy & Consent Expiry Settings
-			'privacy_url'       => '', // Phase 2.3.1: Privacy policy URL
-			'learn_more_text'   => __( 'Learn more', 'shahi-legalflowsuite' ), // Phase 2.3.2: Learn more link text
-			'consent_expiry_days' => 30, // Phase 2.3.3: Consent expiry in days (default 30)
-			'grace_period_days' => 0, // Phase 3.4.1: Re-consent grace period in days (default 0 = immediate)
+			'privacy_url'           => '', // Phase 2.3.1: Privacy policy URL
+			'learn_more_text'       => __( 'Learn more', 'shahi-legalflowsuite' ), // Phase 2.3.2: Learn more link text
+			'consent_expiry_days'   => 30, // Phase 2.3.3: Consent expiry in days (default 30)
+			'grace_period_days'     => 0, // Phase 3.4.1: Re-consent grace period in days (default 0 = immediate)
 		);
 	}
 
@@ -332,7 +341,7 @@ class Settings_REST_Controller extends Base_REST_Controller {
 			return array();
 		}
 
-		$sanitized = array();
+		$sanitized          = array();
 		$allowed_categories = array( 'necessary', 'functional', 'analytics', 'marketing', 'preferences' );
 
 		foreach ( $descriptions as $category => $description ) {
@@ -356,7 +365,7 @@ class Settings_REST_Controller extends Base_REST_Controller {
 			return array();
 		}
 
-		$sanitized = array();
+		$sanitized          = array();
 		$allowed_categories = array( 'necessary', 'functional', 'analytics', 'marketing', 'preferences' );
 
 		foreach ( $vendors as $category => $vendor_list ) {

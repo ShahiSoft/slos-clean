@@ -136,27 +136,27 @@ class Template_Manager {
 				'description' => __( 'Standard privacy policy document for GDPR/CCPA compliance.', 'shahi-legalflowsuite' ),
 				'icon'        => 'shield',
 			),
-			'terms' => array(
+			'terms'          => array(
 				'name'        => __( 'Terms of Service', 'shahi-legalflowsuite' ),
 				'description' => __( 'Terms and conditions for website/service usage.', 'shahi-legalflowsuite' ),
 				'icon'        => 'document',
 			),
-			'cookie-policy' => array(
+			'cookie-policy'  => array(
 				'name'        => __( 'Cookie Policy', 'shahi-legalflowsuite' ),
 				'description' => __( 'Cookie usage disclosure for compliance.', 'shahi-legalflowsuite' ),
 				'icon'        => 'cookies',
 			),
-			'gdpr-addendum' => array(
+			'gdpr-addendum'  => array(
 				'name'        => __( 'GDPR Addendum', 'shahi-legalflowsuite' ),
 				'description' => __( 'GDPR-specific addendum for data processing.', 'shahi-legalflowsuite' ),
 				'icon'        => 'flag',
 			),
-			'ccpa-notice' => array(
+			'ccpa-notice'    => array(
 				'name'        => __( 'CCPA Notice', 'shahi-legalflowsuite' ),
 				'description' => __( 'California Consumer Privacy Act notice.', 'shahi-legalflowsuite' ),
 				'icon'        => 'info',
 			),
-			'dpa' => array(
+			'dpa'            => array(
 				'name'        => __( 'Data Processing Agreement', 'shahi-legalflowsuite' ),
 				'description' => __( 'Agreement for third-party data processors.', 'shahi-legalflowsuite' ),
 				'icon'        => 'handshake',
@@ -179,12 +179,12 @@ class Template_Manager {
 	 */
 	public function get_template_by_hub_type( string $hub_type_key, string $locale = 'en_US' ): string {
 		$type_mapping = array(
-			'privacy_policy'          => 'privacy-policy',
-			'terms_of_service'        => 'terms',
-			'cookie_policy'           => 'cookie-policy',
-			'gdpr_addendum'           => 'gdpr-addendum',
-			'ccpa_notice'             => 'ccpa-notice',
-			'dpa'                     => 'dpa',
+			'privacy_policy'   => 'privacy-policy',
+			'terms_of_service' => 'terms',
+			'cookie_policy'    => 'cookie-policy',
+			'gdpr_addendum'    => 'gdpr-addendum',
+			'ccpa_notice'      => 'ccpa-notice',
+			'dpa'              => 'dpa',
 		);
 
 		$type_mapping = apply_filters( 'slos_hub_type_to_template_map', $type_mapping );
@@ -227,10 +227,10 @@ class Template_Manager {
 	 * @return array Placeholder key => value pairs
 	 */
 	public function get_default_values( array $overrides = array() ): array {
-		$site_name    = get_bloginfo( 'name' );
-		$site_url     = get_bloginfo( 'url' );
-		$admin_email  = get_bloginfo( 'admin_email' );
-		$site_desc    = get_bloginfo( 'description' );
+		$site_name   = get_bloginfo( 'name' );
+		$site_url    = get_bloginfo( 'url' );
+		$admin_email = get_bloginfo( 'admin_email' );
+		$site_desc   = get_bloginfo( 'description' );
 
 		// Auto-detect integrations
 		$detected = $this->auto_detect_integrations();
@@ -312,9 +312,9 @@ class Template_Manager {
 			}
 
 			$results[ $framework ] = array(
-				'valid'           => empty( $missing ),
+				'valid'            => empty( $missing ),
 				'missing_sections' => $missing,
-				'checked_at'      => current_time( 'mysql' ),
+				'checked_at'       => current_time( 'mysql' ),
 			);
 		}
 
@@ -329,7 +329,7 @@ class Template_Manager {
 	 */
 	protected function get_required_sections( string $framework ): array {
 		$sections = array(
-			'GDPR'     => array(
+			'GDPR'    => array(
 				'legal basis',
 				'data subject rights',
 				'data controller',
@@ -337,28 +337,28 @@ class Template_Manager {
 				'data retention',
 				'international transfers',
 			),
-			'CCPA'     => array(
+			'CCPA'    => array(
 				'categories of personal information',
 				'right to know',
 				'right to delete',
 				'right to opt-out',
 				'non-discrimination',
 			),
-			'LGPD'     => array(
+			'LGPD'    => array(
 				'legal basis',
 				'data subject rights',
 				'data controller',
 				'data protection officer',
 				'data retention',
 			),
-			'UK-GDPR'  => array(
+			'UK-GDPR' => array(
 				'legal basis',
 				'data subject rights',
 				'data controller',
 				'data retention',
 				'international transfers',
 			),
-			'PIPEDA'   => array(
+			'PIPEDA'  => array(
 				'consent',
 				'purpose',
 				'limiting collection',
@@ -366,7 +366,7 @@ class Template_Manager {
 				'safeguards',
 				'openness',
 			),
-			'POPIA'    => array(
+			'POPIA'   => array(
 				'lawful processing',
 				'data subject rights',
 				'information officer',
@@ -383,22 +383,22 @@ class Template_Manager {
 	 */
 	protected function initialize_templates(): void {
 		$this->templates = array(
-			'privacy-policy'   => array(
+			'privacy-policy' => array(
 				'en_US' => $this->get_privacy_policy_template(),
 			),
-			'terms'            => array(
+			'terms'          => array(
 				'en_US' => $this->get_terms_template(),
 			),
-			'cookie-policy'    => array(
+			'cookie-policy'  => array(
 				'en_US' => $this->get_cookie_policy_template(),
 			),
-			'gdpr-addendum'    => array(
+			'gdpr-addendum'  => array(
 				'en_US' => $this->get_gdpr_addendum_template(),
 			),
-			'ccpa-notice'      => array(
+			'ccpa-notice'    => array(
 				'en_US' => $this->get_ccpa_notice_template(),
 			),
-			'dpa'              => array(
+			'dpa'            => array(
 				'en_US' => $this->get_dpa_template(),
 			),
 		);
@@ -408,7 +408,7 @@ class Template_Manager {
 	 * Privacy Policy template
 	 */
 	protected function get_privacy_policy_template(): string {
-		return <<<HTML
+		return <<<'HTML'
 <h1>Privacy Policy</h1>
 
 <p><strong>Effective Date:</strong> {{effective_date}}</p>
@@ -489,7 +489,7 @@ HTML;
 	 * Terms of Service template
 	 */
 	protected function get_terms_template(): string {
-		return <<<HTML
+		return <<<'HTML'
 <h1>Terms of Service</h1>
 
 <p><strong>Effective Date:</strong> {{effective_date}}</p>
@@ -525,7 +525,7 @@ HTML;
 	 * Cookie Policy template
 	 */
 	protected function get_cookie_policy_template(): string {
-		return <<<HTML
+		return <<<'HTML'
 <h1>Cookie Policy</h1>
 
 <p><strong>Effective Date:</strong> {{effective_date}}</p>
@@ -557,7 +557,7 @@ HTML;
 	 * GDPR Addendum template
 	 */
 	protected function get_gdpr_addendum_template(): string {
-		return <<<HTML
+		return <<<'HTML'
 <h1>GDPR Data Processing Addendum</h1>
 
 <p><strong>Effective Date:</strong> {{effective_date}}</p>
@@ -589,7 +589,7 @@ HTML;
 	 * CCPA Notice template
 	 */
 	protected function get_ccpa_notice_template(): string {
-		return <<<HTML
+		return <<<'HTML'
 <h1>California Consumer Privacy Act (CCPA) Notice</h1>
 
 <p><strong>Effective Date:</strong> {{effective_date}}</p>
@@ -623,7 +623,7 @@ HTML;
 	 * Data Processing Agreement template
 	 */
 	protected function get_dpa_template(): string {
-		return <<<HTML
+		return <<<'HTML'
 <h1>Data Processing Agreement</h1>
 
 <p><strong>Effective Date:</strong> {{effective_date}}</p>
@@ -657,8 +657,10 @@ HTML;
 HTML;
 	}
 
-	/* ============================= */
-	/* Detection Helpers             */
+	/*
+	============================= */
+	/*
+	Detection Helpers             */
 	/* ============================= */
 
 	/**

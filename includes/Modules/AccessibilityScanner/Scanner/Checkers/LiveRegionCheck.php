@@ -50,4 +50,3 @@ class LiveRegionCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

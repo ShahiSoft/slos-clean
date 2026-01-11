@@ -44,4 +44,3 @@ class TouchGestureCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

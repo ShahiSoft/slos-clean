@@ -76,4 +76,3 @@ class FieldsetLegendCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

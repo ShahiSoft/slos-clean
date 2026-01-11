@@ -17,43 +17,43 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Determine status class and badge.
-$status       = $card['status'] ?? 'not_generated';
-$is_outdated  = $card['is_outdated'] ?? false;
-$doc_id       = $card['doc_id'] ?? 0;
-$doc_type     = $card['id'] ?? '';
-$version      = $card['version'] ?? '';
-$updated_at   = $card['updated_at'] ?? '';
-$category     = $card['category'] ?? 'legal';
+$status      = $card['status'] ?? 'not_generated';
+$is_outdated = $card['is_outdated'] ?? false;
+$doc_id      = $card['doc_id'] ?? 0;
+$doc_type    = $card['id'] ?? '';
+$version     = $card['version'] ?? '';
+$updated_at  = $card['updated_at'] ?? '';
+$category    = $card['category'] ?? 'legal';
 
 // Status display configuration.
 $status_config = array(
 	'not_generated' => array(
-		'class'   => 'slos-card--not-generated',
-		'badge'   => 'slos-badge--gray',
-		'label'   => __( 'Not Generated', 'shahi-legalflowsuite' ),
-		'icon'    => 'dashicons-media-document',
+		'class' => 'slos-card--not-generated',
+		'badge' => 'slos-badge--gray',
+		'label' => __( 'Not Generated', 'shahi-legalflowsuite' ),
+		'icon'  => 'dashicons-media-document',
 	),
 	'draft'         => array(
-		'class'   => 'slos-card--draft',
-		'badge'   => 'slos-badge--blue',
-		'label'   => __( 'Draft', 'shahi-legalflowsuite' ),
-		'icon'    => 'dashicons-edit',
+		'class' => 'slos-card--draft',
+		'badge' => 'slos-badge--blue',
+		'label' => __( 'Draft', 'shahi-legalflowsuite' ),
+		'icon'  => 'dashicons-edit',
 	),
 	'published'     => array(
-		'class'   => 'slos-card--published',
-		'badge'   => 'slos-badge--green',
-		'label'   => __( 'Published', 'shahi-legalflowsuite' ),
-		'icon'    => 'dashicons-yes-alt',
+		'class' => 'slos-card--published',
+		'badge' => 'slos-badge--green',
+		'label' => __( 'Published', 'shahi-legalflowsuite' ),
+		'icon'  => 'dashicons-yes-alt',
 	),
 );
 
 // Override for outdated status.
 if ( $is_outdated && 'not_generated' !== $status ) {
 	$status_config[ $status ] = array(
-		'class'   => 'slos-card--outdated',
-		'badge'   => 'slos-badge--orange',
-		'label'   => __( 'Outdated', 'shahi-legalflowsuite' ),
-		'icon'    => 'dashicons-warning',
+		'class' => 'slos-card--outdated',
+		'badge' => 'slos-badge--orange',
+		'label' => __( 'Outdated', 'shahi-legalflowsuite' ),
+		'icon'  => 'dashicons-warning',
 	);
 }
 
@@ -61,9 +61,9 @@ $current_status = $status_config[ $status ] ?? $status_config['not_generated'];
 ?>
 
 <div class="slos-card <?php echo esc_attr( $current_status['class'] ); ?>" 
-     data-category="<?php echo esc_attr( $category ); ?>" 
-     data-type="<?php echo esc_attr( $doc_type ); ?>"
-     data-doc-id="<?php echo esc_attr( $doc_id ); ?>">
+	data-category="<?php echo esc_attr( $category ); ?>" 
+	data-type="<?php echo esc_attr( $doc_type ); ?>"
+	data-doc-id="<?php echo esc_attr( $doc_id ); ?>">
 	
 	<!-- Card Header -->
 	<div class="slos-card__header">
@@ -149,8 +149,8 @@ $current_status = $status_config[ $status ] ?? $status_config['not_generated'];
 					</button>
 					
 					<a href="<?php echo esc_url( admin_url( 'admin.php?page=slos-edit-document&id=' . $doc_id ) ); ?>" 
-					   class="slos-btn slos-btn--secondary slos-btn--sm"
-					   title="<?php esc_attr_e( 'Edit Document', 'shahi-legalflowsuite' ); ?>">
+						class="slos-btn slos-btn--secondary slos-btn--sm"
+						title="<?php esc_attr_e( 'Edit Document', 'shahi-legalflowsuite' ); ?>">
 						<span class="dashicons dashicons-edit"></span>
 						<?php esc_html_e( 'Edit', 'shahi-legalflowsuite' ); ?>
 					</a>

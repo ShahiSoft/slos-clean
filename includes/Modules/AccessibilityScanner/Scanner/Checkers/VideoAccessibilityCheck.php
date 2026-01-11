@@ -110,8 +110,8 @@ class VideoAccessibilityCheck extends AbstractCheck {
 			}
 
 			// Check for captions/subtitles
-			$tracks       = $video->getElementsByTagName( 'track' );
-			$has_captions = false;
+			$tracks           = $video->getElementsByTagName( 'track' );
+			$has_captions     = false;
 			$has_descriptions = false;
 
 			foreach ( $tracks as $track ) {
@@ -291,4 +291,3 @@ class VideoAccessibilityCheck extends AbstractCheck {
 		return in_array( strtolower( trim( $title ) ), $generic_titles, true );
 	}
 }
-

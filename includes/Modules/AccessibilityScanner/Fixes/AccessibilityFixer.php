@@ -23,11 +23,11 @@ class AccessibilityFixer {
 
 	public function enqueue_fix_assets() {
 		// Enqueue CSS first
-		wp_enqueue_style( 
-			'slos-a11y-fixes', 
-			plugin_dir_url( __FILE__ ) . '../../../../assets/css/slos-a11y-fixes.css', 
-			array(), 
-			'1.1.0' 
+		wp_enqueue_style(
+			'slos-a11y-fixes',
+			plugin_dir_url( __FILE__ ) . '../../../../assets/css/slos-a11y-fixes.css',
+			array(),
+			'1.1.0'
 		);
 
 		// Enqueue JavaScript (depends on no libraries - vanilla JS)
@@ -44,20 +44,20 @@ class AccessibilityFixer {
 			'slos-a11y-fixes',
 			'slosa11yConfig',
 			array(
-				'ajaxUrl'  => admin_url( 'admin-ajax.php' ),
-				'nonce'    => wp_create_nonce( 'slos_a11y_nonce' ),
-				'i18n'     => array(
-					'pauseAnimation'    => __( 'Pause animation', 'shahi-legalflowsuite' ),
-					'playAnimation'     => __( 'Play animation', 'shahi-legalflowsuite' ),
-					'pauseCarousel'     => __( 'Pause carousel', 'shahi-legalflowsuite' ),
-					'playCarousel'      => __( 'Play carousel', 'shahi-legalflowsuite' ),
-					'extendTime'        => __( 'Extend time', 'shahi-legalflowsuite' ),
-					'cancelRefresh'     => __( 'Cancel refresh', 'shahi-legalflowsuite' ),
-					'dialogClosed'      => __( 'Dialog closed', 'shahi-legalflowsuite' ),
-					'animationPaused'   => __( 'Animation paused', 'shahi-legalflowsuite' ),
-					'animationResumed'  => __( 'Animation resumed', 'shahi-legalflowsuite' ),
-					'timerPaused'       => __( 'Timer paused', 'shahi-legalflowsuite' ),
-					'timerResumed'      => __( 'Timer resumed', 'shahi-legalflowsuite' ),
+				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+				'nonce'   => wp_create_nonce( 'slos_a11y_nonce' ),
+				'i18n'    => array(
+					'pauseAnimation'   => __( 'Pause animation', 'shahi-legalflowsuite' ),
+					'playAnimation'    => __( 'Play animation', 'shahi-legalflowsuite' ),
+					'pauseCarousel'    => __( 'Pause carousel', 'shahi-legalflowsuite' ),
+					'playCarousel'     => __( 'Play carousel', 'shahi-legalflowsuite' ),
+					'extendTime'       => __( 'Extend time', 'shahi-legalflowsuite' ),
+					'cancelRefresh'    => __( 'Cancel refresh', 'shahi-legalflowsuite' ),
+					'dialogClosed'     => __( 'Dialog closed', 'shahi-legalflowsuite' ),
+					'animationPaused'  => __( 'Animation paused', 'shahi-legalflowsuite' ),
+					'animationResumed' => __( 'Animation resumed', 'shahi-legalflowsuite' ),
+					'timerPaused'      => __( 'Timer paused', 'shahi-legalflowsuite' ),
+					'timerResumed'     => __( 'Timer resumed', 'shahi-legalflowsuite' ),
 				),
 			)
 		);
@@ -322,7 +322,7 @@ class AccessibilityFixer {
 	public function fix_issue( $post_id, $issue_type ) {
 		// Debug logging
 		error_log( "SLOS FIX_ISSUE: Starting fix for post_id=$post_id, issue_type=$issue_type" );
-		
+
 		// Get page content
 		$content = $this->get_page_content( $post_id );
 
@@ -330,8 +330,8 @@ class AccessibilityFixer {
 			error_log( "SLOS FIX_ISSUE: Content empty for post_id=$post_id" );
 			return new \WP_Error( 'content_not_found', 'Could not retrieve page content' );
 		}
-		
-		error_log( "SLOS FIX_ISSUE: Content length=" . strlen( $content ) );
+
+		error_log( 'SLOS FIX_ISSUE: Content length=' . strlen( $content ) );
 
 		// Initialize fixer registry and get the appropriate fixer
 		FixerRegistry::init();
@@ -341,18 +341,18 @@ class AccessibilityFixer {
 			error_log( "SLOS FIX_ISSUE: No fixer found for issue_type=$issue_type" );
 			return new \WP_Error( 'fixer_not_found', sprintf( 'No fixer available for issue type: %s', $issue_type ) );
 		}
-		
-		error_log( "SLOS FIX_ISSUE: Found fixer class=" . get_class( $fixer ) );
+
+		error_log( 'SLOS FIX_ISSUE: Found fixer class=' . get_class( $fixer ) );
 
 		// Apply the fix
 		try {
 			$result = $fixer->fix( $content );
-			
-			error_log( "SLOS FIX_ISSUE: Fixer returned fixed_count=" . ( $result['fixed_count'] ?? 'null' ) );
-			error_log( "SLOS FIX_ISSUE: Content changed=" . ( $result['content'] !== $content ? 'YES' : 'NO' ) );
+
+			error_log( 'SLOS FIX_ISSUE: Fixer returned fixed_count=' . ( $result['fixed_count'] ?? 'null' ) );
+			error_log( 'SLOS FIX_ISSUE: Content changed=' . ( $result['content'] !== $content ? 'YES' : 'NO' ) );
 
 			if ( ! isset( $result['fixed_count'] ) || ! isset( $result['content'] ) ) {
-				error_log( "SLOS FIX_ISSUE: Invalid fixer result" );
+				error_log( 'SLOS FIX_ISSUE: Invalid fixer result' );
 				return new \WP_Error( 'invalid_fixer_result', 'Fixer returned invalid result' );
 			}
 
@@ -370,8 +370,8 @@ class AccessibilityFixer {
 				'ID'           => $post_id,
 				'post_content' => $result['content'],
 			);
-			$updated = wp_update_post( $post_update );
-			
+			$updated     = wp_update_post( $post_update );
+
 			// Clear cache to ensure next fix operation gets fresh content
 			if ( $updated && ! is_wp_error( $updated ) ) {
 				clean_post_cache( $post_id );
@@ -379,7 +379,7 @@ class AccessibilityFixer {
 
 			return $result;
 		} catch ( \Exception $e ) {
-			error_log( "SLOS FIX_ISSUE: Exception - " . $e->getMessage() );
+			error_log( 'SLOS FIX_ISSUE: Exception - ' . $e->getMessage() );
 			return new \WP_Error( 'fixer_exception', sprintf( 'Error applying fix: %s', $e->getMessage() ) );
 		}
 	}
@@ -406,7 +406,7 @@ class AccessibilityFixer {
 
 		$dom = new \DOMDocument( '1.0', 'UTF-8' );
 		libxml_use_internal_errors( true );
-		$wrapped  = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>' . $content . '</body></html>';
+		$wrapped = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>' . $content . '</body></html>';
 		$dom->loadHTML( $wrapped, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
 		libxml_clear_errors();
 
@@ -422,8 +422,8 @@ class AccessibilityFixer {
 			case 'missing-h1':
 				$h1s = $dom->getElementsByTagName( 'h1' );
 				if ( $h1s->length === 0 ) {
-					$h1 = $dom->createElement( 'h1' );
-					$title = get_the_title( $post_id ) ?: get_bloginfo( 'name' );
+					$h1              = $dom->createElement( 'h1' );
+					$title           = get_the_title( $post_id ) ?: get_bloginfo( 'name' );
 					$h1->textContent = $title ?: 'Page Title';
 					if ( $body->firstChild ) {
 						$body->insertBefore( $h1, $body->firstChild );
@@ -467,9 +467,9 @@ class AccessibilityFixer {
 						}
 					}
 
-					$name      = $el->getAttribute( 'name' );
+					$name        = $el->getAttribute( 'name' );
 					$placeholder = $el->getAttribute( 'placeholder' );
-					$label_text = $placeholder ?: $name;
+					$label_text  = $placeholder ?: $name;
 					if ( empty( $label_text ) ) {
 						$label_text = ucfirst( $tag );
 					}
@@ -544,11 +544,11 @@ class AccessibilityFixer {
 				break;
 
 			case 'skip-link':
-				$xpath = new \DOMXPath( $dom );
+				$xpath         = new \DOMXPath( $dom );
 				$existing_skip = $xpath->query( "//a[contains(@class, 'skip-link') or @id='skip-link']" );
 				if ( $existing_skip->length === 0 ) {
 					$target_id = 'main-content';
-					$main = $xpath->query( "//main | //*[@role='main'] | //*[@id='main'] | //*[@id='main-content'] | //*[@id='content']" );
+					$main      = $xpath->query( "//main | //*[@role='main'] | //*[@id='main'] | //*[@id='main-content'] | //*[@id='content']" );
 					if ( $main->length > 0 ) {
 						$node = $main->item( 0 );
 						if ( $node->hasAttribute( 'id' ) ) {
@@ -596,7 +596,7 @@ class AccessibilityFixer {
 	private function get_page_content( $post_id ) {
 		// Clear post cache to ensure we get fresh data
 		clean_post_cache( $post_id );
-		
+
 		$post = get_post( $post_id );
 
 		if ( ! $post ) {

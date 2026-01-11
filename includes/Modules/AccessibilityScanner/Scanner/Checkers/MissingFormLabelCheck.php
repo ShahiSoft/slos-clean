@@ -107,4 +107,3 @@ class MissingFormLabelCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

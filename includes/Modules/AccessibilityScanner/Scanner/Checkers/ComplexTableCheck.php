@@ -65,4 +65,3 @@ class ComplexTableCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

@@ -1,0 +1,8 @@
+{
+	"useTabs": true,
+	"endOfLine": "lf",
+	"phpVersion": "7.4",
+	"semi": true,
+	"singleQuote": true,
+	"trailingComma": "es5"
+}

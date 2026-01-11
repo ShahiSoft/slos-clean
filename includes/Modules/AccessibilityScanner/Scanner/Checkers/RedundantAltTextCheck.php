@@ -56,4 +56,3 @@ class RedundantAltTextCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

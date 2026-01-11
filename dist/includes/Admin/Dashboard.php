@@ -55,12 +55,12 @@ class Dashboard {
 	 * @return void
 	 */
 	public function render() {
-		// Verify user capabilities
+		// Verify user capabilities.
 		if ( ! current_user_can( 'manage_shahi_template' ) ) {
-			wp_die( __( 'You do not have sufficient permissions to access this page.', 'shahi-legalflowsuite' ) );
+			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'shahi-legalflowsuite' ) );
 		}
 
-		// Enqueue dashboard styles
+		// Enqueue dashboard styles.
 		wp_enqueue_style(
 			'shahi-legalflowsuite-dashboard',
 			SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/css/admin-dashboard-new.css',
@@ -68,7 +68,7 @@ class Dashboard {
 			SHAHI_LEGALFLOWSUITE_VERSION
 		);
 
-		// Get dashboard data
+		// Get dashboard data.
 		$plugin_info     = $this->get_plugin_info();
 		$stats           = $this->get_statistics();
 		$modules_status  = $this->get_modules_status();
@@ -77,7 +77,7 @@ class Dashboard {
 		$getting_started = $this->get_getting_started_items();
 		$support_links   = $this->get_support_links();
 
-		// Load template
+		// Load template.
 		include SHAHI_LEGALFLOWSUITE_PATH . 'templates/admin/dashboard.php';
 	}
 
@@ -95,9 +95,9 @@ class Dashboard {
 			'short_name'  => 'SLOS',
 			'version'     => defined( 'SHAHI_LEGALFLOWSUITE_VERSION' ) ? SHAHI_LEGALFLOWSUITE_VERSION : '3.0.1',
 			'description' => __( 'A comprehensive legal operations management suite for WordPress, featuring DSR management, consent compliance, legal document handling, and accessibility scanning.', 'shahi-legalflowsuite' ),
-			'author'      => __( 'Shahi Digital', 'shahi-legalflowsuite' ),
-			'author_url'  => 'https://shahidigital.com',
-			'plugin_url'  => 'https://shahidigital.com/plugins/legalflowsuite',
+			'author'      => __( 'ShahiSoft', 'shahi-legalflowsuite' ),
+			'author_url'  => 'https://shahisoft.store',
+			'plugin_url'  => 'https://shahisoft.store/index.php/shahilandin/complyflow/',
 			'license'     => 'GPL-3.0+',
 			'php_version' => PHP_VERSION,
 			'wp_version'  => get_bloginfo( 'version' ),
@@ -110,18 +110,15 @@ class Dashboard {
 	 *
 	 * Returns the status of all available modules using ModuleManager
 	 * to ensure consistency with Module Dashboard.
+	 * Only displays active (non-dormant) modules.
 	 *
 	 * @since 3.0.1
 	 * @return array Modules status data
 	 */
 	private function get_modules_status() {
-		// Define which modules to display on Dashboard (core compliance modules)
+		// Define which modules to display on Dashboard (active modules only).
+		// Excludes dormant modules: dsr-portal, security.
 		$display_modules = array(
-			'dsr-portal'            => array(
-				'icon'     => '📋',
-				'page'     => 'slos-requests',
-				'dashicon' => 'dashicons-clipboard',
-			),
 			'consent-management'    => array(
 				'icon'     => '🛡️',
 				'page'     => 'slos-compliance',
@@ -139,7 +136,7 @@ class Dashboard {
 			),
 		);
 
-		// Get modules from ModuleManager (same source as Module Dashboard)
+		// Get modules from ModuleManager (same source as Module Dashboard).
 		$module_manager = ModuleManager::get_instance();
 		$all_modules    = array();
 
@@ -147,7 +144,7 @@ class Dashboard {
 			$module_obj = $module_manager->get_module( $key );
 
 			if ( $module_obj ) {
-				// Module exists - get real data from ModuleManager
+				// Module exists - get real data from ModuleManager.
 				$all_modules[ $key ] = array(
 					'name'        => $module_obj->get_name(),
 					'description' => $module_obj->get_description(),
@@ -157,18 +154,8 @@ class Dashboard {
 					'enabled'     => $module_obj->is_enabled(),
 					'slug'        => $key,
 				);
-			} else {
-				// Module not registered - show as disabled
-				$all_modules[ $key ] = array(
-					'name'        => ucwords( str_replace( '-', ' ', $key ) ),
-					'description' => __( 'Module not available', 'shahi-legalflowsuite' ),
-					'icon'        => $display_info['icon'],
-					'page'        => $display_info['page'],
-					'dashicon'    => $display_info['dashicon'],
-					'enabled'     => false,
-					'slug'        => $key,
-				);
 			}
+			// Skip unregistered modules (they shouldn't appear on dashboard).
 		}
 
 		return $all_modules;
@@ -188,35 +175,35 @@ class Dashboard {
 				'title'       => __( 'Documentation', 'shahi-legalflowsuite' ),
 				'description' => __( 'Comprehensive guides and tutorials', 'shahi-legalflowsuite' ),
 				'icon'        => 'dashicons-book',
-				'url'         => admin_url( 'admin.php?page=shahi-legalflowsuite-support' ),
-				'external'    => false,
+				'url'         => 'https://shahisoft.store/index.php/knowledge-base/?product=shahi-legalflowsuite',
+				'external'    => true,
 			),
 			array(
 				'title'       => __( 'Knowledge Base', 'shahi-legalflowsuite' ),
 				'description' => __( 'FAQs and troubleshooting', 'shahi-legalflowsuite' ),
 				'icon'        => 'dashicons-lightbulb',
-				'url'         => '#', // Placeholder - user will add later
+				'url'         => 'https://shahisoft.store/index.php/knowledge-base/?product=shahi-legalflowsuite',
 				'external'    => true,
 			),
 			array(
 				'title'       => __( 'Video Tutorials', 'shahi-legalflowsuite' ),
 				'description' => __( 'Step-by-step video guides', 'shahi-legalflowsuite' ),
 				'icon'        => 'dashicons-video-alt3',
-				'url'         => '#', // Placeholder - user will add later
+				'url'         => 'https://shahisoft.store/index.php/knowledge-base/?product=shahi-legalflowsuite',
 				'external'    => true,
 			),
 			array(
 				'title'       => __( 'Get Support', 'shahi-legalflowsuite' ),
 				'description' => __( 'Contact our support team', 'shahi-legalflowsuite' ),
 				'icon'        => 'dashicons-sos',
-				'url'         => admin_url( 'admin.php?page=shahi-legalflowsuite-support' ),
-				'external'    => false,
+				'url'         => 'https://shahisoft.store/index.php/my-tickets/',
+				'external'    => true,
 			),
 			array(
 				'title'       => __( 'Feature Request', 'shahi-legalflowsuite' ),
 				'description' => __( 'Suggest new features', 'shahi-legalflowsuite' ),
 				'icon'        => 'dashicons-megaphone',
-				'url'         => '#', // Placeholder - user will add later
+				'url'         => 'https://shahisoft.store/index.php/my-tickets/',
 				'external'    => true,
 			),
 			array(
@@ -245,7 +232,7 @@ class Dashboard {
 				'icon'        => 'dashicons-admin-plugins',
 				'color'       => 'primary',
 				'trend'       => null,
-				'description' => __( 'Compliance features currently enabled on your site', 'shahi-legalflowsuite' ),
+				'description' => __( 'Compliance features currently enabled and running', 'shahi-legalflowsuite' ),
 			),
 			array(
 				'title'       => __( 'Total Events', 'shahi-legalflowsuite' ),
@@ -253,7 +240,7 @@ class Dashboard {
 				'icon'        => 'dashicons-chart-line',
 				'color'       => 'success',
 				'trend'       => null,
-				'description' => __( 'Consent records, DSR requests, and system actions logged', 'shahi-legalflowsuite' ),
+				'description' => __( 'Consent records, audit logs, and system actions tracked', 'shahi-legalflowsuite' ),
 			),
 			array(
 				'title'       => __( 'Performance Score', 'shahi-legalflowsuite' ),
@@ -262,7 +249,7 @@ class Dashboard {
 				'icon'        => 'dashicons-performance',
 				'color'       => 'accent',
 				'trend'       => null,
-				'description' => __( 'Overall plugin health based on config and optimizations', 'shahi-legalflowsuite' ),
+				'description' => __( 'System health based on active modules and configuration', 'shahi-legalflowsuite' ),
 			),
 			array(
 				'title'       => __( 'Last Activity', 'shahi-legalflowsuite' ),
@@ -271,7 +258,7 @@ class Dashboard {
 				'color'       => 'info',
 				'trend'       => null,
 				'is_time'     => true,
-				'description' => __( 'Most recent compliance event or configuration change', 'shahi-legalflowsuite' ),
+				'description' => __( 'Most recent compliance event or system change', 'shahi-legalflowsuite' ),
 			),
 		);
 	}
@@ -279,20 +266,18 @@ class Dashboard {
 	/**
 	 * Get active modules count
 	 *
+	 * Uses ModuleManager to get accurate count of registered and enabled modules.
+	 * This ensures dormant modules (DSR, Security) are excluded from the count.
+	 *
 	 * @since 1.0.0
 	 * @return int Number of active modules
 	 */
 	private function get_active_modules_count() {
-		global $wpdb;
-		$table = $wpdb->prefix . 'shahi_modules';
+		// Use ModuleManager for accurate count (excludes dormant/unregistered modules).
+		$module_manager = ModuleManager::get_instance();
+		$stats          = $module_manager->get_statistics();
 
-		// Check if table exists (cached for performance)
-		if ( ! QueryOptimizer::table_exists_cached( $table ) ) {
-			return 0;
-		}
-
-		$count = $wpdb->get_var( "SELECT COUNT(*) FROM $table WHERE is_enabled = 1" );
-		return (int) $count;
+		return (int) $stats['enabled'];
 	}
 
 	/**
@@ -305,12 +290,16 @@ class Dashboard {
 		global $wpdb;
 		$table = $wpdb->prefix . 'shahi_analytics';
 
-		// Check if table exists (cached for performance)
+		// Check if table exists (cached for performance).
 		if ( ! QueryOptimizer::table_exists_cached( $table ) ) {
 			return 0;
 		}
 
-		$count = $wpdb->get_var( "SELECT COUNT(*) FROM $table" );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$count = $wpdb->get_var(
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->prepare( 'SELECT COUNT(*) FROM ' . esc_sql( $table ) )
+		);
 		return (int) $count;
 	}
 
@@ -324,12 +313,16 @@ class Dashboard {
 		global $wpdb;
 		$table = $wpdb->prefix . 'shahi_analytics';
 
-		// Check if table exists (cached for performance)
+		// Check if table exists (cached for performance).
 		if ( ! QueryOptimizer::table_exists_cached( $table ) ) {
 			return __( 'N/A', 'shahi-legalflowsuite' );
 		}
 
-		$last_time = $wpdb->get_var( "SELECT created_at FROM $table ORDER BY created_at DESC LIMIT 1" );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$last_time = $wpdb->get_var(
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->prepare( 'SELECT created_at FROM ' . esc_sql( $table ) . ' ORDER BY created_at DESC LIMIT 1' )
+		);
 
 		if ( ! $last_time ) {
 			return __( 'N/A', 'shahi-legalflowsuite' );
@@ -342,7 +335,7 @@ class Dashboard {
 	 * Get performance score
 	 *
 	 * Calculate overall plugin health score based on:
-	 * - Active modules count
+	 * - Active modules count (only registered, non-dormant modules)
 	 * - Configuration completeness
 	 * - Database health
 	 *
@@ -352,7 +345,8 @@ class Dashboard {
 	private function get_performance_score() {
 		$score = 0;
 
-		// Factor 1: Active modules (max 40 points)
+		// Factor 1: Active modules (max 40 points).
+		// Only count registered modules (excludes dormant DSR/Security).
 		$module_manager = ModuleManager::get_instance();
 		$stats          = $module_manager->get_statistics();
 		if ( $stats['total'] > 0 ) {
@@ -360,24 +354,24 @@ class Dashboard {
 			$score        += (int) ( $enabled_ratio * 40 );
 		}
 
-		// Factor 2: Configuration completeness (max 30 points)
-		// Check if company profile is configured
+		// Factor 2: Configuration completeness (max 30 points).
+		// Check if company profile is configured.
 		$profile_repo = \ShahiLegalFlowSuite\Database\Repositories\Company_Profile_Repository::get_instance();
 		$profile      = $profile_repo->get_profile();
 
-		// Check if profile has meaningful data (not just defaults)
+		// Check if profile has meaningful data (not just defaults).
 		$completion = $profile_repo->get_completion_percentage();
-		if ( $completion > 10 ) { // At least 10% configured
+		if ( $completion > 10 ) { // At least 10% configured.
 			$score += 30;
 		}
 
-		// Factor 3: Database health (max 30 points)
-		// Check if tables exist and have data
+		// Factor 3: Database health (max 30 points).
+		// Check active module tables only (exclude dormant DSR table).
 		global $wpdb;
 		$tables = array(
-			$wpdb->prefix . 'slos_consents',
-			$wpdb->prefix . 'slos_dsr_requests',
-			$wpdb->prefix . 'slos_documents',
+			$wpdb->prefix . 'slos_consents',      // Consent Management.
+			$wpdb->prefix . 'slos_documents',     // Legal Documents.
+			$wpdb->prefix . 'slos_scan_results',  // Accessibility Scanner.
 		);
 
 		$healthy_tables = 0;
@@ -395,6 +389,7 @@ class Dashboard {
 	 * Get quick actions
 	 *
 	 * Returns an array of quick action buttons to display on the dashboard.
+	 * Only shows actions for active (non-dormant) modules.
 	 *
 	 * @since 1.0.0
 	 * @return array Quick actions data
@@ -409,10 +404,10 @@ class Dashboard {
 				'color'       => 'primary',
 			),
 			array(
-				'title'       => __( 'DSR Requests', 'shahi-legalflowsuite' ),
-				'description' => __( 'Manage data subject requests', 'shahi-legalflowsuite' ),
-				'icon'        => 'dashicons-clipboard',
-				'url'         => admin_url( 'admin.php?page=slos-requests' ),
+				'title'       => __( 'Accessibility Scanner', 'shahi-legalflowsuite' ),
+				'description' => __( 'Scan & fix accessibility issues', 'shahi-legalflowsuite' ),
+				'icon'        => 'dashicons-universal-access',
+				'url'         => admin_url( 'admin.php?page=slos-accessibility' ),
 				'color'       => 'success',
 			),
 			array(
@@ -459,14 +454,16 @@ class Dashboard {
 		global $wpdb;
 		$table = $wpdb->prefix . 'shahi_analytics';
 
-		// Check if table exists (cached for performance)
+		// Check if table exists (cached for performance).
 		if ( ! QueryOptimizer::table_exists_cached( $table ) ) {
 			return array();
 		}
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$results = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT event_type, event_data, created_at FROM $table ORDER BY created_at DESC LIMIT %d",
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				'SELECT event_type, event_data, created_at FROM ' . esc_sql( $table ) . ' ORDER BY created_at DESC LIMIT %d',
 				$limit
 			)
 		);
@@ -522,13 +519,14 @@ class Dashboard {
 			return __( 'No additional details', 'shahi-legalflowsuite' );
 		}
 
-		// Format based on event type
+		// Format based on event type.
 		switch ( $event->event_type ) {
 			case 'module_enabled':
 			case 'module_disabled':
 				return isset( $data['module_name'] ) ? $data['module_name'] : __( 'Unknown module', 'shahi-legalflowsuite' );
 
 			case 'settings_updated':
+				/* translators: %s: settings section name */
 				return isset( $data['section'] ) ? sprintf( __( 'Section: %s', 'shahi-legalflowsuite' ), $data['section'] ) : __( 'General settings', 'shahi-legalflowsuite' );
 
 			default:
@@ -568,7 +566,7 @@ class Dashboard {
 		$modules_configured   = $this->get_active_modules_count() > 0;
 		$settings_configured  = ! empty( get_option( 'shahi_legalflowsuite_settings', array() ) );
 
-		// Check if company profile is set up
+		// Check if company profile is set up.
 		$company_profile    = get_option( 'slos_company_profile', array() );
 		$profile_configured = ! empty( $company_profile ) && ! empty( $company_profile['company_name'] );
 
@@ -578,7 +576,7 @@ class Dashboard {
 				'description'  => __( 'Set up your plugin with our guided onboarding wizard', 'shahi-legalflowsuite' ),
 				'completed'    => $onboarding_completed,
 				'action_text'  => $onboarding_completed ? __( 'Review', 'shahi-legalflowsuite' ) : __( 'Start Now', 'shahi-legalflowsuite' ),
-				'action_url'   => '#', // Will trigger onboarding modal via JS
+				'action_url'   => '#', // Will trigger onboarding modal via JS.
 				'action_class' => 'shahi-trigger-onboarding',
 			),
 			array(

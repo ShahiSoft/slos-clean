@@ -187,16 +187,16 @@ class ScannerEngine {
 					$issues = $this->enhance_issues( $issues, $check );
 
 					$results[ $check->get_id() ] = array(
-						'id'              => $check->get_id(),
-						'description'     => $check->get_description(),
-						'severity'        => $check->get_severity(),
-						'wcag_criteria'   => $check->get_wcag_criteria(),
-						'wcag_level'      => $check->get_wcag_level(),
-						'wcag_url'        => $check->get_wcag_url(),
-						'remediation'     => $check->get_remediation_hint(),
-						'confidence'      => $check->get_confidence(),
-						'issues'          => $issues,
-						'issue_count'     => count( $issues ),
+						'id'            => $check->get_id(),
+						'description'   => $check->get_description(),
+						'severity'      => $check->get_severity(),
+						'wcag_criteria' => $check->get_wcag_criteria(),
+						'wcag_level'    => $check->get_wcag_level(),
+						'wcag_url'      => $check->get_wcag_url(),
+						'remediation'   => $check->get_remediation_hint(),
+						'confidence'    => $check->get_confidence(),
+						'issues'        => $issues,
+						'issue_count'   => count( $issues ),
 					);
 				}
 			} catch ( \Exception $e ) {
@@ -268,32 +268,32 @@ class ScannerEngine {
 	 */
 	public function get_summary( array $results ) {
 		$summary = array(
-			'total_issues'   => 0,
-			'by_severity'    => array(
+			'total_issues'  => 0,
+			'by_severity'   => array(
 				'critical' => 0,
 				'serious'  => 0,
 				'warning'  => 0,
 				'notice'   => 0,
 			),
-			'by_wcag_level'  => array(
+			'by_wcag_level' => array(
 				'A'   => 0,
 				'AA'  => 0,
 				'AAA' => 0,
 			),
-			'by_confidence'  => array(
+			'by_confidence' => array(
 				'definite'  => 0,
 				'likely'    => 0,
 				'potential' => 0,
 			),
-			'checks_passed'  => 0,
-			'checks_failed'  => count( $results ),
-			'checks_total'   => count( $this->checks ),
+			'checks_passed' => 0,
+			'checks_failed' => count( $results ),
+			'checks_total'  => count( $this->checks ),
 		);
 
 		$summary['checks_passed'] = $summary['checks_total'] - $summary['checks_failed'];
 
 		foreach ( $results as $result ) {
-			$issue_count = $result['issue_count'] ?? count( $result['issues'] ?? array() );
+			$issue_count              = $result['issue_count'] ?? count( $result['issues'] ?? array() );
 			$summary['total_issues'] += $issue_count;
 
 			// Count by severity
@@ -318,4 +318,3 @@ class ScannerEngine {
 		return $summary;
 	}
 }
-

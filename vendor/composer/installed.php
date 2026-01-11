@@ -3,7 +3,7 @@
         'name' => 'shahi/legalops-suite',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '9397c3e499d3fa7c2cc54ffa84d1e0967b28f808',
+        'reference' => 'c76c4f2cd01eeeaf5a9330b7b9584a03ba23fb77',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -382,7 +382,7 @@
         'shahi/legalops-suite' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '9397c3e499d3fa7c2cc54ffa84d1e0967b28f808',
+            'reference' => 'c76c4f2cd01eeeaf5a9330b7b9584a03ba23fb77',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

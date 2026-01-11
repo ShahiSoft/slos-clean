@@ -64,11 +64,42 @@ class Document_Generator extends Base_Service {
 	 * @var array
 	 */
 	const DOCUMENT_TYPES = array(
-		'privacy-policy'     => 'Privacy Policy',
-		'terms-of-service'   => 'Terms of Service',
-		'cookie-policy'      => 'Cookie Policy',
-		'disclaimer'         => 'Disclaimer',
-		'refund-policy'      => 'Refund & Return Policy',
+		// Core Legal Documents
+		'privacy-policy'            => 'Privacy Policy',
+		'terms-of-service'          => 'Terms of Service',
+		'cookie-policy'             => 'Cookie Policy',
+		'disclaimer'                => 'Disclaimer',
+		'acceptable-use-policy'     => 'Acceptable Use Policy',
+		'copyright-dmca-policy'     => 'Copyright & DMCA Policy',
+		'accessibility-statement'   => 'Accessibility Statement',
+
+		// Business Operations
+		'contact-imprint'           => 'Contact Information / Imprint',
+		'data-processing-agreement' => 'Data Processing Agreement',
+		'security-policy'           => 'Security Policy',
+		'anti-spam-policy'          => 'Anti-Spam Policy',
+
+		// User Conduct
+		'terms-of-use'              => 'Terms of Use',
+		'community-guidelines'      => 'Community Guidelines',
+		'age-verification-policy'   => 'Age Verification Policy',
+
+		// E-Commerce
+		'refund-policy'             => 'Refund & Return Policy',
+		'shipping-policy'           => 'Shipping Policy',
+		'warranty-policy'           => 'Warranty Policy',
+		'cancellation-policy'       => 'Cancellation Policy',
+		'subscription-agreement'    => 'Subscription Agreement',
+		'affiliate-terms'           => 'Affiliate Program Terms',
+
+		// Software & API
+		'eula'                      => 'End User License Agreement',
+		'api-terms'                 => 'API Terms of Service',
+		'content-licensing'         => 'Content Licensing Agreement',
+
+		// Specialized
+		'nda'                       => 'Non-Disclosure Agreement',
+		'mobile-app-terms'          => 'Mobile App Terms',
 	);
 
 	/**
@@ -106,6 +137,17 @@ class Document_Generator extends Base_Service {
 	 * @return array|\WP_Error Generated document data or error
 	 */
 	public function generate( string $document_type, int $profile_id = null, array $options = array() ) {
+		// Check if document type is dormant
+		if ( defined( 'SLOS_ACTIVE_LEGAL_DOCS' ) && is_array( SLOS_ACTIVE_LEGAL_DOCS ) ) {
+			if ( ! in_array( $document_type, SLOS_ACTIVE_LEGAL_DOCS, true ) ) {
+				return new \WP_Error(
+					'document_type_dormant',
+					/* translators: %s: document type */
+					sprintf( __( 'Document type "%s" is currently dormant and cannot be generated.', 'shahi-legalflowsuite' ), $document_type )
+				);
+			}
+		}
+
 		// Validate document type
 		if ( ! $this->is_valid_type( $document_type ) ) {
 			return new \WP_Error(
@@ -145,17 +187,17 @@ class Document_Generator extends Base_Service {
 
 		// Build document data
 		$document = array(
-			'type'        => $document_type,
-			'title'       => $this->get_document_title( $document_type ),
-			'content'     => $content,
-			'profile_id'  => $profile_id ?? 0,
-			'status'      => 'draft',
-			'metadata'    => array(
-				'generated_at'    => current_time( 'mysql' ),
+			'type'       => $document_type,
+			'title'      => $this->get_document_title( $document_type ),
+			'content'    => $content,
+			'profile_id' => $profile_id ?? 0,
+			'status'     => 'draft',
+			'metadata'   => array(
+				'generated_at'      => current_time( 'mysql' ),
 				'generator_version' => defined( 'SLOS_GEN_VERSION' ) ? SLOS_GEN_VERSION : '4.1.0',
 				'template_version'  => $options['template_version'] ?? '1.0',
-				'profile_hash'    => $this->hash_profile( $profile ),
-				'locale'          => get_locale(),
+				'profile_hash'      => $this->hash_profile( $profile ),
+				'locale'            => get_locale(),
 			),
 		);
 
@@ -212,16 +254,19 @@ class Document_Generator extends Base_Service {
 		$validation_result = $this->validator->validate_for_generation( $profile );
 
 		// validate_for_generation returns true|\WP_Error
-		$is_ready = ( true === $validation_result );
+		$is_ready       = ( true === $validation_result );
 		$missing_fields = array();
 
 		if ( is_wp_error( $validation_result ) ) {
-			$error_data = $validation_result->get_error_data();
+			$error_data     = $validation_result->get_error_data();
 			$missing_fields = $error_data['missing'] ?? array();
 			// Convert to simple labels for UI
-			$missing_fields = array_map( function( $field ) {
-				return $field['label'] ?? $field['field'] ?? '';
-			}, $missing_fields );
+			$missing_fields = array_map(
+				function ( $field ) {
+					return $field['label'] ?? $field['field'] ?? '';
+				},
+				$missing_fields
+			);
 		}
 
 		// Document-specific validation
@@ -230,7 +275,7 @@ class Document_Generator extends Base_Service {
 				// Ensure cookie data exists
 				$cookies = $profile['cookies'] ?? array();
 				if ( empty( $cookies['essential'] ) ) {
-					$is_ready = false;
+					$is_ready         = false;
 					$missing_fields[] = __( 'Essential Cookies', 'shahi-legalflowsuite' );
 				}
 				break;
@@ -239,7 +284,7 @@ class Document_Generator extends Base_Service {
 				// Ensure service description exists
 				$website = $profile['website'] ?? array();
 				if ( empty( $website['service_description'] ) ) {
-					$is_ready = false;
+					$is_ready         = false;
 					$missing_fields[] = __( 'Service Description', 'shahi-legalflowsuite' );
 				}
 				break;
@@ -270,7 +315,7 @@ class Document_Generator extends Base_Service {
 	 * @return string|\WP_Error Template content or error
 	 */
 	protected function load_template( string $document_type, array $options = array() ) {
-		$template_dir = $this->get_template_directory();
+		$template_dir  = $this->get_template_directory();
 		$template_file = $template_dir . '/' . $document_type . '.html';
 
 		// Debug logging
@@ -379,12 +424,12 @@ class Document_Generator extends Base_Service {
 	 */
 	public function save_as_draft( array $document ) {
 		$doc_data = array(
-			'doc_type'      => $document['type'] ?? $document['doc_type'] ?? '',
-			'title'         => $document['title'] ?? '',
-			'content'       => $document['content'] ?? '',
-			'status'        => 'draft',
-			'profile_id'    => $document['profile_id'] ?? 0,
-			'metadata'      => wp_json_encode( $document['metadata'] ?? array() ),
+			'doc_type'   => $document['type'] ?? $document['doc_type'] ?? '',
+			'title'      => $document['title'] ?? '',
+			'content'    => $document['content'] ?? '',
+			'status'     => 'draft',
+			'profile_id' => $document['profile_id'] ?? 0,
+			'metadata'   => wp_json_encode( $document['metadata'] ?? array() ),
 		);
 
 		// Debug log
@@ -491,7 +536,7 @@ class Document_Generator extends Base_Service {
 		}
 
 		// Generate fresh content
-		$profile_id = $existing['profile_id'] ?? null;
+		$profile_id   = $existing['profile_id'] ?? null;
 		$new_document = $this->generate( $existing['doc_type'], $profile_id, $options );
 
 		if ( is_wp_error( $new_document ) ) {
@@ -509,10 +554,10 @@ class Document_Generator extends Base_Service {
 
 		// Update existing document
 		$update_data = array(
-			'id'           => $document_id,
-			'content'      => $new_document['content'],
-			'metadata'     => wp_json_encode( $new_document['metadata'] ),
-			'updated_at'   => current_time( 'mysql' ),
+			'id'         => $document_id,
+			'content'    => $new_document['content'],
+			'metadata'   => wp_json_encode( $new_document['metadata'] ),
+			'updated_at' => current_time( 'mysql' ),
 		);
 
 		$result = $this->doc_repository->save( $update_data );
@@ -584,7 +629,7 @@ class Document_Generator extends Base_Service {
 			$document['metadata'] = get_object_vars( $document['metadata'] );
 		}
 
-		$metadata = json_decode( $document['metadata'] ?? '{}', true );
+		$metadata    = json_decode( $document['metadata'] ?? '{}', true );
 		$stored_hash = $metadata['profile_hash'] ?? '';
 
 		if ( empty( $stored_hash ) ) {
@@ -593,7 +638,7 @@ class Document_Generator extends Base_Service {
 
 		// Get current profile
 		$profile_id = $document['profile_id'] ?? null;
-		$profile = $this->get_profile( $profile_id );
+		$profile    = $this->get_profile( $profile_id );
 
 		if ( is_wp_error( $profile ) ) {
 			return true;
@@ -809,7 +854,7 @@ class Document_Generator extends Base_Service {
 		$fields = array();
 
 		// Company section
-		$company = $profile['company'] ?? array();
+		$company           = $profile['company'] ?? array();
 		$fields['company'] = array(
 			'label'  => __( 'Company Information', 'shahi-legalflowsuite' ),
 			'fields' => array(
@@ -845,8 +890,8 @@ class Document_Generator extends Base_Service {
 		);
 
 		// Contacts section
-		$contacts = $profile['contacts'] ?? array();
-		$dpo      = $contacts['dpo'] ?? array();
+		$contacts           = $profile['contacts'] ?? array();
+		$dpo                = $contacts['dpo'] ?? array();
 		$fields['contacts'] = array(
 			'label'  => __( 'Contact Information', 'shahi-legalflowsuite' ),
 			'fields' => array(
@@ -875,7 +920,7 @@ class Document_Generator extends Base_Service {
 		);
 
 		// Website section
-		$website = $profile['website'] ?? array();
+		$website           = $profile['website'] ?? array();
 		$fields['website'] = array(
 			'label'  => __( 'Website Information', 'shahi-legalflowsuite' ),
 			'fields' => array(
@@ -898,7 +943,7 @@ class Document_Generator extends Base_Service {
 
 		// Data Collection section (especially for Privacy Policy)
 		if ( 'privacy-policy' === $document_type ) {
-			$data_collection = $profile['data_collection'] ?? array();
+			$data_collection           = $profile['data_collection'] ?? array();
 			$fields['data_collection'] = array(
 				'label'  => __( 'Data Collection', 'shahi-legalflowsuite' ),
 				'fields' => array(
@@ -922,7 +967,7 @@ class Document_Generator extends Base_Service {
 
 		// Cookie section (for Cookie Policy)
 		if ( 'cookie-policy' === $document_type ) {
-			$cookies = $profile['cookies'] ?? array();
+			$cookies           = $profile['cookies'] ?? array();
 			$fields['cookies'] = array(
 				'label'  => __( 'Cookie Information', 'shahi-legalflowsuite' ),
 				'fields' => array(
@@ -938,7 +983,7 @@ class Document_Generator extends Base_Service {
 		}
 
 		// Legal section
-		$legal = $profile['legal'] ?? array();
+		$legal           = $profile['legal'] ?? array();
 		$fields['legal'] = array(
 			'label'  => __( 'Legal Settings', 'shahi-legalflowsuite' ),
 			'fields' => array(
@@ -960,7 +1005,7 @@ class Document_Generator extends Base_Service {
 		);
 
 		// Retention section
-		$retention = $profile['retention'] ?? array();
+		$retention           = $profile['retention'] ?? array();
 		$fields['retention'] = array(
 			'label'  => __( 'Data Retention', 'shahi-legalflowsuite' ),
 			'fields' => array(
@@ -993,13 +1038,15 @@ class Document_Generator extends Base_Service {
 	 * @return string Formatted address
 	 */
 	protected function format_address_for_display( array $address ): string {
-		$parts = array_filter( array(
-			$address['street'] ?? '',
-			$address['city'] ?? '',
-			$address['state'] ?? '',
-			$address['postal_code'] ?? '',
-			$address['country'] ?? '',
-		) );
+		$parts = array_filter(
+			array(
+				$address['street'] ?? '',
+				$address['city'] ?? '',
+				$address['state'] ?? '',
+				$address['postal_code'] ?? '',
+				$address['country'] ?? '',
+			)
+		);
 
 		return implode( ', ', $parts );
 	}
@@ -1173,14 +1220,16 @@ class Document_Generator extends Base_Service {
 			$update_data = array(
 				'id'         => $doc_id,
 				'content'    => $result['content'],
-				'metadata'   => wp_json_encode( array_merge(
-					$result['metadata'] ?? array(),
-					array(
-						'regenerated_by' => $user_id,
-						'regenerated_at' => current_time( 'mysql' ),
-						'change_reason'  => $change_reason,
+				'metadata'   => wp_json_encode(
+					array_merge(
+						$result['metadata'] ?? array(),
+						array(
+							'regenerated_by' => $user_id,
+							'regenerated_at' => current_time( 'mysql' ),
+							'change_reason'  => $change_reason,
+						)
 					)
-				) ),
+				),
 				'updated_at' => current_time( 'mysql' ),
 				'updated_by' => $user_id,
 			);
@@ -1233,14 +1282,16 @@ class Document_Generator extends Base_Service {
 			'status'     => 'draft',
 			'locale'     => get_locale(),
 			'version'    => '1.0',
-			'metadata'   => wp_json_encode( array_merge(
-				$result['metadata'] ?? array(),
-				array(
-					'generated_by' => $user_id,
-					'generated_at' => current_time( 'mysql' ),
-					'change_reason' => $change_reason,
+			'metadata'   => wp_json_encode(
+				array_merge(
+					$result['metadata'] ?? array(),
+					array(
+						'generated_by'  => $user_id,
+						'generated_at'  => current_time( 'mysql' ),
+						'change_reason' => $change_reason,
+					)
 				)
-			) ),
+			),
 			'created_by' => $user_id,
 			'updated_by' => $user_id,
 			'created_at' => current_time( 'mysql' ),

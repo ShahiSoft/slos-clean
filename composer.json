@@ -5,8 +5,8 @@
     "license": "GPL-3.0-or-later",
     "authors": [
         {
-            "name": "Shahi Team",
-            "email": "support@shahilegalops.com"
+            "name": "ShahiSoft",
+            "email": "legalflowsuite@shahisoft.store"
         }
     ],
     "require": {
@@ -20,6 +20,8 @@
         "brain/monkey": "^2.6",
         "dealerdirect/phpcodesniffer-composer-installer": "*",
         "mockery/mockery": "^1.5",
+        "phpcsstandards/phpcsextra": "^1.5",
+        "phpcsstandards/phpcsutils": "^1.2",
         "phpunit/phpunit": "^9.0",
         "squizlabs/php_codesniffer": "*",
         "wp-coding-standards/wpcs": "*",

@@ -20,7 +20,7 @@ class MissingFormLabelFixer extends BaseFixer {
 		$fixed_count = 0;
 
 		// Get all inputs that might need labels
-		$inputs = $dom->getElementsByTagName( 'input' );
+		$inputs       = $dom->getElementsByTagName( 'input' );
 		$inputs_array = array();
 		foreach ( $inputs as $input ) {
 			$inputs_array[] = $input;
@@ -28,17 +28,17 @@ class MissingFormLabelFixer extends BaseFixer {
 
 		foreach ( $inputs_array as $input ) {
 			$type = strtolower( $input->getAttribute( 'type' ) ?: 'text' );
-			
+
 			// Skip hidden, submit, button, checkbox, radio (unless missing label)
 			if ( in_array( $type, array( 'hidden', 'submit', 'button', 'reset', 'image' ), true ) ) {
 				continue;
 			}
-			
+
 			// Check if already has aria-label or aria-labelledby
 			if ( $input->hasAttribute( 'aria-label' ) || $input->hasAttribute( 'aria-labelledby' ) ) {
 				continue;
 			}
-			
+
 			// Check if has associated label element
 			$input_id = $input->getAttribute( 'id' );
 			if ( $input_id ) {
@@ -47,7 +47,7 @@ class MissingFormLabelFixer extends BaseFixer {
 					continue;
 				}
 			}
-			
+
 			// Check if wrapped in a label
 			$parent = $input->parentNode;
 			while ( $parent && $parent->nodeName !== 'body' ) {
@@ -56,7 +56,7 @@ class MissingFormLabelFixer extends BaseFixer {
 				}
 				$parent = $parent->parentNode;
 			}
-			
+
 			// Need to add aria-label
 			$name = $input->getAttribute( 'name' ) ?: $input->getAttribute( 'placeholder' ) ?: $input->getAttribute( 'id' );
 			if ( $name ) {
@@ -67,7 +67,7 @@ class MissingFormLabelFixer extends BaseFixer {
 		}
 
 		// Handle textareas
-		$textareas = $dom->getElementsByTagName( 'textarea' );
+		$textareas       = $dom->getElementsByTagName( 'textarea' );
 		$textareas_array = array();
 		foreach ( $textareas as $textarea ) {
 			$textareas_array[] = $textarea;
@@ -77,7 +77,7 @@ class MissingFormLabelFixer extends BaseFixer {
 			if ( $textarea->hasAttribute( 'aria-label' ) || $textarea->hasAttribute( 'aria-labelledby' ) ) {
 				continue;
 			}
-			
+
 			$textarea_id = $textarea->getAttribute( 'id' );
 			if ( $textarea_id ) {
 				$labels = $xpath->query( "//label[@for='" . $textarea_id . "']" );
@@ -85,7 +85,7 @@ class MissingFormLabelFixer extends BaseFixer {
 					continue;
 				}
 			}
-			
+
 			$name = $textarea->getAttribute( 'name' ) ?: $textarea->getAttribute( 'placeholder' ) ?: $textarea->getAttribute( 'id' );
 			if ( $name ) {
 				$label = ucfirst( str_replace( array( '_', '-' ), ' ', $name ) );
@@ -95,7 +95,7 @@ class MissingFormLabelFixer extends BaseFixer {
 		}
 
 		// Handle select elements
-		$selects = $dom->getElementsByTagName( 'select' );
+		$selects       = $dom->getElementsByTagName( 'select' );
 		$selects_array = array();
 		foreach ( $selects as $select ) {
 			$selects_array[] = $select;
@@ -105,7 +105,7 @@ class MissingFormLabelFixer extends BaseFixer {
 			if ( $select->hasAttribute( 'aria-label' ) || $select->hasAttribute( 'aria-labelledby' ) ) {
 				continue;
 			}
-			
+
 			$select_id = $select->getAttribute( 'id' );
 			if ( $select_id ) {
 				$labels = $xpath->query( "//label[@for='" . $select_id . "']" );
@@ -113,7 +113,7 @@ class MissingFormLabelFixer extends BaseFixer {
 					continue;
 				}
 			}
-			
+
 			$name = $select->getAttribute( 'name' ) ?: $select->getAttribute( 'id' );
 			if ( $name ) {
 				$label = ucfirst( str_replace( array( '_', '-' ), ' ', $name ) );
@@ -497,4 +497,3 @@ class FormAriaFixer extends BaseFixer {
 		);
 	}
 }
-

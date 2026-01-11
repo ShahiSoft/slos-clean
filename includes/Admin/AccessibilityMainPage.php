@@ -269,11 +269,17 @@ class AccessibilityMainPage {
 		echo '<div class="slos-tab-pane slos-tools-pane">';
 
 		// Render tools page content
-		if ( method_exists( $this->scanner_page, 'render_content' ) ) {
+		if ( $this->scanner_page && method_exists( $this->scanner_page, 'render_content' ) ) {
 			$this->scanner_page->render_content();
 		} else {
-			// Fallback
-			echo '<p>' . esc_html__( 'Tools interface will be displayed here.', 'shahi-legalflowsuite' ) . '</p>';
+			// Fallback - display placeholder content
+			?>
+			<div style="background: #1e293b; border-radius: 8px; padding: 40px; text-align: center; color: #cbd5e1;">
+				<h2 style="color: #f1f5f9; margin-bottom: 16px;">🛠️ Tools & Scanner</h2>
+				<p style="font-size: 16px; margin-bottom: 24px;">The Scanner tools interface will be available here.</p>
+				<p style="font-size: 14px; color: #94a3b8;">This section is currently being developed. Please check the Dashboard & Reports tab for accessibility insights.</p>
+			</div>
+			<?php
 		}
 
 		echo '</div>';

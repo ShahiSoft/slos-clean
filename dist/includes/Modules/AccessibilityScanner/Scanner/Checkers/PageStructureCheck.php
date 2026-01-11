@@ -57,4 +57,3 @@ class PageStructureCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

@@ -63,7 +63,7 @@ class Company_Profile_Service extends Base_Service {
 	 */
 	protected function define_steps(): array {
 		return array(
-			1 => array(
+			1  => array(
 				'key'         => 'company',
 				'title'       => __( 'Company Information', 'shahi-legalflowsuite' ),
 				'description' => __( 'Basic details about your company or organization.', 'shahi-legalflowsuite' ),
@@ -123,49 +123,49 @@ class Company_Profile_Service extends Base_Service {
 						'placeholder' => __( 'SW1A 1AA', 'shahi-legalflowsuite' ),
 					),
 					'company.address.country'     => array(
-						'label'       => __( 'Country', 'shahi-legalflowsuite' ),
-						'type'        => 'select',
-						'required'    => true,
-						'options'     => 'countries',
-						'help'        => __( 'Country where your company is registered.', 'shahi-legalflowsuite' ),
+						'label'    => __( 'Country', 'shahi-legalflowsuite' ),
+						'type'     => 'select',
+						'required' => true,
+						'options'  => 'countries',
+						'help'     => __( 'Country where your company is registered.', 'shahi-legalflowsuite' ),
 					),
 					'company.business_type'       => array(
-						'label'       => __( 'Business Type', 'shahi-legalflowsuite' ),
-						'type'        => 'select',
-						'required'    => true,
-						'options'     => array(
-							''                  => __( 'Select...', 'shahi-legalflowsuite' ),
-							'sole_proprietor'   => __( 'Sole Proprietor', 'shahi-legalflowsuite' ),
-							'partnership'       => __( 'Partnership', 'shahi-legalflowsuite' ),
-							'llc'               => __( 'Limited Liability Company (LLC)', 'shahi-legalflowsuite' ),
-							'corporation'       => __( 'Corporation', 'shahi-legalflowsuite' ),
-							'nonprofit'         => __( 'Non-Profit Organization', 'shahi-legalflowsuite' ),
-							'government'        => __( 'Government Agency', 'shahi-legalflowsuite' ),
-							'other'             => __( 'Other', 'shahi-legalflowsuite' ),
+						'label'    => __( 'Business Type', 'shahi-legalflowsuite' ),
+						'type'     => 'select',
+						'required' => true,
+						'options'  => array(
+							''                => __( 'Select...', 'shahi-legalflowsuite' ),
+							'sole_proprietor' => __( 'Sole Proprietor', 'shahi-legalflowsuite' ),
+							'partnership'     => __( 'Partnership', 'shahi-legalflowsuite' ),
+							'llc'             => __( 'Limited Liability Company (LLC)', 'shahi-legalflowsuite' ),
+							'corporation'     => __( 'Corporation', 'shahi-legalflowsuite' ),
+							'nonprofit'       => __( 'Non-Profit Organization', 'shahi-legalflowsuite' ),
+							'government'      => __( 'Government Agency', 'shahi-legalflowsuite' ),
+							'other'           => __( 'Other', 'shahi-legalflowsuite' ),
 						),
 					),
 					'company.industry'            => array(
-						'label'       => __( 'Industry', 'shahi-legalflowsuite' ),
-						'type'        => 'select',
-						'required'    => false,
-						'options'     => array(
-							''                  => __( 'Select...', 'shahi-legalflowsuite' ),
-							'technology'        => __( 'Technology / Software', 'shahi-legalflowsuite' ),
-							'ecommerce'         => __( 'E-Commerce / Retail', 'shahi-legalflowsuite' ),
-							'finance'           => __( 'Finance / Banking', 'shahi-legalflowsuite' ),
-							'healthcare'        => __( 'Healthcare', 'shahi-legalflowsuite' ),
-							'education'         => __( 'Education', 'shahi-legalflowsuite' ),
-							'media'             => __( 'Media / Entertainment', 'shahi-legalflowsuite' ),
-							'professional'      => __( 'Professional Services', 'shahi-legalflowsuite' ),
-							'manufacturing'     => __( 'Manufacturing', 'shahi-legalflowsuite' ),
-							'hospitality'       => __( 'Hospitality / Travel', 'shahi-legalflowsuite' ),
-							'real_estate'       => __( 'Real Estate', 'shahi-legalflowsuite' ),
-							'other'             => __( 'Other', 'shahi-legalflowsuite' ),
+						'label'    => __( 'Industry', 'shahi-legalflowsuite' ),
+						'type'     => 'select',
+						'required' => false,
+						'options'  => array(
+							''              => __( 'Select...', 'shahi-legalflowsuite' ),
+							'technology'    => __( 'Technology / Software', 'shahi-legalflowsuite' ),
+							'ecommerce'     => __( 'E-Commerce / Retail', 'shahi-legalflowsuite' ),
+							'finance'       => __( 'Finance / Banking', 'shahi-legalflowsuite' ),
+							'healthcare'    => __( 'Healthcare', 'shahi-legalflowsuite' ),
+							'education'     => __( 'Education', 'shahi-legalflowsuite' ),
+							'media'         => __( 'Media / Entertainment', 'shahi-legalflowsuite' ),
+							'professional'  => __( 'Professional Services', 'shahi-legalflowsuite' ),
+							'manufacturing' => __( 'Manufacturing', 'shahi-legalflowsuite' ),
+							'hospitality'   => __( 'Hospitality / Travel', 'shahi-legalflowsuite' ),
+							'real_estate'   => __( 'Real Estate', 'shahi-legalflowsuite' ),
+							'other'         => __( 'Other', 'shahi-legalflowsuite' ),
 						),
 					),
 				),
 			),
-			2 => array(
+			2  => array(
 				'key'         => 'contacts',
 				'title'       => __( 'Contact Details', 'shahi-legalflowsuite' ),
 				'description' => __( 'Contact information for legal and privacy matters.', 'shahi-legalflowsuite' ),
@@ -221,7 +221,7 @@ class Company_Profile_Service extends Base_Service {
 					),
 				),
 			),
-			3 => array(
+			3  => array(
 				'key'         => 'website',
 				'title'       => __( 'Website & Services', 'shahi-legalflowsuite' ),
 				'description' => __( 'Information about your website and services.', 'shahi-legalflowsuite' ),
@@ -259,7 +259,7 @@ class Company_Profile_Service extends Base_Service {
 					),
 				),
 			),
-			4 => array(
+			4  => array(
 				'key'         => 'data_collection',
 				'title'       => __( 'Data Collection', 'shahi-legalflowsuite' ),
 				'description' => __( 'What personal data you collect and why.', 'shahi-legalflowsuite' ),
@@ -292,38 +292,38 @@ class Company_Profile_Service extends Base_Service {
 						'type'     => 'checkbox_group',
 						'required' => true,
 						'options'  => array(
-							'service_delivery'  => __( 'Service Delivery', 'shahi-legalflowsuite' ),
+							'service_delivery'   => __( 'Service Delivery', 'shahi-legalflowsuite' ),
 							'account_management' => __( 'Account Management', 'shahi-legalflowsuite' ),
-							'communication'     => __( 'Communication', 'shahi-legalflowsuite' ),
-							'marketing'         => __( 'Marketing & Promotions', 'shahi-legalflowsuite' ),
-							'analytics'         => __( 'Analytics & Improvement', 'shahi-legalflowsuite' ),
-							'personalization'   => __( 'Personalization', 'shahi-legalflowsuite' ),
-							'security'          => __( 'Security & Fraud Prevention', 'shahi-legalflowsuite' ),
-							'legal_compliance'  => __( 'Legal Compliance', 'shahi-legalflowsuite' ),
-							'research'          => __( 'Research & Development', 'shahi-legalflowsuite' ),
-							'advertising'       => __( 'Targeted Advertising', 'shahi-legalflowsuite' ),
+							'communication'      => __( 'Communication', 'shahi-legalflowsuite' ),
+							'marketing'          => __( 'Marketing & Promotions', 'shahi-legalflowsuite' ),
+							'analytics'          => __( 'Analytics & Improvement', 'shahi-legalflowsuite' ),
+							'personalization'    => __( 'Personalization', 'shahi-legalflowsuite' ),
+							'security'           => __( 'Security & Fraud Prevention', 'shahi-legalflowsuite' ),
+							'legal_compliance'   => __( 'Legal Compliance', 'shahi-legalflowsuite' ),
+							'research'           => __( 'Research & Development', 'shahi-legalflowsuite' ),
+							'advertising'        => __( 'Targeted Advertising', 'shahi-legalflowsuite' ),
 						),
 						'help'     => __( 'Select all purposes for which you process personal data.', 'shahi-legalflowsuite' ),
 					),
 					'data_collection.special_categories'  => array(
-						'label'   => __( 'Do you collect special category data?', 'shahi-legalflowsuite' ),
-						'type'    => 'radio',
+						'label'    => __( 'Do you collect special category data?', 'shahi-legalflowsuite' ),
+						'type'     => 'radio',
 						'required' => false,
-						'options' => array(
+						'options'  => array(
 							'0' => __( 'No', 'shahi-legalflowsuite' ),
 							'1' => __( 'Yes', 'shahi-legalflowsuite' ),
 						),
-						'help'    => __( 'Special categories include: race, ethnicity, political opinions, religious beliefs, health data, sexual orientation, genetic/biometric data.', 'shahi-legalflowsuite' ),
+						'help'     => __( 'Special categories include: race, ethnicity, political opinions, religious beliefs, health data, sexual orientation, genetic/biometric data.', 'shahi-legalflowsuite' ),
 					),
 					'data_collection.children_data'       => array(
-						'label'   => __( 'Do you knowingly collect data from children?', 'shahi-legalflowsuite' ),
-						'type'    => 'radio',
+						'label'    => __( 'Do you knowingly collect data from children?', 'shahi-legalflowsuite' ),
+						'type'     => 'radio',
 						'required' => false,
-						'options' => array(
+						'options'  => array(
 							'0' => __( 'No', 'shahi-legalflowsuite' ),
 							'1' => __( 'Yes', 'shahi-legalflowsuite' ),
 						),
-						'help'    => __( 'If yes, additional compliance measures may be required (COPPA, etc.).', 'shahi-legalflowsuite' ),
+						'help'     => __( 'If yes, additional compliance measures may be required (COPPA, etc.).', 'shahi-legalflowsuite' ),
 					),
 					'data_collection.minimum_age'         => array(
 						'label'       => __( 'Minimum Age Requirement', 'shahi-legalflowsuite' ),
@@ -337,7 +337,7 @@ class Company_Profile_Service extends Base_Service {
 					),
 				),
 			),
-			5 => array(
+			5  => array(
 				'key'         => 'third_parties',
 				'title'       => __( 'Third-Party Services', 'shahi-legalflowsuite' ),
 				'description' => __( 'External services that may process user data.', 'shahi-legalflowsuite' ),
@@ -395,7 +395,7 @@ class Company_Profile_Service extends Base_Service {
 					),
 				),
 			),
-			6 => array(
+			6  => array(
 				'key'         => 'cookies',
 				'title'       => __( 'Cookie Usage', 'shahi-legalflowsuite' ),
 				'description' => __( 'Cookies and tracking technologies used on your site.', 'shahi-legalflowsuite' ),
@@ -403,93 +403,101 @@ class Company_Profile_Service extends Base_Service {
 				'sections'    => array( 'cookies' ),
 				'fields'      => array(
 					'cookies.essential'   => array(
-						'label'       => __( 'Essential Cookies', 'shahi-legalflowsuite' ),
-						'type'        => 'cookie_list',
-						'required'    => true,
-						'help'        => __( 'Cookies required for the website to function (session, security, etc.).', 'shahi-legalflowsuite' ),
-						'default'     => array(
-							array( 'name' => 'wordpress_logged_in_*', 'purpose' => 'WordPress login session', 'duration' => 'Session' ),
-							array( 'name' => 'wp-settings-*', 'purpose' => 'WordPress user settings', 'duration' => '1 year' ),
+						'label'    => __( 'Essential Cookies', 'shahi-legalflowsuite' ),
+						'type'     => 'cookie_list',
+						'required' => true,
+						'help'     => __( 'Cookies required for the website to function (session, security, etc.).', 'shahi-legalflowsuite' ),
+						'default'  => array(
+							array(
+								'name'     => 'wordpress_logged_in_*',
+								'purpose'  => 'WordPress login session',
+								'duration' => 'Session',
+							),
+							array(
+								'name'     => 'wp-settings-*',
+								'purpose'  => 'WordPress user settings',
+								'duration' => '1 year',
+							),
 						),
 					),
 					'cookies.analytics'   => array(
-						'label'       => __( 'Analytics Cookies', 'shahi-legalflowsuite' ),
-						'type'        => 'cookie_list',
-						'required'    => false,
-						'help'        => __( 'Cookies used for analytics and performance measurement.', 'shahi-legalflowsuite' ),
+						'label'    => __( 'Analytics Cookies', 'shahi-legalflowsuite' ),
+						'type'     => 'cookie_list',
+						'required' => false,
+						'help'     => __( 'Cookies used for analytics and performance measurement.', 'shahi-legalflowsuite' ),
 					),
 					'cookies.marketing'   => array(
-						'label'       => __( 'Marketing Cookies', 'shahi-legalflowsuite' ),
-						'type'        => 'cookie_list',
-						'required'    => false,
-						'help'        => __( 'Cookies used for advertising and retargeting.', 'shahi-legalflowsuite' ),
+						'label'    => __( 'Marketing Cookies', 'shahi-legalflowsuite' ),
+						'type'     => 'cookie_list',
+						'required' => false,
+						'help'     => __( 'Cookies used for advertising and retargeting.', 'shahi-legalflowsuite' ),
 					),
 					'cookies.preferences' => array(
-						'label'       => __( 'Preference Cookies', 'shahi-legalflowsuite' ),
-						'type'        => 'cookie_list',
-						'required'    => false,
-						'help'        => __( 'Cookies that remember user preferences and settings.', 'shahi-legalflowsuite' ),
+						'label'    => __( 'Preference Cookies', 'shahi-legalflowsuite' ),
+						'type'     => 'cookie_list',
+						'required' => false,
+						'help'     => __( 'Cookies that remember user preferences and settings.', 'shahi-legalflowsuite' ),
 					),
 					'cookies.social'      => array(
-						'label'       => __( 'Social Media Cookies', 'shahi-legalflowsuite' ),
-						'type'        => 'cookie_list',
-						'required'    => false,
-						'help'        => __( 'Cookies set by social media platforms for sharing features.', 'shahi-legalflowsuite' ),
+						'label'    => __( 'Social Media Cookies', 'shahi-legalflowsuite' ),
+						'type'     => 'cookie_list',
+						'required' => false,
+						'help'     => __( 'Cookies set by social media platforms for sharing features.', 'shahi-legalflowsuite' ),
 					),
 				),
 			),
-			7 => array(
+			7  => array(
 				'key'         => 'legal',
 				'title'       => __( 'Legal & Jurisdiction', 'shahi-legalflowsuite' ),
 				'description' => __( 'Legal frameworks and jurisdictions that apply to your business.', 'shahi-legalflowsuite' ),
 				'icon'        => 'admin-site-alt3',
 				'sections'    => array( 'legal' ),
 				'fields'      => array(
-					'legal.primary_jurisdiction'  => array(
+					'legal.primary_jurisdiction'    => array(
 						'label'    => __( 'Primary Jurisdiction', 'shahi-legalflowsuite' ),
 						'type'     => 'select',
 						'required' => true,
 						'options'  => 'countries',
 						'help'     => __( 'The main country/region whose laws govern your business.', 'shahi-legalflowsuite' ),
 					),
-					'legal.gdpr_applies'          => array(
-						'label'   => __( 'Does GDPR apply to your business?', 'shahi-legalflowsuite' ),
-						'type'    => 'radio',
+					'legal.gdpr_applies'            => array(
+						'label'    => __( 'Does GDPR apply to your business?', 'shahi-legalflowsuite' ),
+						'type'     => 'radio',
 						'required' => false,
-						'options' => array(
+						'options'  => array(
 							'0' => __( 'No', 'shahi-legalflowsuite' ),
 							'1' => __( 'Yes', 'shahi-legalflowsuite' ),
 						),
-						'help'    => __( 'GDPR applies if you have users in the EU/EEA or process EU citizens\' data.', 'shahi-legalflowsuite' ),
+						'help'     => __( 'GDPR applies if you have users in the EU/EEA or process EU citizens\' data.', 'shahi-legalflowsuite' ),
 					),
-					'legal.ccpa_applies'          => array(
-						'label'   => __( 'Does CCPA/CPRA apply to your business?', 'shahi-legalflowsuite' ),
-						'type'    => 'radio',
+					'legal.ccpa_applies'            => array(
+						'label'    => __( 'Does CCPA/CPRA apply to your business?', 'shahi-legalflowsuite' ),
+						'type'     => 'radio',
 						'required' => false,
-						'options' => array(
+						'options'  => array(
 							'0' => __( 'No', 'shahi-legalflowsuite' ),
 							'1' => __( 'Yes', 'shahi-legalflowsuite' ),
 						),
-						'help'    => __( 'CCPA applies if you serve California residents and meet certain thresholds.', 'shahi-legalflowsuite' ),
+						'help'     => __( 'CCPA applies if you serve California residents and meet certain thresholds.', 'shahi-legalflowsuite' ),
 					),
-					'legal.lgpd_applies'          => array(
-						'label'   => __( 'Does LGPD apply to your business?', 'shahi-legalflowsuite' ),
-						'type'    => 'radio',
+					'legal.lgpd_applies'            => array(
+						'label'    => __( 'Does LGPD apply to your business?', 'shahi-legalflowsuite' ),
+						'type'     => 'radio',
 						'required' => false,
-						'options' => array(
+						'options'  => array(
 							'0' => __( 'No', 'shahi-legalflowsuite' ),
 							'1' => __( 'Yes', 'shahi-legalflowsuite' ),
 						),
-						'help'    => __( 'LGPD applies if you process data of individuals in Brazil.', 'shahi-legalflowsuite' ),
+						'help'     => __( 'LGPD applies if you process data of individuals in Brazil.', 'shahi-legalflowsuite' ),
 					),
-					'legal.supervisory_authority' => array(
+					'legal.supervisory_authority'   => array(
 						'label'       => __( 'Supervisory Authority', 'shahi-legalflowsuite' ),
 						'type'        => 'text',
 						'required'    => false,
 						'placeholder' => __( 'e.g., ICO (UK), CNIL (France)', 'shahi-legalflowsuite' ),
 						'help'        => __( 'The data protection authority for your jurisdiction.', 'shahi-legalflowsuite' ),
 					),
-					'legal.representative_eu.name' => array(
+					'legal.representative_eu.name'  => array(
 						'label'       => __( 'EU Representative Name', 'shahi-legalflowsuite' ),
 						'type'        => 'text',
 						'required'    => false,
@@ -504,7 +512,7 @@ class Company_Profile_Service extends Base_Service {
 						'placeholder' => __( 'eu-rep@example.com', 'shahi-legalflowsuite' ),
 						'condition'   => array( 'legal.gdpr_applies' => '1' ),
 					),
-					'legal.representative_uk.name' => array(
+					'legal.representative_uk.name'  => array(
 						'label'       => __( 'UK Representative Name', 'shahi-legalflowsuite' ),
 						'type'        => 'text',
 						'required'    => false,
@@ -514,7 +522,7 @@ class Company_Profile_Service extends Base_Service {
 					),
 				),
 			),
-			8 => array(
+			8  => array(
 				'key'         => 'retention',
 				'title'       => __( 'Data Retention & Security', 'shahi-legalflowsuite' ),
 				'description' => __( 'How long you keep data and security measures in place.', 'shahi-legalflowsuite' ),
@@ -526,15 +534,15 @@ class Company_Profile_Service extends Base_Service {
 						'type'     => 'select',
 						'required' => true,
 						'options'  => array(
-							''             => __( 'Select...', 'shahi-legalflowsuite' ),
-							'30_days'      => __( '30 Days', 'shahi-legalflowsuite' ),
-							'90_days'      => __( '90 Days', 'shahi-legalflowsuite' ),
-							'1_year'       => __( '1 Year', 'shahi-legalflowsuite' ),
-							'2_years'      => __( '2 Years', 'shahi-legalflowsuite' ),
-							'3_years'      => __( '3 Years', 'shahi-legalflowsuite' ),
-							'5_years'      => __( '5 Years', 'shahi-legalflowsuite' ),
-							'7_years'      => __( '7 Years', 'shahi-legalflowsuite' ),
-							'indefinite'   => __( 'Indefinite (as long as necessary)', 'shahi-legalflowsuite' ),
+							''           => __( 'Select...', 'shahi-legalflowsuite' ),
+							'30_days'    => __( '30 Days', 'shahi-legalflowsuite' ),
+							'90_days'    => __( '90 Days', 'shahi-legalflowsuite' ),
+							'1_year'     => __( '1 Year', 'shahi-legalflowsuite' ),
+							'2_years'    => __( '2 Years', 'shahi-legalflowsuite' ),
+							'3_years'    => __( '3 Years', 'shahi-legalflowsuite' ),
+							'5_years'    => __( '5 Years', 'shahi-legalflowsuite' ),
+							'7_years'    => __( '7 Years', 'shahi-legalflowsuite' ),
+							'indefinite' => __( 'Indefinite (as long as necessary)', 'shahi-legalflowsuite' ),
 						),
 						'help'     => __( 'How long you typically retain personal data.', 'shahi-legalflowsuite' ),
 					),
@@ -551,31 +559,31 @@ class Company_Profile_Service extends Base_Service {
 						'type'     => 'select',
 						'required' => false,
 						'options'  => array(
-							''         => __( 'Select...', 'shahi-legalflowsuite' ),
-							'7_days'   => __( '7 Days', 'shahi-legalflowsuite' ),
-							'30_days'  => __( '30 Days', 'shahi-legalflowsuite' ),
-							'90_days'  => __( '90 Days', 'shahi-legalflowsuite' ),
-							'1_year'   => __( '1 Year', 'shahi-legalflowsuite' ),
+							''        => __( 'Select...', 'shahi-legalflowsuite' ),
+							'7_days'  => __( '7 Days', 'shahi-legalflowsuite' ),
+							'30_days' => __( '30 Days', 'shahi-legalflowsuite' ),
+							'90_days' => __( '90 Days', 'shahi-legalflowsuite' ),
+							'1_year'  => __( '1 Year', 'shahi-legalflowsuite' ),
 						),
 					),
 					'security.encryption_at_rest'    => array(
-						'label'   => __( 'Do you encrypt data at rest?', 'shahi-legalflowsuite' ),
-						'type'    => 'radio',
+						'label'    => __( 'Do you encrypt data at rest?', 'shahi-legalflowsuite' ),
+						'type'     => 'radio',
 						'required' => false,
-						'options' => array(
+						'options'  => array(
 							'0' => __( 'No', 'shahi-legalflowsuite' ),
 							'1' => __( 'Yes', 'shahi-legalflowsuite' ),
 						),
 					),
 					'security.encryption_in_transit' => array(
-						'label'   => __( 'Do you encrypt data in transit (HTTPS)?', 'shahi-legalflowsuite' ),
-						'type'    => 'radio',
+						'label'    => __( 'Do you encrypt data in transit (HTTPS)?', 'shahi-legalflowsuite' ),
+						'type'     => 'radio',
 						'required' => false,
-						'options' => array(
+						'options'  => array(
 							'0' => __( 'No', 'shahi-legalflowsuite' ),
 							'1' => __( 'Yes', 'shahi-legalflowsuite' ),
 						),
-						'default' => '1',
+						'default'  => '1',
 					),
 					'security.measures'              => array(
 						'label'    => __( 'Security Measures', 'shahi-legalflowsuite' ),
@@ -604,7 +612,7 @@ class Company_Profile_Service extends Base_Service {
 					),
 				),
 			),
-			9 => array(
+			9  => array(
 				'key'         => 'ecommerce',
 				'title'       => __( 'E-Commerce Settings', 'shahi-legalflowsuite' ),
 				'description' => __( 'Configure settings for online sales, shipping, and returns.', 'shahi-legalflowsuite' ),
@@ -719,11 +727,11 @@ class Company_Profile_Service extends Base_Service {
 						'type'      => 'select',
 						'required'  => false,
 						'options'   => array(
-							''         => __( 'Select...', 'shahi-legalflowsuite' ),
-							'weekly'   => __( 'Weekly', 'shahi-legalflowsuite' ),
-							'monthly'  => __( 'Monthly', 'shahi-legalflowsuite' ),
+							''          => __( 'Select...', 'shahi-legalflowsuite' ),
+							'weekly'    => __( 'Weekly', 'shahi-legalflowsuite' ),
+							'monthly'   => __( 'Monthly', 'shahi-legalflowsuite' ),
 							'quarterly' => __( 'Quarterly', 'shahi-legalflowsuite' ),
-							'annually' => __( 'Annually', 'shahi-legalflowsuite' ),
+							'annually'  => __( 'Annually', 'shahi-legalflowsuite' ),
 						),
 						'condition' => array( 'ecommerce.sells_subscriptions' => '1' ),
 					),
@@ -766,7 +774,7 @@ class Company_Profile_Service extends Base_Service {
 				'icon'        => 'editor-code',
 				'sections'    => array( 'software' ),
 				'fields'      => array(
-					'software.has_downloadable'     => array(
+					'software.has_downloadable'   => array(
 						'label'    => __( 'Do you offer downloadable software?', 'shahi-legalflowsuite' ),
 						'type'     => 'radio',
 						'required' => false,
@@ -775,21 +783,21 @@ class Company_Profile_Service extends Base_Service {
 							'1' => __( 'Yes', 'shahi-legalflowsuite' ),
 						),
 					),
-					'software.license_type'         => array(
+					'software.license_type'       => array(
 						'label'     => __( 'License Type', 'shahi-legalflowsuite' ),
 						'type'      => 'select',
 						'required'  => false,
 						'options'   => array(
-							''           => __( 'Select...', 'shahi-legalflowsuite' ),
-							'personal'   => __( 'Personal Use Only', 'shahi-legalflowsuite' ),
-							'commercial' => __( 'Commercial License', 'shahi-legalflowsuite' ),
-							'enterprise' => __( 'Enterprise License', 'shahi-legalflowsuite' ),
+							''            => __( 'Select...', 'shahi-legalflowsuite' ),
+							'personal'    => __( 'Personal Use Only', 'shahi-legalflowsuite' ),
+							'commercial'  => __( 'Commercial License', 'shahi-legalflowsuite' ),
+							'enterprise'  => __( 'Enterprise License', 'shahi-legalflowsuite' ),
 							'open_source' => __( 'Open Source', 'shahi-legalflowsuite' ),
-							'saas'       => __( 'SaaS (Software as a Service)', 'shahi-legalflowsuite' ),
+							'saas'        => __( 'SaaS (Software as a Service)', 'shahi-legalflowsuite' ),
 						),
 						'condition' => array( 'software.has_downloadable' => '1' ),
 					),
-					'software.restrictions'         => array(
+					'software.restrictions'       => array(
 						'label'     => __( 'License Restrictions', 'shahi-legalflowsuite' ),
 						'type'      => 'checkbox_group',
 						'required'  => false,
@@ -803,7 +811,7 @@ class Company_Profile_Service extends Base_Service {
 						),
 						'condition' => array( 'software.has_downloadable' => '1' ),
 					),
-					'software.has_api'              => array(
+					'software.has_api'            => array(
 						'label'    => __( 'Do you provide an API?', 'shahi-legalflowsuite' ),
 						'type'     => 'radio',
 						'required' => false,
@@ -812,14 +820,14 @@ class Company_Profile_Service extends Base_Service {
 							'1' => __( 'Yes', 'shahi-legalflowsuite' ),
 						),
 					),
-					'software.api_rate_limit'       => array(
+					'software.api_rate_limit'     => array(
 						'label'       => __( 'API Rate Limit', 'shahi-legalflowsuite' ),
 						'type'        => 'text',
 						'required'    => false,
 						'placeholder' => __( '1000 requests per hour', 'shahi-legalflowsuite' ),
 						'condition'   => array( 'software.has_api' => '1' ),
 					),
-					'software.api_authentication'   => array(
+					'software.api_authentication' => array(
 						'label'     => __( 'API Authentication Methods', 'shahi-legalflowsuite' ),
 						'type'      => 'checkbox_group',
 						'required'  => false,
@@ -831,7 +839,7 @@ class Company_Profile_Service extends Base_Service {
 						),
 						'condition' => array( 'software.has_api' => '1' ),
 					),
-					'software.api_usage_limits'     => array(
+					'software.api_usage_limits'   => array(
 						'label'       => __( 'API Usage Limits', 'shahi-legalflowsuite' ),
 						'type'        => 'textarea',
 						'required'    => false,
@@ -848,7 +856,7 @@ class Company_Profile_Service extends Base_Service {
 				'icon'        => 'groups',
 				'sections'    => array( 'community' ),
 				'fields'      => array(
-					'community.has_user_accounts'   => array(
+					'community.has_user_accounts'  => array(
 						'label'    => __( 'Does your site have user accounts?', 'shahi-legalflowsuite' ),
 						'type'     => 'radio',
 						'required' => false,
@@ -857,7 +865,7 @@ class Company_Profile_Service extends Base_Service {
 							'1' => __( 'Yes', 'shahi-legalflowsuite' ),
 						),
 					),
-					'community.has_forums'          => array(
+					'community.has_forums'         => array(
 						'label'     => __( 'Do you have forums or discussion boards?', 'shahi-legalflowsuite' ),
 						'type'      => 'radio',
 						'required'  => false,
@@ -867,7 +875,7 @@ class Company_Profile_Service extends Base_Service {
 						),
 						'condition' => array( 'community.has_user_accounts' => '1' ),
 					),
-					'community.has_comments'        => array(
+					'community.has_comments'       => array(
 						'label'    => __( 'Do you allow comments on content?', 'shahi-legalflowsuite' ),
 						'type'     => 'radio',
 						'required' => false,
@@ -876,7 +884,7 @@ class Company_Profile_Service extends Base_Service {
 							'1' => __( 'Yes', 'shahi-legalflowsuite' ),
 						),
 					),
-					'community.has_ugc'             => array(
+					'community.has_ugc'            => array(
 						'label'    => __( 'Can users submit content (posts, uploads, etc.)?', 'shahi-legalflowsuite' ),
 						'type'     => 'radio',
 						'required' => false,
@@ -885,21 +893,21 @@ class Company_Profile_Service extends Base_Service {
 							'1' => __( 'Yes', 'shahi-legalflowsuite' ),
 						),
 					),
-					'community.content_moderation'  => array(
+					'community.content_moderation' => array(
 						'label'     => __( 'Content Moderation Method', 'shahi-legalflowsuite' ),
 						'type'      => 'select',
 						'required'  => false,
 						'options'   => array(
-							''           => __( 'Select...', 'shahi-legalflowsuite' ),
-							'pre'        => __( 'Pre-moderation (approve before publish)', 'shahi-legalflowsuite' ),
-							'post'       => __( 'Post-moderation (review after publish)', 'shahi-legalflowsuite' ),
-							'community'  => __( 'Community Reporting', 'shahi-legalflowsuite' ),
-							'automated'  => __( 'Automated/AI Moderation', 'shahi-legalflowsuite' ),
-							'none'       => __( 'No Moderation', 'shahi-legalflowsuite' ),
+							''          => __( 'Select...', 'shahi-legalflowsuite' ),
+							'pre'       => __( 'Pre-moderation (approve before publish)', 'shahi-legalflowsuite' ),
+							'post'      => __( 'Post-moderation (review after publish)', 'shahi-legalflowsuite' ),
+							'community' => __( 'Community Reporting', 'shahi-legalflowsuite' ),
+							'automated' => __( 'Automated/AI Moderation', 'shahi-legalflowsuite' ),
+							'none'      => __( 'No Moderation', 'shahi-legalflowsuite' ),
 						),
 						'condition' => array( 'community.has_ugc' => '1' ),
 					),
-					'community.age_restricted'      => array(
+					'community.age_restricted'     => array(
 						'label'    => __( 'Is your content age-restricted?', 'shahi-legalflowsuite' ),
 						'type'     => 'radio',
 						'required' => false,
@@ -908,40 +916,40 @@ class Company_Profile_Service extends Base_Service {
 							'1' => __( 'Yes', 'shahi-legalflowsuite' ),
 						),
 					),
-					'community.age_verification'    => array(
+					'community.age_verification'   => array(
 						'label'     => __( 'Age Verification Method', 'shahi-legalflowsuite' ),
 						'type'      => 'select',
 						'required'  => false,
 						'options'   => array(
-							''           => __( 'Select...', 'shahi-legalflowsuite' ),
-							'checkbox'   => __( 'Self-declaration Checkbox', 'shahi-legalflowsuite' ),
-							'dob'        => __( 'Date of Birth Entry', 'shahi-legalflowsuite' ),
-							'id'         => __( 'ID Verification', 'shahi-legalflowsuite' ),
+							''            => __( 'Select...', 'shahi-legalflowsuite' ),
+							'checkbox'    => __( 'Self-declaration Checkbox', 'shahi-legalflowsuite' ),
+							'dob'         => __( 'Date of Birth Entry', 'shahi-legalflowsuite' ),
+							'id'          => __( 'ID Verification', 'shahi-legalflowsuite' ),
 							'third_party' => __( 'Third-party Verification Service', 'shahi-legalflowsuite' ),
 						),
 						'condition' => array( 'community.age_restricted' => '1' ),
 					),
-					'community.dmca_agent_name'     => array(
+					'community.dmca_agent_name'    => array(
 						'label'       => __( 'DMCA Agent Name', 'shahi-legalflowsuite' ),
 						'type'        => 'text',
 						'required'    => false,
 						'placeholder' => __( 'Copyright Agent', 'shahi-legalflowsuite' ),
 						'help'        => __( 'Designated agent for copyright infringement notices.', 'shahi-legalflowsuite' ),
 					),
-					'community.dmca_agent_email'    => array(
+					'community.dmca_agent_email'   => array(
 						'label'       => __( 'DMCA Agent Email', 'shahi-legalflowsuite' ),
 						'type'        => 'email',
 						'required'    => false,
 						'placeholder' => __( 'dmca@example.com', 'shahi-legalflowsuite' ),
 					),
-					'community.dmca_agent_address'  => array(
+					'community.dmca_agent_address' => array(
 						'label'       => __( 'DMCA Agent Address', 'shahi-legalflowsuite' ),
 						'type'        => 'textarea',
 						'required'    => false,
 						'placeholder' => __( 'Mailing address for DMCA notices', 'shahi-legalflowsuite' ),
 						'rows'        => 2,
 					),
-					'community.has_mobile_app'      => array(
+					'community.has_mobile_app'     => array(
 						'label'    => __( 'Do you have a mobile app?', 'shahi-legalflowsuite' ),
 						'type'     => 'radio',
 						'required' => false,
@@ -950,7 +958,7 @@ class Company_Profile_Service extends Base_Service {
 							'1' => __( 'Yes', 'shahi-legalflowsuite' ),
 						),
 					),
-					'community.app_stores'          => array(
+					'community.app_stores'         => array(
 						'label'       => __( 'App Store Links', 'shahi-legalflowsuite' ),
 						'type'        => 'tags',
 						'required'    => false,
@@ -1089,7 +1097,10 @@ class Company_Profile_Service extends Base_Service {
 		$errors = array();
 
 		if ( ! $step ) {
-			return array( 'valid' => false, 'errors' => array( 'Invalid step.' ) );
+			return array(
+				'valid'  => false,
+				'errors' => array( 'Invalid step.' ),
+			);
 		}
 
 		foreach ( $step['fields'] as $field_path => $field_config ) {
@@ -1231,20 +1242,23 @@ class Company_Profile_Service extends Base_Service {
 						$sanitized[ $field_path ] = array_map( 'sanitize_text_field', $value );
 					} elseif ( is_string( $value ) ) {
 						// Handle comma-separated values.
-						$items = array_map( 'trim', explode( ',', $value ) );
+						$items                    = array_map( 'trim', explode( ',', $value ) );
 						$sanitized[ $field_path ] = array_filter( array_map( 'sanitize_text_field', $items ) );
 					}
 					break;
 
 				case 'cookie_list':
 					if ( is_array( $value ) ) {
-						$sanitized[ $field_path ] = array_map( function( $cookie ) {
-							return array(
-								'name'     => sanitize_text_field( $cookie['name'] ?? '' ),
-								'purpose'  => sanitize_text_field( $cookie['purpose'] ?? '' ),
-								'duration' => sanitize_text_field( $cookie['duration'] ?? '' ),
-							);
-						}, $value );
+						$sanitized[ $field_path ] = array_map(
+							function ( $cookie ) {
+								return array(
+									'name'     => sanitize_text_field( $cookie['name'] ?? '' ),
+									'purpose'  => sanitize_text_field( $cookie['purpose'] ?? '' ),
+									'duration' => sanitize_text_field( $cookie['duration'] ?? '' ),
+								);
+							},
+							$value
+						);
 					}
 					break;
 
@@ -1365,8 +1379,8 @@ class Company_Profile_Service extends Base_Service {
 		$detected = array();
 
 		// WordPress site info.
-		$detected['website.url']      = get_bloginfo( 'url' );
-		$detected['website.app_name'] = get_bloginfo( 'name' );
+		$detected['website.url']            = get_bloginfo( 'url' );
+		$detected['website.app_name']       = get_bloginfo( 'name' );
 		$detected['contacts.support_email'] = get_bloginfo( 'admin_email' );
 
 		// Check for HTTPS.
@@ -1426,7 +1440,7 @@ class Company_Profile_Service extends Base_Service {
 		$detected['data_collection.personal_data_types'] = array_unique( $data_types );
 
 		// Store detected values in profile meta.
-		$profile = $this->repository->get_profile();
+		$profile                           = $this->repository->get_profile();
 		$profile['_meta']['auto_detected'] = $detected;
 		$this->repository->save_profile( array( '_meta' => $profile['_meta'] ) );
 

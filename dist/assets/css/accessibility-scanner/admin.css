@@ -10,621 +10,617 @@
  */
 
 /* ========================================
-   Dashboard Container
-   ======================================== */
+	Dashboard Container
+	======================================== */
 
 .shahi-a11y-dashboard {
-    padding: var(--shahi-space-md, 24px);
+	padding: var(--shahi-space-md, 24px);
 }
 
 .shahi-a11y-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: var(--shahi-space-lg, 32px);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: var(--shahi-space-lg, 32px);
 }
 
 .shahi-a11y-header h1 {
-    color: var(--shahi-text-primary, #ffffff);
-    font-size: 28px;
-    font-weight: 700;
-    margin: 0;
+	color: var(--shahi-text-primary, #fff);
+	font-size: 28px;
+	font-weight: 700;
+	margin: 0;
 }
 
 /* ========================================
-   Statistics Cards
-   ======================================== */
+	Statistics Cards
+	======================================== */
 
 .shahi-a11y-stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: var(--shahi-space-md, 24px);
-    margin-bottom: var(--shahi-space-lg, 32px);
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	gap: var(--shahi-space-md, 24px);
+	margin-bottom: var(--shahi-space-lg, 32px);
 }
 
 .shahi-a11y-stat-card {
-    background: var(--shahi-bg-secondary, #1e293b);
-    border: 1px solid var(--shahi-border, #334155);
-    border-radius: var(--shahi-radius-md, 12px);
-    padding: var(--shahi-space-md, 24px);
-    box-shadow: var(--shahi-shadow, 0 4px 20px rgba(96, 165, 250, 0.1));
-    transition: var(--shahi-transition, all 0.3s cubic-bezier(0.4, 0, 0.2, 1));
-    position: relative;
-    overflow: hidden;
+	background: var(--shahi-bg-secondary, #1e293b);
+	border: 1px solid var(--shahi-border, #334155);
+	border-radius: var(--shahi-radius-md, 12px);
+	padding: var(--shahi-space-md, 24px);
+	box-shadow: var(--shahi-shadow, 0 4px 20px rgb(96 165 250 / 10%));
+	transition: var(--shahi-transition, all 0.3s cubic-bezier(0.4, 0, 0.2, 1));
+	position: relative;
+	overflow: hidden;
 }
 
 .shahi-a11y-stat-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: var(--shahi-accent-gradient, linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%));
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 3px;
+	background: var(--shahi-accent-gradient, linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%));
 }
 
 .shahi-a11y-stat-card:hover {
-    box-shadow: var(--shahi-hover-shadow, 0 8px 30px rgba(96, 165, 250, 0.2));
-    transform: translateY(-2px);
-    border-color: var(--shahi-accent-primary, #60a5fa);
+	box-shadow: var(--shahi-hover-shadow, 0 8px 30px rgb(96 165 250 / 20%));
+	transform: translateY(-2px);
+	border-color: var(--shahi-accent-primary, #60a5fa);
 }
 
 .shahi-a11y-stat-label {
-    display: block;
-    color: var(--shahi-text-secondary, #a8b2d1);
-    font-size: 14px;
-    font-weight: 500;
-    margin-bottom: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+	display: block;
+	color: var(--shahi-text-secondary, #a8b2d1);
+	font-size: 14px;
+	font-weight: 500;
+	margin-bottom: 8px;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
 }
 
 .shahi-a11y-stat-value {
-    display: block;
-    color: var(--shahi-text-primary, #ffffff);
-    font-size: 32px;
-    font-weight: 700;
-    margin-bottom: 4px;
+	display: block;
+	color: var(--shahi-text-primary, #fff);
+	font-size: 32px;
+	font-weight: 700;
+	margin-bottom: 4px;
 }
 
 .shahi-a11y-stat-change {
-    font-size: 12px;
-    font-weight: 600;
-    padding: 2px 8px;
-    border-radius: 4px;
-    display: inline-block;
+	font-size: 12px;
+	font-weight: 600;
+	padding: 2px 8px;
+	border-radius: 4px;
+	display: inline-block;
 }
 
 .shahi-a11y-stat-change.positive {
-    color: #2ecc71;
-    background: rgba(46, 204, 113, 0.1);
+	color: #2ecc71;
+	background: rgb(46 204 113 / 10%);
 }
 
 .shahi-a11y-stat-change.negative {
-    color: #ff4757;
-    background: rgba(255, 71, 87, 0.1);
+	color: #ff4757;
+	background: rgb(255 71 87 / 10%);
 }
 
 /* ========================================
-   Scan Controls
-   ======================================== */
+	Scan Controls
+	======================================== */
 
 .shahi-a11y-scan-controls {
-    background: var(--shahi-bg-secondary, #1e293b);
-    border: 1px solid var(--shahi-border, #334155);
-    border-radius: var(--shahi-radius-md, 12px);
-    padding: var(--shahi-space-md, 24px);
-    margin-bottom: var(--shahi-space-lg, 32px);
+	background: var(--shahi-bg-secondary, #1e293b);
+	border: 1px solid var(--shahi-border, #334155);
+	border-radius: var(--shahi-radius-md, 12px);
+	padding: var(--shahi-space-md, 24px);
+	margin-bottom: var(--shahi-space-lg, 32px);
 }
 
 .shahi-a11y-scan-input-group {
-    display: flex;
-    gap: 12px;
-    align-items: center;
+	display: flex;
+	gap: 12px;
+	align-items: center;
 }
 
 .shahi-a11y-scan-input {
-    flex: 1;
-    background: var(--shahi-bg-tertiary, #334155);
-    border: 1px solid var(--shahi-border, #334155);
-    border-radius: 8px;
-    padding: 12px 16px;
-    color: var(--shahi-text-primary, #ffffff);
-    font-size: 14px;
-    transition: var(--shahi-transition, all 0.3s);
+	flex: 1;
+	background: var(--shahi-bg-tertiary, #334155);
+	border: 1px solid var(--shahi-border, #334155);
+	border-radius: 8px;
+	padding: 12px 16px;
+	color: var(--shahi-text-primary, #fff);
+	font-size: 14px;
+	transition: var(--shahi-transition, all 0.3s);
 }
 
 .shahi-a11y-scan-input:focus {
-    outline: none;
-    border-color: var(--shahi-accent-primary, #60a5fa);
-    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+	outline: none;
+	border-color: var(--shahi-accent-primary, #60a5fa);
+	box-shadow: 0 0 0 3px rgb(96 165 250 / 10%);
 }
 
 .shahi-a11y-scan-button {
-    background: var(--shahi-accent-gradient, linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%));
-    border: none;
-    border-radius: 8px;
-    padding: 12px 32px;
-    color: var(--shahi-text-primary, #ffffff);
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--shahi-transition, all 0.3s);
-    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.3);
+	background: var(--shahi-accent-gradient, linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%));
+	border: none;
+	border-radius: 8px;
+	padding: 12px 32px;
+	color: var(--shahi-text-primary, #fff);
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: var(--shahi-transition, all 0.3s);
+	box-shadow: 0 4px 12px rgb(96 165 250 / 30%);
 }
 
 .shahi-a11y-scan-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(96, 165, 250, 0.4);
+	transform: translateY(-2px);
+	box-shadow: 0 6px 20px rgb(96 165 250 / 40%);
 }
 
 .shahi-a11y-scan-button:active {
-    transform: translateY(0);
+	transform: translateY(0);
 }
 
 .shahi-a11y-scan-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
+	opacity: 0.5;
+	cursor: not-allowed;
+	transform: none;
 }
 
 /* ========================================
-   Issues Table
-   ======================================== */
+	Issues Table
+	======================================== */
 
 .shahi-a11y-issues-container {
-    background: var(--shahi-bg-secondary, #1e293b);
-    border: 1px solid var(--shahi-border, #334155);
-    border-radius: var(--shahi-radius-md, 12px);
-    overflow: hidden;
-    margin-bottom: var(--shahi-space-lg, 32px);
+	background: var(--shahi-bg-secondary, #1e293b);
+	border: 1px solid var(--shahi-border, #334155);
+	border-radius: var(--shahi-radius-md, 12px);
+	overflow: hidden;
+	margin-bottom: var(--shahi-space-lg, 32px);
 }
 
 .shahi-a11y-issues-header {
-    padding: var(--shahi-space-md, 24px);
-    border-bottom: 1px solid var(--shahi-border, #334155);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+	padding: var(--shahi-space-md, 24px);
+	border-bottom: 1px solid var(--shahi-border, #334155);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
 .shahi-a11y-issues-header h2 {
-    color: var(--shahi-text-primary, #ffffff);
-    font-size: 20px;
-    font-weight: 700;
-    margin: 0;
+	color: var(--shahi-text-primary, #fff);
+	font-size: 20px;
+	font-weight: 700;
+	margin: 0;
 }
 
 .shahi-a11y-filter-controls {
-    display: flex;
-    gap: 12px;
+	display: flex;
+	gap: 12px;
 }
 
 .shahi-a11y-filter-select {
-    background: var(--shahi-bg-tertiary, #334155);
-    border: 1px solid var(--shahi-border, #334155);
-    border-radius: 6px;
-    padding: 8px 12px;
-    color: var(--shahi-text-primary, #ffffff);
-    font-size: 13px;
-    cursor: pointer;
+	background: var(--shahi-bg-tertiary, #334155);
+	border: 1px solid var(--shahi-border, #334155);
+	border-radius: 6px;
+	padding: 8px 12px;
+	color: var(--shahi-text-primary, #fff);
+	font-size: 13px;
+	cursor: pointer;
 }
 
 .shahi-a11y-issues-table {
-    width: 100%;
-    border-collapse: collapse;
+	width: 100%;
+	border-collapse: collapse;
 }
 
 .shahi-a11y-issues-table thead {
-    background: var(--shahi-bg-tertiary, #334155);
+	background: var(--shahi-bg-tertiary, #334155);
 }
 
 .shahi-a11y-issues-table th {
-    padding: 16px;
-    text-align: left;
-    color: var(--shahi-text-primary, #ffffff);
-    font-size: 13px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-bottom: 2px solid var(--shahi-border, #334155);
+	padding: 16px;
+	text-align: left;
+	color: var(--shahi-text-primary, #fff);
+	font-size: 13px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	border-bottom: 2px solid var(--shahi-border, #334155);
 }
 
 .shahi-a11y-issues-table td {
-    padding: 16px;
-    color: var(--shahi-text-secondary, #a8b2d1);
-    font-size: 14px;
-    border-bottom: 1px solid var(--shahi-border, #334155);
+	padding: 16px;
+	color: var(--shahi-text-secondary, #a8b2d1);
+	font-size: 14px;
+	border-bottom: 1px solid var(--shahi-border, #334155);
 }
 
 .shahi-a11y-issues-table tbody tr {
-    transition: var(--shahi-transition, all 0.3s);
+	transition: var(--shahi-transition, all 0.3s);
 }
 
 .shahi-a11y-issues-table tbody tr:hover {
-    background: var(--shahi-bg-tertiary, #334155);
+	background: var(--shahi-bg-tertiary, #334155);
 }
 
 /* ========================================
-   Severity Badges
-   ======================================== */
+	Severity Badges
+	======================================== */
 
 .shahi-a11y-severity {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 4px 12px;
+	border-radius: 20px;
+	font-size: 12px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
 }
 
 .shahi-a11y-severity-critical {
-    color: #ff4757;
-    background: rgba(255, 71, 87, 0.15);
-    border: 1px solid rgba(255, 71, 87, 0.3);
+	color: #ff4757;
+	background: rgb(255 71 87 / 15%);
+	border: 1px solid rgb(255 71 87 / 30%);
 }
 
 .shahi-a11y-severity-serious {
-    color: #ffa502;
-    background: rgba(255, 165, 2, 0.15);
-    border: 1px solid rgba(255, 165, 2, 0.3);
+	color: #ffa502;
+	background: rgb(255 165 2 / 15%);
+	border: 1px solid rgb(255 165 2 / 30%);
 }
 
 .shahi-a11y-severity-moderate {
-    color: #f1c40f;
-    background: rgba(241, 196, 15, 0.15);
-    border: 1px solid rgba(241, 196, 15, 0.3);
+	color: #f1c40f;
+	background: rgb(241 196 15 / 15%);
+	border: 1px solid rgb(241 196 15 / 30%);
 }
 
 .shahi-a11y-severity-minor {
-    color: var(--shahi-accent-primary, #60a5fa);
-    background: rgba(96, 165, 250, 0.15);
-    border: 1px solid rgba(96, 165, 250, 0.3);
+	color: var(--shahi-accent-primary, #60a5fa);
+	background: rgb(96 165 250 / 15%);
+	border: 1px solid rgb(96 165 250 / 30%);
 }
 
 /* ========================================
-   WCAG Level Badges
-   ======================================== */
+	WCAG Level Badges
+	======================================== */
 
 .shahi-a11y-wcag-level {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 4px;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.5px;
 }
 
 .shahi-a11y-wcag-level-a {
-    color: #3498db;
-    background: rgba(52, 152, 219, 0.15);
-    border: 1px solid rgba(52, 152, 219, 0.3);
+	color: #3498db;
+	background: rgb(52 152 219 / 15%);
+	border: 1px solid rgb(52 152 219 / 30%);
 }
 
 .shahi-a11y-wcag-level-aa {
-    color: #9b59b6;
-    background: rgba(155, 89, 182, 0.15);
-    border: 1px solid rgba(155, 89, 182, 0.3);
+	color: #9b59b6;
+	background: rgb(155 89 182 / 15%);
+	border: 1px solid rgb(155 89 182 / 30%);
 }
 
 .shahi-a11y-wcag-level-aaa {
-    color: #e74c3c;
-    background: rgba(231, 76, 60, 0.15);
-    border: 1px solid rgba(231, 76, 60, 0.3);
+	color: #e74c3c;
+	background: rgb(231 76 60 / 15%);
+	border: 1px solid rgb(231 76 60 / 30%);
 }
 
 /* ========================================
-   Action Buttons
-   ======================================== */
+	Action Buttons
+	======================================== */
 
 .shahi-a11y-action-buttons {
-    display: flex;
-    gap: 8px;
+	display: flex;
+	gap: 8px;
 }
 
 .shahi-a11y-btn {
-    padding: 6px 12px;
-    border: none;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--shahi-transition, all 0.3s);
+	padding: 6px 12px;
+	border: none;
+	border-radius: 6px;
+	font-size: 12px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: var(--shahi-transition, all 0.3s);
 }
 
 .shahi-a11y-btn-fix {
-    background: rgba(46, 204, 113, 0.2);
-    color: #2ecc71;
-    border: 1px solid rgba(46, 204, 113, 0.3);
+	background: rgb(46 204 113 / 20%);
+	color: #2ecc71;
+	border: 1px solid rgb(46 204 113 / 30%);
 }
 
 .shahi-a11y-btn-fix:hover {
-    background: rgba(46, 204, 113, 0.3);
-    box-shadow: 0 2px 8px rgba(46, 204, 113, 0.2);
+	background: rgb(46 204 113 / 30%);
+	box-shadow: 0 2px 8px rgb(46 204 113 / 20%);
 }
 
 .shahi-a11y-btn-ignore {
-    background: rgba(149, 165, 166, 0.2);
-    color: #95a5a6;
-    border: 1px solid rgba(149, 165, 166, 0.3);
+	background: rgb(149 165 166 / 20%);
+	color: #95a5a6;
+	border: 1px solid rgb(149 165 166 / 30%);
 }
 
 .shahi-a11y-btn-ignore:hover {
-    background: rgba(149, 165, 166, 0.3);
-    box-shadow: 0 2px 8px rgba(149, 165, 166, 0.2);
+	background: rgb(149 165 166 / 30%);
+	box-shadow: 0 2px 8px rgb(149 165 166 / 20%);
 }
 
 .shahi-a11y-btn-details {
-    background: rgba(96, 165, 250, 0.2);
-    color: var(--shahi-accent-primary, #60a5fa);
-    border: 1px solid rgba(96, 165, 250, 0.3);
+	background: rgb(96 165 250 / 20%);
+	color: var(--shahi-accent-primary, #60a5fa);
+	border: 1px solid rgb(96 165 250 / 30%);
 }
 
 .shahi-a11y-btn-details:hover {
-    background: rgba(96, 165, 250, 0.3);
-    box-shadow: 0 2px 8px rgba(96, 165, 250, 0.2);
+	background: rgb(96 165 250 / 30%);
+	box-shadow: 0 2px 8px rgb(96 165 250 / 20%);
 }
 
 /* ========================================
-   Settings Page
-   ======================================== */
+	Settings Page
+	======================================== */
 
 .shahi-a11y-settings {
-    max-width: 1200px;
+	max-width: 1200px;
 }
 
 .shahi-a11y-settings-section {
-    background: var(--shahi-bg-secondary, #1e293b);
-    border: 1px solid var(--shahi-border, #334155);
-    border-radius: var(--shahi-radius-md, 12px);
-    padding: var(--shahi-space-md, 24px);
-    margin-bottom: var(--shahi-space-md, 24px);
+	background: var(--shahi-bg-secondary, #1e293b);
+	border: 1px solid var(--shahi-border, #334155);
+	border-radius: var(--shahi-radius-md, 12px);
+	padding: var(--shahi-space-md, 24px);
+	margin-bottom: var(--shahi-space-md, 24px);
 }
 
 .shahi-a11y-settings-section h3 {
-    color: var(--shahi-text-primary, #ffffff);
-    font-size: 18px;
-    font-weight: 700;
-    margin: 0 0 20px 0;
-    padding-bottom: 12px;
-    border-bottom: 2px solid var(--shahi-border, #334155);
+	color: var(--shahi-text-primary, #fff);
+	font-size: 18px;
+	font-weight: 700;
+	margin: 0 0 20px;
+	padding-bottom: 12px;
+	border-bottom: 2px solid var(--shahi-border, #334155);
 }
 
 .shahi-a11y-form-group {
-    margin-bottom: 20px;
+	margin-bottom: 20px;
 }
 
 .shahi-a11y-form-group label {
-    display: block;
-    color: var(--shahi-text-primary, #ffffff);
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 8px;
+	display: block;
+	color: var(--shahi-text-primary, #fff);
+	font-size: 14px;
+	font-weight: 600;
+	margin-bottom: 8px;
 }
 
 .shahi-a11y-form-group .description {
-    color: var(--shahi-text-secondary, #a8b2d1);
-    font-size: 13px;
-    margin-top: 6px;
-    font-style: italic;
+	color: var(--shahi-text-secondary, #a8b2d1);
+	font-size: 13px;
+	margin-top: 6px;
+	font-style: italic;
 }
 
 /* ========================================
-   Toggle Switch (Uses Global Component)
-   ======================================== */
+	Toggle Switch (Uses Global Component)
+	======================================== */
 
 .shahi-toggle-switch {
-    position: relative;
-    display: inline-block;
-    width: 50px;
-    height: 26px;
+	position: relative;
+	display: inline-block;
+	width: 50px;
+	height: 26px;
 }
 
 .shahi-toggle-switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
+	opacity: 0;
+	width: 0;
+	height: 0;
 }
 
 .shahi-toggle-slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: var(--shahi-bg-tertiary, #334155);
-    border: 1px solid var(--shahi-border, #334155);
-    transition: var(--shahi-transition, all 0.3s);
-    border-radius: 26px;
+	position: absolute;
+	cursor: pointer;
+	inset: 0;
+	background: var(--shahi-bg-tertiary, #334155);
+	border: 1px solid var(--shahi-border, #334155);
+	transition: var(--shahi-transition, all 0.3s);
+	border-radius: 26px;
 }
 
-.shahi-toggle-slider:before {
-    position: absolute;
-    content: "";
-    height: 18px;
-    width: 18px;
-    left: 3px;
-    bottom: 3px;
-    background: var(--shahi-text-secondary, #a8b2d1);
-    transition: var(--shahi-transition, all 0.3s);
-    border-radius: 50%;
+.shahi-toggle-slider::before {
+	position: absolute;
+	content: "";
+	height: 18px;
+	width: 18px;
+	left: 3px;
+	bottom: 3px;
+	background: var(--shahi-text-secondary, #a8b2d1);
+	transition: var(--shahi-transition, all 0.3s);
+	border-radius: 50%;
 }
 
 .shahi-toggle-switch input:checked + .shahi-toggle-slider {
-    background: var(--shahi-accent-gradient, linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%));
-    border-color: var(--shahi-accent-primary, #60a5fa);
+	background: var(--shahi-accent-gradient, linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%));
+	border-color: var(--shahi-accent-primary, #60a5fa);
 }
 
-.shahi-toggle-switch input:checked + .shahi-toggle-slider:before {
-    transform: translateX(24px);
-    background: var(--shahi-text-primary, #ffffff);
+.shahi-toggle-switch input:checked + .shahi-toggle-slider::before {
+	transform: translateX(24px);
+	background: var(--shahi-text-primary, #fff);
 }
 
 /* ========================================
-   Select Inputs
-   ======================================== */
+	Select Inputs
+	======================================== */
 
 .shahi-select,
 .shahi-input {
-    background: var(--shahi-bg-tertiary, #334155);
-    border: 1px solid var(--shahi-border, #334155);
-    border-radius: 8px;
-    padding: 10px 14px;
-    color: var(--shahi-text-primary, #ffffff);
-    font-size: 14px;
-    transition: var(--shahi-transition, all 0.3s);
-    width: 100%;
-    max-width: 400px;
+	background: var(--shahi-bg-tertiary, #334155);
+	border: 1px solid var(--shahi-border, #334155);
+	border-radius: 8px;
+	padding: 10px 14px;
+	color: var(--shahi-text-primary, #fff);
+	font-size: 14px;
+	transition: var(--shahi-transition, all 0.3s);
+	width: 100%;
+	max-width: 400px;
 }
 
 .shahi-select:focus,
 .shahi-input:focus {
-    outline: none;
-    border-color: var(--shahi-accent-primary, #60a5fa);
-    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+	outline: none;
+	border-color: var(--shahi-accent-primary, #60a5fa);
+	box-shadow: 0 0 0 3px rgb(96 165 250 / 10%);
 }
 
 /* ========================================
-   Loading States
-   ======================================== */
+	Loading States
+	======================================== */
 
 .shahi-a11y-loading {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--shahi-text-secondary, #a8b2d1);
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	color: var(--shahi-text-secondary, #a8b2d1);
 }
 
 .shahi-a11y-spinner {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    border: 2px solid rgba(96, 165, 250, 0.2);
-    border-top-color: var(--shahi-accent-primary, #60a5fa);
-    border-radius: 50%;
-    animation: shahi-spin 0.6s linear infinite;
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	border: 2px solid rgb(96 165 250 / 20%);
+	border-top-color: var(--shahi-accent-primary, #60a5fa);
+	border-radius: 50%;
+	animation: shahi-spin 0.6s linear infinite;
 }
 
 @keyframes shahi-spin {
-    to { transform: rotate(360deg); }
+	to { transform: rotate(360deg); }
 }
 
 /* ========================================
-   Scan Progress
-   ======================================== */
+	Scan Progress
+	======================================== */
 
 .shahi-a11y-progress-bar {
-    width: 100%;
-    height: 8px;
-    background: var(--shahi-bg-tertiary, #334155);
-    border-radius: 4px;
-    overflow: hidden;
-    margin: 12px 0;
+	width: 100%;
+	height: 8px;
+	background: var(--shahi-bg-tertiary, #334155);
+	border-radius: 4px;
+	overflow: hidden;
+	margin: 12px 0;
 }
 
 .shahi-a11y-progress-fill {
-    height: 100%;
-    background: var(--shahi-accent-gradient, linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%));
-    transition: width 0.3s ease;
-    box-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
+	height: 100%;
+	background: var(--shahi-accent-gradient, linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%));
+	transition: width 0.3s ease;
+	box-shadow: 0 0 10px rgb(96 165 250 / 50%);
 }
 
 /* ========================================
-   Score Display
-   ======================================== */
+	Score Display
+	======================================== */
 
 .shahi-a11y-score-display {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+	display: flex;
+	align-items: center;
+	gap: 12px;
 }
 
 .shahi-a11y-score-circle {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    font-weight: 700;
-    position: relative;
+	width: 60px;
+	height: 60px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 20px;
+	font-weight: 700;
+	position: relative;
 }
 
 .shahi-a11y-score-circle.score-excellent {
-    background: rgba(46, 204, 113, 0.2);
-    color: #2ecc71;
-    border: 3px solid #2ecc71;
+	background: rgb(46 204 113 / 20%);
+	color: #2ecc71;
+	border: 3px solid #2ecc71;
 }
 
 .shahi-a11y-score-circle.score-good {
-    background: rgba(52, 152, 219, 0.2);
-    color: #3498db;
-    border: 3px solid #3498db;
+	background: rgb(52 152 219 / 20%);
+	color: #3498db;
+	border: 3px solid #3498db;
 }
 
 .shahi-a11y-score-circle.score-fair {
-    background: rgba(241, 196, 15, 0.2);
-    color: #f1c40f;
-    border: 3px solid #f1c40f;
+	background: rgb(241 196 15 / 20%);
+	color: #f1c40f;
+	border: 3px solid #f1c40f;
 }
 
 .shahi-a11y-score-circle.score-poor {
-    background: rgba(255, 71, 87, 0.2);
-    color: #ff4757;
-    border: 3px solid #ff4757;
+	background: rgb(255 71 87 / 20%);
+	color: #ff4757;
+	border: 3px solid #ff4757;
 }
 
 /* ========================================
-   Responsive Design
-   ======================================== */
+	Responsive Design
+	======================================== */
 
-@media (max-width: 768px) {
-    .shahi-a11y-stats-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .shahi-a11y-scan-input-group {
-        flex-direction: column;
-    }
-    
-    .shahi-a11y-scan-input,
-    .shahi-a11y-scan-button {
-        width: 100%;
-    }
-    
-    .shahi-a11y-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 16px;
-    }
-    
-    .shahi-a11y-issues-table {
-        font-size: 12px;
-    }
-    
-    .shahi-a11y-issues-table th,
-    .shahi-a11y-issues-table td {
-        padding: 12px 8px;
-    }
+@media (width <= 768px) {
+	.shahi-a11y-stats-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.shahi-a11y-scan-input-group {
+		flex-direction: column;
+	}
+
+	.shahi-a11y-scan-input,
+	.shahi-a11y-scan-button {
+		width: 100%;
+	}
+
+	.shahi-a11y-header {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 16px;
+	}
+
+	.shahi-a11y-issues-table {
+		font-size: 12px;
+	}
+
+	.shahi-a11y-issues-table th,
+	.shahi-a11y-issues-table td {
+		padding: 12px 8px;
+	}
 }
 
 /* ========================================
-   Print Styles
-   ======================================== */
+	Print Styles
+	======================================== */
 
 @media print {
-    .shahi-a11y-scan-controls,
-    .shahi-a11y-action-buttons {
-        display: none;
-    }
-    
-    .shahi-a11y-stat-card {
-        break-inside: avoid;
-    }
-}
+	.shahi-a11y-scan-controls,
+	.shahi-a11y-action-buttons {
+		display: none;
+	}
 
+	.shahi-a11y-stat-card {
+		break-inside: avoid;
+	}
+}

@@ -40,4 +40,3 @@ class MultipleH1Check extends AbstractCheck {
 		return $issues;
 	}
 }
-

@@ -14,7 +14,7 @@
 
 namespace ShahiLegalFlowSuite\Ajax;
 
-// Exit if accessed directly
+// Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -46,12 +46,12 @@ class DashboardAjax {
 	 * @return void
 	 */
 	public function refresh_stats() {
-		// Verify request
+		// Verify request.
 		AjaxHandler::verify_request( 'shahi_dashboard', 'edit_shahi_settings' );
 
 		global $wpdb;
 
-		// Get module stats
+		// Get module stats.
 		$modules         = get_option( 'shahi_modules', array() );
 		$enabled_modules = array_filter(
 			$modules,
@@ -60,35 +60,36 @@ class DashboardAjax {
 			}
 		);
 
-		// Get analytics stats (if table exists)
+		// Get analytics stats (if table exists).
 		$analytics_table = $wpdb->prefix . 'shahi_analytics';
 		$total_events    = 0;
 		$events_today    = 0;
 
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '$analytics_table'" ) === $analytics_table ) {
-			$total_events = intval( $wpdb->get_var( "SELECT COUNT(*) FROM $analytics_table" ) );
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $analytics_table ) ) === $analytics_table ) {
+			$total_events = intval( $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $analytics_table ) ) );
 			$events_today = intval(
 				$wpdb->get_var(
-					"SELECT COUNT(*) FROM $analytics_table WHERE DATE(created_at) = CURDATE()"
+					$wpdb->prepare( 'SELECT COUNT(*) FROM %i WHERE DATE(created_at) = CURDATE()', $analytics_table )
 				)
 			);
 		}
 
-		// Get user stats
+		// Get user stats.
 		$total_users = count_users();
 
-		// Get onboarding completion
+		// Get onboarding completion.
 		$onboarding_completed = get_option( 'shahi_onboarding_completed', false );
 
-		// Get recent activity (last 5 events)
+		// Get recent activity (last 5 events).
 		$recent_activity = array();
 		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $analytics_table ) ) === $analytics_table ) {
 			$recent_activity = $wpdb->get_results(
 				$wpdb->prepare(
-					"SELECT event_type, event_data, created_at 
-					 FROM $analytics_table 
+					'SELECT event_type, event_data, created_at 
+					 FROM %i 
 					 ORDER BY created_at DESC 
-					 LIMIT %d",
+					 LIMIT %d',
+					$analytics_table,
 					5
 				),
 				ARRAY_A
@@ -124,25 +125,25 @@ class DashboardAjax {
 	 * @return void
 	 */
 	public function complete_checklist_item() {
-		// Verify request
+		// Verify request.
 		AjaxHandler::verify_request( 'shahi_complete_checklist', 'edit_shahi_settings' );
 
-		// Get item ID
+		// Get item ID.
 		if ( ! isset( $_POST['item_id'] ) ) {
 			AjaxHandler::error( 'Item ID is required' );
 		}
 
 		$item_id = sanitize_key( $_POST['item_id'] );
 
-		// Get checklist
+		// Get checklist.
 		$checklist = get_option( 'shahi_checklist', array() );
 
-		// Add item if not exists
+		// Add item if not exists.
 		if ( ! in_array( $item_id, $checklist ) ) {
 			$checklist[] = $item_id;
 			update_option( 'shahi_checklist', $checklist );
 
-			// Track analytics event
+			// Track analytics event.
 			$this->track_checklist_event( $item_id );
 		}
 
@@ -163,8 +164,8 @@ class DashboardAjax {
 		global $wpdb;
 		$analytics_table = $wpdb->prefix . 'shahi_analytics';
 
-		// Check if table exists
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '$analytics_table'" ) !== $analytics_table ) {
+		// Check if table exists.
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $analytics_table ) ) !== $analytics_table ) {
 			return;
 		}
 

@@ -10,23 +10,23 @@
  */
 
 /* ============================================
-   CSS Custom Properties (Variables)
-   ============================================ */
+	CSS Custom Properties (Variables)
+	============================================ */
 
 :root {
 	/* Colors - Primary */
-	--slos-wizard-primary: #3b82f6;
-	--slos-wizard-primary-hover: #2563eb;
-	--slos-wizard-primary-light: rgba(59, 130, 246, 0.1);
-	
+	--slos-wizard-primary: var(--slos-accent-primary, #6b8e4e);
+	--slos-wizard-primary-hover: var(--slos-accent-hover, #7a9d5d);
+	--slos-wizard-primary-light: rgb(107 142 78 / 10%);
+
 	/* Colors - Status */
 	--slos-wizard-success: #10b981;
-	--slos-wizard-success-light: rgba(16, 185, 129, 0.1);
+	--slos-wizard-success-light: rgb(16 185 129 / 10%);
 	--slos-wizard-warning: #f59e0b;
-	--slos-wizard-warning-light: rgba(245, 158, 11, 0.1);
+	--slos-wizard-warning-light: rgb(245 158 11 / 10%);
 	--slos-wizard-error: #ef4444;
-	--slos-wizard-error-light: rgba(239, 68, 68, 0.1);
-	
+	--slos-wizard-error-light: rgb(239 68 68 / 10%);
+
 	/* Colors - Neutral - Mac Slate Liquid Theme */
 	--slos-wizard-bg: #0f172a;
 	--slos-wizard-bg-secondary: #1e293b;
@@ -36,23 +36,23 @@
 	--slos-wizard-text-muted: #64748b;
 	--slos-wizard-border: #334155;
 	--slos-wizard-border-light: #475569;
-	
+
 	/* Shadows */
-	--slos-wizard-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
-	--slos-wizard-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
-	
+	--slos-wizard-shadow: 0 4px 6px -1px rgb(0 0 0 / 30%), 0 2px 4px -1px rgb(0 0 0 / 20%);
+	--slos-wizard-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 30%), 0 4px 6px -2px rgb(0 0 0 / 20%);
+
 	/* Spacing */
 	--slos-wizard-gap: 1.5rem;
 	--slos-wizard-radius: 0.5rem;
 	--slos-wizard-radius-lg: 0.75rem;
-	
+
 	/* Transitions */
 	--slos-wizard-transition: all 0.2s ease;
 }
 
 /* ============================================
-   Base Wrapper
-   ============================================ */
+	Base Wrapper
+	============================================ */
 
 .slos-profile-wizard-wrap {
 	max-width: 1400px;
@@ -68,8 +68,8 @@
 }
 
 /* ============================================
-   Header
-   ============================================ */
+	Header
+	============================================ */
 
 .slos-wizard-header {
 	display: flex;
@@ -108,8 +108,8 @@
 }
 
 /* ============================================
-   Progress Bar
-   ============================================ */
+	Progress Bar
+	============================================ */
 
 .slos-wizard-progress {
 	display: flex;
@@ -154,8 +154,8 @@
 }
 
 /* ============================================
-   Main Layout
-   ============================================ */
+	Main Layout
+	============================================ */
 
 .slos-wizard-main {
 	display: grid;
@@ -164,8 +164,8 @@
 }
 
 /* ============================================
-   Step Navigation (Sidebar)
-   ============================================ */
+	Step Navigation (Sidebar)
+	============================================ */
 
 .slos-wizard-nav {
 	background: var(--slos-wizard-bg-secondary);
@@ -279,8 +279,8 @@
 }
 
 /* ============================================
-   Step Content
-   ============================================ */
+	Step Content
+	============================================ */
 
 .slos-wizard-content {
 	padding: 2rem;
@@ -301,6 +301,7 @@
 		opacity: 0;
 		transform: translateY(10px);
 	}
+
 	to {
 		opacity: 1;
 		transform: translateY(0);
@@ -364,8 +365,8 @@
 }
 
 /* ============================================
-   Form Fields
-   ============================================ */
+	Form Fields
+	============================================ */
 
 .slos-step-fields {
 	display: grid;
@@ -626,8 +627,8 @@
 }
 
 /* ============================================
-   Buttons
-   ============================================ */
+	Buttons
+	============================================ */
 
 .slos-btn {
 	display: inline-flex;
@@ -707,8 +708,8 @@
 }
 
 /* ============================================
-   Wizard Actions (Footer)
-   ============================================ */
+	Wizard Actions (Footer)
+	============================================ */
 
 .slos-wizard-actions {
 	display: flex;
@@ -772,17 +773,14 @@
 }
 
 /* ============================================
-   Modal
-   ============================================ */
+	Modal
+	============================================ */
 
 .slos-modal {
 	display: none;
 	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background: rgba(0, 0, 0, 0.7);
+	inset: 0;
+	background: rgb(0 0 0 / 70%);
 	z-index: 100000;
 	align-items: center;
 	justify-content: center;
@@ -810,6 +808,7 @@ body.slos-modal-active {
 		opacity: 0;
 		transform: translateY(-20px);
 	}
+
 	to {
 		opacity: 1;
 		transform: translateY(0);
@@ -868,8 +867,8 @@ body.slos-modal-active {
 }
 
 /* ============================================
-   Notices
-   ============================================ */
+	Notices
+	============================================ */
 
 .slos-wizard-notice {
 	display: flex;
@@ -886,6 +885,7 @@ body.slos-modal-active {
 		opacity: 0;
 		transform: translateY(-10px);
 	}
+
 	to {
 		opacity: 1;
 		transform: translateY(0);
@@ -940,126 +940,126 @@ body.slos-modal-active {
 }
 
 /* ============================================
-   Responsive Design
-   ============================================ */
+	Responsive Design
+	============================================ */
 
-@media (max-width: 1024px) {
+@media (width <= 1024px) {
 	.slos-wizard-main {
 		grid-template-columns: 1fr;
 	}
-	
+
 	.slos-wizard-nav {
 		border-right: none;
 		border-bottom: 1px solid var(--slos-wizard-border);
 		padding: 1rem 0;
 	}
-	
+
 	.slos-step-list {
 		display: flex;
 		overflow-x: auto;
 		gap: 0.5rem;
 		padding: 0 1rem;
 	}
-	
+
 	.slos-step-item {
 		flex-shrink: 0;
 	}
-	
+
 	.slos-step-item::before {
 		display: none;
 	}
-	
+
 	.slos-step-button {
 		flex-direction: column;
 		padding: 0.75rem 1rem;
 		text-align: center;
 	}
-	
+
 	.slos-step-info {
 		align-items: center;
 	}
-	
+
 	.slos-step-title {
 		font-size: 0.75rem;
 	}
-	
+
 	.slos-step-status {
 		display: none;
 	}
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
 	.slos-wizard-header {
 		flex-direction: column;
 		gap: 1rem;
 		text-align: center;
 	}
-	
+
 	.slos-wizard-header-actions {
 		width: 100%;
 	}
-	
+
 	.slos-wizard-header-actions .slos-btn {
 		width: 100%;
 		justify-content: center;
 	}
-	
+
 	.slos-step-header {
 		flex-direction: column;
 		text-align: center;
 	}
-	
+
 	.slos-step-icon {
 		margin: 0 auto;
 	}
-	
+
 	.slos-wizard-actions {
 		flex-direction: column;
 		gap: 1rem;
 	}
-	
+
 	.slos-wizard-actions-right {
 		width: 100%;
 		flex-direction: column;
 	}
-	
+
 	.slos-wizard-actions .slos-btn {
 		width: 100%;
 		justify-content: center;
 	}
-	
+
 	.slos-radio-group,
 	.slos-checkbox-group {
 		flex-direction: column;
 	}
-	
+
 	.slos-modal-footer {
 		flex-direction: column;
 	}
-	
+
 	.slos-modal-footer .slos-btn {
 		width: 100%;
 		justify-content: center;
 	}
 }
 
-@media (max-width: 480px) {
+@media (width <= 480px) {
 	.slos-profile-wizard-wrap {
 		padding: 0.5rem;
 	}
-	
+
 	.slos-wizard-content {
 		padding: 1rem;
 	}
-	
+
 	.slos-wizard-header {
 		padding: 1rem;
 	}
-	
+
 	.slos-wizard-title {
 		font-size: 1.25rem;
 	}
-	
+
 	.slos-step-heading {
 		font-size: 1.25rem;
 	}

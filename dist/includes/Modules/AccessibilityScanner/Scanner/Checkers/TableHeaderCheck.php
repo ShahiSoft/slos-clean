@@ -50,4 +50,3 @@ class TableHeaderCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

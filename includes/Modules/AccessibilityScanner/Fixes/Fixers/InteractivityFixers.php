@@ -278,7 +278,7 @@ class FocusIndicatorFixer extends BaseFixer {
 			$modified = false;
 			foreach ( $patterns as $pattern ) {
 				if ( preg_match( $pattern, $css ) ) {
-					$css = preg_replace(
+					$css      = preg_replace(
 						$pattern,
 						'$1:focus { outline: 2px solid #005fcc; outline-offset: 2px; }',
 						$css
@@ -836,7 +836,7 @@ class TouchTargetFixer extends BaseFixer {
 
 		if ( $needs_fix ) {
 			// Add minimum size constraints.
-			$style = rtrim( $style, '; ' );
+			$style  = rtrim( $style, '; ' );
 			$style .= '; min-width: ' . self::MIN_SIZE . 'px; min-height: ' . self::MIN_SIZE . 'px;';
 			$element->setAttribute( 'style', $style );
 			$element->setAttribute( 'data-slos-touch-fixed', 'true' );
@@ -1071,7 +1071,7 @@ class ViewportFixer extends BaseFixer {
 
 		foreach ( $parts as $part ) {
 			if ( strpos( $part, '=' ) !== false ) {
-				list( $key, $value ) = array_map( 'trim', explode( '=', $part, 2 ) );
+				list( $key, $value )                  = array_map( 'trim', explode( '=', $part, 2 ) );
 				$viewport_props[ strtolower( $key ) ] = $value;
 			}
 		}
@@ -1122,4 +1122,3 @@ class ViewportFixer extends BaseFixer {
 		return implode( ', ', $result );
 	}
 }
-

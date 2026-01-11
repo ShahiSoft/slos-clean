@@ -72,4 +72,3 @@ class HeadingVisualCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

@@ -54,33 +54,33 @@ class DSR_Audit_Log_Repository extends Base_Repository {
 	 */
 	public function log_action( int $request_id, string $action, array $data = array() ): int|false {
 		$defaults = array(
-			'actor_id'    => null,
-			'note'        => '',
-			'metadata'    => array(),
-			'ip_address'  => '',
-			'user_agent'  => '',
+			'actor_id'   => null,
+			'note'       => '',
+			'metadata'   => array(),
+			'ip_address' => '',
+			'user_agent' => '',
 		);
 
 		$data = wp_parse_args( $data, $defaults );
 
 		// Hash IP and user agent for privacy
-		$ip_hash = ! empty( $data['ip_address'] ) 
-			? hash( 'sha256', $data['ip_address'] ) 
+		$ip_hash = ! empty( $data['ip_address'] )
+			? hash( 'sha256', $data['ip_address'] )
 			: null;
-		
-		$ua_hash = ! empty( $data['user_agent'] ) 
-			? hash( 'sha256', $data['user_agent'] ) 
+
+		$ua_hash = ! empty( $data['user_agent'] )
+			? hash( 'sha256', $data['user_agent'] )
 			: null;
 
 		$insert = array(
-			'request_id'       => absint( $request_id ),
-			'action'           => sanitize_text_field( $action ),
-			'actor_id'         => ! empty( $data['actor_id'] ) ? absint( $data['actor_id'] ) : null,
-			'note'             => ! empty( $data['note'] ) ? sanitize_textarea_field( $data['note'] ) : null,
-			'metadata'         => ! empty( $data['metadata'] ) ? wp_json_encode( $data['metadata'] ) : null,
-			'ip_hash'          => $ip_hash,
-			'user_agent_hash'  => $ua_hash,
-			'created_at'       => current_time( 'mysql' ),
+			'request_id'      => absint( $request_id ),
+			'action'          => sanitize_text_field( $action ),
+			'actor_id'        => ! empty( $data['actor_id'] ) ? absint( $data['actor_id'] ) : null,
+			'note'            => ! empty( $data['note'] ) ? sanitize_textarea_field( $data['note'] ) : null,
+			'metadata'        => ! empty( $data['metadata'] ) ? wp_json_encode( $data['metadata'] ) : null,
+			'ip_hash'         => $ip_hash,
+			'user_agent_hash' => $ua_hash,
+			'created_at'      => current_time( 'mysql' ),
 		);
 
 		global $wpdb;
@@ -97,8 +97,8 @@ class DSR_Audit_Log_Repository extends Base_Repository {
 	 * Get logs for a specific request
 	 *
 	 * @since 3.0.1
-	 * @param int    $request_id DSR request ID
-	 * @param array  $args       Query arguments {
+	 * @param int   $request_id DSR request ID
+	 * @param array $args       Query arguments {
 	 *     @type string $action    Filter by action type
 	 *     @type int    $limit     Number of logs to retrieve
 	 *     @type int    $offset    Offset for pagination
@@ -110,10 +110,10 @@ class DSR_Audit_Log_Repository extends Base_Repository {
 		global $wpdb;
 
 		$defaults = array(
-			'action'  => '',
-			'limit'   => 100,
-			'offset'  => 0,
-			'order'   => 'DESC',
+			'action' => '',
+			'limit'  => 100,
+			'offset' => 0,
+			'order'  => 'DESC',
 		);
 
 		$args = wp_parse_args( $args, $defaults );

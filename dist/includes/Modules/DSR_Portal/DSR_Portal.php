@@ -106,6 +106,11 @@ class DSR_Portal extends Module {
 	 * @return void
 	 */
 	public function init(): void {
+		// Check if module is dormant (safety check)
+		if ( defined( 'SLOS_DORMANT_MODULES' ) && in_array( 'dsr-portal', SLOS_DORMANT_MODULES, true ) ) {
+			return;
+		}
+
 		// Only proceed if module is enabled
 		if ( ! $this->is_enabled() ) {
 			return;
@@ -121,7 +126,7 @@ class DSR_Portal extends Module {
 		if ( is_admin() ) {
 			add_action( 'admin_menu', array( $this, 'register_admin_menu' ), 20 );
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
-			
+
 			// Initialize DSR_Settings early so settings are registered during admin_init
 			new \ShahiLegalFlowSuite\Admin\DSR_Settings();
 		}

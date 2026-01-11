@@ -66,4 +66,3 @@ class NewWindowLinkCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

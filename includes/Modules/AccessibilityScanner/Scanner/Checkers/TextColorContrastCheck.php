@@ -364,4 +364,3 @@ class TextColorContrastCheck extends AbstractCheck {
 		return false;
 	}
 }
-

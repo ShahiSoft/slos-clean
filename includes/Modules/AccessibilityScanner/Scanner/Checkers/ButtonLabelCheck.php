@@ -51,4 +51,3 @@ class ButtonLabelCheck extends AbstractCheck {
 		return strlen( $html ) > $max_length ? substr( $html, 0, $max_length ) . '...' : $html;
 	}
 }
-

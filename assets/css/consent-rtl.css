@@ -8,8 +8,8 @@
  */
 
 /* =============================================================================
-   Consent Banner RTL Support
-   ========================================================================== */
+	Consent Banner RTL Support
+	========================================================================== */
 
 body[dir="rtl"] .slos-consent-banner {
 	text-align: right;
@@ -53,8 +53,8 @@ body[dir="rtl"] .slos-banner-close {
 }
 
 /* =============================================================================
-   Consent Preferences Modal RTL Support
-   ========================================================================== */
+	Consent Preferences Modal RTL Support
+	========================================================================== */
 
 body[dir="rtl"] .slos-preferences-modal__content {
 	text-align: right;
@@ -89,8 +89,8 @@ body[dir="rtl"] .slos-preferences-tab {
 }
 
 /* =============================================================================
-   Admin Consent Logs RTL Support
-   ========================================================================== */
+	Admin Consent Logs RTL Support
+	========================================================================== */
 
 body[dir="rtl"] .slos-logs-filters {
 	direction: rtl;
@@ -163,8 +163,8 @@ body[dir="rtl"] .pagination-links {
 }
 
 /* =============================================================================
-   Admin Export/Import RTL Support
-   ========================================================================== */
+	Admin Export/Import RTL Support
+	========================================================================== */
 
 body[dir="rtl"] .shahi-card-title {
 	text-align: right;
@@ -215,8 +215,8 @@ body[dir="rtl"] .dashicons {
 }
 
 /* =============================================================================
-   Admin Consent Analytics RTL Support
-   ========================================================================== */
+	Admin Consent Analytics RTL Support
+	========================================================================== */
 
 body[dir="rtl"] .slos-analytics-dashboard {
 	direction: rtl;
@@ -257,8 +257,8 @@ body[dir="rtl"] .slos-analytics-filter-group label {
 }
 
 /* =============================================================================
-   Select Dropdown RTL Support
-   ========================================================================== */
+	Select Dropdown RTL Support
+	========================================================================== */
 
 body[dir="rtl"] select {
 	background-position: left 10px center;
@@ -267,8 +267,8 @@ body[dir="rtl"] select {
 }
 
 /* =============================================================================
-   Checkboxes and Radio Buttons RTL Support
-   ========================================================================== */
+	Checkboxes and Radio Buttons RTL Support
+	========================================================================== */
 
 body[dir="rtl"] input[type="checkbox"],
 body[dir="rtl"] input[type="radio"] {
@@ -283,8 +283,8 @@ body[dir="rtl"] input[type="radio"] + label {
 }
 
 /* =============================================================================
-   Loading Spinner RTL Support
-   ========================================================================== */
+	Loading Spinner RTL Support
+	========================================================================== */
 
 body[dir="rtl"] .spinner {
 	float: right;
@@ -297,8 +297,8 @@ body[dir="rtl"] .slos-loading {
 }
 
 /* =============================================================================
-   WordPress Admin Bar Compatibility
-   ========================================================================== */
+	WordPress Admin Bar Compatibility
+	========================================================================== */
 
 body.rtl .slos-consent-banner {
 	direction: rtl;
@@ -309,10 +309,10 @@ body.rtl #wpadminbar {
 }
 
 /* =============================================================================
-   Media Queries for RTL
-   ========================================================================== */
+	Media Queries for RTL
+	========================================================================== */
 
-@media screen and (max-width: 782px) {
+@media screen and (width <= 782px) {
 	body[dir="rtl"] .slos-consent-banner__actions {
 		flex-direction: column-reverse;
 	}
@@ -326,7 +326,7 @@ body.rtl #wpadminbar {
 	}
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (width <= 600px) {
 	body[dir="rtl"] .slos-logs-table-container {
 		overflow-x: auto;
 		direction: rtl;
@@ -338,8 +338,8 @@ body.rtl #wpadminbar {
 }
 
 /* =============================================================================
-   Icons and Symbols RTL Support
-   ========================================================================== */
+	Icons and Symbols RTL Support
+	========================================================================== */
 
 body[dir="rtl"] .dashicons-arrow-right {
 	transform: rotate(180deg);
@@ -350,8 +350,8 @@ body[dir="rtl"] .dashicons-arrow-left {
 }
 
 /* =============================================================================
-   Form Layout RTL Support
-   ========================================================================== */
+	Form Layout RTL Support
+	========================================================================== */
 
 body[dir="rtl"] .form-table th {
 	text-align: right;
@@ -366,8 +366,8 @@ body[dir="rtl"] .form-table .description {
 }
 
 /* =============================================================================
-   List Styles RTL Support
-   ========================================================================== */
+	List Styles RTL Support
+	========================================================================== */
 
 body[dir="rtl"] ul,
 body[dir="rtl"] ol {
@@ -380,8 +380,8 @@ body[dir="rtl"] li {
 }
 
 /* =============================================================================
-   Flex and Grid RTL Support
-   ========================================================================== */
+	Flex and Grid RTL Support
+	========================================================================== */
 
 body[dir="rtl"] .flex-container {
 	direction: rtl;
@@ -392,8 +392,8 @@ body[dir="rtl"] .grid-container {
 }
 
 /* =============================================================================
-   Text Alignment Utilities
-   ========================================================================== */
+	Text Alignment Utilities
+	========================================================================== */
 
 body[dir="rtl"] .text-left {
 	text-align: right !important;
@@ -412,8 +412,8 @@ body[dir="rtl"] .float-right {
 }
 
 /* =============================================================================
-   Accessibility Enhancements for RTL
-   ========================================================================== */
+	Accessibility Enhancements for RTL
+	========================================================================== */
 
 body[dir="rtl"] [tabindex] {
 	direction: rtl;
@@ -424,8 +424,8 @@ body[dir="rtl"] .sr-only {
 }
 
 /* =============================================================================
-   Print Styles RTL Support
-   ========================================================================== */
+	Print Styles RTL Support
+	========================================================================== */
 
 @media print {
 	body[dir="rtl"] .slos-consent-logs,

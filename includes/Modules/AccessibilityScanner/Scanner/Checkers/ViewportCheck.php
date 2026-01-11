@@ -47,4 +47,3 @@ class ViewportCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

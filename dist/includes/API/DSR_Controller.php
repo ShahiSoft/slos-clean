@@ -1027,6 +1027,7 @@ class DSR_Controller extends Base_REST_Controller {
 		if ( ! is_email( $value ) ) {
 			return new WP_Error(
 				'invalid_email',
+				/* translators: %s: parameter name */
 				sprintf( __( 'Invalid email address: %s', 'shahi-legalflowsuite' ), $param ),
 				array( 'status' => 400 )
 			);

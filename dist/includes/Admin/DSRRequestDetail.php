@@ -16,6 +16,8 @@ namespace ShahiLegalFlowSuite\Admin;
 use ShahiLegalFlowSuite\Database\Repositories\DSR_Repository;
 use ShahiLegalFlowSuite\Services\DSR_Audit_Service;
 use ShahiLegalFlowSuite\Database\Repositories\DSR_Audit_Log_Repository;
+use ShahiLegalFlowSuite\Services\Consent_Service;
+use ShahiLegalFlowSuite\Database\Repositories\Consent_Repository;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -39,6 +41,13 @@ class DSRRequestDetail {
 	 * @var DSR_Audit_Service
 	 */
 	private $audit_service;
+
+	/**
+	 * Consent service
+	 *
+	 * @var Consent_Service
+	 */
+	private $consent_service;
 
 	/**
 	 * Constructor
@@ -73,6 +82,19 @@ class DSRRequestDetail {
 	}
 
 	/**
+	 * Get consent service instance (lazy initialization)
+	 *
+	 * @return Consent_Service
+	 */
+	private function get_consent_service() {
+		if ( null === $this->consent_service ) {
+			$consent_repository    = new Consent_Repository();
+			$this->consent_service = new Consent_Service( $consent_repository );
+		}
+		return $this->consent_service;
+	}
+
+	/**
 	 * Render the DSR Request Detail page
 	 *
 	 * @return void
@@ -99,7 +121,8 @@ class DSRRequestDetail {
 		$timeline = $this->get_audit_service()->get_timeline( $request_id, array( 'order' => 'DESC' ) );
 
 		echo '<div class="wrap shahi-legalflowsuite">';
-		echo '<h1 class="wp-heading-inline">' . sprintf( esc_html__( 'DSR Request #%d', 'shahi-legalflowsuite' ), $request_id ) . '</h1>';
+		/* translators: %d: DSR request ID number */
+		echo '<h1 class="wp-heading-inline">' . sprintf( esc_html__( 'DSR Request #%d', 'shahi-legalflowsuite' ), absint( $request_id ) ) . '</h1>';
 		echo '<a href="' . esc_url( admin_url( 'admin.php?page=' . MenuManager::MENU_SLUG . '-dsr-requests' ) ) . '" class="page-title-action">' . esc_html__( '← Back to Requests', 'shahi-legalflowsuite' ) . '</a>';
 		echo '<hr class="wp-header-end" />';
 
@@ -109,6 +132,7 @@ class DSRRequestDetail {
 		// Left column: Request details
 		echo '<div>';
 		$this->render_request_details( $request );
+		$this->render_consent_history( $request );
 		$this->render_audit_timeline( $timeline );
 		echo '</div>';
 
@@ -148,7 +172,7 @@ class DSRRequestDetail {
 
 		echo '<tr>';
 		echo '<th scope="row">' . esc_html__( 'Status', 'shahi-legalflowsuite' ) . '</th>';
-		echo '<td>' . $this->get_status_badge( $request->status ?? '' ) . '</td>';
+		echo '<td>' . wp_kses_post( $this->get_status_badge( $request->status ?? '' ) ) . '</td>';
 		echo '</tr>';
 
 		echo '<tr>';
@@ -184,6 +208,91 @@ class DSRRequestDetail {
 
 		echo '</div>'; // .inside
 		echo '</div>'; // .postbox
+	}
+
+	/**
+	 * Render consent history section
+	 *
+	 * @param object $request Request data
+	 * @return void
+	 */
+	private function render_consent_history( $request ): void {
+		echo '<div class="postbox" style="margin-top: 20px;">';
+		echo '<h2 class="hndle"><span>' . esc_html__( 'Consent History', 'shahi-legalflowsuite' ) . '</span></h2>';
+		echo '<div class="inside">';
+
+		// Fetch consents by email
+		$consents = $this->get_consent_service()->get_by_email( $request->requester_email ?? '' );
+
+		if ( empty( $consents ) ) {
+			echo '<p>' . esc_html__( 'No consent records found for this email address.', 'shahi-legalflowsuite' ) . '</p>';
+		} else {
+			echo '<div class="consent-timeline-container" style="position: relative; padding-left: 30px;">';
+
+			foreach ( $consents as $consent ) {
+				$this->render_consent_entry( $consent );
+			}
+
+			echo '</div>'; // .consent-timeline-container
+		}
+
+		echo '</div>'; // .inside
+		echo '</div>'; // .postbox
+	}
+
+	/**
+	 * Render single consent entry
+	 *
+	 * @param array $consent Consent record data
+	 * @return void
+	 */
+	private function render_consent_entry( array $consent ): void {
+		$status       = $consent['status'] ?? '';
+		$status_color = $status === 'accepted' ? '#46b450' : ( $status === 'rejected' ? '#dc3232' : '#f18500' );
+		$icon         = $status === 'accepted' ? 'dashicons-yes' : ( $status === 'rejected' ? 'dashicons-no' : 'dashicons-minus' );
+
+		echo '<div class="consent-entry" style="position: relative; padding: 15px 0; border-left: 2px solid #ddd;">';
+
+		// Icon
+		echo '<div style="position: absolute; left: -11px; top: 15px; width: 20px; height: 20px; border-radius: 50%; background: #fff; border: 2px solid ' . esc_attr( $status_color ) . '; display: flex; align-items: center; justify-content: center;">';
+		echo '<span class="dashicons ' . esc_attr( $icon ) . '" style="font-size: 12px; width: 12px; height: 12px; color: ' . esc_attr( $status_color ) . ';"></span>';
+		echo '</div>';
+
+		// Content
+		echo '<div style="margin-left: 20px;">';
+		echo '<div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 5px;">';
+		echo '<strong>' . esc_html( ucwords( str_replace( '_', ' ', $consent['type'] ?? '' ) ) ) . '</strong>';
+		echo '<span style="font-size: 12px; color: #666;">' . esc_html( $this->format_relative_time( $consent['created_at'] ?? '' ) ) . '</span>';
+		echo '</div>';
+
+		// Status badge
+		echo '<div style="margin: 5px 0;">';
+		echo '<span style="display: inline-block; padding: 2px 8px; background: ' . esc_attr( $status_color ) . '; color: white; border-radius: 3px; font-size: 11px; font-weight: 600;">' . esc_html( ucfirst( $status ) ) . '</span>';
+		echo '</div>';
+
+		// User info
+		if ( ! empty( $consent['user_name'] ) ) {
+			echo '<div style="font-size: 12px; color: #666; margin-top: 5px;">';
+			echo '<span class="dashicons dashicons-admin-users" style="font-size: 14px; vertical-align: middle;"></span> ';
+			echo esc_html( $consent['user_name'] );
+			if ( ! empty( $consent['user_email'] ) ) {
+				echo ' (' . esc_html( $consent['user_email'] ) . ')';
+			}
+			echo '</div>';
+		}
+
+		// Metadata (if present)
+		if ( ! empty( $consent['metadata'] ) && is_array( $consent['metadata'] ) ) {
+			echo '<details style="margin-top: 8px; font-size: 12px;">';
+			echo '<summary style="cursor: pointer; color: #0073aa;">' . esc_html__( 'View Metadata', 'shahi-legalflowsuite' ) . '</summary>';
+			echo '<pre style="background: #f5f5f5; padding: 8px; margin-top: 5px; border-radius: 3px; overflow-x: auto; font-size: 11px;">';
+			echo esc_html( wp_json_encode( $consent['metadata'], JSON_PRETTY_PRINT ) );
+			echo '</pre>';
+			echo '</details>';
+		}
+
+		echo '</div>'; // content
+		echo '</div>'; // .consent-entry
 	}
 
 	/**
@@ -286,7 +395,8 @@ class DSRRequestDetail {
 			echo '<div style="text-align: center; padding: 20px;">';
 			echo '<div class="dashicons dashicons-yes-alt" style="font-size: 48px; width: 48px; height: 48px; color: #46b450;"></div>';
 			echo '<h3 style="margin: 10px 0 5px;">' . esc_html__( 'Completed', 'shahi-legalflowsuite' ) . '</h3>';
-			echo '<p style="color: #666;">' . sprintf( esc_html__( 'Resolved in %d days', 'shahi-legalflowsuite' ), $completed_days ) . '</p>';
+			/* translators: %d: number of days taken to resolve */
+			echo '<p style="color: #666;">' . sprintf( esc_html__( 'Resolved in %d days', 'shahi-legalflowsuite' ), absint( $completed_days ) ) . '</p>';
 			echo '</div>';
 		} elseif ( $diff < 0 ) {
 			// Overdue
@@ -294,7 +404,8 @@ class DSRRequestDetail {
 			echo '<div style="text-align: center; padding: 20px; background: #fff3cd; border-radius: 4px;">';
 			echo '<div class="dashicons dashicons-warning" style="font-size: 48px; width: 48px; height: 48px; color: #dc3232;"></div>';
 			echo '<h3 style="margin: 10px 0 5px; color: #dc3232;">' . esc_html__( 'Overdue', 'shahi-legalflowsuite' ) . '</h3>';
-			echo '<p style="color: #666;">' . sprintf( esc_html__( '%d days past due date', 'shahi-legalflowsuite' ), $overdue_days ) . '</p>';
+			/* translators: %d: number of days past due date */
+			echo '<p style="color: #666;">' . sprintf( esc_html__( '%d days past due date', 'shahi-legalflowsuite' ), absint( $overdue_days ) ) . '</p>';
 			echo '</div>';
 		} else {
 			// Countdown
@@ -302,8 +413,7 @@ class DSRRequestDetail {
 			$color          = $days_remaining <= 7 ? '#f18500' : '#46b450';
 
 			echo '<div style="text-align: center; padding: 20px;">';
-			echo '<div class="dashicons dashicons-clock" style="font-size: 48px; width: 48px; height: 48px; color: ' . esc_attr( $color ) . ';"></div>';
-			echo '<h3 style="margin: 10px 0 5px; color: ' . esc_attr( $color ) . ';">' . sprintf( esc_html__( '%d Days', 'shahi-legalflowsuite' ), $days_remaining ) . '</h3>';
+			echo '<div class="dashicons dashicons-clock" style="font-size: 48px; width: 48px; height: 48px; color: ' . esc_attr( $color ) . ';"></div>';			/* translators: %d: number of days remaining until due date */			echo '<h3 style="margin: 10px 0 5px; color: ' . esc_attr( $color ) . ';">' . sprintf( esc_html__( '%d Days', 'shahi-legalflowsuite' ), absint( $days_remaining ) ) . '</h3>';
 			echo '<p style="color: #666;">' . esc_html__( 'Until due date', 'shahi-legalflowsuite' ) . '</p>';
 			echo '<p style="font-size: 12px; color: #999;">' . esc_html( date_i18n( get_option( 'date_format' ), $due_date ) ) . '</p>';
 			echo '</div>';
@@ -337,7 +447,7 @@ class DSRRequestDetail {
 		);
 		foreach ( $statuses as $value => $label ) {
 			$selected = ( $request->status ?? '' ) === $value ? ' selected' : '';
-			echo '<option value="' . esc_attr( $value ) . '"' . $selected . '>' . esc_html( $label ) . '</option>';
+			echo '<option value="' . esc_attr( $value ) . '"' . esc_attr( $selected ) . '>' . esc_html( $label ) . '</option>';
 		}
 		echo '</select>';
 		echo '<button type="button" class="button button-primary" style="margin-top: 5px; width: 100%;" onclick="updateDSRStatus(' . absint( $request->id ?? 0 ) . ')">' . esc_html__( 'Update Status', 'shahi-legalflowsuite' ) . '</button>';
@@ -523,12 +633,15 @@ class DSRRequestDetail {
 			return __( 'Just now', 'shahi-legalflowsuite' );
 		} elseif ( $diff < HOUR_IN_SECONDS ) {
 			$minutes = floor( $diff / MINUTE_IN_SECONDS );
+			/* translators: %d: number of minutes */
 			return sprintf( _n( '%d minute ago', '%d minutes ago', $minutes, 'shahi-legalflowsuite' ), $minutes );
 		} elseif ( $diff < DAY_IN_SECONDS ) {
 			$hours = floor( $diff / HOUR_IN_SECONDS );
+			/* translators: %d: number of hours */
 			return sprintf( _n( '%d hour ago', '%d hours ago', $hours, 'shahi-legalflowsuite' ), $hours );
 		} elseif ( $diff < WEEK_IN_SECONDS ) {
 			$days = floor( $diff / DAY_IN_SECONDS );
+			/* translators: %d: number of days */
 			return sprintf( _n( '%d day ago', '%d days ago', $days, 'shahi-legalflowsuite' ), $days );
 		} else {
 			return date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $timestamp );

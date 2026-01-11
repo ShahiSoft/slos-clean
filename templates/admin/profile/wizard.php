@@ -60,18 +60,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<!-- Step Navigation (Sidebar) -->
 			<nav class="slos-wizard-nav">
 				<ul class="slos-step-list">
-					<?php foreach ( $steps as $step_num => $step ) : 
+					<?php
+					foreach ( $steps as $step_num => $step ) :
 						$step_validation = isset( $completion['steps'][ $step_num ] ) ? $completion['steps'][ $step_num ] : array();
-						$is_current = ( $step_num === $current_step );
-						$is_complete = ! empty( $step_validation['is_valid'] );
-						$step_class = 'slos-step-item';
+						$is_current      = ( $step_num === $current_step );
+						$is_complete     = ! empty( $step_validation['is_valid'] );
+						$step_class      = 'slos-step-item';
 						if ( $is_current ) {
 							$step_class .= ' slos-step-active';
 						}
 						if ( $is_complete ) {
 							$step_class .= ' slos-step-complete';
 						}
-					?>
+						?>
 					<li class="<?php echo esc_attr( $step_class ); ?>" data-step="<?php echo esc_attr( $step_num ); ?>">
 						<button type="button" class="slos-step-button">
 							<span class="slos-step-number">
@@ -108,8 +109,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<!-- Step Panels -->
 					<?php foreach ( $steps as $step_num => $step ) : ?>
 					<div class="slos-step-panel <?php echo $step_num === $current_step ? 'slos-step-active' : ''; ?>" 
-						 data-step="<?php echo esc_attr( $step_num ); ?>" 
-						 id="slos-step-<?php echo esc_attr( $step_num ); ?>">
+						data-step="<?php echo esc_attr( $step_num ); ?>" 
+						id="slos-step-<?php echo esc_attr( $step_num ); ?>">
 						
 						<div class="slos-step-header">
 							<div class="slos-step-icon">

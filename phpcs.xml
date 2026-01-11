@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<ruleset name="CustomWordPress">
+    <rule ref="WordPress"/>
+    <rule ref="WordPress.Security"/>
+    <rule ref="WordPress.WP.I18n"/>
+    <rule ref="WordPress.DB.DirectDatabaseQuery"/>
+    
+    <!-- Custom capabilities for this plugin -->
+    <rule ref="WordPress.WP.Capabilities">
+        <properties>
+            <property name="custom_capabilities" type="array">
+                <element value="manage_shahi_template"/>
+                <element value="view_shahi_analytics"/>
+                <element value="manage_shahi_modules"/>
+                <element value="edit_shahi_settings"/>
+            </property>
+        </properties>
+    </rule>
+    
+    <!-- Custom rules for Codecanyon compliance -->
+    <rule ref="Generic.Files.LineEndings">
+        <properties>
+            <property name="eolChar" value="\n"/>
+        </properties>
+    </rule>
+    <!-- Exclude vendor and node_modules -->
+    <exclude-pattern>vendor/*</exclude-pattern>
+    <exclude-pattern>node_modules/*</exclude-pattern>
+    <exclude-pattern>dist/*</exclude-pattern>
+    <!-- Disable filename sniff which requires renaming many legacy files; project follows existing structure -->
+    <exclude name="WordPress.Files.FileName"/>
+    <!-- Alternatively set severity to 0 for filename sniff (defensive). -->
+    <rule ref="WordPress.Files.FileName">
+        <severity>0</severity>
+    </rule>
+</ruleset>

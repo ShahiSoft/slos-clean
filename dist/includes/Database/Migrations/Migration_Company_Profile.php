@@ -162,12 +162,12 @@ class Migration_Company_Profile {
 			),
 			// Step 4: Data Collection
 			'data_collection' => array(
-				'personal_data_types'  => array(),
-				'purposes'             => array(),
-				'lawful_bases'         => array(),
-				'special_categories'   => false,
-				'children_data'        => false,
-				'minimum_age'          => 16,
+				'personal_data_types' => array(),
+				'purposes'            => array(),
+				'lawful_bases'        => array(),
+				'special_categories'  => false,
+				'children_data'       => false,
+				'minimum_age'         => 16,
 			),
 			// Step 5: Third Parties
 			'third_parties'   => array(
@@ -207,10 +207,10 @@ class Migration_Company_Profile {
 				'backup_retention' => '',
 			),
 			'security'        => array(
-				'measures'              => array(),
-				'certifications'        => array(),
-				'breach_procedure'      => '',
-				'dpia_required'         => false,
+				'measures'         => array(),
+				'certifications'   => array(),
+				'breach_procedure' => '',
+				'dpia_required'    => false,
 			),
 			'user_rights'     => array(
 				'response_timeframe'    => 30,
@@ -237,26 +237,26 @@ class Migration_Company_Profile {
 	 */
 	public static function get_personal_data_types(): array {
 		return array(
-			'name'              => __( 'Full Name', 'shahi-legalflowsuite' ),
-			'email'             => __( 'Email Address', 'shahi-legalflowsuite' ),
-			'phone'             => __( 'Phone Number', 'shahi-legalflowsuite' ),
-			'address'           => __( 'Physical Address', 'shahi-legalflowsuite' ),
-			'ip_address'        => __( 'IP Address', 'shahi-legalflowsuite' ),
-			'device_id'         => __( 'Device Identifiers', 'shahi-legalflowsuite' ),
-			'location'          => __( 'Location Data', 'shahi-legalflowsuite' ),
-			'payment'           => __( 'Payment Information', 'shahi-legalflowsuite' ),
-			'browsing_history'  => __( 'Browsing History', 'shahi-legalflowsuite' ),
-			'purchase_history'  => __( 'Purchase History', 'shahi-legalflowsuite' ),
-			'account_data'      => __( 'Account Credentials', 'shahi-legalflowsuite' ),
-			'social_profiles'   => __( 'Social Media Profiles', 'shahi-legalflowsuite' ),
-			'photos'            => __( 'Photos/Images', 'shahi-legalflowsuite' ),
-			'communications'    => __( 'Communications Content', 'shahi-legalflowsuite' ),
-			'employment'        => __( 'Employment Information', 'shahi-legalflowsuite' ),
-			'education'         => __( 'Education History', 'shahi-legalflowsuite' ),
-			'health'            => __( 'Health Data', 'shahi-legalflowsuite' ),
-			'biometric'         => __( 'Biometric Data', 'shahi-legalflowsuite' ),
-			'financial'         => __( 'Financial Information', 'shahi-legalflowsuite' ),
-			'preferences'       => __( 'User Preferences', 'shahi-legalflowsuite' ),
+			'name'             => __( 'Full Name', 'shahi-legalflowsuite' ),
+			'email'            => __( 'Email Address', 'shahi-legalflowsuite' ),
+			'phone'            => __( 'Phone Number', 'shahi-legalflowsuite' ),
+			'address'          => __( 'Physical Address', 'shahi-legalflowsuite' ),
+			'ip_address'       => __( 'IP Address', 'shahi-legalflowsuite' ),
+			'device_id'        => __( 'Device Identifiers', 'shahi-legalflowsuite' ),
+			'location'         => __( 'Location Data', 'shahi-legalflowsuite' ),
+			'payment'          => __( 'Payment Information', 'shahi-legalflowsuite' ),
+			'browsing_history' => __( 'Browsing History', 'shahi-legalflowsuite' ),
+			'purchase_history' => __( 'Purchase History', 'shahi-legalflowsuite' ),
+			'account_data'     => __( 'Account Credentials', 'shahi-legalflowsuite' ),
+			'social_profiles'  => __( 'Social Media Profiles', 'shahi-legalflowsuite' ),
+			'photos'           => __( 'Photos/Images', 'shahi-legalflowsuite' ),
+			'communications'   => __( 'Communications Content', 'shahi-legalflowsuite' ),
+			'employment'       => __( 'Employment Information', 'shahi-legalflowsuite' ),
+			'education'        => __( 'Education History', 'shahi-legalflowsuite' ),
+			'health'           => __( 'Health Data', 'shahi-legalflowsuite' ),
+			'biometric'        => __( 'Biometric Data', 'shahi-legalflowsuite' ),
+			'financial'        => __( 'Financial Information', 'shahi-legalflowsuite' ),
+			'preferences'      => __( 'User Preferences', 'shahi-legalflowsuite' ),
 		);
 	}
 
@@ -291,11 +291,11 @@ class Migration_Company_Profile {
 	 */
 	public static function get_lawful_bases(): array {
 		return array(
-			'consent'            => __( 'Consent', 'shahi-legalflowsuite' ),
-			'contract'           => __( 'Contractual Necessity', 'shahi-legalflowsuite' ),
-			'legal_obligation'   => __( 'Legal Obligation', 'shahi-legalflowsuite' ),
-			'vital_interests'    => __( 'Vital Interests', 'shahi-legalflowsuite' ),
-			'public_task'        => __( 'Public Task', 'shahi-legalflowsuite' ),
+			'consent'             => __( 'Consent', 'shahi-legalflowsuite' ),
+			'contract'            => __( 'Contractual Necessity', 'shahi-legalflowsuite' ),
+			'legal_obligation'    => __( 'Legal Obligation', 'shahi-legalflowsuite' ),
+			'vital_interests'     => __( 'Vital Interests', 'shahi-legalflowsuite' ),
+			'public_task'         => __( 'Public Task', 'shahi-legalflowsuite' ),
 			'legitimate_interest' => __( 'Legitimate Interest', 'shahi-legalflowsuite' ),
 		);
 	}
@@ -385,11 +385,37 @@ class Migration_Company_Profile {
 	 */
 	public static function get_eu_countries(): array {
 		return array(
-			'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR',
-			'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL',
-			'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE',
+			'AT',
+			'BE',
+			'BG',
+			'HR',
+			'CY',
+			'CZ',
+			'DK',
+			'EE',
+			'FI',
+			'FR',
+			'DE',
+			'GR',
+			'HU',
+			'IE',
+			'IT',
+			'LV',
+			'LT',
+			'LU',
+			'MT',
+			'NL',
+			'PL',
+			'PT',
+			'RO',
+			'SK',
+			'SI',
+			'ES',
+			'SE',
 			// EEA countries
-			'IS', 'LI', 'NO',
+			'IS',
+			'LI',
+			'NO',
 		);
 	}
 

@@ -12,35 +12,40 @@
 
 namespace ShahiLegalFlowSuite\Services;
 
-if (!defined('ABSPATH')) {
-    exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
-class Export_Manager
-{
+class Export_Manager {
 
-    const FORMAT_PDF = 'pdf';
-    const FORMAT_HTML = 'html';
 
-    private $repository;
+	const FORMAT_PDF  = 'pdf';
+	const FORMAT_HTML = 'html';
 
-    public function __construct($repository)
-    {
-        $this->repository = $repository;
-    }
+	private $repository;
 
-    public function export_pdf($doc_id, $options = array())
-    {
-        return array('success' => false, 'message' => 'Not implemented in Stage 1');
-    }
+	public function __construct( $repository ) {
+		$this->repository = $repository;
+	}
 
-    public function export_html($doc_id, $options = array())
-    {
-        return array('success' => false, 'message' => 'Not implemented in Stage 1');
-    }
+	public function export_pdf( $doc_id, $options = array() ) {
+		return array(
+			'success' => false,
+			'message' => 'Not implemented in Stage 1',
+		);
+	}
 
-    public function export_zip($doc_ids, $options = array())
-    {
-        return array('success' => false, 'message' => 'Not implemented in Stage 1');
-    }
+	public function export_html( $doc_id, $options = array() ) {
+		return array(
+			'success' => false,
+			'message' => 'Not implemented in Stage 1',
+		);
+	}
+
+	public function export_zip( $doc_ids, $options = array() ) {
+		return array(
+			'success' => false,
+			'message' => 'Not implemented in Stage 1',
+		);
+	}
 }

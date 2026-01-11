@@ -65,4 +65,3 @@ class ExternalLinkCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

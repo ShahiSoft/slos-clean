@@ -251,4 +251,3 @@ class WidgetManager {
 		return $this->widgets;
 	}
 }
-

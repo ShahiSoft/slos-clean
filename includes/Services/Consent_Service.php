@@ -69,8 +69,8 @@ class Consent_Service extends Base_Service {
 	 * @param Consent_Audit_Logger $audit_logger  Audit logger instance
 	 */
 	public function __construct( Consent_Repository $repository = null, Consent_Audit_Logger $audit_logger = null ) {
-		$this->repository    = $repository ?? new Consent_Repository();
-		$this->audit_logger  = $audit_logger ?? new Consent_Audit_Logger();
+		$this->repository   = $repository ?? new Consent_Repository();
+		$this->audit_logger = $audit_logger ?? new Consent_Audit_Logger();
 	}
 
 	/**
@@ -111,23 +111,25 @@ class Consent_Service extends Base_Service {
 			'geo_rule_id'    => ! empty( $data['geo_rule_id'] ) ? absint( $data['geo_rule_id'] ) : null,
 			'country_code'   => ! empty( $data['country_code'] ) ? strtoupper( $this->sanitize_string( $data['country_code'] ) ) : '',
 			'region'         => ! empty( $data['region'] ) ? strtoupper( $this->sanitize_string( $data['region'] ) ) : '',
-			'metadata'       => $this->prepare_metadata( array(
-				'user_agent'      => $data['user_agent'] ?? $this->get_user_agent(),
-				'consent_text'    => $data['consent_text'] ?? '',
-				'source'          => $data['source'] ?? 'website',
-				'language'        => $data['language'] ?? get_locale(),
-				'timestamp'       => current_time( 'mysql' ),
-				'banner_version'  => $data['banner_version'] ?? $this->get_banner_version(),
-				'policy_version'  => $data['policy_version'] ?? $this->get_policy_version(),
-			) ),
+			'metadata'       => $this->prepare_metadata(
+				array(
+					'user_agent'     => $data['user_agent'] ?? $this->get_user_agent(),
+					'consent_text'   => $data['consent_text'] ?? '',
+					'source'         => $data['source'] ?? 'website',
+					'language'       => $data['language'] ?? get_locale(),
+					'timestamp'      => current_time( 'mysql' ),
+					'banner_version' => $data['banner_version'] ?? $this->get_banner_version(),
+					'policy_version' => $data['policy_version'] ?? $this->get_policy_version(),
+				)
+			),
 			'banner_version' => $data['banner_version'] ?? $this->get_banner_version(),
 			'policy_version' => $data['policy_version'] ?? $this->get_policy_version(),
 		);
 
 		// Merge additional metadata if provided
 		if ( ! empty( $data['metadata'] ) && is_array( $data['metadata'] ) ) {
-			$existing_metadata = $this->parse_metadata( $consent_data['metadata'] );
-			$merged_metadata   = array_merge( $existing_metadata, $data['metadata'] );
+			$existing_metadata        = $this->parse_metadata( $consent_data['metadata'] );
+			$merged_metadata          = array_merge( $existing_metadata, $data['metadata'] );
 			$consent_data['metadata'] = $this->prepare_metadata( $merged_metadata );
 		}
 
@@ -140,17 +142,19 @@ class Consent_Service extends Base_Service {
 		}
 
 		// Log consent action
-		$this->audit_logger->log( array(
-			'consent_id'     => $consent_id,
-			'user_id'        => $consent_data['user_id'],
-			'purpose'        => $consent_data['type'],
-			'action'         => 'grant',
-			'previous_state' => null,
-			'new_state'      => $consent_data,
-			'method'         => $data['source'] ?? 'website',
-			'ip_address'     => $data['ip_address'] ?? $this->get_user_ip(),
-			'user_agent'     => $data['user_agent'] ?? $this->get_user_agent(),
-		) );
+		$this->audit_logger->log(
+			array(
+				'consent_id'     => $consent_id,
+				'user_id'        => $consent_data['user_id'],
+				'purpose'        => $consent_data['type'],
+				'action'         => 'grant',
+				'previous_state' => null,
+				'new_state'      => $consent_data,
+				'method'         => $data['source'] ?? 'website',
+				'ip_address'     => $data['ip_address'] ?? $this->get_user_ip(),
+				'user_agent'     => $data['user_agent'] ?? $this->get_user_agent(),
+			)
+		);
 
 		$this->add_message( sprintf( 'Consent recorded successfully (ID: %d)', $consent_id ) );
 
@@ -211,17 +215,19 @@ class Consent_Service extends Base_Service {
 		}
 
 		// Log consent update
-		$this->audit_logger->log( array(
-			'consent_id'     => $consent_id,
-			'user_id'        => $previous_consent['user_id'] ?? 0,
-			'purpose'        => $previous_consent['type'] ?? '',
-			'action'         => 'update',
-			'previous_state' => $previous_consent,
-			'new_state'      => array_merge( $previous_consent, $update_data ),
-			'method'         => 'admin',
-			'ip_address'     => $this->get_user_ip(),
-			'user_agent'     => $this->get_user_agent(),
-		) );
+		$this->audit_logger->log(
+			array(
+				'consent_id'     => $consent_id,
+				'user_id'        => $previous_consent['user_id'] ?? 0,
+				'purpose'        => $previous_consent['type'] ?? '',
+				'action'         => 'update',
+				'previous_state' => $previous_consent,
+				'new_state'      => array_merge( $previous_consent, $update_data ),
+				'method'         => 'admin',
+				'ip_address'     => $this->get_user_ip(),
+				'user_agent'     => $this->get_user_agent(),
+			)
+		);
 
 		$this->add_message( 'Consent updated successfully' );
 
@@ -265,17 +271,19 @@ class Consent_Service extends Base_Service {
 		}
 
 		// Log consent withdrawal
-		$this->audit_logger->log( array(
-			'consent_id'     => $consent_id,
-			'user_id'        => $previous_consent['user_id'] ?? 0,
-			'purpose'        => $previous_consent['type'] ?? '',
-			'action'         => 'withdraw',
-			'previous_state' => $previous_consent,
-			'new_state'      => array_merge( $previous_consent, array( 'status' => 'withdrawn' ) ),
-			'method'         => 'website',
-			'ip_address'     => $this->get_user_ip(),
-			'user_agent'     => $this->get_user_agent(),
-		) );
+		$this->audit_logger->log(
+			array(
+				'consent_id'     => $consent_id,
+				'user_id'        => $previous_consent['user_id'] ?? 0,
+				'purpose'        => $previous_consent['type'] ?? '',
+				'action'         => 'withdraw',
+				'previous_state' => $previous_consent,
+				'new_state'      => array_merge( $previous_consent, array( 'status' => 'withdrawn' ) ),
+				'method'         => 'website',
+				'ip_address'     => $this->get_user_ip(),
+				'user_agent'     => $this->get_user_agent(),
+			)
+		);
 
 		$this->add_message( 'Consent withdrawn successfully' );
 
@@ -414,80 +422,80 @@ class Consent_Service extends Base_Service {
 	 */
 	public function get_consents( array $filters = array(), array $pagination = array() ): array {
 		global $wpdb;
-		
+
 		$table = $wpdb->prefix . 'slos_consent';
-		
+
 		// Build WHERE clause
-		$where = array( '1=1' );
+		$where  = array( '1=1' );
 		$values = array();
-		
+
 		if ( ! empty( $filters['type'] ) ) {
-			$where[] = 'type = %s';
+			$where[]  = 'type = %s';
 			$values[] = $filters['type'];
 		}
-		
+
 		if ( ! empty( $filters['status'] ) ) {
-			$where[] = 'status = %s';
+			$where[]  = 'status = %s';
 			$values[] = $filters['status'];
 		}
-		
+
 		if ( ! empty( $filters['date_range'] ) ) {
 			$days = $this->parse_date_range( $filters['date_range'] );
 			if ( $days > 0 ) {
-				$where[] = 'created_at >= DATE_SUB(NOW(), INTERVAL %d DAY)';
+				$where[]  = 'created_at >= DATE_SUB(NOW(), INTERVAL %d DAY)';
 				$values[] = $days;
 			}
 		}
-		
+
 		if ( ! empty( $filters['search'] ) ) {
-			$search = '%' . $wpdb->esc_like( $filters['search'] ) . '%';
-			$where[] = '(ip_hash LIKE %s OR metadata LIKE %s)';
+			$search   = '%' . $wpdb->esc_like( $filters['search'] ) . '%';
+			$where[]  = '(ip_hash LIKE %s OR metadata LIKE %s)';
 			$values[] = $search;
 			$values[] = $search;
 		}
-		
+
 		// Geo-based filters
 		if ( ! empty( $filters['geo_rule_id'] ) ) {
-			$where[] = 'geo_rule_id = %d';
+			$where[]  = 'geo_rule_id = %d';
 			$values[] = intval( $filters['geo_rule_id'] );
 		}
-		
+
 		if ( ! empty( $filters['region'] ) ) {
-			$where[] = 'region = %s';
+			$where[]  = 'region = %s';
 			$values[] = $filters['region'];
 		}
-		
+
 		if ( ! empty( $filters['country_code'] ) ) {
-			$where[] = 'country_code = %s';
+			$where[]  = 'country_code = %s';
 			$values[] = strtoupper( $filters['country_code'] );
 		}
-		
+
 		$where_sql = implode( ' AND ', $where );
-		
+
 		// Pagination
-		$page = max( 1, intval( $pagination['page'] ?? 1 ) );
+		$page     = max( 1, intval( $pagination['page'] ?? 1 ) );
 		$per_page = min( 100, max( 1, intval( $pagination['per_page'] ?? 25 ) ) );
-		$offset = ( $page - 1 ) * $per_page;
-		
-		$order_by = in_array( $pagination['order_by'] ?? '', array( 'id', 'type', 'status', 'created_at', 'region', 'country_code' ) ) 
-			? $pagination['order_by'] 
+		$offset   = ( $page - 1 ) * $per_page;
+
+		$order_by = in_array( $pagination['order_by'] ?? '', array( 'id', 'type', 'status', 'created_at', 'region', 'country_code' ) )
+			? $pagination['order_by']
 			: 'created_at';
-		$order = strtoupper( $pagination['order'] ?? 'DESC' ) === 'ASC' ? 'ASC' : 'DESC';
-		
+		$order    = strtoupper( $pagination['order'] ?? 'DESC' ) === 'ASC' ? 'ASC' : 'DESC';
+
 		$sql = "SELECT c.*, u.display_name as user_name, u.user_email 
 				FROM {$table} c 
 				LEFT JOIN {$wpdb->users} u ON c.user_id = u.ID 
 				WHERE {$where_sql} 
 				ORDER BY c.{$order_by} {$order} 
 				LIMIT %d OFFSET %d";
-		
+
 		$values[] = $per_page;
 		$values[] = $offset;
-		
+
 		if ( ! empty( $values ) ) {
 			$sql = $wpdb->prepare( $sql, $values );
 		}
-		
+
 		return $wpdb->get_results( $sql );
 	}
 
@@ -500,62 +508,62 @@ class Consent_Service extends Base_Service {
 	 */
 	public function get_consents_count( array $filters = array() ): int {
 		global $wpdb;
-		
+
 		$table = $wpdb->prefix . 'slos_consent';
-		
+
 		// Build WHERE clause
-		$where = array( '1=1' );
+		$where  = array( '1=1' );
 		$values = array();
-		
+
 		if ( ! empty( $filters['type'] ) ) {
-			$where[] = 'type = %s';
+			$where[]  = 'type = %s';
 			$values[] = $filters['type'];
 		}
-		
+
 		if ( ! empty( $filters['status'] ) ) {
-			$where[] = 'status = %s';
+			$where[]  = 'status = %s';
 			$values[] = $filters['status'];
 		}
-		
+
 		if ( ! empty( $filters['date_range'] ) ) {
 			$days = $this->parse_date_range( $filters['date_range'] );
 			if ( $days > 0 ) {
-				$where[] = 'created_at >= DATE_SUB(NOW(), INTERVAL %d DAY)';
+				$where[]  = 'created_at >= DATE_SUB(NOW(), INTERVAL %d DAY)';
 				$values[] = $days;
 			}
 		}
-		
+
 		if ( ! empty( $filters['search'] ) ) {
-			$search = '%' . $wpdb->esc_like( $filters['search'] ) . '%';
-			$where[] = '(ip_hash LIKE %s OR metadata LIKE %s)';
+			$search   = '%' . $wpdb->esc_like( $filters['search'] ) . '%';
+			$where[]  = '(ip_hash LIKE %s OR metadata LIKE %s)';
 			$values[] = $search;
 			$values[] = $search;
 		}
-		
+
 		// Geo-based filters
 		if ( ! empty( $filters['geo_rule_id'] ) ) {
-			$where[] = 'geo_rule_id = %d';
+			$where[]  = 'geo_rule_id = %d';
 			$values[] = intval( $filters['geo_rule_id'] );
 		}
-		
+
 		if ( ! empty( $filters['region'] ) ) {
-			$where[] = 'region = %s';
+			$where[]  = 'region = %s';
 			$values[] = $filters['region'];
 		}
-		
+
 		if ( ! empty( $filters['country_code'] ) ) {
-			$where[] = 'country_code = %s';
+			$where[]  = 'country_code = %s';
 			$values[] = strtoupper( $filters['country_code'] );
 		}
-		
+
 		$where_sql = implode( ' AND ', $where );
-		
+
 		$sql = "SELECT COUNT(*) FROM {$table} WHERE {$where_sql}";
-		
+
 		if ( ! empty( $values ) ) {
 			$sql = $wpdb->prepare( $sql, $values );
 		}
-		
+
 		return (int) $wpdb->get_var( $sql );
 	}
 
@@ -567,9 +575,9 @@ class Consent_Service extends Base_Service {
 	 */
 	public function get_geo_statistics(): array {
 		global $wpdb;
-		
+
 		$table = $wpdb->prefix . 'slos_consent';
-		
+
 		// Stats by region
 		$by_region = $wpdb->get_results(
 			"SELECT region, COUNT(*) as count, status
@@ -579,7 +587,7 @@ class Consent_Service extends Base_Service {
 			 ORDER BY count DESC",
 			ARRAY_A
 		);
-		
+
 		// Stats by geo rule
 		$by_geo_rule = $wpdb->get_results(
 			"SELECT geo_rule_id, COUNT(*) as count, status
@@ -589,7 +597,7 @@ class Consent_Service extends Base_Service {
 			 ORDER BY count DESC",
 			ARRAY_A
 		);
-		
+
 		// Stats by country
 		$by_country = $wpdb->get_results(
 			"SELECT country_code, COUNT(*) as count
@@ -600,21 +608,21 @@ class Consent_Service extends Base_Service {
 			 LIMIT 20",
 			ARRAY_A
 		);
-		
+
 		// Get geo rule names
-		$geo_rules = get_option( 'slos_geo_rules', array() );
+		$geo_rules  = get_option( 'slos_geo_rules', array() );
 		$rule_names = array();
 		foreach ( $geo_rules as $rule ) {
 			if ( isset( $rule['id'] ) && isset( $rule['name'] ) ) {
 				$rule_names[ $rule['id'] ] = $rule['name'];
 			}
 		}
-		
+
 		// Add rule names to stats
 		foreach ( $by_geo_rule as &$stat ) {
 			$stat['rule_name'] = $rule_names[ $stat['geo_rule_id'] ] ?? __( 'Unknown Rule', 'shahi-legalflowsuite' );
 		}
-		
+
 		return array(
 			'by_region'   => $by_region,
 			'by_geo_rule' => $by_geo_rule,
@@ -631,11 +639,11 @@ class Consent_Service extends Base_Service {
 	 */
 	private function parse_date_range( string $range ): int {
 		$range = strtolower( trim( $range ) );
-		
+
 		if ( preg_match( '/^(\d+)d$/', $range, $matches ) ) {
 			return (int) $matches[1];
 		}
-		
+
 		switch ( $range ) {
 			case 'today':
 				return 1;
@@ -680,7 +688,7 @@ class Consent_Service extends Base_Service {
 			}
 
 			if ( $this->repository->withdraw( $consent->id ) ) {
-				$withdrawn_count++;
+				++$withdrawn_count;
 			}
 		}
 
@@ -876,9 +884,9 @@ class Consent_Service extends Base_Service {
 		$this->clear_errors();
 
 		// Validate user identification
-		$user_id = $data['user_id'] ?? 0;
+		$user_id    = $data['user_id'] ?? 0;
 		$ip_address = $data['ip_address'] ?? $this->get_user_ip();
-		$ip_hash = $this->hash_ip( $ip_address );
+		$ip_hash    = $this->hash_ip( $ip_address );
 
 		if ( ! $user_id && empty( $ip_hash ) ) {
 			$this->add_error( 'invalid_identifier', 'Either user_id or ip_address is required' );
@@ -898,26 +906,26 @@ class Consent_Service extends Base_Service {
 		}
 
 		$created_count = 0;
-		$failed_count = 0;
-		$failed_types = array();
+		$failed_count  = 0;
+		$failed_types  = array();
 
 		// Record each consent
 		foreach ( $data['consents'] as $type => $status ) {
 			$consent_data = array(
-				'user_id'     => $user_id ?: null,
-				'ip_hash'     => $ip_hash,
-				'type'        => $type,
-				'status'      => $status,
-				'ip_address'  => $ip_address,
-				'user_agent'  => $this->get_user_agent(),
+				'user_id'    => $user_id ?: null,
+				'ip_hash'    => $ip_hash,
+				'type'       => $type,
+				'status'     => $status,
+				'ip_address' => $ip_address,
+				'user_agent' => $this->get_user_agent(),
 			);
 
 			$result = $this->record_consent( $consent_data );
 
 			if ( $result ) {
-				$created_count++;
+				++$created_count;
 			} else {
-				$failed_count++;
+				++$failed_count;
 				$failed_types[] = $type;
 			}
 		}
@@ -928,11 +936,11 @@ class Consent_Service extends Base_Service {
 		}
 
 		return array(
-			'success'         => $failed_count === 0,
-			'created_count'   => $created_count,
-			'failed_count'    => $failed_count,
-			'failed_types'    => $failed_types,
-			'message'         => $message,
+			'success'       => $failed_count === 0,
+			'created_count' => $created_count,
+			'failed_count'  => $failed_count,
+			'failed_types'  => $failed_types,
+			'message'       => $message,
 		);
 	}
 
@@ -1054,7 +1062,7 @@ class Consent_Service extends Base_Service {
 	 * @return string Banner version string
 	 */
 	private function get_banner_version(): string {
-		$settings = get_option( 'shahi_legalflowsuite_settings', array() );
+		$settings      = get_option( 'shahi_legalflowsuite_settings', array() );
 		$banner_config = isset( $settings['consent_banner'] ) ? $settings['consent_banner'] : array();
 
 		if ( empty( $banner_config ) ) {
@@ -1063,7 +1071,7 @@ class Consent_Service extends Base_Service {
 
 		// Create version based on config hash
 		$config_string = wp_json_encode( $banner_config );
-		$version_hash = substr( md5( $config_string ), 0, 8 );
+		$version_hash  = substr( md5( $config_string ), 0, 8 );
 
 		return 'banner-' . $version_hash;
 	}
@@ -1124,7 +1132,7 @@ class Consent_Service extends Base_Service {
 			'type'         => '',
 			'country_code' => '',
 		);
-		$args = wp_parse_args( $args, $defaults );
+		$args     = wp_parse_args( $args, $defaults );
 
 		// Validate interval
 		$allowed_intervals = array( 'daily', 'weekly', 'monthly' );
@@ -1144,13 +1152,13 @@ class Consent_Service extends Base_Service {
 			'weekly'  => '%Y-W%u',  // Year-Week number
 			'monthly' => '%Y-%m',
 		);
-		$date_format = $date_format_map[ $args['interval'] ];
+		$date_format     = $date_format_map[ $args['interval'] ];
 
 		// Calculate start date
 		$start_date = gmdate( 'Y-m-d H:i:s', strtotime( "-{$args['days_back']} days" ) );
 
 		// Build WHERE clause
-		$where_clauses = array( "created_at >= %s" );
+		$where_clauses = array( 'created_at >= %s' );
 		$where_values  = array( $start_date );
 
 		if ( ! empty( $args['status'] ) ) {
@@ -1185,7 +1193,7 @@ class Consent_Service extends Base_Service {
 		} else {
 			// Grouped time-series
 			$group_column = 'region' === $args['group_by'] ? 'country_code' : $args['group_by'];
-			$query = "
+			$query        = "
 				SELECT 
 					DATE_FORMAT(created_at, '{$date_format}') as period,
 					{$group_column} as group_value,
@@ -1234,10 +1242,10 @@ class Consent_Service extends Base_Service {
 				),
 			),
 			'metadata' => array(
-				'interval'   => $args['interval'],
-				'days_back'  => $args['days_back'],
-				'total'      => array_sum( $values ),
-				'average'    => ! empty( $values ) ? round( array_sum( $values ) / count( $values ), 1 ) : 0,
+				'interval'  => $args['interval'],
+				'days_back' => $args['days_back'],
+				'total'     => array_sum( $values ),
+				'average'   => ! empty( $values ) ? round( array_sum( $values ) / count( $values ), 1 ) : 0,
 			),
 		);
 	}
@@ -1273,7 +1281,7 @@ class Consent_Service extends Base_Service {
 
 		// Format labels
 		$formatted_labels = array_map(
-			function( $period ) use ( $args ) {
+			function ( $period ) use ( $args ) {
 				return $this->format_period_label( $period, $args['interval'] );
 			},
 			$labels
@@ -1329,7 +1337,7 @@ class Consent_Service extends Base_Service {
 			// Format: 2024-W01 -> Week 1, 2024
 			preg_match( '/(\d{4})-W(\d{2})/', $period, $matches );
 			if ( $matches ) {
-				return sprintf( __( 'Week %d, %d', 'shahi-legalflowsuite' ), (int) $matches[2], (int) $matches[1] );
+				return sprintf( __( 'Week %1$d, %2$d', 'shahi-legalflowsuite' ), (int) $matches[2], (int) $matches[1] );
 			}
 		}
 
@@ -1361,11 +1369,11 @@ class Consent_Service extends Base_Service {
 
 		if ( 'type' === $group_by ) {
 			$type_labels = array(
-				'necessary'    => __( 'Necessary', 'shahi-legalflowsuite' ),
-				'functional'   => __( 'Functional', 'shahi-legalflowsuite' ),
-				'analytics'    => __( 'Analytics', 'shahi-legalflowsuite' ),
-				'marketing'    => __( 'Marketing', 'shahi-legalflowsuite' ),
-				'preferences'  => __( 'Preferences', 'shahi-legalflowsuite' ),
+				'necessary'   => __( 'Necessary', 'shahi-legalflowsuite' ),
+				'functional'  => __( 'Functional', 'shahi-legalflowsuite' ),
+				'analytics'   => __( 'Analytics', 'shahi-legalflowsuite' ),
+				'marketing'   => __( 'Marketing', 'shahi-legalflowsuite' ),
+				'preferences' => __( 'Preferences', 'shahi-legalflowsuite' ),
 			);
 			return $type_labels[ $group ] ?? ucfirst( $group );
 		}
@@ -1392,7 +1400,7 @@ class Consent_Service extends Base_Service {
 	 * @param array  $args  Optional query arguments
 	 * @return array {
 	 *     Array of consent records with enriched data
-	 *     
+	 *
 	 *     @type int      $id           Consent ID
 	 *     @type int|null $user_id      WordPress user ID (null for guests)
 	 *     @type string   $type         Consent type
@@ -1430,12 +1438,12 @@ class Consent_Service extends Base_Service {
 			if ( ! empty( $record['user_id'] ) ) {
 				$user = get_userdata( $record['user_id'] );
 				if ( $user ) {
-					$record['user_name'] = $user->display_name;
+					$record['user_name']  = $user->display_name;
 					$record['user_email'] = $user->user_email;
 				}
 			} else {
 				// Guest consent - get email from metadata
-				$record['user_name'] = __( 'Guest', 'shahi-legalflowsuite' );
+				$record['user_name']  = __( 'Guest', 'shahi-legalflowsuite' );
 				$record['user_email'] = $record['metadata']['email'] ?? $email;
 			}
 

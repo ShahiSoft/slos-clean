@@ -187,28 +187,28 @@ class Profile_Wizard {
 				'hubUrl'         => admin_url( 'admin.php?page=slos-documents' ),
 				'documentHubUrl' => admin_url( 'admin.php?page=slos-documents' ),
 				'i18n'           => array(
-					'saving'               => __( 'Saving...', 'shahi-legalflowsuite' ),
-					'saved'                => __( 'Saved', 'shahi-legalflowsuite' ),
-					'saveError'            => __( 'Error saving. Please try again.', 'shahi-legalflowsuite' ),
-					'validating'           => __( 'Validating...', 'shahi-legalflowsuite' ),
-					'requiredField'        => __( 'This field is required', 'shahi-legalflowsuite' ),
-					'invalidEmail'         => __( 'Please enter a valid email address', 'shahi-legalflowsuite' ),
-					'invalidUrl'           => __( 'Please enter a valid URL', 'shahi-legalflowsuite' ),
-					'unsavedChanges'       => __( 'You have unsaved changes. Are you sure you want to leave?', 'shahi-legalflowsuite' ),
-					'stepComplete'         => __( 'Step complete!', 'shahi-legalflowsuite' ),
-					'profileComplete'      => __( 'Profile saved successfully! Redirecting to Document Hub...', 'shahi-legalflowsuite' ),
+					'saving'                 => __( 'Saving...', 'shahi-legalflowsuite' ),
+					'saved'                  => __( 'Saved', 'shahi-legalflowsuite' ),
+					'saveError'              => __( 'Error saving. Please try again.', 'shahi-legalflowsuite' ),
+					'validating'             => __( 'Validating...', 'shahi-legalflowsuite' ),
+					'requiredField'          => __( 'This field is required', 'shahi-legalflowsuite' ),
+					'invalidEmail'           => __( 'Please enter a valid email address', 'shahi-legalflowsuite' ),
+					'invalidUrl'             => __( 'Please enter a valid URL', 'shahi-legalflowsuite' ),
+					'unsavedChanges'         => __( 'You have unsaved changes. Are you sure you want to leave?', 'shahi-legalflowsuite' ),
+					'stepComplete'           => __( 'Step complete!', 'shahi-legalflowsuite' ),
+					'profileComplete'        => __( 'Profile saved successfully! Redirecting to Document Hub...', 'shahi-legalflowsuite' ),
 					'incompleteProfileSaved' => __( 'Profile saved with {count} optional fields remaining. Redirecting...', 'shahi-legalflowsuite' ),
-					'complete'             => __( 'Complete', 'shahi-legalflowsuite' ),
-					'generateDocs'         => __( 'Generate Documents', 'shahi-legalflowsuite' ),
-					'nextStep'             => __( 'Next Step', 'shahi-legalflowsuite' ),
-					'previousStep'         => __( 'Previous', 'shahi-legalflowsuite' ),
-					'finish'               => __( 'Finish Wizard', 'shahi-legalflowsuite' ),
-					'confirmReset'         => __( 'Are you sure you want to reset the profile? This cannot be undone.', 'shahi-legalflowsuite' ),
-					'addCookie'            => __( 'Add Cookie', 'shahi-legalflowsuite' ),
-					'removeCookie'         => __( 'Remove', 'shahi-legalflowsuite' ),
-					'cookieName'           => __( 'Cookie Name', 'shahi-legalflowsuite' ),
-					'cookiePurpose'        => __( 'Purpose', 'shahi-legalflowsuite' ),
-					'cookieDuration'       => __( 'Duration', 'shahi-legalflowsuite' ),
+					'complete'               => __( 'Complete', 'shahi-legalflowsuite' ),
+					'generateDocs'           => __( 'Generate Documents', 'shahi-legalflowsuite' ),
+					'nextStep'               => __( 'Next Step', 'shahi-legalflowsuite' ),
+					'previousStep'           => __( 'Previous', 'shahi-legalflowsuite' ),
+					'finish'                 => __( 'Finish Wizard', 'shahi-legalflowsuite' ),
+					'confirmReset'           => __( 'Are you sure you want to reset the profile? This cannot be undone.', 'shahi-legalflowsuite' ),
+					'addCookie'              => __( 'Add Cookie', 'shahi-legalflowsuite' ),
+					'removeCookie'           => __( 'Remove', 'shahi-legalflowsuite' ),
+					'cookieName'             => __( 'Cookie Name', 'shahi-legalflowsuite' ),
+					'cookiePurpose'          => __( 'Purpose', 'shahi-legalflowsuite' ),
+					'cookieDuration'         => __( 'Duration', 'shahi-legalflowsuite' ),
 				),
 			)
 		);
@@ -358,6 +358,7 @@ class Profile_Wizard {
 				echo '>';
 				foreach ( $options as $opt_value => $opt_label ) {
 					$selected = selected( $value, $opt_value, false );
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- selected() already escapes
 					echo '<option value="' . esc_attr( $opt_value ) . '"' . $selected . '>';
 					echo esc_html( $opt_label );
 					echo '</option>';
@@ -374,6 +375,7 @@ class Profile_Wizard {
 					echo '<label class="slos-radio-label" for="' . esc_attr( $radio_id ) . '">';
 					echo '<input type="radio" id="' . esc_attr( $radio_id ) . '" ';
 					echo 'name="' . esc_attr( $field_name ) . '" ';
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- checked() already escapes
 					echo 'value="' . esc_attr( $opt_value ) . '"' . $checked . ' ';
 					echo 'class="slos-field-radio">';
 					echo '<span class="slos-radio-text">' . esc_html( $opt_label ) . '</span>';
@@ -392,7 +394,7 @@ class Profile_Wizard {
 					echo '<label class="slos-checkbox-label" for="' . esc_attr( $check_id ) . '">';
 					echo '<input type="checkbox" id="' . esc_attr( $check_id ) . '" ';
 					echo 'name="' . esc_attr( $field_name ) . '[]" ';
-					echo 'value="' . esc_attr( $opt_value ) . '" ' . $checked . ' ';
+					echo 'value="' . esc_attr( $opt_value ) . '" ' . esc_attr( $checked ) . ' ';
 					echo 'class="slos-field-checkbox">';
 					echo '<span class="slos-checkbox-text">' . esc_html( $opt_label ) . '</span>';
 					echo '</label>';

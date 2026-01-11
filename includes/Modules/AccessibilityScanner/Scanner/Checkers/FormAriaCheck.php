@@ -72,4 +72,3 @@ class FormAriaCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

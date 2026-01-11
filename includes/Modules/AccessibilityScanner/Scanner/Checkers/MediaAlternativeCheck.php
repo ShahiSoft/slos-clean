@@ -51,4 +51,3 @@ class MediaAlternativeCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

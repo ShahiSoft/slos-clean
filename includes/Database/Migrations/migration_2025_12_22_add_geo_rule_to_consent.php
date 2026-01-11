@@ -51,7 +51,7 @@ class Migration_2025_12_22_add_geo_rule_to_consent {
 		}
 
 		// Check if columns already exist.
-		$columns = $wpdb->get_results( "SHOW COLUMNS FROM {$table_name}" );
+		$columns          = $wpdb->get_results( "SHOW COLUMNS FROM {$table_name}" );
 		$existing_columns = array_map(
 			function ( $col ) {
 				return $col->Field;
@@ -92,7 +92,7 @@ class Migration_2025_12_22_add_geo_rule_to_consent {
 		}
 
 		// Add indexes for efficient filtering.
-		$indexes = $wpdb->get_results( "SHOW INDEX FROM {$table_name}" );
+		$indexes          = $wpdb->get_results( "SHOW INDEX FROM {$table_name}" );
 		$existing_indexes = array_map(
 			function ( $idx ) {
 				return $idx->Key_name;

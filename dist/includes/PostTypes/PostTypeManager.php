@@ -411,4 +411,3 @@ class PostTypeManager {
 		return $this->post_types;
 	}
 }
-

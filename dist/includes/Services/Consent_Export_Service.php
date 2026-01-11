@@ -166,7 +166,7 @@ class Consent_Export_Service extends Base_Service {
 	private function export_json( array $items ): string {
 		// Unserialize metadata for proper JSON encoding
 		$processed_items = array_map(
-			function( $item ) {
+			function ( $item ) {
 				if ( ! empty( $item['metadata'] ) ) {
 					$item['metadata'] = maybe_unserialize( $item['metadata'] );
 				}
@@ -251,7 +251,7 @@ class Consent_Export_Service extends Base_Service {
 			$validated = $this->validate_import_row( $row );
 
 			if ( is_wp_error( $validated ) ) {
-				$skipped++;
+				++$skipped;
 				$errors[] = sprintf(
 					/* translators: 1: Row index, 2: Error message */
 					__( 'Row %1$d: %2$s', 'shahi-legalflowsuite' ),
@@ -276,12 +276,12 @@ class Consent_Export_Service extends Base_Service {
 			$result = $this->repository->create( $consent_data );
 
 			if ( $result ) {
-				$imported++;
+				++$imported;
 
 				// Fire action for successful import
 				do_action( 'slos_consent_imported', $result, $consent_data );
 			} else {
-				$skipped++;
+				++$skipped;
 				$errors[] = sprintf(
 					/* translators: %d: Row index */
 					__( 'Row %d: Failed to create record', 'shahi-legalflowsuite' ),
@@ -387,7 +387,7 @@ class Consent_Export_Service extends Base_Service {
 		// Normalize headers
 		$header = array_map( 'strtolower', $header );
 		$header = array_map(
-			function( $h ) {
+			function ( $h ) {
 				return str_replace( ' ', '_', trim( $h ) );
 			},
 			$header

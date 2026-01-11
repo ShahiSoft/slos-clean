@@ -63,6 +63,137 @@ if ( ! defined( 'SLOS_FEATURE_PROFILE_VALIDATION' ) ) {
 
 /*
 |--------------------------------------------------------------------------
+| Dormant Modules Configuration
+|--------------------------------------------------------------------------
+|
+| Modules temporarily disabled but data preserved for future reactivation.
+| To reactivate: remove module key from this array.
+|
+*/
+
+if ( ! defined( 'SLOS_DORMANT_MODULES' ) ) {
+	define(
+		'SLOS_DORMANT_MODULES',
+		array(
+			'dsr-portal',      // DSR Portal Module - temporarily dormant
+			'security',        // Enhanced Security Module - temporarily dormant
+		)
+	);
+}
+
+/*
+|--------------------------------------------------------------------------
+| Dormant Accessibility Features Configuration
+|--------------------------------------------------------------------------
+|
+| Controls which accessibility scanner features are disabled.
+| All data preserved for future reactivation.
+|
+*/
+
+// Disable ALL autofix functionality (scanning still works)
+if ( ! defined( 'SLOS_DORMANT_AUTOFIX' ) ) {
+	define( 'SLOS_DORMANT_AUTOFIX', true );
+}
+
+// Disable Reporting & Export features (PDF, CSV, JSON, Scheduled reports)
+if ( ! defined( 'SLOS_DORMANT_REPORTING' ) ) {
+	define( 'SLOS_DORMANT_REPORTING', true );
+}
+
+// Dormant Compliance Features (Consent Records, Audit Logs, Geo Rules, Config Sync)
+if ( ! defined( 'SLOS_DORMANT_COMPLIANCE_FEATURES' ) ) {
+	define(
+		'SLOS_DORMANT_COMPLIANCE_FEATURES',
+		array(
+			'records',  // Consent Records tab
+			'audit',    // Audit Logs tab
+			'geo',      // Geo Rules tab
+			'config',   // Config Sync tab
+		)
+	);
+}
+
+// Dormant Banner Features (Banner Templates)
+if ( ! defined( 'SLOS_DORMANT_BANNER_FEATURES' ) ) {
+	define(
+		'SLOS_DORMANT_BANNER_FEATURES',
+		array(
+			'templates',  // Banner Templates section
+		)
+	);
+}
+
+// Active Legal Documents (Only these will be visible, all others dormant)
+if ( ! defined( 'SLOS_ACTIVE_LEGAL_DOCS' ) ) {
+	define(
+		'SLOS_ACTIVE_LEGAL_DOCS',
+		array(
+			'privacy-policy',     // Privacy Policy
+			'terms-of-service',   // Terms of Service
+			'cookie-policy',      // Cookie Policy
+			'refund-policy',      // Refund & Return Policy
+			'shipping-policy',    // Shipping Policy
+		)
+	);
+}
+
+// Disable half of accessibility checkers (keep 36 essential, disable 35 advanced)
+if ( ! defined( 'SLOS_DORMANT_CHECKERS' ) ) {
+	define(
+		'SLOS_DORMANT_CHECKERS',
+		array(
+			// Advanced Image Checks
+			'complex-image',
+			'logo-image',
+			'background-image',
+			'decorative-image',
+			'missing-svg-title',
+			// Advanced Heading Checks
+			'heading-length',
+			'heading-nesting',
+			'heading-uniqueness',
+			'heading-visual',
+			// Advanced Link Checks
+			'download-link',
+			'external-link',
+			// Advanced Form Checks
+			'input-type',
+			'placeholder-label',
+			'custom-control',
+			'orphaned-label',
+			'form-aria',
+			// Advanced Table Checks
+			'complex-table',
+			'layout-table',
+			'media-alternative',
+			// Advanced Interactivity Checks
+			'interactive-element',
+			'modal-accessibility',
+			'custom-widget-keyboard',
+			// Advanced Color/Contrast Checks
+			'color-reliance',
+			'complex-contrast',
+			// Touch/Mobile Checks
+			'touch-target',
+			'touch-gesture',
+			'improper-viewport',
+			// Advanced ARIA Checks
+			'aria-state',
+			'invalid-aria-combination',
+			'hidden-content',
+			'live-region',
+			'redundant-aria',
+			// Advanced Timing/Animation Checks
+			'language-change',
+			'animation-pause',
+			'timing-control',
+		)
+	);
+}
+
+/*
+|--------------------------------------------------------------------------
 | Feature Flags - Stage 2 (Disabled in Stage 1)
 |--------------------------------------------------------------------------
 */

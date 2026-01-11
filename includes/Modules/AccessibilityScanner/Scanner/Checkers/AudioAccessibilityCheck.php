@@ -55,4 +55,3 @@ class AudioAccessibilityCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

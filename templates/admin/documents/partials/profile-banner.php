@@ -38,15 +38,15 @@ $banner_class  = $is_complete ? 'slos-hub-banner--success' : ( $is_sufficient ? 
 			<svg viewBox="0 0 36 36" class="slos-hub-banner__progress-svg">
 				<path class="slos-hub-banner__progress-bg"
 					d="M18 2.0845
-					   a 15.9155 15.9155 0 0 1 0 31.831
-					   a 15.9155 15.9155 0 0 1 0 -31.831"
+						a 15.9155 15.9155 0 0 1 0 31.831
+						a 15.9155 15.9155 0 0 1 0 -31.831"
 					fill="none"
 					stroke-width="3"
 				/>
 				<path class="slos-hub-banner__progress-fill"
 					d="M18 2.0845
-					   a 15.9155 15.9155 0 0 1 0 31.831
-					   a 15.9155 15.9155 0 0 1 0 -31.831"
+						a 15.9155 15.9155 0 0 1 0 31.831
+						a 15.9155 15.9155 0 0 1 0 -31.831"
 					fill="none"
 					stroke-width="3"
 					stroke-dasharray="<?php echo esc_attr( $completeness ); ?>, 100"

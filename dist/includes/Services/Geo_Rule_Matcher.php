@@ -33,9 +33,33 @@ class Geo_Rule_Matcher {
 	 * @var array
 	 */
 	private static $eu_countries = array(
-		'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR',
-		'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL',
-		'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE',
+		'AT',
+		'BE',
+		'BG',
+		'HR',
+		'CY',
+		'CZ',
+		'DK',
+		'EE',
+		'FI',
+		'FR',
+		'DE',
+		'GR',
+		'HU',
+		'IE',
+		'IT',
+		'LV',
+		'LT',
+		'LU',
+		'MT',
+		'NL',
+		'PL',
+		'PT',
+		'RO',
+		'SK',
+		'SI',
+		'ES',
+		'SE',
 	);
 
 	/**
@@ -44,9 +68,36 @@ class Geo_Rule_Matcher {
 	 * @var array
 	 */
 	private static $eea_countries = array(
-		'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR',
-		'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL',
-		'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE', 'IS', 'LI', 'NO',
+		'AT',
+		'BE',
+		'BG',
+		'HR',
+		'CY',
+		'CZ',
+		'DK',
+		'EE',
+		'FI',
+		'FR',
+		'DE',
+		'GR',
+		'HU',
+		'IE',
+		'IT',
+		'LV',
+		'LT',
+		'LU',
+		'MT',
+		'NL',
+		'PL',
+		'PT',
+		'RO',
+		'SK',
+		'SI',
+		'ES',
+		'SE',
+		'IS',
+		'LI',
+		'NO',
 	);
 
 	/**
@@ -346,5 +397,187 @@ class Geo_Rule_Matcher {
 	 */
 	public function clear_cache(): void {
 		$this->cached_rules = null;
+	}
+
+	/**
+	 * Apply a regional preset to create or update a geo rule
+	 *
+	 * @since 3.1.1
+	 * @param string $preset_key Preset key (EU, UK, US-CA, BR, ROW).
+	 * @return array|WP_Error Rule array on success, WP_Error on failure.
+	 */
+	public function apply_preset( string $preset_key ) {
+		// Load presets configuration.
+		$presets = $this->load_presets();
+
+		if ( ! isset( $presets[ $preset_key ] ) ) {
+			return new WP_Error( 'invalid_preset', __( 'Invalid preset key.', 'shahi-legalflowsuite' ) );
+		}
+
+		$preset = $presets[ $preset_key ];
+		$rules  = $this->get_active_rules();
+
+		// Check if preset already applied.
+		$existing_rule = $this->get_rule_by_preset_key( $preset_key );
+
+		if ( $existing_rule ) {
+			// Update existing preset rule.
+			$rule_id = $existing_rule['id'];
+			$rule    = array(
+				'id'               => $rule_id,
+				'name'             => $preset['label'],
+				'countries'        => $preset['countries'],
+				'states'           => $preset['states'] ?? array(),
+				'active'           => true,
+				'show_banner'      => $preset['config']['show_banner'],
+				'consent_mode'     => $preset['consent_model'],
+				'show_reject'      => $preset['config']['show_reject'],
+				'require_explicit' => $preset['config']['require_explicit'],
+				'record_proof'     => $preset['config']['record_proof'],
+				'allow_withdraw'   => $preset['config']['allow_withdraw'],
+				'framework'        => $preset['framework'],
+				'legal_docs'       => $preset['legal_docs'],
+				'preset_key'       => $preset_key,
+			);
+
+			// Update in array.
+			foreach ( $rules as $index => $existing ) {
+				if ( $existing['id'] === $rule_id ) {
+					$rules[ $index ] = $rule;
+					break;
+				}
+			}
+		} else {
+			// Create new preset rule.
+			$rule_id = $this->get_next_rule_id( $rules );
+			$rule    = array(
+				'id'               => $rule_id,
+				'name'             => $preset['label'],
+				'countries'        => $preset['countries'],
+				'states'           => $preset['states'] ?? array(),
+				'active'           => true,
+				'show_banner'      => $preset['config']['show_banner'],
+				'consent_mode'     => $preset['consent_model'],
+				'show_reject'      => $preset['config']['show_reject'],
+				'require_explicit' => $preset['config']['require_explicit'],
+				'record_proof'     => $preset['config']['record_proof'],
+				'allow_withdraw'   => $preset['config']['allow_withdraw'],
+				'framework'        => $preset['framework'],
+				'legal_docs'       => $preset['legal_docs'],
+				'preset_key'       => $preset_key,
+			);
+
+			$rules[] = $rule;
+		}
+
+		// Save to database.
+		update_option( 'slos_geo_rules', $rules );
+		$this->clear_cache();
+
+		return $rule;
+	}
+
+	/**
+	 * Load geo presets configuration
+	 *
+	 * @since 3.1.1
+	 * @return array Preset configurations.
+	 */
+	private function load_presets(): array {
+		$config_path = SLOS_PLUGIN_DIR . 'config/geo-presets.php';
+
+		if ( ! file_exists( $config_path ) ) {
+			return array();
+		}
+
+		$presets = include $config_path;
+
+		return is_array( $presets ) ? $presets : array();
+	}
+
+	/**
+	 * Get rule by preset key
+	 *
+	 * @since 3.1.1
+	 * @param string $preset_key Preset key.
+	 * @return array|null Rule if found, null otherwise.
+	 */
+	private function get_rule_by_preset_key( string $preset_key ): ?array {
+		$rules = get_option( 'slos_geo_rules', array() );
+
+		foreach ( $rules as $rule ) {
+			if ( isset( $rule['preset_key'] ) && $rule['preset_key'] === $preset_key ) {
+				return $rule;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get next available rule ID
+	 *
+	 * @since 3.1.1
+	 * @param array $rules Existing rules.
+	 * @return int Next rule ID.
+	 */
+	private function get_next_rule_id( array $rules ): int {
+		if ( empty( $rules ) ) {
+			return 1;
+		}
+
+		$max_id = 0;
+		foreach ( $rules as $rule ) {
+			if ( isset( $rule['id'] ) && $rule['id'] > $max_id ) {
+				$max_id = $rule['id'];
+			}
+		}
+
+		return $max_id + 1;
+	}
+
+	/**
+	 * Get all available presets
+	 *
+	 * @since 3.1.1
+	 * @return array Preset configurations.
+	 */
+	public function get_all_presets(): array {
+		return $this->load_presets();
+	}
+
+	/**
+	 * Get preset status (applied/not applied)
+	 *
+	 * @since 3.1.1
+	 * @param string $preset_key Preset key.
+	 * @return bool True if preset is applied and active.
+	 */
+	public function is_preset_applied( string $preset_key ): bool {
+		$rule = $this->get_rule_by_preset_key( $preset_key );
+
+		return $rule && ( $rule['active'] ?? false );
+	}
+
+	/**
+	 * Get preset statistics
+	 *
+	 * @since 3.1.1
+	 * @return array Statistics with applied/total counts.
+	 */
+	public function get_preset_stats(): array {
+		$presets = $this->load_presets();
+		$applied = 0;
+
+		foreach ( array_keys( $presets ) as $key ) {
+			if ( $this->is_preset_applied( $key ) ) {
+				++$applied;
+			}
+		}
+
+		return array(
+			'total'   => count( $presets ),
+			'applied' => $applied,
+		);
 	}
 }

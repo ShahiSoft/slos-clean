@@ -10,8 +10,8 @@
  */
 
 /* ==========================================================================
-   Layout & Container
-   ========================================================================== */
+	Layout & Container
+	========================================================================== */
 
 .slos-gen-container {
 	padding: 20px;
@@ -39,8 +39,8 @@
 }
 
 /* ==========================================================================
-   Stats Bar
-   ========================================================================== */
+	Stats Bar
+	========================================================================== */
 
 .slos-gen-stats-bar {
 	display: flex;
@@ -87,8 +87,8 @@
 }
 
 /* ==========================================================================
-   Sections
-   ========================================================================== */
+	Sections
+	========================================================================== */
 
 .slos-gen-section {
 	margin-bottom: 32px;
@@ -130,13 +130,13 @@
 }
 
 /* ==========================================================================
-   Premium CTA
-   ========================================================================== */
+	Premium CTA
+	========================================================================== */
 
 .slos-gen-premium-cta {
 	margin-top: var(--slos-space-lg, 1.5rem);
 	padding: var(--slos-space-xl, 2rem);
-	background: linear-gradient(135deg, #242b24 0%, rgba(107, 142, 78, 0.15) 100%);
+	background: linear-gradient(135deg, #242b24 0%, rgb(107 142 78 / 15%) 100%);
 	border: 2px solid var(--slos-accent-primary, #6b8e4e);
 	border-radius: var(--slos-radius-lg, 12px);
 	text-align: center;
@@ -166,8 +166,8 @@
 }
 
 /* ==========================================================================
-   Document Cards
-   ========================================================================== */
+	Document Cards
+	========================================================================== */
 
 .slos-gen-cards {
 	display: grid;
@@ -187,7 +187,7 @@
 
 .slos-gen-card:hover {
 	border-color: var(--slos-accent-primary, #6b8e4e);
-	box-shadow: 0 4px 12px rgba(107, 142, 78, 0.2);
+	box-shadow: 0 4px 12px rgb(107 142 78 / 20%);
 	transform: translateY(-2px);
 }
 
@@ -205,7 +205,7 @@
 }
 
 .slos-gen-card--outdated {
-	border-color: #ff4444;
+	border-color: #f44;
 }
 
 .slos-gen-card--outdated::before {
@@ -217,7 +217,7 @@
 	height: 0;
 	border-style: solid;
 	border-width: 0 40px 40px 0;
-	border-color: transparent #ff4444 transparent transparent;
+	border-color: transparent #f44 transparent transparent;
 }
 
 .slos-gen-card--required::after {
@@ -240,17 +240,14 @@
 .slos-gen-card--locked .slos-gen-card__description {
 	filter: blur(4px);
 	pointer-events: none;
-	-webkit-user-select: none;
+	user-select: none;
 	user-select: none;
 }
 
 .slos-gen-card__premium-overlay {
 	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background: rgba(26, 31, 26, 0.95);
+	inset: 0;
+	background: rgb(26 31 26 / 95%);
 	border-radius: var(--slos-radius-md, 8px);
 	display: flex;
 	align-items: center;
@@ -301,7 +298,7 @@
 	background: var(--slos-accent-light, #8ba972);
 	border-color: var(--slos-accent-light, #8ba972);
 	transform: translateY(-2px);
-	box-shadow: 0 4px 12px rgba(107, 142, 78, 0.3);
+	box-shadow: 0 4px 12px rgb(107 142 78 / 30%);
 }
 
 .slos-gen-btn-upgrade-action:disabled {
@@ -384,21 +381,21 @@
 }
 
 .slos-gen-status--draft {
-	background: rgba(255, 165, 0, 0.2);
+	background: rgb(255 165 0 / 20%);
 	color: #ffa500;
 	border: 1px solid #ffa500;
 }
 
 .slos-gen-status--published {
-	background: rgba(0, 168, 107, 0.2);
+	background: rgb(0 168 107 / 20%);
 	color: #00a86b;
 	border: 1px solid #00a86b;
 }
 
 .slos-gen-status--outdated {
-	background: rgba(255, 68, 68, 0.2);
-	color: #ff4444;
-	border: 1px solid #ff4444;
+	background: rgb(255 68 68 / 20%);
+	color: #f44;
+	border: 1px solid #f44;
 }
 
 /* Card Meta */
@@ -478,8 +475,8 @@
 }
 
 /* ==========================================================================
-   Alerts
-   ========================================================================== */
+	Alerts
+	========================================================================== */
 
 .slos-gen-alert {
 	display: flex;
@@ -512,7 +509,7 @@
 }
 
 .slos-gen-alert--warning {
-	background: rgba(255, 165, 0, 0.15);
+	background: rgb(255 165 0 / 15%);
 	border: 1px solid #ffa500;
 }
 
@@ -521,16 +518,16 @@
 }
 
 .slos-gen-alert--error {
-	background: rgba(255, 68, 68, 0.15);
-	border: 1px solid #ff4444;
+	background: rgb(255 68 68 / 15%);
+	border: 1px solid #f44;
 }
 
 .slos-gen-alert--error .slos-gen-alert__content h4 {
-	color: #ff4444;
+	color: #f44;
 }
 
 .slos-gen-alert--info {
-	background: rgba(107, 142, 78, 0.15);
+	background: rgb(107 142 78 / 15%);
 	border: 1px solid var(--slos-accent-primary, #6b8e4e);
 }
 
@@ -539,8 +536,8 @@
 }
 
 /* ==========================================================================
-   Sidebar Panel
-   ========================================================================== */
+	Sidebar Panel
+	========================================================================== */
 
 .slos-gen-panel {
 	display: flex;
@@ -582,7 +579,7 @@
 }
 
 .slos-gen-widget--attention .slos-gen-widget__title {
-	background: rgba(255, 165, 0, 0.15);
+	background: rgb(255 165 0 / 15%);
 	color: #ffa500;
 }
 
@@ -591,7 +588,7 @@
 }
 
 .slos-gen-widget--help .slos-gen-widget__title {
-	background: rgba(107, 142, 78, 0.15);
+	background: rgb(107 142 78 / 15%);
 	color: var(--slos-accent-primary, #6b8e4e);
 }
 
@@ -772,15 +769,12 @@
 }
 
 /* ==========================================================================
-   Modal
-   ========================================================================== */
+	Modal
+	========================================================================== */
 
 .slos-gen-modal {
 	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
+	inset: 0;
 	z-index: 100000;
 	display: flex;
 	align-items: center;
@@ -789,11 +783,8 @@
 
 .slos-gen-modal__backdrop {
 	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background: rgba(26, 31, 26, 0.95);
+	inset: 0;
+	background: rgb(26 31 26 / 95%);
 }
 
 .slos-gen-modal__container {
@@ -804,7 +795,7 @@
 	background: var(--shahi-bg-primary, #0f172a);
 	border: 1px solid #333;
 	border-radius: 12px;
-	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+	box-shadow: 0 8px 32px rgb(0 0 0 / 50%);
 	display: flex;
 	flex-direction: column;
 }
@@ -864,8 +855,8 @@
 }
 
 /* ========================================
-   HISTORY TIMELINE
-   ======================================== */
+	HISTORY TIMELINE
+	======================================== */
 
 .slos-gen-history-timeline {
 	position: relative;
@@ -900,7 +891,7 @@
 
 .slos-gen-timeline-item--current::before {
 	background: var(--shahi-success, #22c55e);
-	box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
+	box-shadow: 0 0 0 4px rgb(16 185 129 / 20%);
 }
 
 .slos-gen-timeline-item__header {
@@ -924,7 +915,7 @@
 }
 
 .slos-gen-timeline-item__version--current {
-	background: rgba(16, 185, 129, 0.1);
+	background: rgb(16 185 129 / 10%);
 	border-color: #10b981;
 	color: #10b981;
 }
@@ -977,8 +968,8 @@
 }
 
 /* ========================================
-   VERSION COMPARISON VIEW
-   ======================================== */
+	VERSION COMPARISON VIEW
+	======================================== */
 
 .slos-gen-comparison-view {
 	display: grid;
@@ -1076,19 +1067,19 @@
 }
 
 .slos-gen-comparison-diff__line--added {
-	background: rgba(16, 185, 129, 0.1);
+	background: rgb(16 185 129 / 10%);
 	border-left: 3px solid #10b981;
 	color: #10b981;
 }
 
 .slos-gen-comparison-diff__line--removed {
-	background: rgba(239, 68, 68, 0.1);
+	background: rgb(239 68 68 / 10%);
 	border-left: 3px solid #ef4444;
 	color: #ef4444;
 }
 
 .slos-gen-comparison-diff__line--changed {
-	background: rgba(245, 158, 11, 0.1);
+	background: rgb(245 158 11 / 10%);
 	border-left: 3px solid #f59e0b;
 	color: #f59e0b;
 }
@@ -1204,7 +1195,7 @@
 
 .slos-gen-field--missing {
 	border-color: #ffa500;
-	background: rgba(255, 165, 0, 0.05);
+	background: rgb(255 165 0 / 5%);
 }
 
 .slos-gen-field--mandatory {
@@ -1357,8 +1348,8 @@
 }
 
 /* ==========================================================================
-   Notices
-   ========================================================================== */
+	Notices
+	========================================================================== */
 
 .slos-gen-notices {
 	position: fixed;
@@ -1372,7 +1363,7 @@
 	padding: 16px;
 	margin-bottom: 12px;
 	border-radius: 6px;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 4px 12px rgb(0 0 0 / 30%);
 	animation: slideIn 0.3s ease;
 }
 
@@ -1381,6 +1372,7 @@
 		transform: translateX(100%);
 		opacity: 0;
 	}
+
 	to {
 		transform: translateX(0);
 		opacity: 1;
@@ -1403,14 +1395,14 @@
 }
 
 /* ==========================================================================
-   Responsive
-   ========================================================================== */
+	Responsive
+	========================================================================== */
 
-@media (max-width: 1280px) {
+@media (width <= 1280px) {
 	.slos-gen-layout {
 		grid-template-columns: 1fr;
 	}
-	
+
 	.slos-gen-sidebar {
 		position: static;
 		max-height: none;
@@ -1418,11 +1410,11 @@
 }
 
 /* ========================================
-   RESPONSIVE DESIGN
-   ======================================== */
+	RESPONSIVE DESIGN
+	======================================== */
 
 /* Tablet landscape (1024px and down) */
-@media (max-width: 1024px) {
+@media (width <= 1024px) {
 	.slos-gen-stats-bar {
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
@@ -1454,16 +1446,16 @@
 	}
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
 	.slos-gen-stats-bar {
 		flex-wrap: wrap;
 	}
-	
+
 	.slos-gen-stat {
 		flex: 1 1 calc(50% - 8px);
 		min-width: 150px;
 	}
-	
+
 	.slos-gen-cards {
 		grid-template-columns: 1fr;
 	}
@@ -1473,9 +1465,9 @@
 	}
 
 /* ==========================================================================
-   Enhanced Field Editing & Checkbox Toggle Styles
-   Per Tab Plan Section 2: Pre-Generation Data Review Modal
-   ========================================================================== */
+	Enhanced Field Editing & Checkbox Toggle Styles
+	Per Tab Plan Section 2: Pre-Generation Data Review Modal
+	========================================================================== */
 
 /* Checkbox wrapper with custom styling */
 .slos-gen-field__checkbox-wrapper {
@@ -1552,12 +1544,12 @@
 
 .slos-gen-field__input:focus {
 	border-color: var(--slos-accent-light, #8ba972);
-	box-shadow: 0 0 0 2px rgba(107, 142, 78, 0.2);
+	box-shadow: 0 0 0 2px rgb(107 142 78 / 20%);
 }
 
 .slos-gen-field__input--modified {
 	border-color: #2ecc71;
-	background: rgba(46, 204, 113, 0.05);
+	background: rgb(46 204 113 / 5%);
 }
 
 /* Field states */
@@ -1596,7 +1588,7 @@
 
 .slos-gen-field--empty.slos-gen-field--mandatory {
 	border-color: #e74c3c;
-	background: rgba(231, 76, 60, 0.05);
+	background: rgb(231 76 60 / 5%);
 }
 
 /* Action buttons enhanced styling */
@@ -1670,8 +1662,8 @@
 }
 
 .slos-gen-alert--help {
-	background: rgba(107, 142, 78, 0.08);
-	border: 1px solid rgba(107, 142, 78, 0.3);
+	background: rgb(107 142 78 / 8%);
+	border: 1px solid rgb(107 142 78 / 30%);
 	border-radius: var(--slos-radius-sm, 4px);
 }
 
@@ -1700,8 +1692,8 @@
 }
 
 /* ==========================================================================
-   Document Card Actions Rows
-   ========================================================================== */
+	Document Card Actions Rows
+	========================================================================== */
 
 .slos-gen-card__actions-primary {
 	display: flex;
@@ -1729,8 +1721,8 @@
 }
 
 /* ==========================================================================
-   Document Preview/View Modal
-   ========================================================================== */
+	Document Preview/View Modal
+	========================================================================== */
 
 .slos-gen-document-preview {
 	padding: 24px;
@@ -1768,11 +1760,10 @@
 }
 
 /* ==========================================================================
-   Responsive Adjustments
-   ========================================================================== */
+	Responsive Adjustments
+	========================================================================== */
 
-@media (max-width: 782px) {
-
+@media (width <= 782px) {
 	.slos-gen-header {
 		flex-direction: column;
 		align-items: flex-start;
@@ -1800,57 +1791,57 @@
 		flex-direction: column;
 		gap: 8px;
 	}
-	
+
 	.slos-gen-modal__container {
 		width: 95%;
 		max-height: 90vh;
 	}
-	
+
 	.slos-gen-modal__footer {
 		flex-direction: column;
 		gap: 12px;
 	}
-	
+
 	.slos-gen-modal__footer-left,
 	.slos-gen-modal__footer-right {
 		width: 100%;
 	}
-	
+
 	.slos-gen-modal__footer .button {
 		width: 100%;
 	}
-	
+
 	/* Card actions responsive */
 	.slos-gen-card__actions-primary,
 	.slos-gen-card__actions-secondary {
 		flex-wrap: wrap;
 	}
-	
+
 	.slos-gen-field__actions {
 		flex-direction: column;
 	}
-	
+
 	.slos-gen-field__btn {
 		width: 100%;
 		justify-content: center;
 	}
 }
 
-@media (max-width: 480px) {
+@media (width <= 480px) {
 	.slos-gen-container {
 		padding: 12px;
 	}
-	
+
 	.slos-gen-stats-bar {
 		flex-direction: column;
 	}
-	
+
 	.slos-gen-stat {
 		flex: 1 1 100%;
 	}
-	
+
 	.slos-gen-summary-stats {
 		flex-direction: column;
 	}
 }
-
+}

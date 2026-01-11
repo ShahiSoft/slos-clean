@@ -53,4 +53,3 @@ class HeadingUniquenessCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

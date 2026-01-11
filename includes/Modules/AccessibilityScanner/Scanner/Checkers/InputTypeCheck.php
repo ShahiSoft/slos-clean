@@ -71,4 +71,3 @@ class InputTypeCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

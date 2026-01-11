@@ -213,54 +213,54 @@ use ShahiLegalFlowSuite\Admin\Network_Compliance_Dashboard;
 <style>
 /* Network Compliance Styles */
 .slos-network-compliance {
-    max-width: 1400px;
-    margin: 20px;
+	max-width: 1400px;
+	margin: 20px;
 }
 
 .slos-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 24px;
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	margin-bottom: 24px;
 }
 
 .slos-header h1 {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 8px;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 8px;
 }
 
 .slos-header .description {
-    margin: 0;
+	margin: 0;
 }
 
 /* Stats Grid */
 .slos-stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    margin-bottom: 24px;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	gap: 20px;
+	margin-bottom: 24px;
 }
 
 .slos-stat-card {
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
+	background: white;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	padding: 20px;
+	display: flex;
+	align-items: center;
+	gap: 16px;
 }
 
 .slos-stat-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
+	width: 48px;
+	height: 48px;
+	border-radius: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 24px;
 }
 
 .slos-stat-icon.slos-icon-success { background: #d4edda; color: #155724; }
@@ -269,102 +269,102 @@ use ShahiLegalFlowSuite\Admin\Network_Compliance_Dashboard;
 .slos-stat-icon.slos-icon-error { background: #f8d7da; color: #721c24; }
 
 .slos-stat-content {
-    flex: 1;
+	flex: 1;
 }
 
 .slos-stat-value {
-    font-size: 32px;
-    font-weight: 700;
-    line-height: 1;
-    margin-bottom: 4px;
+	font-size: 32px;
+	font-weight: 700;
+	line-height: 1;
+	margin-bottom: 4px;
 }
 
 .slos-stat-label {
-    font-size: 13px;
-    color: #666;
+	font-size: 13px;
+	color: #666;
 }
 
 /* Card */
 .slos-card {
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 24px;
-    margin-bottom: 24px;
+	background: white;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	padding: 24px;
+	margin-bottom: 24px;
 }
 
 .slos-card h2 {
-    margin: 0 0 16px;
-    font-size: 18px;
-    font-weight: 600;
+	margin: 0 0 16px;
+	font-size: 18px;
+	font-weight: 600;
 }
 
 .slos-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 16px;
 }
 
 /* Issues Grid */
 .slos-issues-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 16px;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+	gap: 16px;
 }
 
 .slos-issue-item {
-    text-align: center;
-    padding: 16px;
-    background: #f9f9f9;
-    border-radius: 6px;
+	text-align: center;
+	padding: 16px;
+	background: #f9f9f9;
+	border-radius: 6px;
 }
 
 .slos-issue-icon {
-    font-size: 32px;
-    color: #666;
-    margin-bottom: 8px;
+	font-size: 32px;
+	color: #666;
+	margin-bottom: 8px;
 }
 
 .slos-issue-count {
-    font-size: 24px;
-    font-weight: 700;
-    color: #333;
-    margin-bottom: 4px;
+	font-size: 24px;
+	font-weight: 700;
+	color: #333;
+	margin-bottom: 4px;
 }
 
 .slos-issue-label {
-    font-size: 12px;
-    color: #666;
+	font-size: 12px;
+	color: #666;
 }
 
 /* Sites Table */
 .slos-sites-table {
-    margin-top: 0;
+	margin-top: 0;
 }
 
 .slos-sites-table td {
-    vertical-align: middle;
+	vertical-align: middle;
 }
 
 .slos-sites-table .slos-muted {
-    color: #666;
-    font-size: 12px;
+	color: #666;
+	font-size: 12px;
 }
 
 .slos-score {
-    display: inline-block;
+	display: inline-block;
 }
 
 .slos-score-circle {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 14px;
+	width: 48px;
+	height: 48px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: 700;
+	font-size: 14px;
 }
 
 .slos-score-success .slos-score-circle { background: #d4edda; color: #155724; }
@@ -373,13 +373,13 @@ use ShahiLegalFlowSuite\Admin\Network_Compliance_Dashboard;
 .slos-score-error .slos-score-circle { background: #f8d7da; color: #721c24; }
 
 .slos-grade {
-    display: inline-block;
-    width: 32px;
-    height: 32px;
-    line-height: 32px;
-    text-align: center;
-    font-weight: 700;
-    border-radius: 4px;
+	display: inline-block;
+	width: 32px;
+	height: 32px;
+	line-height: 32px;
+	text-align: center;
+	font-weight: 700;
+	border-radius: 4px;
 }
 
 .slos-grade-success { background: #d4edda; color: #155724; }
@@ -388,44 +388,44 @@ use ShahiLegalFlowSuite\Admin\Network_Compliance_Dashboard;
 .slos-grade-error { background: #f8d7da; color: #721c24; }
 
 .slos-issues-badge {
-    display: inline-block;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 500;
+	display: inline-block;
+	padding: 4px 8px;
+	border-radius: 4px;
+	font-size: 12px;
+	font-weight: 500;
 }
 
 .slos-badge-success { background: #d4edda; color: #155724; }
 .slos-badge-warning { background: #fff3cd; color: #856404; }
 
 .slos-empty {
-    text-align: center;
-    padding: 32px !important;
-    color: #666;
+	text-align: center;
+	padding: 32px !important;
+	color: #666;
 }
 
 /* Filter */
 .slos-filter {
-    padding: 6px 12px;
-    border-radius: 4px;
+	padding: 6px 12px;
+	border-radius: 4px;
 }
 </style>
 
 <script>
 jQuery(document).ready(function($) {
-    // Grade filter
-    $('#slos-filter-grade').on('change', function() {
-        const selectedGrade = $(this).val();
-        
-        $('.slos-sites-table tbody tr').each(function() {
-            const rowGrade = $(this).data('grade');
-            
-            if (!selectedGrade || rowGrade === selectedGrade) {
-                $(this).show();
-            } else {
-                $(this).hide();
-            }
-        });
-    });
+	// Grade filter
+	$('#slos-filter-grade').on('change', function() {
+		const selectedGrade = $(this).val();
+		
+		$('.slos-sites-table tbody tr').each(function() {
+			const rowGrade = $(this).data('grade');
+			
+			if (!selectedGrade || rowGrade === selectedGrade) {
+				$(this).show();
+			} else {
+				$(this).hide();
+			}
+		});
+	});
 });
 </script>

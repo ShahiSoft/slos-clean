@@ -54,4 +54,3 @@ class LayoutTableCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

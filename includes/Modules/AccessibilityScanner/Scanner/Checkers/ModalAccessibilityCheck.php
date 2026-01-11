@@ -57,4 +57,3 @@ class ModalAccessibilityCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

@@ -50,7 +50,7 @@ class ConsentManagement extends Module {
 	 * @return string Module description
 	 */
 	public function get_description() {
-		return 'GDPR-compliant consent management system with audit logs, user preferences, and compliance tracking.';
+		return 'GDPR-ready consent management system with audit logs, user preferences, and consent tracking.';
 	}
 
 	/**
@@ -96,6 +96,12 @@ class ConsentManagement extends Module {
 
 		// Register shortcodes
 		add_action( 'init', array( $this, 'register_shortcodes' ) );
+
+		// Register Gutenberg blocks
+		add_action( 'init', array( $this, 'register_blocks' ) );
+
+		// Enqueue block editor assets
+		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_block_editor_assets' ) );
 	}
 
 	/**
@@ -107,11 +113,11 @@ class ConsentManagement extends Module {
 	 * @return void
 	 */
 	public function register_admin_menu() {
-		// Register main Compliance page (tabbed interface)
+		// Register main Privacy & Consent page (tabbed interface)
 		add_submenu_page(
 			'shahi-legalflowsuite',
-			__( 'Compliance', 'shahi-legalflowsuite' ),
-			'🛡️ ' . __( 'Compliance', 'shahi-legalflowsuite' ),
+			__( 'Privacy & Consent', 'shahi-legalflowsuite' ),
+			'🛡️ ' . __( 'Privacy & Consent', 'shahi-legalflowsuite' ),
 			'manage_shahi_template',
 			'slos-compliance',
 			array( $this, 'render_main_page' )
@@ -143,6 +149,7 @@ class ConsentManagement extends Module {
 			new \ShahiLegalFlowSuite\API\Cookie_REST_Controller(),
 			new \ShahiLegalFlowSuite\API\Geo_REST_Controller(),
 			new \ShahiLegalFlowSuite\API\Settings_REST_Controller(),
+			new \ShahiLegalFlowSuite\API\Config_REST_Controller(),
 		);
 
 		foreach ( $controllers as $controller ) {
@@ -195,5 +202,53 @@ class ConsentManagement extends Module {
 	 */
 	public function get_settings_url() {
 		return admin_url( 'admin.php?page=slos-compliance&tab=banner-settings' );
+	}
+
+	/**
+	 * Register Gutenberg blocks
+	 *
+	 * @since 3.1.1
+	 * @return void
+	 */
+	public function register_blocks() {
+		// Register embed placeholder block
+		if ( function_exists( 'register_block_type' ) ) {
+			register_block_type(
+				'slos/embed-placeholder',
+				array(
+					'editor_script'   => 'slos-embed-placeholder-block',
+					'render_callback' => array( $this, 'render_embed_placeholder_block' ),
+				)
+			);
+		}
+	}
+
+	/**
+	 * Enqueue block editor assets
+	 *
+	 * @since 3.1.1
+	 * @return void
+	 */
+	public function enqueue_block_editor_assets() {
+		wp_enqueue_script(
+			'slos-embed-placeholder-block',
+			SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/js/blocks/embed-placeholder-block.js',
+			array( 'wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-i18n' ),
+			SHAHI_LEGALFLOWSUITE_VERSION,
+			false
+		);
+	}
+
+	/**
+	 * Render embed placeholder block
+	 *
+	 * @since 3.1.1
+	 * @param array $attributes Block attributes
+	 * @return string Rendered block output
+	 */
+	public function render_embed_placeholder_block( $attributes ) {
+		// Use shortcode to render
+		$shortcode = new \ShahiLegalFlowSuite\Shortcodes\Embed_Placeholder_Shortcode();
+		return $shortcode->render( $attributes );
 	}
 }

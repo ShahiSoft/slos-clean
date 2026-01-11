@@ -45,4 +45,3 @@ class EmptyTableCellCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

@@ -74,17 +74,17 @@ class DSR_Report_Service extends Base_Service {
 
 		// Build report structure
 		$report = array(
-			'period'      => array(
+			'period'        => array(
 				'start' => $start_date,
 				'end'   => $end_date,
 			),
-			'summary'     => $this->get_summary_metrics( $start_date, $end_date ),
-			'by_type'     => $this->get_metrics_by_type( $start_date, $end_date ),
-			'by_status'   => $this->get_metrics_by_status( $start_date, $end_date ),
+			'summary'       => $this->get_summary_metrics( $start_date, $end_date ),
+			'by_type'       => $this->get_metrics_by_type( $start_date, $end_date ),
+			'by_status'     => $this->get_metrics_by_status( $start_date, $end_date ),
 			'by_regulation' => $this->get_metrics_by_regulation( $start_date, $end_date ),
-			'performance' => $this->get_performance_metrics( $start_date, $end_date ),
-			'sla'         => $this->get_sla_metrics( $start_date, $end_date ),
-			'generated_at' => current_time( 'mysql' ),
+			'performance'   => $this->get_performance_metrics( $start_date, $end_date ),
+			'sla'           => $this->get_sla_metrics( $start_date, $end_date ),
+			'generated_at'  => current_time( 'mysql' ),
 		);
 
 		/**
@@ -576,7 +576,7 @@ class DSR_Report_Service extends Base_Service {
 			"Compliance Rate:    %.2f%%\n" .
 			"Currently Overdue:  %d\n\n" .
 			"View detailed report in admin: %s\n\n" .
-			"This is an automated monthly report from %s.",
+			'This is an automated monthly report from %s.',
 			$month,
 			$report['generated_at'],
 			$report['summary']['total_requests'],
@@ -596,9 +596,9 @@ class DSR_Report_Service extends Base_Service {
 		);
 
 		// Attach CSV export
-		$csv_content  = $this->export_to_csv( $report );
-		$upload_dir   = wp_upload_dir();
-		$temp_file    = $upload_dir['basedir'] . '/dsr-report-' . gmdate( 'Y-m', strtotime( $start_date ) ) . '.csv';
+		$csv_content = $this->export_to_csv( $report );
+		$upload_dir  = wp_upload_dir();
+		$temp_file   = $upload_dir['basedir'] . '/dsr-report-' . gmdate( 'Y-m', strtotime( $start_date ) ) . '.csv';
 
 		file_put_contents( $temp_file, $csv_content );
 

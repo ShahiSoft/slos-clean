@@ -62,4 +62,3 @@ function down( $wpdb ) {
 	// $table = $wpdb->prefix . 'shahi_new_table';
 	// $wpdb->query("DROP TABLE IF EXISTS {$table}");
 }
-

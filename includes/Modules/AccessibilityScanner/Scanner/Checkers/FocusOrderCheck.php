@@ -48,4 +48,3 @@ class FocusOrderCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

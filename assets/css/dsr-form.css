@@ -10,8 +10,8 @@
  */
 
 /* ==========================================================================
-   Container
-   ========================================================================== */
+	Container
+	========================================================================== */
 
 .slos-dsr-form-wrapper {
 	max-width: 700px;
@@ -28,7 +28,7 @@
 	border: 1px solid var(--shahi-border-color, #3a4e5c);
 	border-radius: 8px;
 	padding: 30px;
-	box-shadow: var(--shahi-shadow, 0 2px 8px rgba(0, 0, 0, 0.3));
+	box-shadow: var(--shahi-shadow, 0 2px 8px rgb(0 0 0 / 30%));
 }
 
 /* Compact mode */
@@ -48,8 +48,8 @@
 }
 
 /* ==========================================================================
-   Header
-   ========================================================================== */
+	Header
+	========================================================================== */
 
 .slos-dsr-form-header {
 	margin-bottom: 30px;
@@ -78,8 +78,8 @@
 }
 
 /* ==========================================================================
-   Messages
-   ========================================================================== */
+	Messages
+	========================================================================== */
 
 .slos-dsr-success,
 .slos-dsr-error {
@@ -142,14 +142,14 @@
 .slos-dsr-sla-notice {
 	margin-top: 10px;
 	padding: 10px;
-	background: rgba(0, 0, 0, 0.05);
+	background: rgb(0 0 0 / 5%);
 	border-radius: 4px;
 	font-size: 13px;
 }
 
 /* ==========================================================================
-   Form Fields
-   ========================================================================== */
+	Form Fields
+	========================================================================== */
 
 .slos-form-field {
 	margin-bottom: 25px;
@@ -212,7 +212,7 @@
 .slos-form-textarea:focus {
 	outline: none;
 	border-color: var(--shahi-accent-primary, #6b8e4e);
-	box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+	box-shadow: 0 0 0 3px rgb(96 165 250 / 20%);
 }
 
 /* Invalid state */
@@ -225,7 +225,7 @@
 .slos-form-input.slos-field-invalid:focus,
 .slos-form-select.slos-field-invalid:focus,
 .slos-form-textarea.slos-field-invalid:focus {
-	box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+	box-shadow: 0 0 0 3px rgb(239 68 68 / 20%);
 }
 
 /* Select */
@@ -236,8 +236,8 @@
 	background-position: right 15px center;
 	background-size: 12px;
 	padding-right: 40px;
-	-webkit-appearance: none;
-	-moz-appearance: none;
+	appearance: none;
+	appearance: none;
 	appearance: none;
 }
 
@@ -282,8 +282,8 @@
 }
 
 /* ==========================================================================
-   Field Help & Errors
-   ========================================================================== */
+	Field Help & Errors
+	========================================================================== */
 
 .slos-field-help {
 	margin: 8px 0 0;
@@ -330,8 +330,8 @@
 }
 
 /* ==========================================================================
-   Checkbox
-   ========================================================================== */
+	Checkbox
+	========================================================================== */
 
 .slos-form-checkbox-field {
 	margin-bottom: 20px;
@@ -378,8 +378,8 @@
 }
 
 /* ==========================================================================
-   SLA Info Box
-   ========================================================================== */
+	SLA Info Box
+	========================================================================== */
 
 .slos-dsr-sla-info {
 	display: flex;
@@ -420,8 +420,8 @@
 }
 
 /* ==========================================================================
-   Buttons
-   ========================================================================== */
+	Buttons
+	========================================================================== */
 
 .slos-form-actions {
 	margin-top: 30px;
@@ -444,21 +444,21 @@
 	border-radius: 6px;
 	cursor: pointer;
 	transition: background-color 0.2s, transform 0.1s;
-	-webkit-appearance: none;
-	-moz-appearance: none;
+	appearance: none;
+	appearance: none;
 	appearance: none;
 }
 
 .slos-btn-primary {
 	color: #fff;
 	background: #2196f3;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
 }
 
 .slos-btn-primary:hover:not(:disabled) {
 	background: #1976d2;
 	transform: translateY(-1px);
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+	box-shadow: 0 4px 8px rgb(0 0 0 / 15%);
 }
 
 .slos-btn-primary:active:not(:disabled) {
@@ -472,7 +472,7 @@
 
 .slos-btn-primary:focus {
 	outline: none;
-	box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.3);
+	box-shadow: 0 0 0 3px rgb(33 150 243 / 30%);
 }
 
 /* Spinner */
@@ -480,7 +480,7 @@
 	display: inline-block;
 	width: 16px;
 	height: 16px;
-	border: 2px solid rgba(255, 255, 255, 0.3);
+	border: 2px solid rgb(255 255 255 / 30%);
 	border-top-color: #fff;
 	border-radius: 50%;
 	animation: slos-spin 0.8s linear infinite;
@@ -493,8 +493,8 @@
 }
 
 /* ==========================================================================
-   Security Notice
-   ========================================================================== */
+	Security Notice
+	========================================================================== */
 
 .slos-dsr-security-notice {
 	margin-top: 20px;
@@ -521,10 +521,10 @@
 }
 
 /* ==========================================================================
-   Responsive
-   ========================================================================== */
+	Responsive
+	========================================================================== */
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
 	.slos-dsr-form-wrapper {
 		padding: 15px;
 	}
@@ -560,7 +560,7 @@
 	}
 }
 
-@media (max-width: 480px) {
+@media (width <= 480px) {
 	.slos-dsr-form-container {
 		padding: 15px 10px;
 	}
@@ -579,8 +579,8 @@
 }
 
 /* ==========================================================================
-   Accessibility
-   ========================================================================== */
+	Accessibility
+	========================================================================== */
 
 /* Focus visible polyfill */
 .slos-form-input:focus-visible,
@@ -614,7 +614,7 @@
 	}
 
 	.slos-btn-primary {
-		border: 2px solid currentColor;
+		border: 2px solid currentcolor;
 	}
 }
 

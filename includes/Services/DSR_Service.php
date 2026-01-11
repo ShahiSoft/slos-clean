@@ -299,7 +299,7 @@ class DSR_Service extends Base_Service {
 		$existing_notes = ! empty( $request->admin_notes ) ? $request->admin_notes . "\n\n" : '';
 		$timestamp      = current_time( 'mysql' );
 		$author_name    = get_userdata( $author )->display_name ?? "User #{$author}";
-		$new_note       = sprintf( "[%s] %s: %s", $timestamp, $author_name, sanitize_textarea_field( $note ) );
+		$new_note       = sprintf( '[%s] %s: %s', $timestamp, $author_name, sanitize_textarea_field( $note ) );
 
 		// Update admin_notes field
 		$result = $this->repository->update(
@@ -352,7 +352,10 @@ class DSR_Service extends Base_Service {
 			$this->add_error(
 				'invalid_transition',
 				sprintf( 'Invalid status transition from "%s" to "%s"', $request->status, $new_status ),
-				array( 'current' => $request->status, 'target' => $new_status )
+				array(
+					'current' => $request->status,
+					'target'  => $new_status,
+				)
 			);
 			return false;
 		}
@@ -485,9 +488,13 @@ class DSR_Service extends Base_Service {
 		do_action( 'slos_dsr_erasure_execute', $request_id, $request );
 
 		// Update status to in_progress (will be completed after erasure)
-		$this->transition( $request_id, 'in_progress', array(
-			'admin_notes' => sprintf( '[%s] Erasure initiated', current_time( 'mysql' ) ),
-		) );
+		$this->transition(
+			$request_id,
+			'in_progress',
+			array(
+				'admin_notes' => sprintf( '[%s] Erasure initiated', current_time( 'mysql' ) ),
+			)
+		);
 
 		$this->add_message( 'Erasure process initiated. Data anonymization in progress.' );
 
@@ -512,7 +519,7 @@ class DSR_Service extends Base_Service {
 			$date->modify( '+1 day' );
 			// Skip weekends (Saturday=6, Sunday=7)
 			if ( (int) $date->format( 'N' ) < 6 ) {
-				$added++;
+				++$added;
 			}
 		}
 
@@ -580,9 +587,12 @@ class DSR_Service extends Base_Service {
 		}
 
 		// Sort by timestamp descending
-		usort( $timeline, function ( $a, $b ) {
-			return strtotime( $b['timestamp'] ) - strtotime( $a['timestamp'] );
-		} );
+		usort(
+			$timeline,
+			function ( $a, $b ) {
+				return strtotime( $b['timestamp'] ) - strtotime( $a['timestamp'] );
+			}
+		);
 
 		return $timeline;
 	}
@@ -595,13 +605,13 @@ class DSR_Service extends Base_Service {
 	 */
 	private function get_settings(): array {
 		$defaults = array(
-			'sla_gdpr'     => 30,
-			'sla_uk-gdpr'  => 30,
-			'sla_ccpa'     => 45,
-			'sla_lgpd'     => 15,
-			'sla_pipeda'   => 30,
-			'sla_popia'    => 30,
-			'rate_limit'   => 5,
+			'sla_gdpr'    => 30,
+			'sla_uk-gdpr' => 30,
+			'sla_ccpa'    => 45,
+			'sla_lgpd'    => 15,
+			'sla_pipeda'  => 30,
+			'sla_popia'   => 30,
+			'rate_limit'  => 5,
 		);
 
 		$settings = get_option( 'slos_dsr_settings', array() );
@@ -655,7 +665,7 @@ class DSR_Service extends Base_Service {
 			$attempts = 0;
 		}
 
-		$attempts++;
+		++$attempts;
 		set_transient( $transient_key, $attempts, HOUR_IN_SECONDS );
 	}
 
@@ -735,39 +745,45 @@ class DSR_Service extends Base_Service {
 
 		// Open requests (non-terminal statuses)
 		$open_statuses = array( 'pending_verification', 'verified', 'in_progress', 'on_hold' );
-		$placeholders = implode( ', ', array_fill( 0, count( $open_statuses ), '%s' ) );
+		$placeholders  = implode( ', ', array_fill( 0, count( $open_statuses ), '%s' ) );
+		$open_args     = array_merge( array( $table ), $open_statuses );
 
-		//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$open_count = $wpdb->get_var( $wpdb->prepare(
-			"SELECT COUNT(*) FROM {$table} WHERE status IN ({$placeholders})",
-			...$open_statuses
-		) );
+		$open_count = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*) FROM %i WHERE status IN ($placeholders)",
+				...$open_args
+			)
+		);
 
 		// Total requests
-		$total_count = $wpdb->get_var( "SELECT COUNT(*) FROM {$table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$total_count = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table ) );
 
 		// Completed requests
-		$completed_count = $wpdb->get_var( $wpdb->prepare(
-			"SELECT COUNT(*) FROM {$table} WHERE status = %s",
-			'completed'
-		) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$completed_count = $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT COUNT(*) FROM %i WHERE status = %s',
+				$table,
+				'completed'
+			)
+		);
 
 		// SLA compliance: % of completed requests that met deadline
 		// Note: Table uses completed_date and due_date, not completed_at and sla_deadline
-		//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$sla_compliant = $wpdb->get_var( $wpdb->prepare(
-			"SELECT COUNT(*) FROM {$table} WHERE status = %s AND completed_date IS NOT NULL AND completed_date <= due_date",
-			'completed'
-		) );
+		$sla_compliant = $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT COUNT(*) FROM %i WHERE status = %s AND completed_date IS NOT NULL AND completed_date <= due_date',
+				$table,
+				'completed'
+			)
+		);
 
-		$sla_compliance_rate = $completed_count > 0 
-			? round( ( $sla_compliant / $completed_count ) * 100, 1 ) 
+		$sla_compliance_rate = $completed_count > 0
+			? round( ( $sla_compliant / $completed_count ) * 100, 1 )
 			: 100;
 
 		// Queue breakdown by status
-		//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$queue_breakdown = $wpdb->get_results(
-			"SELECT status, COUNT(*) as count FROM {$table} GROUP BY status",
+			$wpdb->prepare( 'SELECT status, COUNT(*) as count FROM %i GROUP BY status', $table ),
 			ARRAY_A
 		);
 
@@ -778,13 +794,14 @@ class DSR_Service extends Base_Service {
 
 		// Requests by type (last 30 days)
 		// Note: Table uses request_date, not submitted_at
-		//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$by_type = $wpdb->get_results( $wpdb->prepare(
-			"SELECT request_type, COUNT(*) as count FROM {$table} 
-			WHERE request_date >= %s 
-			GROUP BY request_type",
-			gmdate( 'Y-m-d H:i:s', strtotime( '-30 days' ) )
-		), ARRAY_A );
+		$by_type = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT request_type, COUNT(*) as count FROM %i WHERE request_date >= %s GROUP BY request_type',
+				$table,
+				gmdate( 'Y-m-d H:i:s', strtotime( '-30 days' ) )
+			),
+			ARRAY_A
+		);
 
 		$type_breakdown = array();
 		foreach ( $by_type as $row ) {
@@ -793,15 +810,15 @@ class DSR_Service extends Base_Service {
 
 		// Overdue requests (past SLA deadline, not completed/rejected)
 		// Note: Table uses due_date, not sla_deadline
-		//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$overdue = $wpdb->get_var( $wpdb->prepare(
-			"SELECT COUNT(*) FROM {$table} 
-			WHERE status NOT IN (%s, %s) 
-			AND due_date < %s",
-			'completed',
-			'rejected',
-			current_time( 'mysql' )
-		) );
+		$overdue = $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT COUNT(*) FROM %i WHERE status NOT IN (%s, %s) AND due_date < %s',
+				$table,
+				'completed',
+				'rejected',
+				current_time( 'mysql' )
+			)
+		);
 
 		return array(
 			'open_requests'       => (int) $open_count,

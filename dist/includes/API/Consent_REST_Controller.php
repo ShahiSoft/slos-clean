@@ -667,27 +667,44 @@ class Consent_REST_Controller extends Base_REST_Controller {
 			$geo_rule_id   = $matching_rule['id'] ?? null;
 		}
 
+		// Phase 3.2: Extract version info and categories for audit logging
+		$banner_version      = $this->sanitize_text_param( $request->get_param( 'banner_version' ) );
+		$policy_version      = $this->sanitize_text_param( $request->get_param( 'policy_version' ) );
+		$categories_accepted = $request->get_param( 'categories_accepted' );
+
+		// Sanitize categories_accepted array
+		if ( ! empty( $categories_accepted ) && is_array( $categories_accepted ) ) {
+			$categories_accepted = array_map( 'sanitize_text_field', $categories_accepted );
+		} else {
+			$categories_accepted = array();
+		}
+
 		// Prepare consent data
 		$data = array(
-			'user_id'      => $user_id,
-			'type'         => $purpose,
-			'status'       => 'accepted',
-			'consent_text' => sprintf(
+			'user_id'        => $user_id,
+			'type'           => $purpose,
+			'status'         => 'accepted',
+			'consent_text'   => sprintf(
 				/* translators: %s: consent purpose */
 				__( 'Consent granted for %s', 'shahi-legalflowsuite' ),
 				$purpose
 			),
-			'source'       => $request->get_param( 'source' ) ?? 'preferences-ui',
-			'geo_rule_id'  => $geo_rule_id,
-			'country_code' => strtoupper( $country_code ),
-			'region'       => strtoupper( $region ),
-			'metadata'     => array(
-				'session_id'   => $session_id,
-				'ip_address'   => $this->get_client_ip(),
-				'user_agent'   => isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '',
-				'geo_rule_id'  => $geo_rule_id,
-				'country_code' => strtoupper( $country_code ),
-				'region'       => strtoupper( $region ),
+			'source'         => $request->get_param( 'source' ) ?? 'preferences-ui',
+			'geo_rule_id'    => $geo_rule_id,
+			'country_code'   => strtoupper( $country_code ),
+			'region'         => strtoupper( $region ),
+			// Phase 3.2: Pass version info for audit logging
+			'banner_version' => $banner_version,
+			'policy_version' => $policy_version,
+			'metadata'       => array(
+				'session_id'          => $session_id,
+				'ip_address'          => $this->get_client_ip(),
+				'user_agent'          => isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '',
+				'geo_rule_id'         => $geo_rule_id,
+				'country_code'        => strtoupper( $country_code ),
+				'region'              => strtoupper( $region ),
+				// Phase 3.2: Store categories_accepted in metadata for comprehensive audit trail
+				'categories_accepted' => $categories_accepted,
 			),
 		);
 
@@ -750,26 +767,43 @@ class Consent_REST_Controller extends Base_REST_Controller {
 			$geo_rule_id   = $matching_rule['id'] ?? null;
 		}
 
+		// Phase 3.2: Extract version info and categories for audit logging
+		$banner_version      = $this->sanitize_text_param( $request->get_param( 'banner_version' ) );
+		$policy_version      = $this->sanitize_text_param( $request->get_param( 'policy_version' ) );
+		$categories_accepted = $request->get_param( 'categories_accepted' );
+
+		// Sanitize categories_accepted array
+		if ( ! empty( $categories_accepted ) && is_array( $categories_accepted ) ) {
+			$categories_accepted = array_map( 'sanitize_text_field', $categories_accepted );
+		} else {
+			$categories_accepted = array();
+		}
+
 		// Prepare consent data
 		$data = array(
-			'user_id'      => $user_id,
-			'type'         => $purpose,
-			'status'       => 'rejected',
-			'consent_text' => sprintf(
+			'user_id'        => $user_id,
+			'type'           => $purpose,
+			'status'         => 'rejected',
+			'consent_text'   => sprintf(
 				/* translators: %s: consent purpose */
 				__( 'Consent rejected for %s', 'shahi-legalflowsuite' ),
 				$purpose
 			),
-			'source'       => $source,
-			'geo_rule_id'  => $geo_rule_id,
-			'country_code' => strtoupper( $country_code ),
-			'region'       => strtoupper( $region ),
-			'metadata'     => array(
-				'ip_address'   => $this->get_client_ip(),
-				'user_agent'   => isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '',
-				'geo_rule_id'  => $geo_rule_id,
-				'country_code' => strtoupper( $country_code ),
-				'region'       => strtoupper( $region ),
+			'source'         => $source,
+			'geo_rule_id'    => $geo_rule_id,
+			'country_code'   => strtoupper( $country_code ),
+			'region'         => strtoupper( $region ),
+			// Phase 3.2: Pass version info for audit logging
+			'banner_version' => $banner_version,
+			'policy_version' => $policy_version,
+			'metadata'       => array(
+				'ip_address'          => $this->get_client_ip(),
+				'user_agent'          => isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '',
+				'geo_rule_id'         => $geo_rule_id,
+				'country_code'        => strtoupper( $country_code ),
+				'region'              => strtoupper( $region ),
+				// Phase 3.2: Store categories_accepted in metadata for comprehensive audit trail
+				'categories_accepted' => $categories_accepted,
 			),
 		);
 

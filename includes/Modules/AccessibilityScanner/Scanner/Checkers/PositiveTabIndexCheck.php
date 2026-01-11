@@ -45,4 +45,3 @@ class PositiveTabIndexCheck extends AbstractCheck {
 		return $issues;
 	}
 }
-

@@ -188,7 +188,17 @@ class Cookie_REST_Controller extends Base_REST_Controller {
 			$site_url = home_url();
 		}
 
+		// Record scan start metadata
+		$this->service->start_scan(
+			'manual',
+			array(
+				'pages_to_scan'  => array( $site_url ),
+				'coverage_level' => 'basic',
+			)
+		);
+
 		$detected_cookies = array();
+		$errors           = array();
 
 		// Perform HTTP request to detect Set-Cookie headers
 		$response = wp_remote_get(
@@ -295,6 +305,15 @@ class Cookie_REST_Controller extends Base_REST_Controller {
 			update_option( 'slos_cookie_scan_time', current_time( 'mysql' ) );
 		}
 
+		// Complete scan metadata
+		$this->service->complete_scan(
+			array(
+				'cookies_found' => count( $detected_cookies ),
+				'errors'        => $errors,
+			)
+		);
+
+		/* translators: %d: number of cookies detected */
 		return $this->success_response(
 			$detected_cookies,
 			sprintf( __( 'Cookie scan completed. %d cookies detected.', 'shahi-legalflowsuite' ), count( $detected_cookies ) )
@@ -361,7 +380,7 @@ class Cookie_REST_Controller extends Base_REST_Controller {
 					$cookie['expires'] = $attr_value;
 					break;
 				case 'max-age':
-					$cookie['expires'] = date( 'Y-m-d H:i:s', time() + intval( $attr_value ) );
+					$cookie['expires'] = gmdate( 'Y-m-d H:i:s', time() + intval( $attr_value ) );
 					break;
 				case 'secure':
 					$cookie['secure'] = true;
