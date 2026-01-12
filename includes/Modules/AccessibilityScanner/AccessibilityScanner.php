@@ -1238,11 +1238,6 @@ class AccessibilityScanner extends Module {
 				}
 			}
 		}
-
-		// Log for debugging (can be removed in production)
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( 'SLOS Accessibility Scanner: Registered ' . count( $active_checkers ) . ' active checks out of ' . count( $check_mapping ) . ' available.' );
-		}
 	}
 
 	/**
