@@ -39,8 +39,8 @@ class Logger {
 	/**
 	 * Log a debug message
 	 *
-	 * @param string $message
-	 * @param array  $context
+	 * @param string $message The message to log.
+	 * @param array  $context Additional context data.
 	 */
 	public static function debug( string $message, array $context = array() ): void {
 		self::log( self::LEVEL_DEBUG, $message, $context );
@@ -49,8 +49,8 @@ class Logger {
 	/**
 	 * Log an info message
 	 *
-	 * @param string $message
-	 * @param array  $context
+	 * @param string $message The message to log.
+	 * @param array  $context Additional context data.
 	 */
 	public static function info( string $message, array $context = array() ): void {
 		self::log( self::LEVEL_INFO, $message, $context );
@@ -59,8 +59,8 @@ class Logger {
 	/**
 	 * Log a warning message
 	 *
-	 * @param string $message
-	 * @param array  $context
+	 * @param string $message The message to log.
+	 * @param array  $context Additional context data.
 	 */
 	public static function warning( string $message, array $context = array() ): void {
 		self::log( self::LEVEL_WARNING, $message, $context );
@@ -69,8 +69,8 @@ class Logger {
 	/**
 	 * Log an error message
 	 *
-	 * @param string $message
-	 * @param array  $context
+	 * @param string $message The message to log.
+	 * @param array  $context Additional context data.
 	 */
 	public static function error( string $message, array $context = array() ): void {
 		self::log( self::LEVEL_ERROR, $message, $context );
@@ -79,8 +79,8 @@ class Logger {
 	/**
 	 * Log a critical message
 	 *
-	 * @param string $message
-	 * @param array  $context
+	 * @param string $message The message to log.
+	 * @param array  $context Additional context data.
 	 */
 	public static function critical( string $message, array $context = array() ): void {
 		self::log( self::LEVEL_CRITICAL, $message, $context );
@@ -89,12 +89,12 @@ class Logger {
 	/**
 	 * Main logging method
 	 *
-	 * @param string $level
-	 * @param string $message
-	 * @param array  $context
+	 * @param string $level   The log level.
+	 * @param string $message The message to log.
+	 * @param array  $context Additional context data.
 	 */
 	private static function log( string $level, string $message, array $context = array() ): void {
-		// Add standard context
+		// Add standard context..
 		$context = array_merge(
 			array(
 				'timestamp'  => current_time( 'mysql' ),
@@ -104,7 +104,7 @@ class Logger {
 			$context
 		);
 
-		// Build log message
+		// Build log message..
 		$log_message = sprintf(
 			'%s [%s] %s %s',
 			self::PREFIX,
@@ -113,22 +113,20 @@ class Logger {
 			self::format_context( $context )
 		);
 
-		// Output to error_log
-		error_log( $log_message );
-
-		// If WP-CLI, also echo
-		if ( defined( 'WP_CLI' ) && WP_CLI ) {
-			\WP_CLI::log( $log_message );
+		// Output to error_log (only if debug logging enabled)..
+		if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+			error_log( $log_message );
 		}
 
-		// Store in option for dashboard (last 100 entries)
+		// Store in option for dashboard (last 100 entries)..
 		self::store_log_entry( $level, $message, $context );
 	}
 
 	/**
 	 * Format context for logging
 	 *
-	 * @param array $context
+	 * @param array $context The context data to format.
 	 * @return string
 	 */
 	private static function format_context( array $context ): string {
@@ -139,7 +137,7 @@ class Logger {
 		$formatted = array();
 		foreach ( $context as $key => $value ) {
 			if ( is_array( $value ) || is_object( $value ) ) {
-				$value = json_encode( $value );
+				$value = wp_json_encode( $value );
 			}
 			$formatted[] = "$key=$value";
 		}
@@ -155,7 +153,7 @@ class Logger {
 	private static function get_request_id(): string {
 		static $request_id = null;
 
-		if ( $request_id === null ) {
+		if ( null === $request_id ) {
 			$request_id = substr( md5( uniqid( '', true ) ), 0, 12 );
 		}
 
@@ -165,13 +163,13 @@ class Logger {
 	/**
 	 * Store log entry for dashboard display
 	 *
-	 * @param string $level
-	 * @param string $message
-	 * @param array  $context
+	 * @param string $level   The log level.
+	 * @param string $message The log message.
+	 * @param array  $context Additional context data.
 	 */
 	private static function store_log_entry( string $level, string $message, array $context ): void {
-		// Only store warnings and above
-		if ( ! in_array( $level, array( self::LEVEL_WARNING, self::LEVEL_ERROR, self::LEVEL_CRITICAL ) ) ) {
+		// Only store warnings and above..
+		if ( ! in_array( $level, array( self::LEVEL_WARNING, self::LEVEL_ERROR, self::LEVEL_CRITICAL ), true ) ) {
 			return;
 		}
 
@@ -184,7 +182,7 @@ class Logger {
 			'timestamp' => current_time( 'mysql' ),
 		);
 
-		// Keep only last 100 entries
+		// Keep only last 100 entries..
 		if ( count( $logs ) > 100 ) {
 			$logs = array_slice( $logs, -100 );
 		}
@@ -195,7 +193,7 @@ class Logger {
 	/**
 	 * Get stored logs
 	 *
-	 * @param int $limit
+	 * @param int $limit Maximum number of logs to return.
 	 * @return array
 	 */
 	public static function get_logs( int $limit = 50 ): array {

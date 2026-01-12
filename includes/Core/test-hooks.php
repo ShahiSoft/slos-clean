@@ -8,17 +8,17 @@
  * @package ShahiLegalFlowSuite
  */
 
-// Load WordPress
+// Load WordPress..
 require_once __DIR__ . '/../../../../../wp-load.php';
 
-// Load Hooks class
+// Load Hooks class..
 require_once __DIR__ . '/Hooks.php';
 
 use ShahiLegalFlowSuite\Core\Hooks;
 
 echo "=== WordPress Hooks Test Suite ===\n\n";
 
-// Test 1: Verify Hooks class exists
+// Test 1: Verify Hooks class exists..
 echo 'Test 1: Hooks class exists... ';
 if ( class_exists( 'ShahiLegalFlowSuite\Core\Hooks' ) ) {
 	echo "PASS\n";
@@ -27,7 +27,7 @@ if ( class_exists( 'ShahiLegalFlowSuite\Core\Hooks' ) ) {
 	exit( 1 );
 }
 
-// Test 2: Get action hooks
+// Test 2: Get action hooks..
 echo 'Test 2: Get action hooks... ';
 $action_hooks = Hooks::get_action_hooks();
 if ( is_array( $action_hooks ) && count( $action_hooks ) === 10 ) {
@@ -36,7 +36,7 @@ if ( is_array( $action_hooks ) && count( $action_hooks ) === 10 ) {
 	echo 'FAIL (Expected 10, got ' . count( $action_hooks ) . ")\n";
 }
 
-// Test 3: Get filter hooks
+// Test 3: Get filter hooks..
 echo 'Test 3: Get filter hooks... ';
 $filter_hooks = Hooks::get_filter_hooks();
 if ( is_array( $filter_hooks ) && count( $filter_hooks ) === 13 ) {
@@ -45,7 +45,7 @@ if ( is_array( $filter_hooks ) && count( $filter_hooks ) === 13 ) {
 	echo 'FAIL (Expected 13, got ' . count( $filter_hooks ) . ")\n";
 }
 
-// Test 4: Verify hook structure
+// Test 4: Verify hook structure..
 echo 'Test 4: Verify hook structure... ';
 $test_hook = $action_hooks['slos_consent_recorded'] ?? null;
 if ( $test_hook &&
@@ -57,7 +57,7 @@ if ( $test_hook &&
 	echo "FAIL\n";
 }
 
-// Test 5: Test get_hooks_by_category
+// Test 5: Test get_hooks_by_category..
 echo 'Test 5: Get hooks by category... ';
 $consent_hooks = Hooks::get_hooks_by_category( 'consent' );
 if ( is_array( $consent_hooks ) && count( $consent_hooks ) > 0 ) {
@@ -66,7 +66,7 @@ if ( is_array( $consent_hooks ) && count( $consent_hooks ) > 0 ) {
 	echo "FAIL\n";
 }
 
-// Test 6: Verify action hooks can be registered
+// Test 6: Verify action hooks can be registered..
 echo 'Test 6: Register action hook... ';
 $test_fired = false;
 add_action(
@@ -76,7 +76,7 @@ add_action(
 	}
 );
 
-// Simulate the hook firing
+// Simulate the hook firing..
 do_action(
 	'slos_consent_recorded',
 	123,
@@ -92,7 +92,7 @@ if ( $test_fired ) {
 	echo "FAIL\n";
 }
 
-// Test 7: Verify filter hooks can be registered
+// Test 7: Verify filter hooks can be registered..
 echo 'Test 7: Register filter hook... ';
 add_filter(
 	'slos_consent_data_before_save',
@@ -112,7 +112,7 @@ if ( isset( $filtered_data['test_field'] ) && $filtered_data['test_field'] === '
 	echo "FAIL\n";
 }
 
-// Test 8: Verify generate_documentation
+// Test 8: Verify generate_documentation..
 echo 'Test 8: Generate documentation... ';
 $documentation = Hooks::generate_documentation();
 if ( is_string( $documentation ) && strlen( $documentation ) > 1000 ) {
@@ -121,7 +121,7 @@ if ( is_string( $documentation ) && strlen( $documentation ) > 1000 ) {
 	echo "FAIL\n";
 }
 
-// Test 9: Verify all action hooks are documented
+// Test 9: Verify all action hooks are documented..
 echo 'Test 9: All action hooks documented... ';
 $expected_actions = array(
 	'slos_consent_recorded',
@@ -148,7 +148,7 @@ if ( $all_documented ) {
 	echo "PASS\n";
 }
 
-// Test 10: Verify all filter hooks are documented
+// Test 10: Verify all filter hooks are documented..
 echo 'Test 10: All filter hooks documented... ';
 $expected_filters = array(
 	'slos_consent_data_before_save',
@@ -178,7 +178,7 @@ if ( $all_documented ) {
 	echo "PASS\n";
 }
 
-// Test 11: Test category filtering
+// Test 11: Test category filtering..
 echo 'Test 11: Category filtering... ';
 $api_hooks      = Hooks::get_hooks_by_category( 'api' );
 $security_hooks = Hooks::get_hooks_by_category( 'security' );
@@ -189,7 +189,7 @@ if ( count( $api_hooks ) > 0 && count( $security_hooks ) > 0 ) {
 	echo "FAIL\n";
 }
 
-// Test 12: Verify hook examples are present
+// Test 12: Verify hook examples are present..
 echo 'Test 12: Hook examples present... ';
 $has_examples = true;
 foreach ( $action_hooks as $hook_name => $hook_data ) {
@@ -212,7 +212,7 @@ if ( $has_examples ) {
 	echo "PASS\n";
 }
 
-// Summary
+// Summary..
 echo "\n=== Test Summary ===\n";
 echo 'Total Action Hooks: ' . count( $action_hooks ) . "\n";
 echo 'Total Filter Hooks: ' . count( $filter_hooks ) . "\n";

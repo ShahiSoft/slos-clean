@@ -15,7 +15,7 @@ namespace ShahiLegalFlowSuite\Services;
 
 use ShahiLegalFlowSuite\Database\Repositories\Consent_Repository;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -77,19 +77,19 @@ class Consent_Export_Service extends Base_Service {
 
 		$args = wp_parse_args( $args, $defaults );
 
-		// Validate format
+		// Validate format..
 		$allowed_formats = array( 'csv', 'json', 'pdf' );
 		if ( ! in_array( $args['format'], $allowed_formats, true ) ) {
 			$args['format'] = 'csv';
 		}
 
-		// Get consent records
+		// Get consent records..
 		$items = $this->repository->find_export( $args );
 
-		// Apply filter for custom processing
+		// Apply filter for custom processing..
 		$items = apply_filters( 'slos_export_items', $items, $args );
 
-		// Export based on format
+		// Export based on format..
 		switch ( $args['format'] ) {
 			case 'json':
 				return $this->export_json( $items );
@@ -115,7 +115,7 @@ class Consent_Export_Service extends Base_Service {
 			return '';
 		}
 
-		// CSV Header
+		// CSV Header..
 		fputcsv(
 			$fh,
 			array(
@@ -131,7 +131,7 @@ class Consent_Export_Service extends Base_Service {
 			)
 		);
 
-		// CSV Rows
+		// CSV Rows..
 		foreach ( $items as $item ) {
 			fputcsv(
 				$fh,
@@ -164,7 +164,7 @@ class Consent_Export_Service extends Base_Service {
 	 * @return string JSON content
 	 */
 	private function export_json( array $items ): string {
-		// Unserialize metadata for proper JSON encoding
+		// Unserialize metadata for proper JSON encoding..
 		$processed_items = array_map(
 			function ( $item ) {
 				if ( ! empty( $item['metadata'] ) ) {
@@ -261,7 +261,7 @@ class Consent_Export_Service extends Base_Service {
 				continue;
 			}
 
-			// Prepare consent data
+			// Prepare consent data..
 			$consent_data = array(
 				'user_id'    => (int) $row['user_id'],
 				'type'       => sanitize_text_field( $row['type'] ),
@@ -272,13 +272,13 @@ class Consent_Export_Service extends Base_Service {
 				'created_at' => ! empty( $row['created_at'] ) ? $row['created_at'] : current_time( 'mysql' ),
 			);
 
-			// Create consent record
+			// Create consent record..
 			$result = $this->repository->create( $consent_data );
 
 			if ( $result ) {
 				++$imported;
 
-				// Fire action for successful import
+				// Fire action for successful import..
 				do_action( 'slos_consent_imported', $result, $consent_data );
 			} else {
 				++$skipped;
@@ -305,7 +305,7 @@ class Consent_Export_Service extends Base_Service {
 	 * @return true|\WP_Error True if valid, WP_Error otherwise
 	 */
 	private function validate_import_row( array $row ) {
-		// Required fields
+		// Required fields..
 		if ( empty( $row['user_id'] ) ) {
 			return new \WP_Error(
 				'missing_user_id',
@@ -320,7 +320,7 @@ class Consent_Export_Service extends Base_Service {
 			);
 		}
 
-		// Validate user exists
+		// Validate user exists..
 		$user = get_user_by( 'id', (int) $row['user_id'] );
 		if ( ! $user ) {
 			return new \WP_Error(
@@ -329,7 +329,7 @@ class Consent_Export_Service extends Base_Service {
 			);
 		}
 
-		// Validate consent type
+		// Validate consent type..
 		$allowed_types = array( 'necessary', 'functional', 'analytics', 'marketing', 'personalization' );
 		if ( ! in_array( $row['type'], $allowed_types, true ) ) {
 			return new \WP_Error(
@@ -338,7 +338,7 @@ class Consent_Export_Service extends Base_Service {
 			);
 		}
 
-		// Validate status
+		// Validate status..
 		$allowed_statuses = array( 'pending', 'accepted', 'rejected', 'withdrawn' );
 		if ( ! empty( $row['status'] ) && ! in_array( $row['status'], $allowed_statuses, true ) ) {
 			return new \WP_Error(
@@ -384,7 +384,7 @@ class Consent_Export_Service extends Base_Service {
 			);
 		}
 
-		// Normalize headers
+		// Normalize headers..
 		$header = array_map( 'strtolower', $header );
 		$header = array_map(
 			function ( $h ) {
@@ -443,7 +443,7 @@ class Consent_Export_Service extends Base_Service {
 			return false;
 		}
 
-		// Save to uploads directory
+		// Save to uploads directory..
 		$upload_dir = wp_upload_dir();
 		$export_dir = trailingslashit( $upload_dir['basedir'] ) . 'slos-exports/';
 
@@ -461,10 +461,10 @@ class Consent_Export_Service extends Base_Service {
 		$result    = file_put_contents( $file_path, $data );
 
 		if ( false !== $result ) {
-			// Fire action for successful export
+			// Fire action for successful export..
 			do_action( 'slos_scheduled_export_completed', $file_path, $args );
 
-			// Optional: Send email notification to admin
+			// Optional: Send email notification to admin..
 			$this->send_export_notification( $file_path );
 
 			return true;

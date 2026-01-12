@@ -16,12 +16,12 @@ namespace ShahiLegalFlowSuite\Services;
 use ShahiLegalFlowSuite\Database\Repositories\Consent_Repository;
 use ShahiLegalFlowSuite\Admin\Settings;
 
-// Exit if accessed directly.
+// Exit if accessed directly...
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Load constants
+// Load constants..
 require_once SHAHI_LEGALFLOWSUITE_PATH . 'config/compliance-constants.php';
 
 /**
@@ -77,7 +77,7 @@ class Compliance_Score_Calculator extends Base_Service {
 
 		$dimensions = array();
 
-		// Calculate each dimension
+		// Calculate each dimension..
 		$dimensions[ SLOS_DIMENSION_COOKIES ]            = $this->calculate_cookies_dimension();
 		$dimensions[ SLOS_DIMENSION_LEGAL_DOCS ]         = $this->calculate_legal_docs_dimension();
 		$dimensions[ SLOS_DIMENSION_GEO_RULES ]          = $this->calculate_geo_rules_dimension();
@@ -85,7 +85,7 @@ class Compliance_Score_Calculator extends Base_Service {
 		$dimensions[ SLOS_DIMENSION_SCANNING_FRESHNESS ] = $this->calculate_scanning_freshness_dimension();
 		$dimensions[ SLOS_DIMENSION_BANNER_CONFIG ]      = $this->calculate_banner_config_dimension();
 
-		// Calculate weighted aggregate
+		// Calculate weighted aggregate..
 		$weights   = slos_get_dimension_weights();
 		$aggregate = 0;
 
@@ -97,7 +97,7 @@ class Compliance_Score_Calculator extends Base_Service {
 
 		$readiness_score = round( $aggregate );
 
-		// Map to grade
+		// Map to grade..
 		$grade_info = $this->map_score_to_grade( $readiness_score );
 
 		$result = array(
@@ -130,17 +130,17 @@ class Compliance_Score_Calculator extends Base_Service {
 	 * }
 	 */
 	public function calculate_ops_readiness( bool $use_cache = true ): array {
-		// Get existing 6 compliance dimensions
+		// Get existing 6 compliance dimensions..
 		$compliance_result = $this->calculate( $use_cache );
 		$dimensions        = $compliance_result['dimensions'];
 
-		// Add DSR dimension
+		// Add DSR dimension..
 		$dimensions['dsr'] = $this->calculate_dsr_dimension();
 
-		// Add Accessibility dimension
+		// Add Accessibility dimension..
 		$dimensions['accessibility'] = $this->calculate_accessibility_dimension();
 
-		// Define weights for 8 dimensions (total = 1.0)
+		// Define weights for 8 dimensions (total = 1.0)..
 		$ops_weights = array(
 			SLOS_DIMENSION_COOKIES            => 0.20, // 20% - Cookie compliance
 			SLOS_DIMENSION_LEGAL_DOCS         => 0.20, // 20% - Legal documentation
@@ -152,7 +152,7 @@ class Compliance_Score_Calculator extends Base_Service {
 			'accessibility'                   => 0.15, // 15% - Accessibility compliance
 		);
 
-		// Calculate weighted aggregate
+		// Calculate weighted aggregate..
 		$aggregate = 0;
 
 		foreach ( $dimensions as $dimension => $data ) {
@@ -163,7 +163,7 @@ class Compliance_Score_Calculator extends Base_Service {
 
 		$ops_readiness_score = round( $aggregate );
 
-		// Map to grade
+		// Map to grade..
 		$grade_info = $this->map_score_to_grade( $ops_readiness_score );
 
 		return array(
@@ -189,31 +189,31 @@ class Compliance_Score_Calculator extends Base_Service {
 	 * }
 	 */
 	private function calculate_dsr_dimension(): array {
-		// Get DSR statistics
+		// Get DSR statistics..
 		$dsr_service = new DSR_Service();
 		$stats       = $dsr_service->get_ops_statistics();
 
 		$score = 0;
 
-		// If no requests exist, give baseline score of 80 (ready but unproven)
+		// If no requests exist, give baseline score of 80 (ready but unproven)..
 		if ( $stats['total_requests'] === 0 ) {
 			$score = 80;
 		} else {
-			// Base score from SLA compliance (70% weight)
+			// Base score from SLA compliance (70% weight)..
 			$sla_score = $stats['sla_compliance_rate'];
 
-			// Calculate overdue penalty (30% weight)
-			// Each overdue request reduces score
+			// Calculate overdue penalty (30% weight)..
+			// Each overdue request reduces score..
 			$overdue_penalty = 0;
 			if ( $stats['overdue_requests'] > 0 ) {
-				// Penalty scales with percentage of open requests that are overdue
+				// Penalty scales with percentage of open requests that are overdue..
 				$overdue_rate    = $stats['open_requests'] > 0
 					? ( $stats['overdue_requests'] / $stats['open_requests'] )
 					: 0;
 				$overdue_penalty = round( $overdue_rate * 30 ); // Max 30 point penalty
 			}
 
-			// Combine SLA score and overdue penalty
+			// Combine SLA score and overdue penalty..
 			$score = round( ( $sla_score * 0.70 ) + ( ( 100 - $overdue_penalty ) * 0.30 ) );
 			$score = max( 0, min( 100, $score ) ); // Clamp to 0-100
 		}
@@ -247,28 +247,28 @@ class Compliance_Score_Calculator extends Base_Service {
 	 * }
 	 */
 	private function calculate_accessibility_dimension(): array {
-		// Get Accessibility statistics
+		// Get Accessibility statistics..
 		$scanner = new \ShahiLegalFlowSuite\Modules\AccessibilityScanner\AccessibilityScanner();
 		$stats   = $scanner->get_ops_statistics();
 
 		$score = 0;
 
-		// If never scanned, score is 0
+		// If never scanned, score is 0..
 		if ( $stats['scan_freshness'] === 'never' ) {
 			$score = 0;
 		} else {
-			// Base score from accessibility scanner score (60% weight)
+			// Base score from accessibility scanner score (60% weight)..
 			$base_score = $stats['accessibility_score'];
 
-			// Calculate issue severity penalty (40% weight)
+			// Calculate issue severity penalty (40% weight)..
 			$severity_score = 100;
 			if ( $stats['total_issues'] > 0 ) {
-				// Critical issues have highest impact
+				// Critical issues have highest impact..
 				$critical_weight = 0.60; // 60% of severity weight
 				$warning_weight  = 0.30; // 30% of severity weight
 				$notice_weight   = 0.10; // 10% of severity weight
 
-				// Calculate penalty based on issue distribution
+				// Calculate penalty based on issue distribution..
 				$critical_penalty = min( 100, $stats['critical_issues'] * 5 ); // 5 points per critical
 				$warning_penalty  = min( 50, $stats['warning_issues'] * 2 );   // 2 points per warning
 				$notice_penalty   = min( 20, $stats['notice_issues'] * 1 );    // 1 point per notice
@@ -281,19 +281,19 @@ class Compliance_Score_Calculator extends Base_Service {
 				$severity_score = max( 0, $severity_score );
 			}
 
-			// Combine base score and severity score
+			// Combine base score and severity score..
 			$score = round( ( $base_score * 0.60 ) + ( $severity_score * 0.40 ) );
 
-			// Apply scan freshness penalty
+			// Apply scan freshness penalty..
 			switch ( $stats['scan_freshness'] ) {
 				case 'stale':
 					$score = round( $score * 0.85 ); // 15% penalty for stale scans
 					break;
 				case 'recent':
-					// No penalty
+					// No penalty..
 					break;
 				case 'fresh':
-					// No penalty, best case
+					// No penalty, best case..
 					break;
 			}
 
@@ -373,7 +373,7 @@ class Compliance_Score_Calculator extends Base_Service {
 		$detected_cookies = get_option( 'slos_detected_cookies', array() );
 		$scan_time        = get_option( 'slos_cookie_scan_time', null );
 
-		// Use detected_cookies if inventory is empty (backward compatibility)
+		// Use detected_cookies if inventory is empty (backward compatibility)..
 		$cookies = ! empty( $inventory ) ? $inventory : $detected_cookies;
 
 		$total         = count( $cookies );
@@ -383,37 +383,37 @@ class Compliance_Score_Calculator extends Base_Service {
 		$unknown       = 0;
 
 		if ( 0 === $total && null === $scan_time ) {
-			// Never scanned
+			// Never scanned..
 			$score = 0;
 		} elseif ( 0 === $total && null !== $scan_time ) {
-			// Scan completed, no cookies found
+			// Scan completed, no cookies found..
 			$score = 100;
 		} else {
-			// Count categorized and uncategorized cookies
+			// Count categorized and uncategorized cookies..
 			foreach ( $cookies as $cookie ) {
 				$category = isset( $cookie['category'] ) ? strtolower( $cookie['category'] ) : 'unknown';
 				$status   = isset( $cookie['status'] ) ? strtolower( $cookie['status'] ) : '';
 
-				// Check if cookie is categorized
+				// Check if cookie is categorized..
 				if ( ! empty( $category ) && 'unknown' !== $category && 'uncategorized' !== $status ) {
 					++$categorized;
 				} else {
 					++$uncategorized;
 				}
 
-				// Count unknown providers
+				// Count unknown providers..
 				if ( empty( $cookie['provider'] ) || 'unknown' === strtolower( $cookie['provider'] ?? '' ) || 'unknown' === strtolower( $cookie['vendor'] ?? '' ) ) {
 					++$unknown;
 				}
 			}
 
-			// Calculate base score from categorization
+			// Calculate base score from categorization..
 			$score = $total > 0 ? round( ( $categorized / $total ) * 100 ) : 0;
 
-			// Apply penalty for unknown providers (5 points per unknown, less aggressive than before)
+			// Apply penalty for unknown providers (5 points per unknown, less aggressive than before)..
 			$provider_penalty = $unknown * 5;
 
-			// Apply penalty for uncategorized cookies (proportional - more severe)
+			// Apply penalty for uncategorized cookies (proportional - more severe)..
 			$uncategorized_penalty = $uncategorized > 0 ? round( ( $uncategorized / $total ) * 30 ) : 0;
 
 			$score = max( 0, $score - $provider_penalty - $uncategorized_penalty );
@@ -444,7 +444,7 @@ class Compliance_Score_Calculator extends Base_Service {
 		$hub_service = new Document_Hub_Service();
 		$cards       = $hub_service->get_document_cards();
 
-		// Focus on core compliance documents
+		// Focus on core compliance documents..
 		$required_docs = array( 'cookie-policy', 'privacy-policy', 'accessibility-statement' );
 		$total         = count( $required_docs );
 		$published     = 0;
@@ -474,10 +474,10 @@ class Compliance_Score_Calculator extends Base_Service {
 			}
 		}
 
-		// Base score: percentage of published, non-stale docs
+		// Base score: percentage of published, non-stale docs..
 		$score = $total > 0 ? round( ( $published / $total ) * 100 ) : 100;
 
-		// Penalty for stale documents (-10% per stale doc)
+		// Penalty for stale documents (-10% per stale doc)..
 		$staleness_penalty = $stale * 10;
 		$score             = max( 0, $score - $staleness_penalty );
 
@@ -505,14 +505,14 @@ class Compliance_Score_Calculator extends Base_Service {
 	 * @return array
 	 */
 	private function calculate_geo_rules_dimension(): array {
-		// Use Geo_Rule_Matcher for rule retrieval.
+		// Use Geo_Rule_Matcher for rule retrieval...
 		require_once SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'includes/Services/Geo_Rule_Matcher.php';
 		$matcher   = new \ShahiLegalFlowSuite\Services\Geo_Rule_Matcher();
 		$geo_rules = $matcher->get_active_rules();
 
 		$score = 0;
 
-		// Get configured regions.
+		// Get configured regions...
 		$configured_regions = array();
 		$legal_doc_coverage = 0;
 		$legal_doc_total    = 0;
@@ -521,11 +521,11 @@ class Compliance_Score_Calculator extends Base_Service {
 			$countries          = $rule['countries'] ?? array();
 			$configured_regions = array_merge( $configured_regions, $countries );
 
-			// Check legal document bindings.
+			// Check legal document bindings...
 			if ( ! empty( $rule['legal_docs'] ) ) {
 				foreach ( $rule['legal_docs'] as $doc_key ) {
 					++$legal_doc_total;
-					// Check if document is published.
+					// Check if document is published...
 					$doc_status = $this->get_legal_doc_status( $doc_key );
 					if ( 'published' === $doc_status || 'active' === $doc_status ) {
 						++$legal_doc_coverage;
@@ -536,25 +536,25 @@ class Compliance_Score_Calculator extends Base_Service {
 
 		$configured_regions = array_unique( $configured_regions );
 
-		// Get detected traffic regions (last 30 days).
+		// Get detected traffic regions (last 30 days)...
 		$detected_regions = $this->get_distinct_consent_regions( 30 );
 
 		if ( empty( $detected_regions ) ) {
-			// No traffic data yet - check if at least 1 rule is configured.
+			// No traffic data yet - check if at least 1 rule is configured...
 			$base_score = count( $configured_regions ) > 0 ? 50 : 0;
 		} else {
-			// Calculate coverage.
+			// Calculate coverage...
 			$covered   = array();
 			$wildcards = array( '*', 'GLOBAL' );
 
 			foreach ( $detected_regions as $detected ) {
-				// Check for direct match.
+				// Check for direct match...
 				if ( in_array( $detected, $configured_regions, true ) ) {
 					$covered[] = $detected;
 					continue;
 				}
 
-				// Check for wildcard match.
+				// Check for wildcard match...
 				foreach ( $wildcards as $wildcard ) {
 					if ( in_array( $wildcard, $configured_regions, true ) ) {
 						$covered[] = $detected;
@@ -562,7 +562,7 @@ class Compliance_Score_Calculator extends Base_Service {
 					}
 				}
 
-				// Check for EU-ALL or EEA-ALL.
+				// Check for EU-ALL or EEA-ALL...
 				if ( in_array( 'EU-ALL', $configured_regions, true ) || in_array( 'EEA-ALL', $configured_regions, true ) ) {
 					if ( $matcher->is_eea_country( $detected ) ) {
 						$covered[] = $detected;
@@ -575,7 +575,7 @@ class Compliance_Score_Calculator extends Base_Service {
 			$base_score = round( $coverage * 100 );
 		}
 
-		// Apply legal document bonus (up to 10 points).
+		// Apply legal document bonus (up to 10 points)...
 		$legal_doc_bonus = 0;
 		if ( $legal_doc_total > 0 ) {
 			$legal_doc_ratio = $legal_doc_coverage / $legal_doc_total;
@@ -634,7 +634,7 @@ class Compliance_Score_Calculator extends Base_Service {
 				$has_country  = ! empty( $consent->country_code );
 				$has_language = ! empty( $consent->language );
 
-				// Check for banner_version in metadata
+				// Check for banner_version in metadata..
 				$metadata = $consent->metadata ?? array();
 				if ( is_string( $metadata ) ) {
 					$metadata = json_decode( $metadata, true );
@@ -755,7 +755,7 @@ class Compliance_Score_Calculator extends Base_Service {
 			}
 		}
 
-		// Fallback to F grade
+		// Fallback to F grade..
 		return $mappings[ count( $mappings ) - 1 ];
 	}
 
@@ -783,7 +783,7 @@ class Compliance_Score_Calculator extends Base_Service {
 
 		$table = $wpdb->prefix . 'slos_consent';
 
-		// Check if country_code column exists (migration may not have run yet).
+		// Check if country_code column exists (migration may not have run yet)...
 		$columns      = $wpdb->get_results( $wpdb->prepare( 'SHOW COLUMNS FROM %i', $table ) );
 		$column_names = array_map(
 			function ( $col ) {
@@ -793,7 +793,7 @@ class Compliance_Score_Calculator extends Base_Service {
 		);
 
 		if ( ! in_array( 'country_code', $column_names, true ) ) {
-			// Column doesn't exist yet, return empty array
+			// Column doesn't exist yet, return empty array..
 			return array();
 		}
 

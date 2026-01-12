@@ -51,7 +51,7 @@ class Document_Hub_Service {
 		$this->doc_repository     = new Legal_Doc_Repository();
 		$this->profile_repository = Company_Profile_Repository::get_instance();
 
-		// Hook into cookie updates to mark documents stale
+		// Hook into cookie updates to mark documents stale..
 		add_action( 'slos_cookies_updated', array( $this, 'mark_cookie_dependent_docs_stale' ) );
 	}
 
@@ -68,7 +68,7 @@ class Document_Hub_Service {
 		$cards = array();
 
 		foreach ( $types as $type_key => $config ) {
-			// Filter out dormant documents if active list is defined
+			// Filter out dormant documents if active list is defined..
 			if ( defined( 'SLOS_ACTIVE_LEGAL_DOCS' ) && is_array( SLOS_ACTIVE_LEGAL_DOCS ) ) {
 				if ( ! in_array( $type_key, SLOS_ACTIVE_LEGAL_DOCS, true ) ) {
 					continue; // Skip dormant documents
@@ -101,9 +101,9 @@ class Document_Hub_Service {
 	 */
 	public function get_document_types() {
 		return array(
-			// ========================================
-			// CORE LEGAL DOCUMENTS
-			// ========================================
+			// ========================================..
+			// CORE LEGAL DOCUMENTS..
+			// ========================================..
 			'privacy-policy'            => array(
 				'title'       => __( 'Privacy Policy', 'shahi-legalflowsuite' ),
 				'description' => __( 'Mandatory for websites collecting user data. Covers GDPR, CCPA, and other privacy laws.', 'shahi-legalflowsuite' ),
@@ -147,9 +147,9 @@ class Document_Hub_Service {
 				'category'    => 'compliance',
 			),
 
-			// ========================================
-			// BUSINESS OPERATIONS
-			// ========================================
+			// ========================================..
+			// BUSINESS OPERATIONS..
+			// ========================================..
 			'contact-imprint'           => array(
 				'title'       => __( 'Contact / Imprint', 'shahi-legalflowsuite' ),
 				'description' => __( 'Legal contact details, business registration info, and responsible parties. Required in EU.', 'shahi-legalflowsuite' ),
@@ -175,9 +175,9 @@ class Document_Hub_Service {
 				'category'    => 'business',
 			),
 
-			// ========================================
-			// USER CONDUCT
-			// ========================================
+			// ========================================..
+			// USER CONDUCT..
+			// ========================================..
 			'terms-of-use'              => array(
 				'title'       => __( 'Terms of Use', 'shahi-legalflowsuite' ),
 				'description' => __( 'Simplified usage rules focusing on user conduct and site usage guidelines.', 'shahi-legalflowsuite' ),
@@ -197,9 +197,9 @@ class Document_Hub_Service {
 				'category'    => 'compliance',
 			),
 
-			// ========================================
-			// E-COMMERCE
-			// ========================================
+			// ========================================..
+			// E-COMMERCE..
+			// ========================================..
 			'refund-policy'             => array(
 				'title'       => __( 'Refund & Return Policy', 'shahi-legalflowsuite' ),
 				'description' => __( 'Policy regarding refunds and returns for products and services.', 'shahi-legalflowsuite' ),
@@ -237,9 +237,9 @@ class Document_Hub_Service {
 				'category'    => 'ecommerce',
 			),
 
-			// ========================================
-			// SOFTWARE & API
-			// ========================================
+			// ========================================..
+			// SOFTWARE & API..
+			// ========================================..
 			'eula'                      => array(
 				'title'       => __( 'End User License Agreement', 'shahi-legalflowsuite' ),
 				'description' => __( 'Grants users permission to use software, apps, or digital products.', 'shahi-legalflowsuite' ),
@@ -259,9 +259,9 @@ class Document_Hub_Service {
 				'category'    => 'software',
 			),
 
-			// ========================================
-			// SPECIALIZED
-			// ========================================
+			// ========================================..
+			// SPECIALIZED..
+			// ========================================..
 			'nda'                       => array(
 				'title'       => __( 'Non-Disclosure Agreement', 'shahi-legalflowsuite' ),
 				'description' => __( 'Protects confidential information shared between parties.', 'shahi-legalflowsuite' ),
@@ -336,11 +336,11 @@ class Document_Hub_Service {
 			);
 		}
 
-		// Use Profile_Validator for accurate completion calculation
+		// Use Profile_Validator for accurate completion calculation..
 		$validator    = new Profile_Validator();
 		$completeness = $validator->calculate_completion( $profile );
 
-		// Get updated timestamp from profile meta
+		// Get updated timestamp from profile meta..
 		$meta = $this->profile_repository->get_profile_meta();
 
 		return array(
@@ -361,16 +361,16 @@ class Document_Hub_Service {
 		global $wpdb;
 		$docs_table = $wpdb->prefix . 'slos_documents';
 
-		// Count total generated documents (excluding not_generated status)
+		// Count total generated documents (excluding not_generated status)..
 		$total_generated = $wpdb->get_var(
 			"SELECT COUNT(*) FROM {$docs_table} WHERE status != 'not_generated'"
 		);
 
-		// Count documents that need attention (outdated)
+		// Count documents that need attention (outdated)..
 		$outdated_docs   = $this->get_outdated_documents();
 		$needs_attention = count( $outdated_docs );
 
-		// Count up-to-date published documents
+		// Count up-to-date published documents..
 		$up_to_date = $wpdb->get_var(
 			"SELECT COUNT(*) FROM {$docs_table} WHERE status = 'published'"
 		) - $needs_attention;
@@ -396,7 +396,7 @@ class Document_Hub_Service {
 		global $wpdb;
 		$docs_table = $wpdb->prefix . 'slos_documents';
 
-		// Get profile last updated timestamp
+		// Get profile last updated timestamp..
 		$profile = $this->profile_repository->get_profile();
 		if ( ! $profile || empty( $profile['updated_at'] ) ) {
 			return array();
@@ -404,7 +404,7 @@ class Document_Hub_Service {
 
 		$profile_updated = $profile['updated_at'];
 
-		// Find documents generated before profile was last updated
+		// Find documents generated before profile was last updated..
 		$outdated = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT id, doc_type, title, updated_at 
@@ -429,7 +429,7 @@ class Document_Hub_Service {
 	 * @return void
 	 */
 	public function mark_cookie_dependent_docs_stale( $cookies = array() ) {
-		// Documents that depend on cookie data
+		// Documents that depend on cookie data..
 		$cookie_dependent = array( 'cookie-policy', 'privacy-policy' );
 
 		foreach ( $cookie_dependent as $doc_type ) {

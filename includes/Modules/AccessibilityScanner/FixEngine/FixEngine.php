@@ -24,25 +24,45 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 final class FixEngine {
 
-	/** @var FixerCollection */
+	/**
+	 * Collection of available fixers.
+	 *
+	 * @var FixerCollection
+	 */
 	private $fixers;
 
-	/** @var FixHistoryRepository */
+	/**
+	 * Repository for persisting fix history.
+	 *
+	 * @var FixHistoryRepository
+	 */
 	private $repository;
 
-	/** @var FixSession|null */
+	/**
+	 * Currently active fix session.
+	 *
+	 * @var FixSession|null
+	 */
 	private $current_session = null;
 
-	/** @var bool */
+	/**
+	 * Whether the engine has been initialized.
+	 *
+	 * @var bool
+	 */
 	private $initialized = false;
 
-	/** @var array Callbacks for progress updates */
+	/**
+	 * Callbacks for progress updates.
+	 *
+	 * @var array
+	 */
 	private $progress_callbacks = array();
 
 	/**
 	 * Constructor
 	 *
-	 * @param FixHistoryRepository|null $repository
+	 * @param FixHistoryRepository|null $repository Optional repository instance for persistence.
 	 */
 	public function __construct( ?FixHistoryRepository $repository = null ) {
 		$this->fixers     = new FixerCollection();
@@ -59,15 +79,15 @@ final class FixEngine {
 			return $this;
 		}
 
-		// Create database table if needed
+		// Create database table if needed..
 		if ( ! $this->repository->table_exists() ) {
 			$this->repository->create_table();
 		}
 
-		// Load all fixer classes
+		// Load all fixer classes..
 		$this->load_fixers();
 
-		// Allow plugins to register additional fixers
+		// Allow plugins to register additional fixers..
 		do_action( 'slos_fix_engine_register_fixers', $this->fixers );
 
 		$this->initialized = true;
@@ -80,7 +100,7 @@ final class FixEngine {
 	 * Phase 2.2: Uses dynamic discovery instead of manual registration
 	 */
 	private function load_fixers(): void {
-		// Use FixerCollection's auto-discovery (Phase 2.2)
+		// Use FixerCollection's auto-discovery (Phase 2.2)..
 		$count = $this->fixers->auto_discover();
 
 		Logger::info(
@@ -95,7 +115,7 @@ final class FixEngine {
 	/**
 	 * Register a progress callback
 	 *
-	 * @param callable $callback
+	 * @param callable $callback Callback to receive progress updates.
 	 * @return self
 	 */
 	public function on_progress( callable $callback ): self {
@@ -106,7 +126,7 @@ final class FixEngine {
 	/**
 	 * Emit progress update
 	 *
-	 * @param array $data
+	 * @param array $data Progress payload to emit.
 	 */
 	private function emit_progress( array $data ): void {
 		foreach ( $this->progress_callbacks as $callback ) {
@@ -127,7 +147,7 @@ final class FixEngine {
 	/**
 	 * Get a specific fixer by ID
 	 *
-	 * @param string $fixer_id
+	 * @param string $fixer_id Fixer identifier.
 	 * @return FixerInterface|null
 	 */
 	public function get_fixer( string $fixer_id ): ?FixerInterface {
@@ -139,9 +159,9 @@ final class FixEngine {
 	/**
 	 * Fix content with a single fixer
 	 *
-	 * @param string $content HTML content
-	 * @param string $fixer_id Fixer ID
-	 * @param array  $options Optional configuration
+	 * @param string $content HTML content.
+	 * @param string $fixer_id Fixer ID.
+	 * @param array  $options Optional configuration.
 	 * @return FixResult
 	 */
 	public function fix_with_fixer( string $content, string $fixer_id, array $options = array() ): FixResult {
@@ -159,9 +179,9 @@ final class FixEngine {
 	/**
 	 * Fix content with multiple fixers
 	 *
-	 * @param string $content HTML content
-	 * @param array  $fixer_ids Array of fixer IDs (empty = all fixers)
-	 * @param array  $options Optional configuration
+	 * @param string $content HTML content.
+	 * @param array  $fixer_ids Array of fixer IDs (empty = all fixers).
+	 * @param array  $options Optional configuration.
 	 * @return FixSession
 	 */
 	public function fix_content( string $content, array $fixer_ids = array(), array $options = array() ): FixSession {
@@ -173,7 +193,7 @@ final class FixEngine {
 
 		$this->current_session = $session;
 
-		// Determine which fixers to run
+		// Determine which fixers to run..
 		$fixers_to_run = array();
 		if ( empty( $fixer_ids ) ) {
 			$fixers_to_run = iterator_to_array( $this->fixers );
@@ -210,7 +230,7 @@ final class FixEngine {
 				$result = $fixer->fix( $current_content, $options );
 				$session->add_result( $result );
 
-				// Update content for next fixer
+				// Update content for next fixer..
 				if ( $result->is_success() && $result->get_fixes_applied() > 0 ) {
 					$current_content = $result->get_fixed_content();
 				}
@@ -222,20 +242,23 @@ final class FixEngine {
 				);
 				$session->add_result( $error_result );
 
-				error_log(
-					sprintf(
-						'[FixEngine] Fixer %s threw exception: %s',
-						$fixer->get_id(),
-						$e->getMessage()
-					)
-				);
+				if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+					error_log(
+						sprintf(
+							'[FixEngine] Fixer %s threw exception: %s',
+							$fixer->get_id(),
+							$e->getMessage()
+						)
+					);
+				}
 			}
 		}
 
 		$session->complete();
 		$session->set_final_content( $current_content );
 
-		// Save to database
+		// Save to database..
 		if ( $post_id > 0 ) {
 			$this->repository->save_session( $session );
 		}
@@ -246,11 +269,11 @@ final class FixEngine {
 	}
 
 	/**
-	 * Fix a WordPress post
+	 * Fix a WordPress post.
 	 *
-	 * @param int   $post_id Post ID
-	 * @param array $fixer_ids Array of fixer IDs (empty = all fixers)
-	 * @param array $options Optional configuration
+	 * @param int   $post_id   Post ID being processed.
+	 * @param array $fixer_ids Array of fixer IDs (empty = all fixers).
+	 * @param array $options   Optional configuration.
 	 * @return FixSession
 	 */
 	public function fix_post( int $post_id, array $fixer_ids = array(), array $options = array() ): FixSession {
@@ -271,7 +294,7 @@ final class FixEngine {
 
 		$session = $this->fix_content( $post->post_content, $fixer_ids, $options );
 
-		// Save the fixed content if there were successful fixes
+		// Save the fixed content if there were successful fixes..
 		if ( $session->get_stats()['successful'] > 0 && $session->get_final_content() ) {
 			$save_content = $options['save_content'] ?? true;
 
@@ -283,7 +306,7 @@ final class FixEngine {
 					)
 				);
 
-				// Update post meta
+				// Update post meta..
 				update_post_meta( $post_id, '_slos_last_autofix_date', current_time( 'mysql' ) );
 				update_post_meta( $post_id, '_slos_last_autofix_session', $session->get_id() );
 			}
@@ -293,11 +316,11 @@ final class FixEngine {
 	}
 
 	/**
-	 * Preview fixes without saving
+	 * Preview fixes without saving.
 	 *
-	 * @param int   $post_id
-	 * @param array $fixer_ids
-	 * @return array Preview data
+	 * @param int   $post_id   Post ID to preview.
+	 * @param array $fixer_ids Fixer IDs to run (empty = all fixers).
+	 * @return array Preview data.
 	 */
 	public function preview_fixes( int $post_id, array $fixer_ids = array() ): array {
 		$post = get_post( $post_id );
@@ -395,10 +418,10 @@ final class FixEngine {
 	}
 
 	/**
-	 * Get fix history for a post
+	 * Get fix history for a post.
 	 *
-	 * @param int $post_id
-	 * @param int $limit
+	 * @param int $post_id Post ID.
+	 * @param int $limit   Maximum history items to return.
 	 * @return array
 	 */
 	public function get_history( int $post_id, int $limit = 50 ): array {
@@ -406,9 +429,9 @@ final class FixEngine {
 	}
 
 	/**
-	 * Get fix statistics
+	 * Get fix statistics.
 	 *
-	 * @param int|null $post_id Optional filter by post
+	 * @param int|null $post_id Optional filter by post.
 	 * @return array
 	 */
 	public function get_statistics( ?int $post_id = null ): array {

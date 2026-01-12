@@ -61,12 +61,12 @@ class Compliance_Export_Ajax {
 	 * @return void
 	 */
 	public function register_actions() {
-		// Check if consent records and audit logs features are dormant
+		// Check if consent records and audit logs features are dormant..
 		$dormant_features = defined( 'SLOS_DORMANT_COMPLIANCE_FEATURES' ) && is_array( SLOS_DORMANT_COMPLIANCE_FEATURES )
 			? SLOS_DORMANT_COMPLIANCE_FEATURES
 			: array();
 
-		// Only register export handlers if not dormant
+		// Only register export handlers if not dormant..
 		if ( ! in_array( 'records', $dormant_features, true ) ) {
 			add_action( 'wp_ajax_slos_export_consents_csv', array( $this, 'export_consents_csv' ) );
 			add_action( 'wp_ajax_slos_export_consents_pdf', array( $this, 'export_consents_pdf' ) );
@@ -85,20 +85,20 @@ class Compliance_Export_Ajax {
 	 * @return void
 	 */
 	public function get_consent_time_series() {
-		// Verify permissions
+		// Verify permissions..
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( array( 'message' => __( 'Insufficient permissions', 'shahi-legalflowsuite' ) ), 403 );
 		}
 
-		// Verify nonce
+		// Verify nonce..
 		check_ajax_referer( 'slos_export_consents', 'nonce' );
 
-		// Get parameters
+		// Get parameters..
 		$interval  = isset( $_POST['interval'] ) ? sanitize_text_field( wp_unslash( $_POST['interval'] ) ) : 'daily';
 		$days_back = isset( $_POST['days_back'] ) ? absint( $_POST['days_back'] ) : 30;
 		$group_by  = isset( $_POST['group_by'] ) ? sanitize_text_field( wp_unslash( $_POST['group_by'] ) ) : 'none';
 
-		// Get time-series data
+		// Get time-series data..
 		$data = $this->consent_service->get_time_series(
 			array(
 				'interval'  => $interval,
@@ -121,20 +121,20 @@ class Compliance_Export_Ajax {
 	 * @return void
 	 */
 	public function export_consents_csv() {
-		// Verify permissions
+		// Verify permissions..
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( esc_html__( 'Insufficient permissions', 'shahi-legalflowsuite' ), 403 );
 		}
 
-		// Verify nonce
+		// Verify nonce..
 		check_ajax_referer( 'slos_export_consents', 'nonce' );
 
-		// Get filter parameters
+		// Get filter parameters..
 		$days_back = isset( $_GET['days_back'] ) ? absint( $_GET['days_back'] ) : 30;
 		$status    = isset( $_GET['status'] ) ? sanitize_text_field( wp_unslash( $_GET['status'] ) ) : '';
 		$type      = isset( $_GET['type'] ) ? sanitize_text_field( wp_unslash( $_GET['type'] ) ) : '';
 
-		// Fetch consent records
+		// Fetch consent records..
 		global $wpdb;
 		$table = $wpdb->prefix . 'slos_consent';
 
@@ -156,7 +156,7 @@ class Compliance_Export_Ajax {
 		$query    = "SELECT * FROM {$table} WHERE {$where_sql} ORDER BY created_at DESC LIMIT 10000";
 		$consents = $wpdb->get_results( $wpdb->prepare( $query, ...$where_values ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
-		// Generate CSV
+		// Generate CSV..
 		$filename = 'consent-records-' . gmdate( 'Y-m-d-His' ) . '.csv';
 
 		header( 'Content-Type: text/csv; charset=utf-8' );
@@ -166,7 +166,7 @@ class Compliance_Export_Ajax {
 
 		$output = fopen( 'php://output', 'w' );
 
-		// Write CSV header
+		// Write CSV header..
 		fputcsv(
 			$output,
 			array(
@@ -186,7 +186,7 @@ class Compliance_Export_Ajax {
 			)
 		);
 
-		// Write data rows
+		// Write data rows..
 		foreach ( $consents as $consent ) {
 			fputcsv(
 				$output,
@@ -226,7 +226,7 @@ class Compliance_Export_Ajax {
 
 		$start_date = gmdate( 'Y-m-d H:i:s', strtotime( "-{$days_back} days" ) );
 
-		// Total consents
+		// Total consents..
 		$total = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(*) FROM {$table} WHERE created_at >= %s",
@@ -234,7 +234,7 @@ class Compliance_Export_Ajax {
 			)
 		);
 
-		// By status
+		// By status..
 		$by_status = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT status, COUNT(*) as count FROM {$table} WHERE created_at >= %s GROUP BY status",
@@ -243,7 +243,7 @@ class Compliance_Export_Ajax {
 			ARRAY_A
 		);
 
-		// By type
+		// By type..
 		$by_type = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT type, COUNT(*) as count FROM {$table} WHERE created_at >= %s GROUP BY type",
@@ -252,7 +252,7 @@ class Compliance_Export_Ajax {
 			ARRAY_A
 		);
 
-		// Top countries
+		// Top countries..
 		$by_country = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT country_code, COUNT(*) as count FROM {$table} WHERE created_at >= %s AND country_code IS NOT NULL GROUP BY country_code ORDER BY count DESC LIMIT 10",
@@ -261,7 +261,7 @@ class Compliance_Export_Ajax {
 			ARRAY_A
 		);
 
-		// Get time-series data
+		// Get time-series data..
 		$time_series = $this->consent_service->get_time_series(
 			array(
 				'interval'  => 'daily',

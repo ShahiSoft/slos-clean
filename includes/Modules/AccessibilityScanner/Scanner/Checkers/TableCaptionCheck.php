@@ -33,20 +33,20 @@ class TableCaptionCheck extends AbstractCheck {
 		$tables = $xpath->query( '//table' );
 
 		foreach ( $tables as $table ) {
-			// Skip layout tables
+			// Skip layout tables..
 			$role = $table->getAttribute( 'role' );
 			if ( $role === 'presentation' || $role === 'none' ) {
 				continue;
 			}
 
-			// Check for caption element
+			// Check for caption element..
 			$captions   = $table->getElementsByTagName( 'caption' );
 			$hasCaption = $captions->length > 0 && trim( $captions->item( 0 )->textContent ) !== '';
 
-			// Check for aria-label or aria-labelledby
+			// Check for aria-label or aria-labelledby..
 			$hasAriaLabel = $table->hasAttribute( 'aria-label' ) || $table->hasAttribute( 'aria-labelledby' );
 
-			// Check for summary attribute (obsolete but still used)
+			// Check for summary attribute (obsolete but still used)..
 			$hasSummary = $table->hasAttribute( 'summary' );
 
 			if ( ! $hasCaption && ! $hasAriaLabel && ! $hasSummary ) {

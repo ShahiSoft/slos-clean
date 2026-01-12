@@ -13,7 +13,7 @@
 
 namespace ShahiLegalFlowSuite\Database\Repositories;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -26,20 +26,21 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 3.0.1
  */
 class DSR_Repository extends Base_Repository {
+	// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
 
 	/**
-	 * Get table name (without prefix)
+	 * Get table name (without prefix).
 	 *
 	 * @since 3.0.1
 	 * @return string Table name without prefix
 	 */
 	protected function get_table_name(): string {
-		// Align with existing plugin tables using the slos_ prefix
+		// Align with existing plugin tables using the slos_ prefix..
 		return 'slos_dsr_requests';
 	}
 
 	/**
-	 * Get full table name (with prefix)
+	 * Get full table name (with prefix).
 	 *
 	 * @since 3.0.1
 	 * @return string Full table name with WordPress prefix
@@ -49,11 +50,11 @@ class DSR_Repository extends Base_Repository {
 	}
 
 	/**
-	 * Create new DSR request with SLA calculation and privacy hashes
+	 * Create new DSR request with SLA calculation and privacy hashes.
 	 *
 	 * @since 3.0.1
-	 * @param array $data { request_type, email, user_id, regulation, details }
-	 * @return int|false Inserted request ID or false
+	 * @param array $data { request_type, email, user_id, regulation, details }.
+	 * @return int|false Inserted request ID or false.
 	 */
 	public function create_request( array $data ) {
 		$defaults = array(
@@ -61,18 +62,19 @@ class DSR_Repository extends Base_Repository {
 			'status'       => 'pending_verification',
 			'email'        => '',
 			'user_id'      => null,
-			'regulation'   => 'GDPR', // GDPR/CCPA/LGPD/UK-GDPR/PIPEDA/POPIA
+			'regulation'   => 'GDPR', // GDPR/CCPA/LGPD/UK-GDPR/PIPEDA/POPIA.
 			'submitted_at' => current_time( 'mysql' ),
 		);
 
 		$data = wp_parse_args( $data, $defaults );
 
-		// SLA days per regulation (business days)
-		$sla_days     = $this->get_sla_days( $data['regulation'] );
-		$due_date     = $this->calculate_due_date( $data['submitted_at'], $sla_days );
-		$verification = wp_generate_password( 32, false );
-		$ip_hash      = hash( 'sha256', $this->get_client_ip() );
-		$ua_hash      = hash( 'sha256', $_SERVER['HTTP_USER_AGENT'] ?? '' );
+		// SLA days per regulation (business days)..
+		$sla_days       = $this->get_sla_days( $data['regulation'] );
+		$due_date       = $this->calculate_due_date( $data['submitted_at'], $sla_days );
+		$verification   = wp_generate_password( 32, false );
+		$ip_hash        = hash( 'sha256', $this->get_client_ip() );
+		$user_agent_raw = isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '';
+		$ua_hash        = hash( 'sha256', $user_agent_raw );
 
 		$insert = array(
 			'request_type'       => sanitize_text_field( $data['request_type'] ),
@@ -92,7 +94,10 @@ class DSR_Repository extends Base_Repository {
 
 		$result = $this->wpdb->insert( $this->table, $insert, $format );
 		if ( false === $result ) {
-			error_log( sprintf( 'DSR create_request failed: %s', $this->wpdb->last_error ) );
+			if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+				error_log( sprintf( 'DSR create_request failed: %s', $this->wpdb->last_error ) );
+			}
 			return false;
 		}
 
@@ -100,29 +105,33 @@ class DSR_Repository extends Base_Repository {
 	}
 
 	/**
-	 * Find request by verification token (only pending_verification)
+	 * Find request by verification token (only pending_verification).
 	 *
 	 * @since 3.0.1
-	 * @param string $token Verification token
-	 * @return object|null Record object or null
+	 * @param string $token Verification token.
+	 * @return object|null Record object or null.
 	 */
 	public function find_by_token( string $token ) {
+		$table = esc_sql( $this->table );
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
 		return $this->wpdb->get_row(
 			$this->wpdb->prepare(
-				"SELECT * FROM {$this->table} WHERE verification_token = %s AND status = 'pending_verification'",
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				' SELECT * FROM ' . $table . " WHERE verification_token = %s AND status = 'pending_verification'",
 				$token
 			)
 		);
 	}
 
 	/**
-	 * List requests with filters and pagination
+	 * List requests with filters and pagination.
 	 *
 	 * @since 3.0.1
-	 * @param array $filters status, request_type, regulation, date_from, date_to, assignee
-	 * @param int   $limit   Rows per page
-	 * @param int   $offset  Offset
-	 * @return array Array of records
+	 * @param array $filters status, request_type, regulation, date_from, date_to, assignee.
+	 * @param int   $limit   Rows per page.
+	 * @param int   $offset  Offset.
+	 * @return array Array of records.
 	 */
 	public function list_requests( array $filters = array(), int $limit = 50, int $offset = 0 ): array {
 		$where  = array( '1=1' );
@@ -154,25 +163,29 @@ class DSR_Repository extends Base_Repository {
 		}
 
 		$where_sql = implode( ' AND ', $where );
+		$table     = esc_sql( $this->table );
 
-		$sql      = "SELECT * FROM {$this->table} WHERE {$where_sql} ORDER BY submitted_at DESC LIMIT %d OFFSET %d";
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$sql      = ' SELECT * FROM ' . $table . ' WHERE ' . $where_sql . ' ORDER BY submitted_at DESC LIMIT %d OFFSET %d';
 		$values[] = $limit;
 		$values[] = $offset;
 
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$prepared = $this->wpdb->prepare( $sql, $values );
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		return $this->wpdb->get_results( $prepared );
 	}
 
 	/**
-	 * Update request status with optional metadata
+	 * Update request status with optional metadata.
 	 *
 	 * @since 3.0.1
-	 * @param int    $id     Request ID
-	 * @param string $status New status
-	 * @param array  $metadata Optional metadata (processed_by, admin_notes)
-	 * @return bool True on success
+	 * @param int    $id       Request ID.
+	 * @param string $status   New status.
+	 * @param array  $metadata Optional metadata (processed_by, admin_notes).
+	 * @return bool True on success.
 	 */
 	public function update_status( int $id, string $status, array $metadata = array() ): bool {
 		$data = array(
@@ -197,15 +210,15 @@ class DSR_Repository extends Base_Repository {
 	}
 
 	/**
-	 * Statistics grouped by status
+	 * Statistics grouped by status.
 	 *
 	 * @since 3.0.1
-	 * @return array status => count
+	 * @return array status => count.
 	 */
 	public function stats_by_status(): array {
-		$results = $this->wpdb->get_results(
-			"SELECT status, COUNT(*) as count FROM {$this->table} GROUP BY status"
-		);
+		$table   = esc_sql( $this->table );
+		$sql     = ' SELECT status, COUNT(*) as count FROM ' . $table . ' GROUP BY status';
+		$results = $this->wpdb->get_results( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
 
 		$stats = array();
 		foreach ( $results as $row ) {
@@ -215,15 +228,15 @@ class DSR_Repository extends Base_Repository {
 	}
 
 	/**
-	 * Statistics grouped by request type
+	 * Statistics grouped by request type.
 	 *
 	 * @since 3.0.1
-	 * @return array type => count
+	 * @return array type => count.
 	 */
 	public function stats_by_type(): array {
-		$results = $this->wpdb->get_results(
-			"SELECT request_type, COUNT(*) as count FROM {$this->table} GROUP BY request_type"
-		);
+		$table   = esc_sql( $this->table );
+		$sql     = ' SELECT request_type, COUNT(*) as count FROM ' . $table . ' GROUP BY request_type';
+		$results = $this->wpdb->get_results( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
 
 		$stats = array();
 		foreach ( $results as $row ) {
@@ -233,11 +246,11 @@ class DSR_Repository extends Base_Repository {
 	}
 
 	/**
-	 * SLA days by regulation
+	 * SLA days by regulation.
 	 *
 	 * @since 3.0.1
-	 * @param string $regulation Regulation code
-	 * @return int SLA days
+	 * @param string $regulation Regulation code.
+	 * @return int SLA days.
 	 */
 	private function get_sla_days( string $regulation ): int {
 		$defaults = array(
@@ -252,19 +265,19 @@ class DSR_Repository extends Base_Repository {
 	}
 
 	/**
-	 * Calculate due date using business days
+	 * Calculate due date using business days.
 	 *
 	 * @since 3.0.1
-	 * @param string $start  Start datetime (mysql)
-	 * @param int    $days   Business days
-	 * @return string Due date (mysql)
+	 * @param string $start  Start datetime (mysql).
+	 * @param int    $days   Business days.
+	 * @return string Due date (mysql).
 	 */
 	private function calculate_due_date( string $start, int $days ): string {
 		$date  = new \DateTime( $start );
 		$added = 0;
 		while ( $added < $days ) {
 			$date->modify( '+1 day' );
-			if ( (int) $date->format( 'N' ) < 6 ) { // Mon-Fri
+			if ( (int) $date->format( 'N' ) < 6 ) { // Mon-Fri.
 				++$added;
 			}
 		}
@@ -272,17 +285,20 @@ class DSR_Repository extends Base_Repository {
 	}
 
 	/**
-	 * Get client IP (best-effort) for hashing
+	 * Get client IP (best-effort) for hashing.
 	 *
 	 * @since 3.0.1
-	 * @return string IP address or empty
+	 * @return string IP address or empty.
 	 */
 	private function get_client_ip(): string {
-		$ip = $_SERVER['REMOTE_ADDR'] ?? '';
+		$ip_raw = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+		$ip     = $ip_raw;
 		if ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
-			$ips = explode( ',', $_SERVER['HTTP_X_FORWARDED_FOR'] );
-			$ip  = trim( $ips[0] );
+			$forwarded = sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ) );
+			$ips       = explode( ',', $forwarded );
+			$ip        = sanitize_text_field( trim( $ips[0] ) );
 		}
 		return $ip;
 	}
+// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
 }

@@ -30,7 +30,7 @@ class TouchGestureCheck extends AbstractCheck {
 		$dom    = $this->get_dom( $content );
 		$xpath  = new \DOMXPath( $dom );
 
-		// Check for touch-specific events
+		// Check for touch-specific events..
 		$elements = $xpath->query( '//*[@ontouchstart or @ontouchmove or @ontouchend]' );
 
 		foreach ( $elements as $element ) {

@@ -139,7 +139,7 @@ final class FixEngineAjaxHandler {
 			return;
 		}
 
-		// Check post exists and user can edit
+		// Check post exists and user can edit..
 		$post = get_post( $post_id );
 		if ( ! $post ) {
 			wp_send_json_error(
@@ -163,7 +163,7 @@ final class FixEngineAjaxHandler {
 			return;
 		}
 
-		// Execute single fixer
+		// Execute single fixer..
 		$session = $this->engine->fix_post( $post_id, array( $fixer_id ) );
 
 		$results = $session->get_results();
@@ -226,7 +226,7 @@ final class FixEngineAjaxHandler {
 			return;
 		}
 
-		// Execute fixers
+		// Execute fixers..
 		$session = $this->engine->fix_post( $post_id, $fixer_ids );
 
 		wp_send_json_success(
@@ -282,7 +282,7 @@ final class FixEngineAjaxHandler {
 			return;
 		}
 
-		// Execute all fixers
+		// Execute all fixers..
 		$session = $this->engine->fix_post( $post_id );
 
 		wp_send_json_success(

@@ -15,7 +15,7 @@ namespace ShahiLegalFlowSuite\Services;
 
 use ShahiLegalFlowSuite\Database\Repositories\DSR_Audit_Log_Repository;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -47,7 +47,7 @@ class DSR_Audit_Service extends Base_Service {
 		parent::__construct();
 		$this->repository = $repository;
 
-		// Hook into existing DSR action hooks to auto-log
+		// Hook into existing DSR action hooks to auto-log..
 		add_action( 'slos_dsr_audit_log', array( $this, 'handle_audit_hook' ), 10, 3 );
 	}
 
@@ -65,11 +65,11 @@ class DSR_Audit_Service extends Base_Service {
 	 * @return int|false Log ID or false on failure
 	 */
 	public function log( int $request_id, string $action, array $data = array() ): int|false {
-		// Automatically capture IP and user agent
+		// Automatically capture IP and user agent..
 		$data['ip_address'] = $this->get_client_ip();
 		$data['user_agent'] = $_SERVER['HTTP_USER_AGENT'] ?? '';
 
-		// Set actor_id to current user if not specified
+		// Set actor_id to current user if not specified..
 		if ( ! isset( $data['actor_id'] ) && is_user_logged_in() ) {
 			$data['actor_id'] = get_current_user_id();
 		}
@@ -343,7 +343,7 @@ class DSR_Audit_Service extends Base_Service {
 	public function get_timeline( int $request_id, array $args = array() ): array {
 		$logs = $this->repository->get_logs_by_request( $request_id, $args );
 
-		// Enhance logs with user data
+		// Enhance logs with user data..
 		foreach ( $logs as &$log ) {
 			if ( ! empty( $log['actor_id'] ) ) {
 				$user              = get_userdata( $log['actor_id'] );
@@ -352,7 +352,7 @@ class DSR_Audit_Service extends Base_Service {
 				$log['actor_name'] = 'System';
 			}
 
-			// Format action label
+			// Format action label..
 			$log['action_label'] = $this->get_action_label( $log['action'] );
 		}
 
@@ -369,7 +369,7 @@ class DSR_Audit_Service extends Base_Service {
 	public function get_logs( array $filters = array() ): array {
 		$result = $this->repository->get_logs( $filters );
 
-		// Enhance logs with user data
+		// Enhance logs with user data..
 		foreach ( $result['logs'] as &$log ) {
 			if ( ! empty( $log['actor_id'] ) ) {
 				$user              = get_userdata( $log['actor_id'] );
@@ -378,7 +378,7 @@ class DSR_Audit_Service extends Base_Service {
 				$log['actor_name'] = 'System';
 			}
 
-			// Format action label
+			// Format action label..
 			$log['action_label'] = $this->get_action_label( $log['action'] );
 		}
 
@@ -407,7 +407,7 @@ class DSR_Audit_Service extends Base_Service {
 	public function get_recent_activity( int $limit = 10 ): array {
 		$logs = $this->repository->get_recent_actions( $limit );
 
-		// Enhance with user data
+		// Enhance with user data..
 		foreach ( $logs as &$log ) {
 			if ( ! empty( $log['actor_id'] ) ) {
 				$user              = get_userdata( $log['actor_id'] );
@@ -473,7 +473,7 @@ class DSR_Audit_Service extends Base_Service {
 		foreach ( $ip_keys as $key ) {
 			if ( ! empty( $_SERVER[ $key ] ) ) {
 				$ip = $_SERVER[ $key ];
-				// Handle comma-separated IPs (take first)
+				// Handle comma-separated IPs (take first)..
 				if ( strpos( $ip, ',' ) !== false ) {
 					$ip = explode( ',', $ip )[0];
 				}

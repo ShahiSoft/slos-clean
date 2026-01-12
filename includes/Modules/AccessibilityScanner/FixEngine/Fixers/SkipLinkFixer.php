@@ -43,7 +43,7 @@ final class SkipLinkFixer extends AbstractFixer {
 	}
 
 	public function can_fix( string $content ): bool {
-		// Check if skip link already exists
+		// Check if skip link already exists..
 		return stripos( $content, 'skip' ) === false ||
 				stripos( $content, '#main' ) === false;
 	}
@@ -58,14 +58,14 @@ final class SkipLinkFixer extends AbstractFixer {
 		$fixes_applied = 0;
 		$details       = array();
 
-		// Check for existing skip link
+		// Check for existing skip link..
 		$skip_links = $this->query( '//a[contains(@class, "skip") or contains(@href, "#main") or contains(@href, "#content")]' );
 
 		if ( count( $skip_links ) > 0 ) {
 			return FixResult::skipped( $this->get_id(), 'Skip link already exists', $content );
 		}
 
-		// Find main content area
+		// Find main content area..
 		$main    = $this->query( '//main' );
 		$main_id = 'main-content';
 
@@ -80,7 +80,7 @@ final class SkipLinkFixer extends AbstractFixer {
 				$main_id = $existing_id;
 			}
 		} else {
-			// Look for content div
+			// Look for content div..
 			$content_divs = $this->query( '//div[@id="content" or @id="main" or contains(@class, "content") or contains(@class, "main")]' );
 
 			if ( count( $content_divs ) > 0 ) {
@@ -96,19 +96,19 @@ final class SkipLinkFixer extends AbstractFixer {
 			}
 		}
 
-		// Add skip link at the start of body
+		// Add skip link at the start of body..
 		$body = $this->query( '//body' );
 
 		if ( count( $body ) > 0 ) {
 			$body_element = $body[0];
 
-			// Create skip link
+			// Create skip link..
 			$skip_link = $this->doc->createElement( 'a' );
 			$skip_link->setAttribute( 'href', '#' . $main_id );
 			$skip_link->setAttribute( 'class', 'skip-link screen-reader-text' );
 			$skip_link->textContent = __( 'Skip to main content', 'shahi-legalflowsuite' );
 
-			// Insert at the beginning of body
+			// Insert at the beginning of body..
 			if ( $body_element->firstChild ) {
 				$body_element->insertBefore( $skip_link, $body_element->firstChild );
 			} else {

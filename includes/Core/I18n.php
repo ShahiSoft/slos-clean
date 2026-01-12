@@ -16,7 +16,7 @@
 
 namespace ShahiLegalFlowSuite\Core;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -76,10 +76,10 @@ class I18n {
 			return true;
 		}
 
-		// Get the languages directory path
+		// Get the languages directory path..
 		$languages_dir = dirname( plugin_basename( SHAHI_LEGALFLOWSUITE_PLUGIN_FILE ) ) . '/' . self::LANGUAGES_DIR;
 
-		// Load the text domain
+		// Load the text domain..
 		// phpcs:ignore PluginCheck.CodeAnalysis.DiscouragedFunctions.load_plugin_textdomainFound -- Required for WPML compatibility
 		$loaded = load_plugin_textdomain(
 			self::TEXT_DOMAIN,
@@ -245,21 +245,21 @@ class I18n {
 	 * @return array Array of available language codes.
 	 */
 	public static function get_available_languages() {
-		// Return cached result if available
+		// Return cached result if available..
 		if ( self::$available_languages !== null ) {
 			return self::$available_languages;
 		}
 
-		// Get the languages directory path
+		// Get the languages directory path..
 		$languages_path = SHAHI_LEGALFLOWSUITE_PATH . self::LANGUAGES_DIR;
 
-		// Check if directory exists
+		// Check if directory exists..
 		if ( ! is_dir( $languages_path ) ) {
 			self::$available_languages = array();
 			return self::$available_languages;
 		}
 
-		// Get all .mo files in the languages directory
+		// Get all .mo files in the languages directory..
 		$mo_files = glob( $languages_path . '/' . self::TEXT_DOMAIN . '-*.mo' );
 
 		if ( empty( $mo_files ) ) {
@@ -267,7 +267,7 @@ class I18n {
 			return self::$available_languages;
 		}
 
-		// Extract language codes from filenames
+		// Extract language codes from filenames..
 		$languages = array();
 		foreach ( $mo_files as $mo_file ) {
 			$filename      = basename( $mo_file, '.mo' );
@@ -275,7 +275,7 @@ class I18n {
 			$languages[]   = $language_code;
 		}
 
-		// Cache the result
+		// Cache the result..
 		self::$available_languages = $languages;
 
 		return $languages;
@@ -369,13 +369,13 @@ class I18n {
 			return false;
 		}
 
-		// Unload current translations if loaded
+		// Unload current translations if loaded..
 		if ( self::$loaded ) {
 			unload_textdomain( self::TEXT_DOMAIN );
 			self::$loaded = false;
 		}
 
-		// Load from custom path
+		// Load from custom path..
 		$relative_path = str_replace( WP_PLUGIN_DIR . '/', '', $path );
 
 	// phpcs:ignore PluginCheck.CodeAnalysis.DiscouragedFunctions.load_plugin_textdomainFound -- Required for loading translations from custom path
@@ -387,7 +387,7 @@ class I18n {
 
 		if ( $loaded ) {
 			self::$loaded = true;
-			// Clear cached languages
+			// Clear cached languages..
 			self::$available_languages = null;
 		}
 
@@ -407,7 +407,7 @@ class I18n {
 	public static function validate_text_domain( $code ) {
 		$issues = array();
 
-		// Pattern to find translation functions
+		// Pattern to find translation functions..
 		$pattern = '/(__|_e|esc_html__|esc_html_e|esc_attr__|esc_attr_e|_x|_ex|_n|_nx)\s*\(/';
 
 		if ( preg_match_all( $pattern, $code, $matches, PREG_OFFSET_CAPTURE ) ) {
@@ -415,7 +415,7 @@ class I18n {
 				$position = $match[1];
 				$context  = substr( $code, $position, 200 );
 
-				// Check if text domain is present
+				// Check if text domain is present..
 				if ( strpos( $context, self::TEXT_DOMAIN ) === false ) {
 					$issues[] = array(
 						'position' => $position,

@@ -66,7 +66,7 @@ class DSRMainPage {
 	public function __construct() {
 		$this->requests_page = new DSRRequests();
 		$this->reports_page  = new DSRReports();
-		// DSR_Settings is instantiated in DSR_Portal::init() for early hook registration
+		// DSR_Settings is instantiated in DSR_Portal::init() for early hook registration..
 		$this->settings_page = new DSR_Settings();
 	}
 
@@ -91,15 +91,15 @@ class DSRMainPage {
 	 * @return void
 	 */
 	public function render() {
-		// Check capability
+		// Check capability..
 		if ( ! current_user_can( 'slos_manage_dsr' ) ) {
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'shahi-legalflowsuite' ) );
 		}
 
-		// Get current tab
+		// Get current tab..
 		$this->current_tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'requests';
 
-		// Validate tab
+		// Validate tab..
 		$valid_tabs = array_keys( $this->get_tabs() );
 		if ( ! in_array( $this->current_tab, $valid_tabs, true ) ) {
 			$this->current_tab = 'requests';
@@ -287,7 +287,7 @@ class DSRMainPage {
 	private function render_requests_tab() {
 		echo '<div class="slos-tab-pane slos-requests-pane">';
 
-		// Use existing DSRRequests render logic
+		// Use existing DSRRequests render logic..
 		$this->requests_page->render_content();
 
 		echo '</div>';
@@ -302,7 +302,7 @@ class DSRMainPage {
 	private function render_reports_tab() {
 		echo '<div class="slos-tab-pane slos-reports-pane">';
 
-		// Use existing DSRReports render logic
+		// Use existing DSRReports render logic..
 		$this->reports_page->render_content();
 
 		echo '</div>';
@@ -317,7 +317,7 @@ class DSRMainPage {
 	private function render_settings_tab() {
 		echo '<div class="slos-tab-pane slos-settings-pane">';
 
-		// Use existing DSR_Settings render logic
+		// Use existing DSR_Settings render logic..
 		$this->settings_page->render_page_content();
 
 		echo '</div>';

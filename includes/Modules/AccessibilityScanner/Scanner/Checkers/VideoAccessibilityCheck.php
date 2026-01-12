@@ -64,13 +64,13 @@ class VideoAccessibilityCheck extends AbstractCheck {
 		$dom    = $this->get_dom( $content );
 		$xpath  = new \DOMXPath( $dom );
 
-		// 1. Check native <video> elements
+		// 1. Check native <video> elements..
 		$this->check_native_videos( $xpath, $issues );
 
-		// 2. Check embedded videos (iframes)
+		// 2. Check embedded videos (iframes)..
 		$this->check_embedded_videos( $xpath, $issues );
 
-		// 3. Check <audio> elements
+		// 3. Check <audio> elements..
 		$this->check_audio_elements( $xpath, $issues );
 
 		return $issues;
@@ -83,7 +83,7 @@ class VideoAccessibilityCheck extends AbstractCheck {
 		$videos = $xpath->query( '//video' );
 
 		foreach ( $videos as $video ) {
-			// Check for controls
+			// Check for controls..
 			if ( ! $video->hasAttribute( 'controls' ) ) {
 				$issues[] = array(
 					'element'    => 'video',
@@ -93,9 +93,9 @@ class VideoAccessibilityCheck extends AbstractCheck {
 				);
 			}
 
-			// Check for autoplay
+			// Check for autoplay..
 			if ( $video->hasAttribute( 'autoplay' ) ) {
-				// Check if muted (autoplay with muted is more acceptable)
+				// Check if muted (autoplay with muted is more acceptable)..
 				$is_muted = $video->hasAttribute( 'muted' );
 
 				$issues[] = array(
@@ -109,7 +109,7 @@ class VideoAccessibilityCheck extends AbstractCheck {
 				);
 			}
 
-			// Check for captions/subtitles
+			// Check for captions/subtitles..
 			$tracks           = $video->getElementsByTagName( 'track' );
 			$has_captions     = false;
 			$has_descriptions = false;
@@ -133,7 +133,7 @@ class VideoAccessibilityCheck extends AbstractCheck {
 				);
 			}
 
-			// Audio descriptions (AAA level - notice)
+			// Audio descriptions (AAA level - notice)..
 			if ( ! $has_descriptions ) {
 				$issues[] = array(
 					'element'    => 'video',
@@ -144,7 +144,7 @@ class VideoAccessibilityCheck extends AbstractCheck {
 				);
 			}
 
-			// Check for accessible name (aria-label or aria-labelledby)
+			// Check for accessible name (aria-label or aria-labelledby)..
 			$has_name = $video->hasAttribute( 'aria-label' ) ||
 						$video->hasAttribute( 'aria-labelledby' ) ||
 						$video->hasAttribute( 'title' );
@@ -170,12 +170,12 @@ class VideoAccessibilityCheck extends AbstractCheck {
 		foreach ( $iframes as $iframe ) {
 			$src = $iframe->getAttribute( 'src' );
 
-			// Skip if no src
+			// Skip if no src..
 			if ( empty( $src ) ) {
 				continue;
 			}
 
-			// Check if it's a video embed
+			// Check if it's a video embed..
 			$matched_domain = null;
 			foreach ( $this->video_domains as $domain ) {
 				if ( stripos( $src, $domain ) !== false ) {
@@ -188,11 +188,11 @@ class VideoAccessibilityCheck extends AbstractCheck {
 				continue; // Not a video iframe
 			}
 
-			// Simplify domain name for display
+			// Simplify domain name for display..
 			$display_domain = preg_replace( '/^(player\.|fast\.|play\.)/', '', $matched_domain );
 			$display_domain = preg_replace( '/\.(com|net|tv|io)$/', '', $display_domain );
 
-			// Check for title attribute
+			// Check for title attribute..
 			$title = trim( $iframe->getAttribute( 'title' ) );
 
 			if ( empty( $title ) ) {
@@ -212,7 +212,7 @@ class VideoAccessibilityCheck extends AbstractCheck {
 				);
 			}
 
-			// Caption reminder (can't verify programmatically)
+			// Caption reminder (can't verify programmatically)..
 			$issues[] = array(
 				'element'    => 'iframe',
 				'context'    => $this->get_element_html( $iframe ),
@@ -221,7 +221,7 @@ class VideoAccessibilityCheck extends AbstractCheck {
 				'confidence' => 'medium',
 			);
 
-			// Check for allow="autoplay"
+			// Check for allow="autoplay"..
 			$allow = $iframe->getAttribute( 'allow' );
 			if ( stripos( $allow, 'autoplay' ) !== false ) {
 				$issues[] = array(
@@ -242,7 +242,7 @@ class VideoAccessibilityCheck extends AbstractCheck {
 		$audios = $xpath->query( '//audio' );
 
 		foreach ( $audios as $audio ) {
-			// Check for controls
+			// Check for controls..
 			if ( ! $audio->hasAttribute( 'controls' ) ) {
 				$issues[] = array(
 					'element'    => 'audio',
@@ -252,7 +252,7 @@ class VideoAccessibilityCheck extends AbstractCheck {
 				);
 			}
 
-			// Check for autoplay
+			// Check for autoplay..
 			if ( $audio->hasAttribute( 'autoplay' ) && ! $audio->hasAttribute( 'muted' ) ) {
 				$issues[] = array(
 					'element'    => 'audio',
@@ -262,7 +262,7 @@ class VideoAccessibilityCheck extends AbstractCheck {
 				);
 			}
 
-			// Transcript reminder
+			// Transcript reminder..
 			$issues[] = array(
 				'element'    => 'audio',
 				'context'    => $this->get_element_html( $audio ),

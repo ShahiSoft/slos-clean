@@ -15,8 +15,8 @@ class TextColorContrastFixer extends BaseFixer {
 		return 'Improve color contrast'; }
 
 	public function fix( $content ) {
-		// Contrast fixes typically require visual inspection
-		// Can add aria-label as workaround
+		// Contrast fixes typically require visual inspection..
+		// Can add aria-label as workaround..
 		return array(
 			'fixed_count' => 0,
 			'content'     => $content,
@@ -42,13 +42,13 @@ class ColorRelianceFixer extends BaseFixer {
 		$xpath       = new \DOMXPath( $dom );
 		$fixed_count = 0;
 
-		// Fix required field indicators (red asterisks).
+		// Fix required field indicators (red asterisks)...
 		$fixed_count += $this->fix_required_indicators( $xpath, $dom );
 
-		// Fix status indicators relying only on color.
+		// Fix status indicators relying only on color...
 		$fixed_count += $this->fix_status_colors( $xpath, $dom );
 
-		// Fix links distinguished only by color.
+		// Fix links distinguished only by color...
 		$fixed_count += $this->fix_color_only_links( $xpath );
 
 		return array(
@@ -67,13 +67,13 @@ class ColorRelianceFixer extends BaseFixer {
 	private function fix_required_indicators( \DOMXPath $xpath, \DOMDocument $dom ) {
 		$fixed = 0;
 
-		// Find red asterisks without text explanation.
+		// Find red asterisks without text explanation...
 		$asterisks = $xpath->query(
 			'//span[@style[contains(., "red") or contains(., "#f") or contains(., "#e") or contains(., "rgb")]][contains(text(), "*")][not(@aria-hidden)]'
 		);
 
 		foreach ( $asterisks as $asterisk ) {
-			// Check if already has screen reader text nearby.
+			// Check if already has screen reader text nearby...
 			$parent     = $asterisk->parentNode;
 			$parent_txt = $parent instanceof \DOMElement ? $parent->textContent : '';
 
@@ -81,7 +81,7 @@ class ColorRelianceFixer extends BaseFixer {
 				continue;
 			}
 
-			// Add screen reader text.
+			// Add screen reader text...
 			$sr_text = $dom->createElement( 'span' );
 			$sr_text->setAttribute( 'class', 'screen-reader-text' );
 			$sr_text->textContent = ' (required)';
@@ -104,7 +104,7 @@ class ColorRelianceFixer extends BaseFixer {
 	private function fix_status_colors( \DOMXPath $xpath, \DOMDocument $dom ) {
 		$fixed = 0;
 
-		// Status class patterns and their indicators.
+		// Status class patterns and their indicators...
 		$status_patterns = array(
 			'success' => array( '✓', 'Success' ),
 			'error'   => array( '✗', 'Error' ),
@@ -121,19 +121,19 @@ class ColorRelianceFixer extends BaseFixer {
 			);
 
 			foreach ( $elements as $element ) {
-				// Skip if already has data attribute.
+				// Skip if already has data attribute...
 				if ( $element->hasAttribute( 'data-slos-status-fixed' ) ) {
 					continue;
 				}
 
 				$text = trim( $element->textContent );
 
-				// Skip if already has status text.
+				// Skip if already has status text...
 				if ( stripos( $text, $indicator[1] ) !== false ) {
 					continue;
 				}
 
-				// Add icon before content.
+				// Add icon before content...
 				$icon = $dom->createElement( 'span' );
 				$icon->setAttribute( 'aria-hidden', 'true' );
 				$icon->setAttribute( 'class', 'slos-status-icon' );
@@ -145,7 +145,7 @@ class ColorRelianceFixer extends BaseFixer {
 					$element->appendChild( $icon );
 				}
 
-				// Add screen reader text if content is short.
+				// Add screen reader text if content is short...
 				if ( strlen( $text ) < 50 && stripos( $text, $indicator[1] ) === false ) {
 					$sr = $dom->createElement( 'span' );
 					$sr->setAttribute( 'class', 'screen-reader-text' );
@@ -170,8 +170,8 @@ class ColorRelianceFixer extends BaseFixer {
 	private function fix_color_only_links( \DOMXPath $xpath ) {
 		$fixed = 0;
 
-		// Find links that might only be distinguished by color
-		// (no underline in style, within paragraphs).
+		// Find links that might only be distinguished by color..
+		// (no underline in style, within paragraphs)...
 		$links = $xpath->query(
 			'//p//a[@style[contains(., "text-decoration")]]'
 		);
@@ -179,9 +179,9 @@ class ColorRelianceFixer extends BaseFixer {
 		foreach ( $links as $link ) {
 			$style = $link->getAttribute( 'style' );
 
-			// Check if text-decoration is none.
+			// Check if text-decoration is none...
 			if ( preg_match( '/text-decoration\s*:\s*none/i', $style ) ) {
-				// Add underline back.
+				// Add underline back...
 				$style = preg_replace(
 					'/text-decoration\s*:\s*none/i',
 					'text-decoration: underline',
@@ -231,14 +231,14 @@ class FocusIndicatorFixer extends BaseFixer {
 		$xpath       = new \DOMXPath( $dom );
 		$fixed_count = 0;
 
-		// 1. Remove outline:none from inline styles
+		// 1. Remove outline:none from inline styles..
 		$no_outline = $xpath->query( '//*[@style]' );
 
 		foreach ( $no_outline as $element ) {
 			$style = $element->getAttribute( 'style' );
 
 			if ( preg_match( '/outline\s*:\s*(none|0)/i', $style ) ) {
-				// Remove outline:none and add visible focus style.
+				// Remove outline:none and add visible focus style...
 				$style = preg_replace(
 					'/outline\s*:\s*(none|0)[^;]*(;|$)/i',
 					'',
@@ -250,7 +250,7 @@ class FocusIndicatorFixer extends BaseFixer {
 			}
 		}
 
-		// 2. Add focus class to interactive elements.
+		// 2. Add focus class to interactive elements...
 		$interactive = $xpath->query(
 			'//a[@href] | //button | //input | //select | //textarea | ' .
 			'//*[@onclick] | //*[@tabindex and @tabindex!= "-1"]'
@@ -263,12 +263,12 @@ class FocusIndicatorFixer extends BaseFixer {
 			}
 		}
 
-		// 3. Fix style tags that remove focus.
+		// 3. Fix style tags that remove focus...
 		$styles = $dom->getElementsByTagName( 'style' );
 		foreach ( $styles as $styleTag ) {
 			$css = $styleTag->textContent;
 
-			// Replace :focus { outline: none } patterns.
+			// Replace :focus { outline: none } patterns...
 			$patterns = array(
 				'/(\*|a|button|input|select|textarea)\s*:focus\s*\{[^}]*outline\s*:\s*(none|0)[^}]*/i',
 				'/:focus-visible\s*\{[^}]*outline\s*:\s*(none|0)[^}]*/i',
@@ -293,7 +293,7 @@ class FocusIndicatorFixer extends BaseFixer {
 			}
 		}
 
-		// 4. Inject focus styles if any fixes were made.
+		// 4. Inject focus styles if any fixes were made...
 		if ( $fixed_count > 0 ) {
 			$this->inject_focus_styles( $dom );
 		}
@@ -376,7 +376,7 @@ class PositiveTabIndexFixer extends BaseFixer {
 			if ( $element->hasAttribute( 'tabindex' ) ) {
 				$tabindex = intval( $element->getAttribute( 'tabindex' ) );
 				if ( $tabindex > 0 ) {
-					// Remove positive tabindex, use logical order instead
+					// Remove positive tabindex, use logical order instead..
 					$element->removeAttribute( 'tabindex' );
 					++$fixed_count;
 				}
@@ -408,7 +408,7 @@ class KeyboardTrapFixer extends BaseFixer {
 		$xpath       = new \DOMXPath( $dom );
 		$fixed_count = 0;
 
-		// Find potential keyboard trap elements.
+		// Find potential keyboard trap elements...
 		$traps = $this->find_potential_traps( $xpath );
 
 		foreach ( $traps as $trap ) {
@@ -417,7 +417,7 @@ class KeyboardTrapFixer extends BaseFixer {
 			}
 		}
 
-		// Inject keyboard trap escape script if fixes were made.
+		// Inject keyboard trap escape script if fixes were made...
 		if ( $fixed_count > 0 ) {
 			$this->inject_escape_script( $dom );
 		}
@@ -437,7 +437,7 @@ class KeyboardTrapFixer extends BaseFixer {
 	private function find_potential_traps( \DOMXPath $xpath ) {
 		$traps = array();
 
-		// Modals/Dialogs.
+		// Modals/Dialogs...
 		$modals = $xpath->query(
 			'//*[@role="dialog" or @role="alertdialog" or ' .
 			'contains(@class, "modal") or contains(@class, "popup") or ' .
@@ -447,13 +447,13 @@ class KeyboardTrapFixer extends BaseFixer {
 			$traps[] = $modal;
 		}
 
-		// iframes (can trap focus).
+		// iframes (can trap focus)...
 		$iframes = $xpath->query( '//iframe[not(@tabindex="-1")]' );
 		foreach ( $iframes as $iframe ) {
 			$traps[] = $iframe;
 		}
 
-		// Embedded content containers.
+		// Embedded content containers...
 		$embeds = $xpath->query(
 			'//*[contains(@class, "embed") or contains(@class, "video-container") or ' .
 			'contains(@class, "player")]'
@@ -474,14 +474,14 @@ class KeyboardTrapFixer extends BaseFixer {
 	 * @return bool Whether a fix was applied.
 	 */
 	private function fix_keyboard_trap( \DOMElement $element, \DOMXPath $xpath, \DOMDocument $dom ) {
-		// Skip if already fixed.
+		// Skip if already fixed...
 		if ( $element->hasAttribute( 'data-slos-escape-enabled' ) ) {
 			return false;
 		}
 
 		$tag = strtolower( $element->tagName );
 
-		// For modals: ensure close button exists and is keyboard accessible.
+		// For modals: ensure close button exists and is keyboard accessible...
 		if ( $this->is_modal( $element ) ) {
 			$close = $xpath->query(
 				'.//*[contains(@class, "close") or contains(@aria-label, "close") or ' .
@@ -490,7 +490,7 @@ class KeyboardTrapFixer extends BaseFixer {
 			)->item( 0 );
 
 			if ( ! $close ) {
-				// Add close button.
+				// Add close button...
 				$close_btn = $dom->createElement( 'button' );
 				$close_btn->setAttribute( 'type', 'button' );
 				$close_btn->setAttribute( 'class', 'slos-modal-close' );
@@ -498,14 +498,14 @@ class KeyboardTrapFixer extends BaseFixer {
 				$close_btn->setAttribute( 'data-slos-escape-trigger', 'true' );
 				$close_btn->textContent = '×';
 
-				// Insert at beginning.
+				// Insert at beginning...
 				if ( $element->firstChild ) {
 					$element->insertBefore( $close_btn, $element->firstChild );
 				} else {
 					$element->appendChild( $close_btn );
 				}
 			} else {
-				// Ensure close button is keyboard accessible.
+				// Ensure close button is keyboard accessible...
 				if ( $close instanceof \DOMElement ) {
 					if ( ! $close->hasAttribute( 'tabindex' ) ) {
 						$close->setAttribute( 'tabindex', '0' );
@@ -518,7 +518,7 @@ class KeyboardTrapFixer extends BaseFixer {
 			return true;
 		}
 
-		// For iframes: add skip link before.
+		// For iframes: add skip link before...
 		if ( $tag === 'iframe' ) {
 			$iframe_id = 'slos-after-iframe-' . uniqid();
 
@@ -529,7 +529,7 @@ class KeyboardTrapFixer extends BaseFixer {
 
 			$element->parentNode->insertBefore( $skip, $element );
 
-			// Add target anchor after iframe.
+			// Add target anchor after iframe...
 			$target = $dom->createElement( 'span' );
 			$target->setAttribute( 'id', $iframe_id );
 			$target->setAttribute( 'tabindex', '-1' );
@@ -544,7 +544,7 @@ class KeyboardTrapFixer extends BaseFixer {
 			return true;
 		}
 
-		// Generic fix: add escape key data attribute.
+		// Generic fix: add escape key data attribute...
 		$element->setAttribute( 'data-slos-escape-enabled', 'true' );
 		return true;
 	}
@@ -583,7 +583,7 @@ class KeyboardTrapFixer extends BaseFixer {
 (function() {
     "use strict";
     
-    // Handle Escape key for modals
+    // Handle Escape key for modals..
     document.addEventListener("keydown", function(e) {
         if (e.key === "Escape") {
             var modal = document.querySelector(
@@ -603,7 +603,7 @@ class KeyboardTrapFixer extends BaseFixer {
         }
     });
     
-    // Focus trap handling for dialogs
+    // Focus trap handling for dialogs..
     document.querySelectorAll("[data-slos-escape-enabled][role=\'dialog\']").forEach(function(dialog) {
         dialog.addEventListener("keydown", function(e) {
             if (e.key === "Tab") {
@@ -647,7 +647,7 @@ class FocusOrderFixer extends BaseFixer {
 		return 'Fix focus order'; }
 
 	public function fix( $content ) {
-		// Focus order is determined by DOM order
+		// Focus order is determined by DOM order..
 		return array(
 			'fixed_count' => 0,
 			'content'     => $content,
@@ -729,7 +729,7 @@ class CustomWidgetKeyboardFixer extends BaseFixer {
 		return 'Make custom widgets keyboard accessible'; }
 
 	public function fix( $content ) {
-		// This requires JavaScript implementation
+		// This requires JavaScript implementation..
 		return array(
 			'fixed_count' => 0,
 			'content'     => $content,
@@ -760,7 +760,7 @@ class TouchTargetFixer extends BaseFixer {
 		$xpath       = new \DOMXPath( $dom );
 		$fixed_count = 0;
 
-		// Find interactive elements with explicit small sizes.
+		// Find interactive elements with explicit small sizes...
 		$interactive = $xpath->query(
 			'//a[@style] | //button[@style] | //input[@type="submit" or @type="button"][@style] | ' .
 			'//*[@onclick][@style] | //*[@role="button"][@style]'
@@ -772,7 +772,7 @@ class TouchTargetFixer extends BaseFixer {
 			}
 		}
 
-		// Add wrapper styling for checkboxes/radios (often too small).
+		// Add wrapper styling for checkboxes/radios (often too small)...
 		$checkboxes = $xpath->query( '//input[@type="checkbox" or @type="radio"]' );
 		foreach ( $checkboxes as $checkbox ) {
 			if ( $this->fix_checkbox_radio( $checkbox, $xpath ) ) {
@@ -780,7 +780,7 @@ class TouchTargetFixer extends BaseFixer {
 			}
 		}
 
-		// Fix icon-only buttons.
+		// Fix icon-only buttons...
 		$icon_buttons = $xpath->query(
 			'//button[not(normalize-space(text()))] | ' .
 			'//a[not(normalize-space(text()))][contains(@class, "icon") or contains(@class, "btn")]'
@@ -792,7 +792,7 @@ class TouchTargetFixer extends BaseFixer {
 			}
 		}
 
-		// Inject touch target CSS if fixes were made.
+		// Inject touch target CSS if fixes were made...
 		if ( $fixed_count > 0 ) {
 			$this->inject_touch_styles( $dom );
 		}
@@ -813,21 +813,21 @@ class TouchTargetFixer extends BaseFixer {
 		$style     = $element->getAttribute( 'style' );
 		$needs_fix = false;
 
-		// Check for explicit small width.
+		// Check for explicit small width...
 		if ( preg_match( '/width\s*:\s*(\d+)(px)?/i', $style, $match ) ) {
 			if ( (int) $match[1] < self::MIN_SIZE ) {
 				$needs_fix = true;
 			}
 		}
 
-		// Check for explicit small height.
+		// Check for explicit small height...
 		if ( preg_match( '/height\s*:\s*(\d+)(px)?/i', $style, $match ) ) {
 			if ( (int) $match[1] < self::MIN_SIZE ) {
 				$needs_fix = true;
 			}
 		}
 
-		// Check for small padding that results in small target.
+		// Check for small padding that results in small target...
 		if ( preg_match( '/padding\s*:\s*(\d+)(px)?/i', $style, $match ) ) {
 			if ( (int) $match[1] < 10 ) {
 				$needs_fix = true;
@@ -835,7 +835,7 @@ class TouchTargetFixer extends BaseFixer {
 		}
 
 		if ( $needs_fix ) {
-			// Add minimum size constraints.
+			// Add minimum size constraints...
 			$style  = rtrim( $style, '; ' );
 			$style .= '; min-width: ' . self::MIN_SIZE . 'px; min-height: ' . self::MIN_SIZE . 'px;';
 			$element->setAttribute( 'style', $style );
@@ -854,26 +854,26 @@ class TouchTargetFixer extends BaseFixer {
 	 * @return bool Whether a fix was applied.
 	 */
 	private function fix_checkbox_radio( \DOMElement $input, \DOMXPath $xpath ) {
-		// Skip if already wrapped or has adequate styling.
+		// Skip if already wrapped or has adequate styling...
 		$parent = $input->parentNode;
 		if ( $parent instanceof \DOMElement ) {
 			$parent_class = $parent->getAttribute( 'class' );
 			$parent_style = $parent->getAttribute( 'style' );
 			$parent_tag   = strtolower( $parent->tagName );
 
-			// Skip if parent is a wrapper with touch styles.
+			// Skip if parent is a wrapper with touch styles...
 			if ( strpos( $parent_class, 'slos-touch-wrapper' ) !== false ) {
 				return false;
 			}
 
-			// Skip if parent label already has adequate min-width/min-height.
+			// Skip if parent label already has adequate min-width/min-height...
 			if ( $parent_tag === 'label' ) {
 				if ( preg_match( '/min-(width|height)\s*:\s*(\d+)(px)?/i', $parent_style, $match ) ) {
 					if ( (int) $match[2] >= self::MIN_SIZE ) {
 						return false;
 					}
 				}
-				// Skip if label has adequate padding.
+				// Skip if label has adequate padding...
 				if ( preg_match( '/padding\s*:\s*(\d+)(px)?/i', $parent_style, $match ) ) {
 					if ( (int) $match[1] >= 8 ) {
 						return false;
@@ -882,12 +882,12 @@ class TouchTargetFixer extends BaseFixer {
 			}
 		}
 
-		// Skip if already has adequate styling.
+		// Skip if already has adequate styling...
 		if ( $input->hasAttribute( 'data-slos-touch-fixed' ) ) {
 			return false;
 		}
 
-		// Add touch-friendly class to input.
+		// Add touch-friendly class to input...
 		$class = $input->getAttribute( 'class' );
 		$input->setAttribute( 'class', trim( $class . ' slos-touch-input' ) );
 		$input->setAttribute( 'data-slos-touch-fixed', 'true' );
@@ -908,7 +908,7 @@ class TouchTargetFixer extends BaseFixer {
 
 		$style = $button->getAttribute( 'style' ) ?: '';
 
-		// Add minimum dimensions.
+		// Add minimum dimensions...
 		if ( strpos( $style, 'min-width' ) === false ) {
 			$style = rtrim( $style, '; ' );
 			if ( ! empty( $style ) ) {
@@ -998,7 +998,7 @@ class TouchGestureFixer extends BaseFixer {
 		return 'Provide alternatives to complex gestures'; }
 
 	public function fix( $content ) {
-		// Gesture alternatives require JavaScript
+		// Gesture alternatives require JavaScript..
 		return array(
 			'fixed_count' => 0,
 			'content'     => $content,
@@ -1040,7 +1040,7 @@ class ViewportFixer extends BaseFixer {
 			}
 		}
 
-		// Add viewport meta if missing
+		// Add viewport meta if missing..
 		if ( ! $viewport_found ) {
 			$head = $dom->getElementsByTagName( 'head' )->item( 0 );
 			if ( $head ) {
@@ -1078,7 +1078,7 @@ class ViewportFixer extends BaseFixer {
 
 		$needs_fix = false;
 
-		// Check for user-scalable=no or 0
+		// Check for user-scalable=no or 0..
 		if ( isset( $viewport_props['user-scalable'] ) ) {
 			$val = strtolower( $viewport_props['user-scalable'] );
 			if ( $val === 'no' || $val === '0' ) {
@@ -1086,12 +1086,12 @@ class ViewportFixer extends BaseFixer {
 				$needs_fix                       = true;
 			}
 		} else {
-			// Ensure user-scalable=yes is present
+			// Ensure user-scalable=yes is present..
 			$viewport_props['user-scalable'] = 'yes';
 			$needs_fix                       = true;
 		}
 
-		// Check for maximum-scale restrictions (< 2.0 is too restrictive)
+		// Check for maximum-scale restrictions (< 2.0 is too restrictive)..
 		if ( isset( $viewport_props['maximum-scale'] ) ) {
 			$max_scale = floatval( $viewport_props['maximum-scale'] );
 			if ( $max_scale < 2.0 ) {
@@ -1100,7 +1100,7 @@ class ViewportFixer extends BaseFixer {
 			}
 		}
 
-		// Check for minimum-scale that's too high (> 0.5 restricts zoom out)
+		// Check for minimum-scale that's too high (> 0.5 restricts zoom out)..
 		if ( isset( $viewport_props['minimum-scale'] ) ) {
 			$min_scale = floatval( $viewport_props['minimum-scale'] );
 			if ( $min_scale > 0.5 ) {
@@ -1113,7 +1113,7 @@ class ViewportFixer extends BaseFixer {
 			return $content;
 		}
 
-		// Rebuild content string
+		// Rebuild content string..
 		$result = array();
 		foreach ( $viewport_props as $key => $value ) {
 			$result[] = "{$key}={$value}";

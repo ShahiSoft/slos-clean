@@ -17,7 +17,7 @@ namespace ShahiLegalFlowSuite\Shortcodes;
 
 use ShahiLegalFlowSuite\Core\I18n;
 
-// Exit if accessed directly.
+// Exit if accessed directly...
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -59,10 +59,10 @@ class DSR_Form_Shortcode {
 	 * @return string HTML output
 	 */
 	public function render( $atts = array() ) {
-		// Load DSR settings for defaults.
+		// Load DSR settings for defaults...
 		$settings = $this->get_dsr_settings();
 
-		// Parse attributes.
+		// Parse attributes...
 		$atts = shortcode_atts(
 			array(
 				'show_upload'        => ! empty( $settings['allow_identity_upload'] ) ? 'true' : 'false',
@@ -75,10 +75,10 @@ class DSR_Form_Shortcode {
 			'slos_dsr_form'
 		);
 
-		// Enqueue assets.
+		// Enqueue assets...
 		$this->enqueue_assets( $atts );
 
-		// Build container classes.
+		// Build container classes...
 		$classes = array( 'slos-dsr-form-wrapper' );
 		if ( 'dark' === $atts['theme'] ) {
 			$classes[] = 'slos-theme-dark';
@@ -87,13 +87,13 @@ class DSR_Form_Shortcode {
 			$classes[] = 'slos-compact';
 		}
 
-		// Get request types with labels.
+		// Get request types with labels...
 		$request_types = $this->get_request_types();
 
-		// Get regulations with labels.
+		// Get regulations with labels...
 		$regulations = $this->get_regulations();
 
-		// Build form HTML.
+		// Build form HTML...
 		ob_start();
 		?>
 		<div class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>" 
@@ -335,11 +335,11 @@ class DSR_Form_Shortcode {
 	 * @return void
 	 */
 	private function enqueue_assets( $atts ) {
-		// Avoid unused parameter warning.
+		// Avoid unused parameter warning...
 		unset( $atts );
 		$version = defined( 'SLOS_VERSION' ) ? SLOS_VERSION : '3.0.1';
 
-		// Enqueue CSS.
+		// Enqueue CSS...
 		wp_enqueue_style(
 			'slos-dsr-form',
 			plugins_url( 'assets/css/dsr-form.css', dirname( __DIR__ ) ),
@@ -347,7 +347,7 @@ class DSR_Form_Shortcode {
 			$version
 		);
 
-		// Enqueue JavaScript.
+		// Enqueue JavaScript...
 		wp_enqueue_script(
 			'slos-dsr-form',
 			plugins_url( 'assets/js/dsr-form.js', dirname( __DIR__ ) ),
@@ -356,7 +356,7 @@ class DSR_Form_Shortcode {
 			true
 		);
 
-		// Localize script with translations and settings.
+		// Localize script with translations and settings...
 		wp_localize_script(
 			'slos-dsr-form',
 			'slosDsrForm',
@@ -406,7 +406,7 @@ class DSR_Form_Shortcode {
 			'sla_popia'             => 30,
 		);
 
-		// Attempt to load from options.
+		// Attempt to load from options...
 		$settings = get_option( 'slos_dsr_settings', array() );
 
 		return wp_parse_args( $settings, $defaults );

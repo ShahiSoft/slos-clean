@@ -231,7 +231,7 @@ abstract class Module {
 	 * @return void
 	 */
 	protected function on_activate() {
-		// Override in child classes
+		// Override in child classes..
 	}
 
 	/**
@@ -243,7 +243,7 @@ abstract class Module {
 	 * @return void
 	 */
 	protected function on_deactivate() {
-		// Override in child classes
+		// Override in child classes..
 	}
 
 	/**
@@ -307,7 +307,7 @@ abstract class Module {
 		$state_loaded = false;
 		$db_result    = null;
 
-		// First, check the option (authoritative source for enabled state)
+		// First, check the option (authoritative source for enabled state)..
 		$modules_option = get_option( 'shahi_modules', array() );
 		if ( isset( $modules_option[ $this->key ] ) ) {
 			$module_state = $modules_option[ $this->key ];
@@ -320,12 +320,12 @@ abstract class Module {
 			}
 		}
 
-		// If state found in option, we're done - option is authoritative
+		// If state found in option, we're done - option is authoritative..
 		if ( $state_loaded ) {
 			return;
 		}
 
-		// Fallback: Check database table only if option had nothing.
+		// Fallback: Check database table only if option had nothing...
 		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) === $table ) {
 			$db_result = $wpdb->get_row(
 				$wpdb->prepare(
@@ -354,7 +354,7 @@ abstract class Module {
 		$table    = $wpdb->prefix . 'shahi_modules';
 		$db_saved = true;
 
-		// Check if table exists.
+		// Check if table exists...
 		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) !== $table ) {
 			$db_saved = false;
 		} else {
@@ -372,7 +372,7 @@ abstract class Module {
 			$db_saved = $result !== false;
 		}
 
-		// Persist to option as a secondary store to avoid losing state when the table is missing
+		// Persist to option as a secondary store to avoid losing state when the table is missing..
 		$option_before  = get_option( 'shahi_modules', array() );
 		$modules_option = $option_before;
 		if ( ! isset( $modules_option[ $this->key ] ) ) {
@@ -399,9 +399,9 @@ abstract class Module {
 		$table    = $wpdb->prefix . 'shahi_modules';
 		$db_saved = false;
 
-		// Check if table exists.
+		// Check if table exists...
 		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) === $table ) {
-			// Check if record exists.
+			// Check if record exists...
 			$exists = $wpdb->get_var(
 				$wpdb->prepare(
 					'SELECT COUNT(*) FROM %i WHERE module_key = %s',
@@ -411,7 +411,7 @@ abstract class Module {
 			);
 
 			if ( $exists ) {
-				// Update existing record
+				// Update existing record..
 				$result = $wpdb->update(
 					$table,
 					array(
@@ -423,7 +423,7 @@ abstract class Module {
 					array( '%s' )
 				);
 			} else {
-				// Insert new record
+				// Insert new record..
 				$result = $wpdb->insert(
 					$table,
 					array(
@@ -439,7 +439,7 @@ abstract class Module {
 			$db_saved = $result !== false;
 		}
 
-		// Persist to option as fallback to avoid losing state if the DB table is missing
+		// Persist to option as fallback to avoid losing state if the DB table is missing..
 		$option_before  = get_option( 'shahi_modules', array() );
 		$modules_option = $option_before;
 		if ( ! isset( $modules_option[ $this->key ] ) ) {

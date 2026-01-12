@@ -13,7 +13,7 @@
 
 namespace ShahiLegalFlowSuite\Database\Migrations;
 
-// Exit if accessed directly.
+// Exit if accessed directly...
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -65,7 +65,7 @@ class Migration_Company_Profile {
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 		dbDelta( $sql );
 
-		// Verify table was created
+		// Verify table was created..
 		$table_exists = $wpdb->get_var(
 			$wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name )
 		) === $table_name;
@@ -125,7 +125,7 @@ class Migration_Company_Profile {
 	 */
 	public static function get_default_profile_structure(): array {
 		return array(
-			// Step 1: Company Information
+			// Step 1: Company Information..
 			'company'         => array(
 				'legal_name'          => '',
 				'trading_name'        => '',
@@ -141,7 +141,7 @@ class Migration_Company_Profile {
 				'business_type'       => '',
 				'industry'            => '',
 			),
-			// Step 2: Contact Information
+			// Step 2: Contact Information..
 			'contacts'        => array(
 				'legal_email'   => '',
 				'support_email' => '',
@@ -153,14 +153,14 @@ class Migration_Company_Profile {
 					'address' => '',
 				),
 			),
-			// Step 3: Website Information
+			// Step 3: Website Information..
 			'website'         => array(
 				'url'                 => '',
 				'app_name'            => '',
 				'service_description' => '',
 				'target_audience'     => '',
 			),
-			// Step 4: Data Collection
+			// Step 4: Data Collection..
 			'data_collection' => array(
 				'personal_data_types' => array(),
 				'purposes'            => array(),
@@ -169,19 +169,19 @@ class Migration_Company_Profile {
 				'children_data'       => false,
 				'minimum_age'         => 16,
 			),
-			// Step 5: Third Parties
+			// Step 5: Third Parties..
 			'third_parties'   => array(
 				'processors' => array(),
 				'partners'   => array(),
 			),
-			// Step 6: Cookies
+			// Step 6: Cookies..
 			'cookies'         => array(
 				'essential'  => array(),
 				'analytics'  => array(),
 				'marketing'  => array(),
 				'functional' => array(),
 			),
-			// Step 7: Legal Framework
+			// Step 7: Legal Framework..
 			'legal'           => array(
 				'primary_jurisdiction'  => '',
 				'gdpr_applies'          => false,
@@ -199,7 +199,7 @@ class Migration_Company_Profile {
 					'address' => '',
 				),
 			),
-			// Step 8: Data Retention & Security
+			// Step 8: Data Retention & Security..
 			'retention'       => array(
 				'default_period'   => '',
 				'by_category'      => array(),
@@ -217,7 +217,7 @@ class Migration_Company_Profile {
 				'identity_verification' => '',
 				'appeal_process'        => '',
 			),
-			// Metadata
+			// Metadata..
 			'_meta'           => array(
 				'version'         => 1,
 				'completion'      => 0,
@@ -412,7 +412,7 @@ class Migration_Company_Profile {
 			'SI',
 			'ES',
 			'SE',
-			// EEA countries
+			// EEA countries..
 			'IS',
 			'LI',
 			'NO',

@@ -63,12 +63,12 @@ final class EmptyHeadingFixer extends AbstractFixer {
 			foreach ( $headings as $heading ) {
 				$text_content = trim( $heading->textContent );
 
-				// Check if heading is truly empty
+				// Check if heading is truly empty..
 				if ( ! empty( $text_content ) ) {
 					continue;
 				}
 
-				// Check for meaningful child elements (images with alt)
+				// Check for meaningful child elements (images with alt)..
 				$has_meaningful_content = false;
 				$images                 = $heading->getElementsByTagName( 'img' );
 
@@ -80,15 +80,15 @@ final class EmptyHeadingFixer extends AbstractFixer {
 				}
 
 				if ( $has_meaningful_content ) {
-					// Convert to paragraph to preserve content without structural impact
+					// Convert to paragraph to preserve content without structural impact..
 					$paragraph = $this->doc->createElement( 'p' );
 
-					// Copy children
+					// Copy children..
 					while ( $heading->firstChild ) {
 						$paragraph->appendChild( $heading->firstChild );
 					}
 
-					// Copy class if any
+					// Copy class if any..
 					if ( $heading->hasAttribute( 'class' ) ) {
 						$paragraph->setAttribute( 'class', $heading->getAttribute( 'class' ) );
 					}
@@ -100,7 +100,7 @@ final class EmptyHeadingFixer extends AbstractFixer {
 						'action' => 'converted_to_paragraph',
 					);
 				} else {
-					// Mark for removal (don't remove during iteration)
+					// Mark for removal (don't remove during iteration)..
 					$headings_to_remove[] = $heading;
 
 					$details[] = array(
@@ -113,7 +113,7 @@ final class EmptyHeadingFixer extends AbstractFixer {
 			}
 		}
 
-		// Remove empty headings
+		// Remove empty headings..
 		foreach ( $headings_to_remove as $heading ) {
 			if ( $heading->parentNode ) {
 				$heading->parentNode->removeChild( $heading );

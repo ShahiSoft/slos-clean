@@ -122,7 +122,7 @@ final class FixResult {
 		return $result;
 	}
 
-	// Getters (immutable)
+	// Getters (immutable)..
 
 	public function get_fixer_id(): string {
 		return $this->fixer_id;

@@ -33,7 +33,7 @@ class AccessibilityStatementGenerator {
 			'post_author'  => get_current_user_id(),
 		);
 
-		// Check if page already exists
+		// Check if page already exists..
 		$existing_page = get_page_by_title( 'Accessibility Statement' );
 		if ( $existing_page ) {
 			$post_data['ID'] = $existing_page->ID;

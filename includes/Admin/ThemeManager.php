@@ -73,7 +73,7 @@ class ThemeManager {
 		if ( file_exists( $themes_file ) ) {
 			$this->themes = require $themes_file;
 		} else {
-			// Fallback to default theme
+			// Fallback to default theme..
 			$this->themes = array(
 				'neon-aether' => array(
 					'name'           => 'Neon Aether',
@@ -142,7 +142,7 @@ class ThemeManager {
 	 * @return void
 	 */
 	public function inject_theme_variables( $hook ) {
-		// Only inject on plugin pages
+		// Only inject on plugin pages..
 		if ( strpos( $hook, 'shahi-legalflowsuite' ) === false && strpos( $hook, 'shahitemplate' ) === false ) {
 			return;
 		}
@@ -152,7 +152,7 @@ class ThemeManager {
 			return;
 		}
 
-		// Build inline CSS with theme variables
+		// Build inline CSS with theme variables..
 		$css = ":root {\n";
 		foreach ( $theme['variables'] as $var => $value ) {
 			$css .= "    $var: $value;\n";
@@ -169,7 +169,7 @@ class ThemeManager {
 	 * @return void
 	 */
 	public function ajax_switch_theme() {
-		// Verify nonce using Security class (handles prefix automatically)
+		// Verify nonce using Security class (handles prefix automatically)..
 		if ( ! Security::verify_nonce( $_POST['nonce'] ?? '', 'shahi_theme_switch' ) ) {
 			wp_send_json_error( array( 'message' => 'Security check failed.' ) );
 		}

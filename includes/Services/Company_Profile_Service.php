@@ -16,7 +16,7 @@ namespace ShahiLegalFlowSuite\Services;
 
 use ShahiLegalFlowSuite\Database\Repositories\Company_Profile_Repository;
 
-// Exit if accessed directly.
+// Exit if accessed directly...
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -1049,7 +1049,7 @@ class Company_Profile_Service extends Base_Service {
 			);
 		}
 
-		// Validate step data.
+		// Validate step data...
 		$validation = $this->validate_step_data( $step_number, $data );
 		if ( ! $validation['valid'] ) {
 			return array(
@@ -1058,13 +1058,13 @@ class Company_Profile_Service extends Base_Service {
 			);
 		}
 
-		// Sanitize data.
+		// Sanitize data...
 		$sanitized = $this->sanitize_step_data( $step_number, $data );
 
-		// Build profile update from flat fields to nested structure.
+		// Build profile update from flat fields to nested structure...
 		$profile_update = $this->fields_to_profile_structure( $sanitized );
 
-		// Save to repository.
+		// Save to repository...
 		$saved = $this->repository->save_profile( $profile_update );
 
 		if ( ! $saved ) {
@@ -1074,7 +1074,7 @@ class Company_Profile_Service extends Base_Service {
 			);
 		}
 
-		// Mark step as completed.
+		// Mark step as completed...
 		$this->mark_step_completed( $step_number );
 
 		return array(
@@ -1107,9 +1107,9 @@ class Company_Profile_Service extends Base_Service {
 			$field_key = str_replace( '.', '_', $field_path );
 			$value     = $data[ $field_key ] ?? null;
 
-			// Check required.
+			// Check required...
 			if ( ! empty( $field_config['required'] ) && $this->is_empty_value( $value ) ) {
-				// Check condition.
+				// Check condition...
 				if ( isset( $field_config['condition'] ) ) {
 					$condition_met = $this->check_field_condition( $field_config['condition'], $data );
 					if ( ! $condition_met ) {
@@ -1124,12 +1124,12 @@ class Company_Profile_Service extends Base_Service {
 				continue;
 			}
 
-			// Skip further validation if empty and not required.
+			// Skip further validation if empty and not required...
 			if ( $this->is_empty_value( $value ) ) {
 				continue;
 			}
 
-			// Type-specific validation.
+			// Type-specific validation...
 			switch ( $field_config['type'] ) {
 				case 'email':
 					if ( ! is_email( $value ) ) {
@@ -1241,7 +1241,7 @@ class Company_Profile_Service extends Base_Service {
 					if ( is_array( $value ) ) {
 						$sanitized[ $field_path ] = array_map( 'sanitize_text_field', $value );
 					} elseif ( is_string( $value ) ) {
-						// Handle comma-separated values.
+						// Handle comma-separated values...
 						$items                    = array_map( 'trim', explode( ',', $value ) );
 						$sanitized[ $field_path ] = array_filter( array_map( 'sanitize_text_field', $items ) );
 					}
@@ -1378,19 +1378,19 @@ class Company_Profile_Service extends Base_Service {
 	public function auto_detect(): array {
 		$detected = array();
 
-		// WordPress site info.
+		// WordPress site info...
 		$detected['website.url']            = get_bloginfo( 'url' );
 		$detected['website.app_name']       = get_bloginfo( 'name' );
 		$detected['contacts.support_email'] = get_bloginfo( 'admin_email' );
 
-		// Check for HTTPS.
+		// Check for HTTPS...
 		$detected['security.encryption_in_transit'] = is_ssl();
 
-		// Detect active plugins and services.
+		// Detect active plugins and services...
 		$active_plugins = get_option( 'active_plugins', array() );
 		$plugin_string  = implode( '|', $active_plugins );
 
-		// Analytics.
+		// Analytics...
 		$analytics = array();
 		if ( strpos( $plugin_string, 'google-site-kit' ) !== false || strpos( $plugin_string, 'google-analytics' ) !== false ) {
 			$analytics[] = 'Google Analytics';
@@ -1402,7 +1402,7 @@ class Company_Profile_Service extends Base_Service {
 			$detected['third_parties.analytics'] = $analytics;
 		}
 
-		// Payment processors.
+		// Payment processors...
 		$payment = array();
 		if ( strpos( $plugin_string, 'woocommerce' ) !== false ) {
 			$payment[] = 'WooCommerce Payments';
@@ -1417,7 +1417,7 @@ class Company_Profile_Service extends Base_Service {
 			$detected['third_parties.payment'] = $payment;
 		}
 
-		// Marketing/Email.
+		// Marketing/Email...
 		$marketing = array();
 		if ( strpos( $plugin_string, 'mailchimp' ) !== false ) {
 			$marketing[] = 'Mailchimp';
@@ -1429,7 +1429,7 @@ class Company_Profile_Service extends Base_Service {
 			$detected['third_parties.marketing'] = $marketing;
 		}
 
-		// Data collection (based on plugins).
+		// Data collection (based on plugins)...
 		$data_types = array( 'ip_address', 'device_info' );
 		if ( strpos( $plugin_string, 'woocommerce' ) !== false ) {
 			$data_types = array_merge( $data_types, array( 'name', 'email', 'address', 'phone', 'payment' ) );
@@ -1439,7 +1439,7 @@ class Company_Profile_Service extends Base_Service {
 		}
 		$detected['data_collection.personal_data_types'] = array_unique( $data_types );
 
-		// Store detected values in profile meta.
+		// Store detected values in profile meta...
 		$profile                           = $this->repository->get_profile();
 		$profile['_meta']['auto_detected'] = $detected;
 		$this->repository->save_profile( array( '_meta' => $profile['_meta'] ) );

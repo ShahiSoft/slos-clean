@@ -13,7 +13,7 @@
 
 namespace ShahiLegalFlowSuite\Services;
 
-// Exit if accessed directly.
+// Exit if accessed directly...
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -131,7 +131,7 @@ class Geo_Rule_Matcher {
 		$country_code = strtoupper( trim( $country_code ) );
 		$state_code   = strtoupper( trim( $state_code ) );
 
-		// Build the full code for US states (e.g., US-CA).
+		// Build the full code for US states (e.g., US-CA)...
 		$full_code = $country_code;
 		if ( 'US' === $country_code && ! empty( $state_code ) ) {
 			$full_code = 'US-' . $state_code;
@@ -149,18 +149,18 @@ class Geo_Rule_Matcher {
 
 			$countries = array_map( 'strtoupper', $rule['countries'] );
 
-			// Priority 1: Exact match (e.g., US-CA matches US-CA).
+			// Priority 1: Exact match (e.g., US-CA matches US-CA)...
 			if ( in_array( $full_code, $countries, true ) ) {
 				$exact_match = $rule;
 				break; // Exact match found, stop searching.
 			}
 
-			// Priority 2: Parent country match (e.g., US matches when visitor is US-CA).
+			// Priority 2: Parent country match (e.g., US matches when visitor is US-CA)...
 			if ( null === $parent_match && in_array( $country_code, $countries, true ) ) {
 				$parent_match = $rule;
 			}
 
-			// Priority 3: Region group match (EU-ALL, EEA-ALL).
+			// Priority 3: Region group match (EU-ALL, EEA-ALL)...
 			if ( null === $region_match ) {
 				if ( in_array( 'EU-ALL', $countries, true ) && $this->is_eu_country( $country_code ) ) {
 					$region_match = $rule;
@@ -169,7 +169,7 @@ class Geo_Rule_Matcher {
 				}
 			}
 
-			// Priority 4: Check for default/global rule.
+			// Priority 4: Check for default/global rule...
 			if ( null === $default_match ) {
 				if ( in_array( 'GLOBAL', $countries, true ) || in_array( '*', $countries, true ) ) {
 					$default_match = $rule;
@@ -177,7 +177,7 @@ class Geo_Rule_Matcher {
 			}
 		}
 
-		// Return based on priority.
+		// Return based on priority...
 		if ( $exact_match ) {
 			return $exact_match;
 		}
@@ -212,7 +212,7 @@ class Geo_Rule_Matcher {
 			return $this->cached_rules;
 		}
 
-		// Filter to only active rules.
+		// Filter to only active rules...
 		$active_rules = array_filter(
 			$all_rules,
 			function ( $rule ) {
@@ -220,14 +220,14 @@ class Geo_Rule_Matcher {
 			}
 		);
 
-		// Sort by specificity (rules with fewer, more specific countries first).
+		// Sort by specificity (rules with fewer, more specific countries first)...
 		usort(
 			$active_rules,
 			function ( $a, $b ) {
 				$a_count = count( $a['countries'] ?? array() );
 				$b_count = count( $b['countries'] ?? array() );
 
-				// Fewer countries = more specific = higher priority.
+				// Fewer countries = more specific = higher priority...
 				return $a_count - $b_count;
 			}
 		);
@@ -252,22 +252,22 @@ class Geo_Rule_Matcher {
 		$country_code = strtoupper( trim( $country_code ) );
 		$countries    = array_map( 'strtoupper', $rule['countries'] );
 
-		// Direct match.
+		// Direct match...
 		if ( in_array( $country_code, $countries, true ) ) {
 			return true;
 		}
 
-		// EU-ALL group match.
+		// EU-ALL group match...
 		if ( in_array( 'EU-ALL', $countries, true ) && $this->is_eu_country( $country_code ) ) {
 			return true;
 		}
 
-		// EEA-ALL group match.
+		// EEA-ALL group match...
 		if ( in_array( 'EEA-ALL', $countries, true ) && $this->is_eea_country( $country_code ) ) {
 			return true;
 		}
 
-		// Global/wildcard match.
+		// Global/wildcard match...
 		if ( in_array( 'GLOBAL', $countries, true ) || in_array( '*', $countries, true ) ) {
 			return true;
 		}
@@ -311,7 +311,7 @@ class Geo_Rule_Matcher {
 			return $all_rules[ $rule_id ];
 		}
 
-		// Also check by 'id' field in array values.
+		// Also check by 'id' field in array values...
 		foreach ( $all_rules as $rule ) {
 			if ( isset( $rule['id'] ) && (int) $rule['id'] === $rule_id ) {
 				return $rule;
@@ -407,7 +407,7 @@ class Geo_Rule_Matcher {
 	 * @return array|WP_Error Rule array on success, WP_Error on failure.
 	 */
 	public function apply_preset( string $preset_key ) {
-		// Load presets configuration.
+		// Load presets configuration...
 		$presets = $this->load_presets();
 
 		if ( ! isset( $presets[ $preset_key ] ) ) {
@@ -417,11 +417,11 @@ class Geo_Rule_Matcher {
 		$preset = $presets[ $preset_key ];
 		$rules  = $this->get_active_rules();
 
-		// Check if preset already applied.
+		// Check if preset already applied...
 		$existing_rule = $this->get_rule_by_preset_key( $preset_key );
 
 		if ( $existing_rule ) {
-			// Update existing preset rule.
+			// Update existing preset rule...
 			$rule_id = $existing_rule['id'];
 			$rule    = array(
 				'id'               => $rule_id,
@@ -440,7 +440,7 @@ class Geo_Rule_Matcher {
 				'preset_key'       => $preset_key,
 			);
 
-			// Update in array.
+			// Update in array...
 			foreach ( $rules as $index => $existing ) {
 				if ( $existing['id'] === $rule_id ) {
 					$rules[ $index ] = $rule;
@@ -448,7 +448,7 @@ class Geo_Rule_Matcher {
 				}
 			}
 		} else {
-			// Create new preset rule.
+			// Create new preset rule...
 			$rule_id = $this->get_next_rule_id( $rules );
 			$rule    = array(
 				'id'               => $rule_id,
@@ -470,7 +470,7 @@ class Geo_Rule_Matcher {
 			$rules[] = $rule;
 		}
 
-		// Save to database.
+		// Save to database...
 		update_option( 'slos_geo_rules', $rules );
 		$this->clear_cache();
 

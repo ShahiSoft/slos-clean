@@ -16,7 +16,7 @@ namespace ShahiLegalFlowSuite\Services;
 
 use ShahiLegalFlowSuite\Database\Repositories\DSR_Repository;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -127,30 +127,30 @@ class DSR_Service extends Base_Service {
 	public function submit_request( int $user_id, string $type, string $email, string $details = '', array $meta = array() ) {
 		$this->clear_errors();
 
-		// Validate email
+		// Validate email..
 		if ( ! $this->validate_email( $email, 'email' ) ) {
 			return false;
 		}
 
-		// Validate request type
+		// Validate request type..
 		if ( ! $this->validate_in_list( $type, $this->allowed_types, 'type' ) ) {
 			$this->add_validation_error( 'type', sprintf( 'Invalid request type. Allowed: %s', implode( ', ', $this->allowed_types ) ) );
 			return false;
 		}
 
-		// Validate detail length
+		// Validate detail length..
 		if ( strlen( $details ) > $this->max_detail_length ) {
 			$this->add_validation_error( 'details', sprintf( 'Details exceed maximum length of %d characters', $this->max_detail_length ) );
 			return false;
 		}
 
-		// Rate limiting check
+		// Rate limiting check..
 		if ( ! $this->check_rate_limit( $email ) ) {
 			$this->add_error( 'rate_limit', 'Too many requests. Please try again later.', array( 'email' => $email ) );
 			return false;
 		}
 
-		// Prepare request data
+		// Prepare request data..
 		$regulation = $meta['regulation'] ?? $this->detect_regulation();
 		$data       = array(
 			'request_type' => sanitize_text_field( $type ),
@@ -161,7 +161,7 @@ class DSR_Service extends Base_Service {
 			'source'       => $meta['source'] ?? 'website',
 		);
 
-		// Create request via repository (handles SLA, token, hashing)
+		// Create request via repository (handles SLA, token, hashing)..
 		$request_id = $this->repository->create_request( $data );
 
 		if ( ! $request_id ) {
@@ -169,10 +169,10 @@ class DSR_Service extends Base_Service {
 			return false;
 		}
 
-		// Log rate limit attempt
+		// Log rate limit attempt..
 		$this->log_rate_limit_attempt( $email );
 
-		// Fire hook for email sending and logging
+		// Fire hook for email sending and logging..
 		do_action( 'slos_dsr_submitted', $request_id, $data );
 
 		$this->add_message( sprintf( 'DSR request submitted successfully (ID: %d). Verification email sent.', $request_id ) );
@@ -197,7 +197,7 @@ class DSR_Service extends Base_Service {
 			return false;
 		}
 
-		// Find request by token (only pending_verification)
+		// Find request by token (only pending_verification)..
 		$request = $this->repository->find_by_token( $token );
 
 		if ( ! $request ) {
@@ -205,7 +205,7 @@ class DSR_Service extends Base_Service {
 			return false;
 		}
 
-		// Update status to verified
+		// Update status to verified..
 		$result = $this->repository->update_status(
 			$request->id,
 			'verified',
@@ -219,7 +219,7 @@ class DSR_Service extends Base_Service {
 			return false;
 		}
 
-		// Fire hook for notifications
+		// Fire hook for notifications..
 		do_action( 'slos_dsr_status_changed', $request->id, 'pending_verification', 'verified' );
 
 		$this->add_message( 'Email verified successfully. Your request is now being processed.' );
@@ -238,20 +238,20 @@ class DSR_Service extends Base_Service {
 	public function assign_request( int $request_id, int $assignee ): bool {
 		$this->clear_errors();
 
-		// Validate request exists
+		// Validate request exists..
 		$request = $this->repository->find( $request_id );
 		if ( ! $request ) {
 			$this->add_error( 'not_found', 'Request not found', array( 'request_id' => $request_id ) );
 			return false;
 		}
 
-		// Validate assignee exists and has capability
+		// Validate assignee exists and has capability..
 		if ( ! user_can( $assignee, 'manage_options' ) ) {
 			$this->add_error( 'invalid_assignee', 'Assignee must have manage_options capability', array( 'assignee' => $assignee ) );
 			return false;
 		}
 
-		// Update processed_by field
+		// Update processed_by field..
 		$result = $this->repository->update(
 			$request_id,
 			array(
@@ -282,26 +282,26 @@ class DSR_Service extends Base_Service {
 	public function add_note( int $request_id, string $note, int $author ): bool {
 		$this->clear_errors();
 
-		// Validate request exists
+		// Validate request exists..
 		$request = $this->repository->find( $request_id );
 		if ( ! $request ) {
 			$this->add_error( 'not_found', 'Request not found', array( 'request_id' => $request_id ) );
 			return false;
 		}
 
-		// Validate note content
+		// Validate note content..
 		if ( empty( trim( $note ) ) ) {
 			$this->add_validation_error( 'note', 'Note content cannot be empty' );
 			return false;
 		}
 
-		// Prepare note with timestamp and author
+		// Prepare note with timestamp and author..
 		$existing_notes = ! empty( $request->admin_notes ) ? $request->admin_notes . "\n\n" : '';
 		$timestamp      = current_time( 'mysql' );
 		$author_name    = get_userdata( $author )->display_name ?? "User #{$author}";
 		$new_note       = sprintf( '[%s] %s: %s', $timestamp, $author_name, sanitize_textarea_field( $note ) );
 
-		// Update admin_notes field
+		// Update admin_notes field..
 		$result = $this->repository->update(
 			$request_id,
 			array(
@@ -334,20 +334,20 @@ class DSR_Service extends Base_Service {
 	public function transition( int $request_id, string $new_status, array $metadata = array() ): bool {
 		$this->clear_errors();
 
-		// Validate request exists
+		// Validate request exists..
 		$request = $this->repository->find( $request_id );
 		if ( ! $request ) {
 			$this->add_error( 'not_found', 'Request not found', array( 'request_id' => $request_id ) );
 			return false;
 		}
 
-		// Validate new status
+		// Validate new status..
 		if ( ! $this->validate_in_list( $new_status, $this->allowed_statuses, 'status' ) ) {
 			$this->add_validation_error( 'status', sprintf( 'Invalid status. Allowed: %s', implode( ', ', $this->allowed_statuses ) ) );
 			return false;
 		}
 
-		// Validate transition is allowed
+		// Validate transition is allowed..
 		if ( ! $this->is_valid_transition( $request->status, $new_status ) ) {
 			$this->add_error(
 				'invalid_transition',
@@ -360,7 +360,7 @@ class DSR_Service extends Base_Service {
 			return false;
 		}
 
-		// Check SLA compliance (warn if overdue)
+		// Check SLA compliance (warn if overdue)..
 		if ( $new_status === 'completed' && ! empty( $request->sla_deadline ) ) {
 			$deadline = new \DateTime( $request->sla_deadline );
 			$now      = new \DateTime();
@@ -369,10 +369,10 @@ class DSR_Service extends Base_Service {
 			}
 		}
 
-		// Store old status for hook
+		// Store old status for hook..
 		$old_status = $request->status;
 
-		// Update status via repository
+		// Update status via repository..
 		$result = $this->repository->update_status( $request_id, $new_status, $metadata );
 
 		if ( ! $result ) {
@@ -380,10 +380,10 @@ class DSR_Service extends Base_Service {
 			return false;
 		}
 
-		// Fire status change hook
+		// Fire status change hook..
 		do_action( 'slos_dsr_status_changed', $request_id, $old_status, $new_status );
 
-		// Fire completion hook if completed
+		// Fire completion hook if completed..
 		if ( $new_status === 'completed' ) {
 			do_action( 'slos_dsr_completed', $request_id, $request );
 		}
@@ -405,31 +405,31 @@ class DSR_Service extends Base_Service {
 	public function generate_export_package( int $request_id ) {
 		$this->clear_errors();
 
-		// Validate request exists and is correct type
+		// Validate request exists and is correct type..
 		$request = $this->repository->find( $request_id );
 		if ( ! $request ) {
 			$this->add_error( 'not_found', 'Request not found', array( 'request_id' => $request_id ) );
 			return false;
 		}
 
-		// Verify request is verified or in_progress
+		// Verify request is verified or in_progress..
 		if ( ! in_array( $request->status, array( 'verified', 'in_progress', 'completed' ), true ) ) {
 			$this->add_error( 'invalid_status', 'Request must be verified before export', array( 'status' => $request->status ) );
 			return false;
 		}
 
-		// Generate secure export token (valid for 7 days)
+		// Generate secure export token (valid for 7 days)..
 		$export_token = wp_generate_password( 32, false );
 		$expires_at   = gmdate( 'Y-m-d H:i:s', strtotime( '+7 days' ) );
 
-		// Store export metadata
+		// Store export metadata..
 		$export_meta = array(
 			'export_token'   => $export_token,
 			'export_expires' => $expires_at,
 			'export_created' => current_time( 'mysql' ),
 		);
 
-		// Update request with export data
+		// Update request with export data..
 		$result = $this->repository->update(
 			$request_id,
 			array(
@@ -443,10 +443,10 @@ class DSR_Service extends Base_Service {
 			return false;
 		}
 
-		// Store export token in transient (7-day expiry)
+		// Store export token in transient (7-day expiry)..
 		set_transient( 'slos_dsr_export_' . $request_id, $export_meta, 7 * DAY_IN_SECONDS );
 
-		// Fire hook for export generation (async task)
+		// Fire hook for export generation (async task)..
 		do_action( 'slos_dsr_export_ready', $request_id, $export_token, $request );
 
 		$this->add_message( 'Export package generation initiated. Download link will be sent via email.' );
@@ -466,7 +466,7 @@ class DSR_Service extends Base_Service {
 	public function execute_erasure( int $request_id ): bool {
 		$this->clear_errors();
 
-		// Validate request exists and is erasure type
+		// Validate request exists and is erasure type..
 		$request = $this->repository->find( $request_id );
 		if ( ! $request ) {
 			$this->add_error( 'not_found', 'Request not found', array( 'request_id' => $request_id ) );
@@ -478,16 +478,16 @@ class DSR_Service extends Base_Service {
 			return false;
 		}
 
-		// Verify request is verified
+		// Verify request is verified..
 		if ( ! in_array( $request->status, array( 'verified', 'in_progress' ), true ) ) {
 			$this->add_error( 'invalid_status', 'Request must be verified before erasure', array( 'status' => $request->status ) );
 			return false;
 		}
 
-		// Fire erasure hook (will trigger anonymization callbacks)
+		// Fire erasure hook (will trigger anonymization callbacks)..
 		do_action( 'slos_dsr_erasure_execute', $request_id, $request );
 
-		// Update status to in_progress (will be completed after erasure)
+		// Update status to in_progress (will be completed after erasure)..
 		$this->transition(
 			$request_id,
 			'in_progress',
@@ -517,7 +517,7 @@ class DSR_Service extends Base_Service {
 
 		while ( $added < $sla_days ) {
 			$date->modify( '+1 day' );
-			// Skip weekends (Saturday=6, Sunday=7)
+			// Skip weekends (Saturday=6, Sunday=7)..
 			if ( (int) $date->format( 'N' ) < 6 ) {
 				++$added;
 			}
@@ -543,7 +543,7 @@ class DSR_Service extends Base_Service {
 
 		$timeline = array();
 
-		// Submitted event
+		// Submitted event..
 		$timeline[] = array(
 			'event'     => 'submitted',
 			'timestamp' => $request->submitted_at,
@@ -551,7 +551,7 @@ class DSR_Service extends Base_Service {
 			'details'   => sprintf( 'Request type: %s, Regulation: %s', $request->request_type, $request->regulation ),
 		);
 
-		// Verified event
+		// Verified event..
 		if ( ! empty( $request->verified_at ) ) {
 			$timeline[] = array(
 				'event'     => 'verified',
@@ -561,7 +561,7 @@ class DSR_Service extends Base_Service {
 			);
 		}
 
-		// Status changes (parse from admin_notes if available)
+		// Status changes (parse from admin_notes if available)..
 		if ( ! empty( $request->admin_notes ) ) {
 			$notes = explode( "\n\n", $request->admin_notes );
 			foreach ( $notes as $note ) {
@@ -576,7 +576,7 @@ class DSR_Service extends Base_Service {
 			}
 		}
 
-		// Completed event
+		// Completed event..
 		if ( ! empty( $request->completed_at ) ) {
 			$timeline[] = array(
 				'event'     => $request->status === 'completed' ? 'completed' : 'rejected',
@@ -586,7 +586,7 @@ class DSR_Service extends Base_Service {
 			);
 		}
 
-		// Sort by timestamp descending
+		// Sort by timestamp descending..
 		usort(
 			$timeline,
 			function ( $a, $b ) {
@@ -626,7 +626,7 @@ class DSR_Service extends Base_Service {
 	 * @return string Regulation code
 	 */
 	private function detect_regulation(): string {
-		// Default to GDPR (can be enhanced with geo-location service)
+		// Default to GDPR (can be enhanced with geo-location service)..
 		return apply_filters( 'slos_dsr_detect_regulation', 'GDPR' );
 	}
 
@@ -678,12 +678,12 @@ class DSR_Service extends Base_Service {
 	 * @return bool True if valid transition
 	 */
 	private function is_valid_transition( string $current_status, string $new_status ): bool {
-		// Same status is always valid
+		// Same status is always valid..
 		if ( $current_status === $new_status ) {
 			return true;
 		}
 
-		// Check allowed transitions
+		// Check allowed transitions..
 		if ( ! isset( $this->status_transitions[ $current_status ] ) ) {
 			return false;
 		}
@@ -743,7 +743,7 @@ class DSR_Service extends Base_Service {
 		global $wpdb;
 		$table = $this->repository->get_full_table_name();
 
-		// Open requests (non-terminal statuses)
+		// Open requests (non-terminal statuses)..
 		$open_statuses = array( 'pending_verification', 'verified', 'in_progress', 'on_hold' );
 		$placeholders  = implode( ', ', array_fill( 0, count( $open_statuses ), '%s' ) );
 		$open_args     = array_merge( array( $table ), $open_statuses );
@@ -755,10 +755,10 @@ class DSR_Service extends Base_Service {
 			)
 		);
 
-		// Total requests
+		// Total requests..
 		$total_count = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table ) );
 
-		// Completed requests
+		// Completed requests..
 		$completed_count = $wpdb->get_var(
 			$wpdb->prepare(
 				'SELECT COUNT(*) FROM %i WHERE status = %s',
@@ -767,8 +767,8 @@ class DSR_Service extends Base_Service {
 			)
 		);
 
-		// SLA compliance: % of completed requests that met deadline
-		// Note: Table uses completed_date and due_date, not completed_at and sla_deadline
+		// SLA compliance: % of completed requests that met deadline..
+		// Note: Table uses completed_date and due_date, not completed_at and sla_deadline..
 		$sla_compliant = $wpdb->get_var(
 			$wpdb->prepare(
 				'SELECT COUNT(*) FROM %i WHERE status = %s AND completed_date IS NOT NULL AND completed_date <= due_date',
@@ -781,7 +781,7 @@ class DSR_Service extends Base_Service {
 			? round( ( $sla_compliant / $completed_count ) * 100, 1 )
 			: 100;
 
-		// Queue breakdown by status
+		// Queue breakdown by status..
 		$queue_breakdown = $wpdb->get_results(
 			$wpdb->prepare( 'SELECT status, COUNT(*) as count FROM %i GROUP BY status', $table ),
 			ARRAY_A
@@ -792,8 +792,8 @@ class DSR_Service extends Base_Service {
 			$by_status[ $row['status'] ] = (int) $row['count'];
 		}
 
-		// Requests by type (last 30 days)
-		// Note: Table uses request_date, not submitted_at
+		// Requests by type (last 30 days)..
+		// Note: Table uses request_date, not submitted_at..
 		$by_type = $wpdb->get_results(
 			$wpdb->prepare(
 				'SELECT request_type, COUNT(*) as count FROM %i WHERE request_date >= %s GROUP BY request_type',
@@ -808,8 +808,8 @@ class DSR_Service extends Base_Service {
 			$type_breakdown[ $row['request_type'] ] = (int) $row['count'];
 		}
 
-		// Overdue requests (past SLA deadline, not completed/rejected)
-		// Note: Table uses due_date, not sla_deadline
+		// Overdue requests (past SLA deadline, not completed/rejected)..
+		// Note: Table uses due_date, not sla_deadline..
 		$overdue = $wpdb->get_var(
 			$wpdb->prepare(
 				'SELECT COUNT(*) FROM %i WHERE status NOT IN (%s, %s) AND due_date < %s',

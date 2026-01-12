@@ -53,30 +53,30 @@ final class TableCaptionFixer extends AbstractFixer {
 			return FixResult::error( $this->get_id(), 'Failed to parse HTML', $content );
 		}
 
-		// Find tables without caption (but have th elements, indicating data table)
+		// Find tables without caption (but have th elements, indicating data table)..
 		$tables        = $this->query( '//table[not(caption) and .//th]' );
 		$fixes_applied = 0;
 		$details       = array();
 
 		foreach ( $tables as $table ) {
-			// Skip layout tables (role="presentation" or "none")
+			// Skip layout tables (role="presentation" or "none")..
 			$role = $table->getAttribute( 'role' );
 			if ( $role === 'presentation' || $role === 'none' ) {
 				continue;
 			}
 
-			// Skip if already has aria-label or aria-labelledby
+			// Skip if already has aria-label or aria-labelledby..
 			if ( $table->hasAttribute( 'aria-label' ) || $table->hasAttribute( 'aria-labelledby' ) ) {
 				continue;
 			}
 
-			// Generate caption from first th row or aria-label
+			// Generate caption from first th row or aria-label..
 			$caption_text = $this->generate_caption( $table );
 
 			$caption              = $this->doc->createElement( 'caption' );
 			$caption->textContent = $caption_text;
 
-			// Insert caption as first child
+			// Insert caption as first child..
 			if ( $table->firstChild ) {
 				$table->insertBefore( $caption, $table->firstChild );
 			} else {
@@ -106,13 +106,13 @@ final class TableCaptionFixer extends AbstractFixer {
 	 * Generate a caption based on table content
 	 */
 	private function generate_caption( \DOMElement $table ): string {
-		// Try to use summary attribute if present
+		// Try to use summary attribute if present..
 		$summary = $table->getAttribute( 'summary' );
 		if ( ! empty( $summary ) ) {
 			return $summary;
 		}
 
-		// Try to derive from first header row
+		// Try to derive from first header row..
 		$ths = $this->query( './/tr[1]/th', $table );
 		if ( count( $ths ) > 0 ) {
 			$headers = array();
@@ -130,7 +130,7 @@ final class TableCaptionFixer extends AbstractFixer {
 			}
 		}
 
-		// Check for nearby heading
+		// Check for nearby heading..
 		$preceding = $this->query( 'preceding-sibling::*[self::h1 or self::h2 or self::h3 or self::h4 or self::h5 or self::h6][1]', $table );
 		if ( count( $preceding ) > 0 ) {
 			$heading_text = trim( $preceding[0]->textContent );
@@ -139,7 +139,7 @@ final class TableCaptionFixer extends AbstractFixer {
 			}
 		}
 
-		// Fallback
+		// Fallback..
 		return __( 'Data table', 'shahi-legalflowsuite' );
 	}
 }

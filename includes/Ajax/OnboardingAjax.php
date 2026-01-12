@@ -14,7 +14,7 @@
 
 namespace ShahiLegalFlowSuite\Ajax;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -46,10 +46,10 @@ class OnboardingAjax {
 	 * @return void
 	 */
 	public function save_onboarding_step() {
-		// Verify request
+		// Verify request..
 		AjaxHandler::verify_request( 'shahi_onboarding', 'manage_shahi_template' );
 
-		// Get step number
+		// Get step number..
 		if ( ! isset( $_POST['step'] ) ) {
 			AjaxHandler::error( 'Step number is required' );
 		}
@@ -57,14 +57,14 @@ class OnboardingAjax {
 		$step = intval( $_POST['step'] );
 		$data = isset( $_POST['data'] ) ? $_POST['data'] : array();
 
-		// Get current onboarding data
+		// Get current onboarding data..
 		$onboarding_data = get_option( 'shahi_onboarding_data', array() );
 
-		// Save step data
+		// Save step data..
 		$onboarding_data[ $step ] = AjaxHandler::sanitize_data( $data );
 		update_option( 'shahi_onboarding_data', $onboarding_data );
 
-		// Track analytics event
+		// Track analytics event..
 		$this->track_onboarding_event( 'step_completed', $step );
 
 		AjaxHandler::success(
@@ -83,23 +83,23 @@ class OnboardingAjax {
 	 * @return void
 	 */
 	public function complete_onboarding() {
-		// Verify request
+		// Verify request..
 		AjaxHandler::verify_request( 'shahi_onboarding', 'manage_shahi_template' );
 
-		// Get final data
+		// Get final data..
 		$data = isset( $_POST['data'] ) ? $_POST['data'] : array();
 
-		// Save completion flag
+		// Save completion flag..
 		update_option( 'shahi_onboarding_completed', true );
 
-		// Save final data
+		// Save final data..
 		if ( ! empty( $data ) ) {
 			$onboarding_data          = get_option( 'shahi_onboarding_data', array() );
 			$onboarding_data['final'] = AjaxHandler::sanitize_data( $data );
 			update_option( 'shahi_onboarding_data', $onboarding_data );
 		}
 
-		// Track analytics event
+		// Track analytics event..
 		$this->track_onboarding_event( 'completed', 'final' );
 
 		AjaxHandler::success(
@@ -120,7 +120,7 @@ class OnboardingAjax {
 		global $wpdb;
 		$analytics_table = $wpdb->prefix . 'shahi_analytics';
 
-		// Check if table exists
+		// Check if table exists..
 		if ( $wpdb->get_var( "SHOW TABLES LIKE '$analytics_table'" ) !== $analytics_table ) {
 			return;
 		}

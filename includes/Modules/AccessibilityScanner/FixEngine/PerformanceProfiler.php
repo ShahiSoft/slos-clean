@@ -18,7 +18,7 @@ class PerformanceProfiler {
 		'fast'       => 0.01,      // < 10ms
 		'acceptable' => 0.05, // < 50ms
 		'slow'       => 0.1,        // < 100ms
-		// > 100ms = very slow
+		// > 100ms = very slow..
 	);
 
 	/**
@@ -83,7 +83,7 @@ class PerformanceProfiler {
 
 		$fixers = $engine->get_fixers()->all();
 
-		// Default test content
+		// Default test content..
 		if ( ! $test_content ) {
 			$test_content = $this->generate_test_content();
 		}
@@ -97,7 +97,7 @@ class PerformanceProfiler {
 			$results[] = $profile;
 		}
 
-		// Sort by avg_time descending (slowest first)
+		// Sort by avg_time descending (slowest first)..
 		usort(
 			$results,
 			function ( $a, $b ) {
@@ -175,7 +175,7 @@ class PerformanceProfiler {
 		$report  = "# Phase 5: Performance Profile Report\n\n";
 		$report .= '**Generated:** ' . date( 'Y-m-d H:i:s' ) . "\n\n";
 
-		// Summary
+		// Summary..
 		$by_rating = array(
 			'fast'       => array(),
 			'acceptable' => array(),
@@ -193,7 +193,7 @@ class PerformanceProfiler {
 		$report .= '- ⚠ Slow (< 100ms): ' . count( $by_rating['slow'] ) . "\n";
 		$report .= '- ❌ Very Slow (> 100ms): ' . count( $by_rating['very_slow'] ) . "\n\n";
 
-		// Slowest fixers (top priority for optimization)
+		// Slowest fixers (top priority for optimization)..
 		if ( ! empty( $by_rating['very_slow'] ) ) {
 			$report .= "## Very Slow Fixers (Priority Optimization)\n\n";
 			foreach ( $by_rating['very_slow'] as $profile ) {
@@ -220,7 +220,7 @@ class PerformanceProfiler {
 			$report .= "\n";
 		}
 
-		// Full list
+		// Full list..
 		$report .= "## All Fixers (Sorted by Performance)\n\n";
 		$report .= "| Fixer ID | Avg Time | Rating | Memory |\n";
 		$report .= "|----------|----------|--------|--------|\n";
@@ -256,7 +256,7 @@ class PerformanceProfiler {
 	}
 }
 
-// CLI execution
+// CLI execution..
 if ( php_sapi_name() === 'cli' && basename( __FILE__ ) === basename( $_SERVER['SCRIPT_FILENAME'] ) ) {
 	require_once __DIR__ . '/../../../vendor/autoload.php';
 

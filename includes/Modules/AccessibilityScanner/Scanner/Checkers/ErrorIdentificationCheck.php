@@ -98,22 +98,22 @@ class ErrorIdentificationCheck extends AbstractCheck {
 		$dom    = $this->get_dom( $content );
 		$xpath  = new \DOMXPath( $dom );
 
-		// 1. Check required fields have error handling setup
+		// 1. Check required fields have error handling setup..
 		$this->check_required_fields( $xpath, $issues );
 
-		// 2. Check aria-invalid usage has associated error message
+		// 2. Check aria-invalid usage has associated error message..
 		$this->check_aria_invalid( $xpath, $issues );
 
-		// 3. Check error containers have text content
+		// 3. Check error containers have text content..
 		$this->check_error_containers( $xpath, $issues );
 
-		// 4. Check for color-only error indication
+		// 4. Check for color-only error indication..
 		$this->check_color_only_errors( $xpath, $issues );
 
-		// 5. Check error summary/list accessibility
+		// 5. Check error summary/list accessibility..
 		$this->check_error_summary( $xpath, $issues );
 
-		// 6. Check aria-errormessage references
+		// 6. Check aria-errormessage references..
 		$this->check_errormessage_references( $xpath, $issues );
 
 		return $issues;
@@ -129,11 +129,11 @@ class ErrorIdentificationCheck extends AbstractCheck {
 		$required = $xpath->query( '//input[@required] | //select[@required] | //textarea[@required]' );
 
 		foreach ( $required as $field ) {
-			// Check for error message linking
+			// Check for error message linking..
 			$has_error_link = $field->hasAttribute( 'aria-describedby' ) ||
 								$field->hasAttribute( 'aria-errormessage' );
 
-			// Check if field is inside a form with validation handling
+			// Check if field is inside a form with validation handling..
 			$in_validated_form = $this->is_in_validated_form( $field );
 
 			if ( ! $has_error_link && ! $in_validated_form ) {
@@ -163,9 +163,9 @@ class ErrorIdentificationCheck extends AbstractCheck {
 
 		while ( $parent && $parent instanceof \DOMElement ) {
 			if ( strtolower( $parent->tagName ) === 'form' ) {
-				// Check for validation attributes
+				// Check for validation attributes..
 				if ( $parent->hasAttribute( 'novalidate' ) ) {
-					// Using custom validation
+					// Using custom validation..
 					return true;
 				}
 				$class = $parent->getAttribute( 'class' );
@@ -224,7 +224,7 @@ class ErrorIdentificationCheck extends AbstractCheck {
 					'message' => 'Field marked as invalid (aria-invalid="true") must have an associated error message via aria-describedby or aria-errormessage.',
 				);
 			} else {
-				// Verify the referenced element exists and has content
+				// Verify the referenced element exists and has content..
 				$ref_id = ! empty( $error_message ) ? $error_message : explode( ' ', $described_by )[0];
 
 				if ( ! empty( $ref_id ) ) {
@@ -237,7 +237,7 @@ class ErrorIdentificationCheck extends AbstractCheck {
 							'message' => "Error message reference '#$ref_id' does not exist in the document.",
 						);
 					} elseif ( trim( $ref_element->item( 0 )->textContent ) === '' ) {
-						// Check if it's hidden (might be filled dynamically)
+						// Check if it's hidden (might be filled dynamically)..
 						$ref_style   = $ref_element->item( 0 )->getAttribute( 'style' );
 						$ref_hidden  = $ref_element->item( 0 )->getAttribute( 'hidden' );
 						$aria_hidden = $ref_element->item( 0 )->getAttribute( 'aria-hidden' );
@@ -269,21 +269,21 @@ class ErrorIdentificationCheck extends AbstractCheck {
 			$elements = $xpath->query( "//*[contains(@class, '$pattern')]" );
 
 			foreach ( $elements as $element ) {
-				// Skip if hidden
+				// Skip if hidden..
 				if ( $this->is_hidden( $element ) ) {
 					continue;
 				}
 
-				// Check for empty error containers that are visible
+				// Check for empty error containers that are visible..
 				$text = trim( $element->textContent );
 
 				if ( empty( $text ) ) {
-					// Check if it has aria-hidden (intentionally hidden for now)
+					// Check if it has aria-hidden (intentionally hidden for now)..
 					if ( $element->getAttribute( 'aria-hidden' ) === 'true' ) {
 						continue;
 					}
 
-					// Check if it contains only icons (aria-label might describe error)
+					// Check if it contains only icons (aria-label might describe error)..
 					$aria_label = $element->getAttribute( 'aria-label' );
 					if ( ! empty( $aria_label ) ) {
 						continue;
@@ -320,7 +320,7 @@ class ErrorIdentificationCheck extends AbstractCheck {
 			return true;
 		}
 
-		// Check for common hidden classes
+		// Check for common hidden classes..
 		$class = $element->getAttribute( 'class' );
 		if ( preg_match( '/\b(?:hidden|d-none|hide|invisible)\b/i', $class ) ) {
 			return true;
@@ -336,17 +336,17 @@ class ErrorIdentificationCheck extends AbstractCheck {
 	 * @param array     $issues Issues array by reference.
 	 */
 	private function check_color_only_errors( $xpath, &$issues ) {
-		// Look for inputs with red border/outline via inline style
+		// Look for inputs with red border/outline via inline style..
 		$inputs = $xpath->query( '//input[@style] | //select[@style] | //textarea[@style]' );
 
 		foreach ( $inputs as $input ) {
 			$style = strtolower( $input->getAttribute( 'style' ) );
 
-			// Check for red/error colors in border or outline
+			// Check for red/error colors in border or outline..
 			$has_error_color = false;
 			foreach ( $this->error_colors as $color ) {
 				if ( strpos( $style, strtolower( $color ) ) !== false ) {
-					// Check if it's in border/outline context
+					// Check if it's in border/outline context..
 					if ( preg_match( '/(?:border|outline)[^:]*:[^;]*' . preg_quote( strtolower( $color ), '/' ) . '/i', $style ) ) {
 						$has_error_color = true;
 						break;
@@ -355,7 +355,7 @@ class ErrorIdentificationCheck extends AbstractCheck {
 			}
 
 			if ( $has_error_color ) {
-				// Check if there's an error message linked
+				// Check if there's an error message linked..
 				$has_error_message = $input->hasAttribute( 'aria-describedby' ) ||
 									$input->hasAttribute( 'aria-errormessage' ) ||
 									$input->getAttribute( 'aria-invalid' ) === 'true';
@@ -370,7 +370,7 @@ class ErrorIdentificationCheck extends AbstractCheck {
 			}
 		}
 
-		// Also check for class-based error styling without proper ARIA
+		// Also check for class-based error styling without proper ARIA..
 		$error_inputs = $xpath->query( '//input[contains(@class, "error") or contains(@class, "invalid")] | //select[contains(@class, "error") or contains(@class, "invalid")] | //textarea[contains(@class, "error") or contains(@class, "invalid")]' );
 
 		foreach ( $error_inputs as $input ) {
@@ -404,7 +404,7 @@ class ErrorIdentificationCheck extends AbstractCheck {
 					continue;
 				}
 
-				// Check for role or aria-live for announcement
+				// Check for role or aria-live for announcement..
 				$has_announcement = $element->hasAttribute( 'role' ) ||
 									$element->getAttribute( 'aria-live' ) === 'polite' ||
 									$element->getAttribute( 'aria-live' ) === 'assertive';
@@ -421,7 +421,7 @@ class ErrorIdentificationCheck extends AbstractCheck {
 					);
 				}
 
-				// Check if it's a proper list
+				// Check if it's a proper list..
 				$has_list = $element->getElementsByTagName( 'ul' )->length > 0 ||
 							$element->getElementsByTagName( 'ol' )->length > 0;
 
@@ -460,7 +460,7 @@ class ErrorIdentificationCheck extends AbstractCheck {
 				continue;
 			}
 
-			// Multiple IDs are not supported for aria-errormessage
+			// Multiple IDs are not supported for aria-errormessage..
 			if ( strpos( $ref_id, ' ' ) !== false ) {
 				$issues[] = array(
 					'element'  => $element->tagName,
@@ -470,7 +470,7 @@ class ErrorIdentificationCheck extends AbstractCheck {
 				);
 			}
 
-			// Check if aria-invalid is also set
+			// Check if aria-invalid is also set..
 			$is_invalid = $element->getAttribute( 'aria-invalid' );
 
 			if ( $is_invalid !== 'true' ) {

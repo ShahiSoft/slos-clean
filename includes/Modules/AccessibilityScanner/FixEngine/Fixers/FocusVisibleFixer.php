@@ -43,7 +43,7 @@ final class FocusVisibleFixer extends AbstractFixer {
 	}
 
 	public function can_fix( string $content ): bool {
-		// Check for outline:none or outline:0 in inline styles
+		// Check for outline:none or outline:0 in inline styles..
 		return strpos( $content, 'outline:' ) !== false ||
 				strpos( $content, 'outline: none' ) !== false ||
 				strpos( $content, 'outline:0' ) !== false;
@@ -59,18 +59,18 @@ final class FocusVisibleFixer extends AbstractFixer {
 		$fixes_applied = 0;
 		$details       = array();
 
-		// Find elements with outline:none or outline:0 in inline styles
+		// Find elements with outline:none or outline:0 in inline styles..
 		$focusable_elements = $this->query( '//a[@style] | //button[@style] | //input[@style] | //select[@style] | //textarea[@style] | //*[@tabindex and @style]' );
 
 		foreach ( $focusable_elements as $element ) {
 			$style = $element->getAttribute( 'style' );
 
-			// Check for outline removal
+			// Check for outline removal..
 			if ( preg_match( '/outline\s*:\s*(none|0)/i', $style ) ) {
-				// Remove outline:none and add focus-visible alternative
+				// Remove outline:none and add focus-visible alternative..
 				$new_style = preg_replace( '/outline\s*:\s*(none|0)\s*;?\s*/i', '', $style );
 
-				// Add class for focus styling
+				// Add class for focus styling..
 				$existing_class = $element->getAttribute( 'class' );
 				$element->setAttribute( 'class', trim( $existing_class . ' slos-focus-visible' ) );
 				$element->setAttribute( 'style', trim( $new_style ) ?: null );
@@ -87,13 +87,13 @@ final class FocusVisibleFixer extends AbstractFixer {
 			}
 		}
 
-		// Check for style tags with problematic focus rules
+		// Check for style tags with problematic focus rules..
 		$styles = $this->query( '//style' );
 
 		foreach ( $styles as $style_tag ) {
 			$css = $style_tag->textContent;
 
-			// Add focus-visible fallback styles
+			// Add focus-visible fallback styles..
 			if ( preg_match( '/(:focus\s*\{[^}]*outline\s*:\s*(none|0))/i', $css ) ) {
 				$focus_css              = '
 /* Added by SLOS - Focus visible fallback */
@@ -117,7 +117,7 @@ final class FocusVisibleFixer extends AbstractFixer {
 			}
 		}
 
-		// If no style tag exists but we added classes, add the CSS
+		// If no style tag exists but we added classes, add the CSS..
 		if ( $fixes_applied > 0 && count( $styles ) === 0 ) {
 			$head = $this->query( '//head' );
 

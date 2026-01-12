@@ -58,7 +58,7 @@ final class DocumentTitleFixer extends AbstractFixer {
 		$details       = array();
 
 		if ( count( $titles ) === 0 ) {
-			// No title element - need to add one
+			// No title element - need to add one..
 			$heads = $this->query( '//head' );
 
 			if ( count( $heads ) === 0 ) {
@@ -68,11 +68,11 @@ final class DocumentTitleFixer extends AbstractFixer {
 			$head  = $heads[0];
 			$title = $this->doc->createElement( 'title' );
 
-			// Try to generate a meaningful title from h1 or post data
+			// Try to generate a meaningful title from h1 or post data..
 			$title_text         = $this->generate_title();
 			$title->textContent = $title_text;
 
-			// Insert title as first child of head
+			// Insert title as first child of head..
 			if ( $head->firstChild ) {
 				$head->insertBefore( $title, $head->firstChild );
 			} else {
@@ -88,7 +88,7 @@ final class DocumentTitleFixer extends AbstractFixer {
 			$title      = $titles[0];
 			$title_text = trim( $title->textContent );
 
-			// Check if title is empty or just whitespace
+			// Check if title is empty or just whitespace..
 			if ( empty( $title_text ) ) {
 				$title->textContent = $this->generate_title();
 				++$fixes_applied;
@@ -97,7 +97,7 @@ final class DocumentTitleFixer extends AbstractFixer {
 					'new_title' => $title->textContent,
 				);
 			}
-			// Check if title is just "Untitled" or similar
+			// Check if title is just "Untitled" or similar..
 			elseif ( preg_match( '/^(untitled|no title|document|page)$/i', $title_text ) ) {
 				$title->textContent = $this->generate_title();
 				++$fixes_applied;
@@ -126,7 +126,7 @@ final class DocumentTitleFixer extends AbstractFixer {
 	 * Generate a title from page content
 	 */
 	private function generate_title(): string {
-		// Try to use h1
+		// Try to use h1..
 		$h1s = $this->query( '//h1' );
 		if ( count( $h1s ) > 0 ) {
 			$h1_text = trim( $h1s[0]->textContent );
@@ -135,7 +135,7 @@ final class DocumentTitleFixer extends AbstractFixer {
 			}
 		}
 
-		// Try first h2
+		// Try first h2..
 		$h2s = $this->query( '//h2' );
 		if ( count( $h2s ) > 0 ) {
 			$h2_text = trim( $h2s[0]->textContent );
@@ -144,7 +144,7 @@ final class DocumentTitleFixer extends AbstractFixer {
 			}
 		}
 
-		// Try og:title meta
+		// Try og:title meta..
 		$og_titles = $this->query( '//meta[@property="og:title"]/@content' );
 		if ( count( $og_titles ) > 0 ) {
 			$og_text = trim( $og_titles[0]->nodeValue );
@@ -153,7 +153,7 @@ final class DocumentTitleFixer extends AbstractFixer {
 			}
 		}
 
-		// Fallback
+		// Fallback..
 		return __( 'Page Content', 'shahi-legalflowsuite' );
 	}
 }

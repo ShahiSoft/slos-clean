@@ -13,7 +13,7 @@
 
 namespace ShahiLegalFlowSuite\Database\Migrations;
 
-// Exit if accessed directly.
+// Exit if accessed directly...
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -38,7 +38,7 @@ class Migration_2025_12_22_add_geo_rule_to_consent {
 
 		$table_name = $wpdb->prefix . 'slos_consent';
 
-		// Check if table exists.
+		// Check if table exists...
 		$table_exists = $wpdb->get_var(
 			$wpdb->prepare(
 				'SHOW TABLES LIKE %s',
@@ -50,7 +50,7 @@ class Migration_2025_12_22_add_geo_rule_to_consent {
 			return false;
 		}
 
-		// Check if columns already exist.
+		// Check if columns already exist...
 		$columns          = $wpdb->get_results( "SHOW COLUMNS FROM {$table_name}" );
 		$existing_columns = array_map(
 			function ( $col ) {
@@ -61,7 +61,7 @@ class Migration_2025_12_22_add_geo_rule_to_consent {
 
 		$errors = array();
 
-		// Add geo_rule_id column if not exists.
+		// Add geo_rule_id column if not exists...
 		if ( ! in_array( 'geo_rule_id', $existing_columns, true ) ) {
 			$result = $wpdb->query(
 				"ALTER TABLE {$table_name} ADD COLUMN geo_rule_id INT UNSIGNED NULL AFTER ip_hash"
@@ -71,7 +71,7 @@ class Migration_2025_12_22_add_geo_rule_to_consent {
 			}
 		}
 
-		// Add country_code column if not exists.
+		// Add country_code column if not exists...
 		if ( ! in_array( 'country_code', $existing_columns, true ) ) {
 			$result = $wpdb->query(
 				"ALTER TABLE {$table_name} ADD COLUMN country_code VARCHAR(10) NULL AFTER geo_rule_id"
@@ -81,7 +81,7 @@ class Migration_2025_12_22_add_geo_rule_to_consent {
 			}
 		}
 
-		// Add region column if not exists.
+		// Add region column if not exists...
 		if ( ! in_array( 'region', $existing_columns, true ) ) {
 			$result = $wpdb->query(
 				"ALTER TABLE {$table_name} ADD COLUMN region VARCHAR(20) NULL AFTER country_code"
@@ -91,7 +91,7 @@ class Migration_2025_12_22_add_geo_rule_to_consent {
 			}
 		}
 
-		// Add indexes for efficient filtering.
+		// Add indexes for efficient filtering...
 		$indexes          = $wpdb->get_results( "SHOW INDEX FROM {$table_name}" );
 		$existing_indexes = array_map(
 			function ( $idx ) {
@@ -126,7 +126,7 @@ class Migration_2025_12_22_add_geo_rule_to_consent {
 
 		$table_name = $wpdb->prefix . 'slos_consent';
 
-		// Check if table exists.
+		// Check if table exists...
 		$table_exists = $wpdb->get_var(
 			$wpdb->prepare(
 				'SHOW TABLES LIKE %s',
@@ -138,12 +138,12 @@ class Migration_2025_12_22_add_geo_rule_to_consent {
 			return true;
 		}
 
-		// Drop indexes first.
+		// Drop indexes first...
 		$wpdb->query( "ALTER TABLE {$table_name} DROP INDEX IF EXISTS idx_region" );
 		$wpdb->query( "ALTER TABLE {$table_name} DROP INDEX IF EXISTS idx_country_code" );
 		$wpdb->query( "ALTER TABLE {$table_name} DROP INDEX IF EXISTS idx_geo_rule_id" );
 
-		// Drop columns.
+		// Drop columns...
 		$wpdb->query( "ALTER TABLE {$table_name} DROP COLUMN IF EXISTS region" );
 		$wpdb->query( "ALTER TABLE {$table_name} DROP COLUMN IF EXISTS country_code" );
 		$wpdb->query( "ALTER TABLE {$table_name} DROP COLUMN IF EXISTS geo_rule_id" );

@@ -89,25 +89,25 @@ class AltTextQualityCheck extends AbstractCheck {
 				continue;
 			}
 
-			// Check for redundant "image of" phrases
+			// Check for redundant "image of" phrases..
 			$this->check_redundant_phrases( $img, $alt, $issues );
 
-			// Check for filename patterns
+			// Check for filename patterns..
 			$this->check_filename_patterns( $img, $alt, $issues );
 
-			// Check for URL in alt text
+			// Check for URL in alt text..
 			$this->check_url_in_alt( $img, $alt, $issues );
 
-			// Check for placeholder text
+			// Check for placeholder text..
 			$this->check_placeholder_text( $img, $alt, $issues );
 
-			// Check for excessive length
+			// Check for excessive length..
 			$this->check_alt_length( $img, $alt, $issues );
 
-			// Check for all caps (accessibility issue for screen readers)
+			// Check for all caps (accessibility issue for screen readers)..
 			$this->check_all_caps( $img, $alt, $issues );
 
-			// Check for special characters only
+			// Check for special characters only..
 			$this->check_special_chars_only( $img, $alt, $issues );
 		}
 
@@ -174,7 +174,7 @@ class AltTextQualityCheck extends AbstractCheck {
 	private function check_placeholder_text( $img, $alt, &$issues ) {
 		$alt_lower = strtolower( $alt );
 
-		// Exact match with placeholder words
+		// Exact match with placeholder words..
 		if ( in_array( $alt_lower, $this->placeholder_words, true ) ) {
 			$issues[] = array(
 				'element'    => 'img',
@@ -210,7 +210,7 @@ class AltTextQualityCheck extends AbstractCheck {
 	 * Check for all caps alt text (hard for screen readers)
 	 */
 	private function check_all_caps( $img, $alt, &$issues ) {
-		// Only check if more than 3 words and all caps
+		// Only check if more than 3 words and all caps..
 		$words = preg_split( '/\s+/', $alt );
 		if ( count( $words ) > 3 && $alt === strtoupper( $alt ) && preg_match( '/[A-Z]/', $alt ) ) {
 			$issues[] = array(
@@ -227,7 +227,7 @@ class AltTextQualityCheck extends AbstractCheck {
 	 * Check for special characters only
 	 */
 	private function check_special_chars_only( $img, $alt, &$issues ) {
-		// Alt text that's only special characters or numbers
+		// Alt text that's only special characters or numbers..
 		if ( preg_match( '/^[\d\s\-_.,!@#$%^&*()+=\[\]{}|\\:";\'<>?,./]+$/', $alt ) ) {
 			$issues[] = array(
 				'element'    => 'img',

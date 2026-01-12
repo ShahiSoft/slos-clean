@@ -36,19 +36,19 @@ abstract class BaseFixer {
 	protected function get_dom( $content ) {
 		$dom = new \DOMDocument( '1.0', 'UTF-8' );
 
-		// Suppress warnings for malformed HTML
+		// Suppress warnings for malformed HTML..
 		libxml_use_internal_errors( true );
 
-		// Always provide a full document wrapper so body-level insertions work
+		// Always provide a full document wrapper so body-level insertions work..
 		$wrapped  = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>';
 		$wrapped .= $content;
 		$wrapped .= '</body></html>';
 
-		// Load as HTML fragment but keep our wrapper intact
+		// Load as HTML fragment but keep our wrapper intact..
 		$dom->loadHTML( $wrapped, LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED );
 		libxml_clear_errors();
 
-		// Ensure body exists
+		// Ensure body exists..
 		if ( ! $dom->getElementsByTagName( 'body' )->item( 0 ) ) {
 			$body = $dom->createElement( 'body' );
 			$dom->appendChild( $body );
@@ -78,7 +78,7 @@ abstract class BaseFixer {
 	 * Generate alt text using AI/API (placeholder for now)
 	 */
 	protected function generate_alt_text( $image_src ) {
-		// Extract filename as fallback
+		// Extract filename as fallback..
 		$filename = basename( $image_src );
 		$filename = preg_replace( '/\.[^.]+$/', '', $filename ); // Remove extension
 		$filename = str_replace( array( '-', '_' ), ' ', $filename );

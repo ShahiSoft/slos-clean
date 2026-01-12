@@ -45,7 +45,7 @@ class SLOS_Migration_Command {
 	 * @param array $assoc_args Associative arguments
 	 */
 	public function backup_service( $args, $assoc_args ) {
-		// Load migration class
+		// Load migration class..
 		$migration_file = __DIR__ . '/includes/Database/Migrations/migration_2026_01_01_add_backup_content_column.php';
 
 		if ( ! file_exists( $migration_file ) ) {
@@ -55,18 +55,18 @@ class SLOS_Migration_Command {
 		require_once $migration_file;
 		$migration = new migration_2026_01_01_add_backup_content_column();
 
-		// Display info
+		// Display info..
 		WP_CLI::log( '' );
 		WP_CLI::log( WP_CLI::colorize( '%B=== BackupService Database Migration ===%n' ) );
 		WP_CLI::log( '' );
 		WP_CLI::log( $migration->info() );
 		WP_CLI::log( '' );
 
-		// Check current state
+		// Check current state..
 		WP_CLI::log( 'Verifying current database state...' );
 		$verification = $migration->verify();
 
-		// Dry run mode
+		// Dry run mode..
 		if ( isset( $assoc_args['dry-run'] ) ) {
 			WP_CLI::log( '' );
 			WP_CLI::log( WP_CLI::colorize( '%Y[DRY RUN MODE]%n' ) );
@@ -84,7 +84,7 @@ class SLOS_Migration_Command {
 			return;
 		}
 
-		// Rollback mode
+		// Rollback mode..
 		if ( isset( $assoc_args['rollback'] ) ) {
 			WP_CLI::log( '' );
 			WP_CLI::log( WP_CLI::colorize( '%R[ROLLBACK MODE]%n' ) );
@@ -111,7 +111,7 @@ class SLOS_Migration_Command {
 			return;
 		}
 
-		// Normal migration mode
+		// Normal migration mode..
 		if ( $verification['is_applied'] ) {
 			WP_CLI::success( 'Migration already applied!' );
 			$this->display_verification( $verification );
@@ -124,7 +124,7 @@ class SLOS_Migration_Command {
 		WP_CLI::log( '' );
 		WP_CLI::confirm( 'Proceed with migration?', $assoc_args );
 
-		// Run migration
+		// Run migration..
 		WP_CLI::log( '' );
 		WP_CLI::log( 'Running migration...' );
 
@@ -134,7 +134,7 @@ class SLOS_Migration_Command {
 			if ( $result ) {
 				WP_CLI::success( 'Migration completed!' );
 
-				// Verify
+				// Verify..
 				WP_CLI::log( '' );
 				WP_CLI::log( 'Verifying migration...' );
 				$post_verification = $migration->verify();
@@ -180,5 +180,5 @@ class SLOS_Migration_Command {
 	}
 }
 
-// Register command
+// Register command..
 WP_CLI::add_command( 'slos migrate', 'SLOS_Migration_Command' );

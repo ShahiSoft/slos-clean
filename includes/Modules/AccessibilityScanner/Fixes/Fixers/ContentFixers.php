@@ -97,11 +97,11 @@ class ComplexTableFixer extends BaseFixer {
 		$fixed_count = 0;
 
 		foreach ( $tables as $table ) {
-			// Add scope to all headers
+			// Add scope to all headers..
 			$headers = $table->getElementsByTagName( 'th' );
 			foreach ( $headers as $header ) {
 				if ( ! $header->hasAttribute( 'scope' ) ) {
-					// Determine if it's col or row
+					// Determine if it's col or row..
 					$parent = $header->parentNode;
 					if ( $parent->parentNode->nodeName === 'thead' ||
 						(int) $parent->parentNode->getElementsByTagName( 'tr' )->item( 0 ) === $parent ) {
@@ -131,8 +131,8 @@ class LayoutTableFixer extends BaseFixer {
 		return 'Convert layout tables to divs'; }
 
 	public function fix( $content ) {
-		// Layout tables should be converted to semantic HTML - complex refactoring
-		// Mark as non-data table instead
+		// Layout tables should be converted to semantic HTML - complex refactoring..
+		// Mark as non-data table instead..
 		$dom         = $this->get_dom( $content );
 		$tables      = $dom->getElementsByTagName( 'table' );
 		$fixed_count = 0;
@@ -265,7 +265,7 @@ class SvgAccessibilityFixer extends BaseFixer {
 			if ( ! $svg->hasAttribute( 'role' ) ) {
 				$svg->setAttribute( 'role', 'img' );
 
-				// Look for title
+				// Look for title..
 				$titles = $svg->getElementsByTagName( 'title' );
 				if ( $titles->length === 0 ) {
 					$title              = $dom->createElement( 'title' );
@@ -300,7 +300,7 @@ class ComplexImageFixer extends BaseFixer {
 		foreach ( $images as $img ) {
 			$alt = $img->getAttribute( 'alt' );
 			if ( strlen( $alt ) > 100 ) {
-				// Very long alt text - should be in figure caption
+				// Very long alt text - should be in figure caption..
 				if ( ! $img->hasAttribute( 'aria-describedby' ) ) {
 					$img->setAttribute( 'aria-describedby', 'img-desc-' . uniqid() );
 					++$fixed_count;
@@ -396,7 +396,7 @@ class AltTextQualityFixer extends BaseFixer {
 
 		foreach ( $images as $img ) {
 			$alt = $img->getAttribute( 'alt' );
-			// Fix common poor alt text patterns
+			// Fix common poor alt text patterns..
 			if ( preg_match( '/^(image|photo|picture|img|image_\d+|untitled)$/i', $alt ) ) {
 				$src        = $img->getAttribute( 'src' );
 				$better_alt = $this->generate_alt_text( $src );

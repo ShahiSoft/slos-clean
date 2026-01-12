@@ -16,7 +16,7 @@ class AccessibilityDashboard {
 	}
 
 	public function init() {
-		// No longer needed - Assets.php handles all asset enqueuing globally
+		// No longer needed - Assets.php handles all asset enqueuing globally..
 	}
 
 	public function render() {
@@ -34,7 +34,7 @@ class AccessibilityDashboard {
 	 * @return void
 	 */
 	public function render_content() {
-		// Get scan stats
+		// Get scan stats..
 		$stats     = $this->get_scan_stats();
 		$history   = $this->get_scan_history();
 		$last_scan = $this->get_last_scan_results();
@@ -43,8 +43,8 @@ class AccessibilityDashboard {
 	}
 
 	private function get_scan_stats() {
-		// Placeholder for real stats logic
-		// In a real implementation, this would query the database
+		// Placeholder for real stats logic..
+		// In a real implementation, this would query the database..
 		return array(
 			'score'           => get_option( 'slos_accessibility_score', 0 ),
 			'issues_total'    => get_option( 'slos_accessibility_issues_total', 0 ),
@@ -55,7 +55,7 @@ class AccessibilityDashboard {
 	}
 
 	private function get_scan_history() {
-		// Placeholder for history
+		// Placeholder for history..
 		return get_option( 'slos_accessibility_scan_history', array() );
 	}
 

@@ -17,7 +17,7 @@ use WP_REST_Request;
 use WP_REST_Response;
 use WP_Error;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -47,7 +47,7 @@ class Settings_REST_Controller extends Base_REST_Controller {
 	 * @return void
 	 */
 	public function register_routes() {
-		// Banner settings
+		// Banner settings..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/banner',
@@ -65,7 +65,7 @@ class Settings_REST_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Banner settings reset
+		// Banner settings reset..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/banner/reset',
@@ -78,7 +78,7 @@ class Settings_REST_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Geo rules
+		// Geo rules..
 		register_rest_route(
 			$this->namespace,
 			'/geo/rules',
@@ -96,7 +96,7 @@ class Settings_REST_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Single geo rule
+		// Single geo rule..
 		register_rest_route(
 			$this->namespace,
 			'/geo/rules/(?P<id>[\d]+)',
@@ -119,7 +119,7 @@ class Settings_REST_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Duplicate geo rule
+		// Duplicate geo rule..
 		register_rest_route(
 			$this->namespace,
 			'/geo/rules/(?P<id>[\d]+)/duplicate',
@@ -132,7 +132,7 @@ class Settings_REST_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Toggle geo rule
+		// Toggle geo rule..
 		register_rest_route(
 			$this->namespace,
 			'/geo/rules/(?P<id>[\d]+)/toggle',
@@ -189,7 +189,7 @@ class Settings_REST_Controller extends Base_REST_Controller {
 			'show_settings'         => true,
 			'auto_hide'             => false,
 			'blur_background'       => false,
-			// Phase 1.4: Category descriptions
+			// Phase 1.4: Category descriptions..
 			'show_descriptions'     => true,
 			'category_descriptions' => array(
 				'necessary'   => __( 'Essential cookies required for the website to function. Cannot be disabled.', 'shahi-legalflowsuite' ),
@@ -198,7 +198,7 @@ class Settings_REST_Controller extends Base_REST_Controller {
 				'marketing'   => __( 'Cookies used for advertising and retargeting based on your interests.', 'shahi-legalflowsuite' ),
 				'preferences' => __( 'Cookies that remember your settings and preferences for a better experience.', 'shahi-legalflowsuite' ),
 			),
-			// Phase 1.4: Vendor/service transparency
+			// Phase 1.4: Vendor/service transparency..
 			'show_vendors'          => false,
 			'vendors'               => array(
 				'analytics'   => array(
@@ -220,7 +220,7 @@ class Settings_REST_Controller extends Base_REST_Controller {
 				'functional'  => array(),
 				'preferences' => array(),
 			),
-			// Phase 2.3: Privacy & Consent Expiry Settings
+			// Phase 2.3: Privacy & Consent Expiry Settings..
 			'privacy_url'           => '', // Phase 2.3.1: Privacy policy URL
 			'learn_more_text'       => __( 'Learn more', 'shahi-legalflowsuite' ), // Phase 2.3.2: Learn more link text
 			'consent_expiry_days'   => 30, // Phase 2.3.3: Consent expiry in days (default 30)
@@ -266,7 +266,7 @@ class Settings_REST_Controller extends Base_REST_Controller {
 		$defaults = $this->get_default_banner_settings();
 		$current  = get_option( 'slos_banner_settings', array() );
 
-		// Sanitize and merge settings
+		// Sanitize and merge settings..
 		$settings = array(
 			'template'              => isset( $params['template'] ) ? sanitize_text_field( $params['template'] ) : ( $current['template'] ?? $defaults['template'] ), // Phase 2.1.2: Template selection
 			'position'              => isset( $params['position'] ) ? sanitize_text_field( $params['position'] ) : ( $current['position'] ?? $defaults['position'] ),
@@ -284,12 +284,12 @@ class Settings_REST_Controller extends Base_REST_Controller {
 			'show_settings'         => isset( $params['show_settings'] ) ? (bool) $params['show_settings'] : ( $current['show_settings'] ?? $defaults['show_settings'] ),
 			'auto_hide'             => isset( $params['auto_hide'] ) ? (bool) $params['auto_hide'] : ( $current['auto_hide'] ?? $defaults['auto_hide'] ),
 			'blur_background'       => isset( $params['blur_background'] ) ? (bool) $params['blur_background'] : ( $current['blur_background'] ?? $defaults['blur_background'] ),
-			// Phase 1.4: Category descriptions and vendors
+			// Phase 1.4: Category descriptions and vendors..
 			'show_descriptions'     => isset( $params['show_descriptions'] ) ? (bool) $params['show_descriptions'] : ( $current['show_descriptions'] ?? $defaults['show_descriptions'] ),
 			'category_descriptions' => isset( $params['category_descriptions'] ) ? $this->sanitize_descriptions( $params['category_descriptions'] ) : ( $current['category_descriptions'] ?? $defaults['category_descriptions'] ),
 			'show_vendors'          => isset( $params['show_vendors'] ) ? (bool) $params['show_vendors'] : ( $current['show_vendors'] ?? $defaults['show_vendors'] ),
 			'vendors'               => isset( $params['vendors'] ) ? $this->sanitize_vendors( $params['vendors'] ) : ( $current['vendors'] ?? $defaults['vendors'] ),
-			// Phase 2.3: Privacy & Consent Expiry Settings
+			// Phase 2.3: Privacy & Consent Expiry Settings..
 			'privacy_url'           => isset( $params['privacy_url'] ) ? esc_url_raw( $params['privacy_url'] ) : ( $current['privacy_url'] ?? $defaults['privacy_url'] ), // Phase 2.3.1: Privacy URL
 			'learn_more_text'       => isset( $params['learn_more_text'] ) ? sanitize_text_field( $params['learn_more_text'] ) : ( $current['learn_more_text'] ?? $defaults['learn_more_text'] ), // Phase 2.3.2: Learn more text
 			'consent_expiry_days'   => isset( $params['consent_expiry_days'] ) ? absint( $params['consent_expiry_days'] ) : ( $current['consent_expiry_days'] ?? $defaults['consent_expiry_days'] ), // Phase 2.3.3: Consent expiry days
@@ -459,7 +459,7 @@ class Settings_REST_Controller extends Base_REST_Controller {
 
 		$rules = get_option( 'slos_geo_rules', array() );
 
-		// Generate new ID
+		// Generate new ID..
 		$new_id = empty( $rules ) ? 1 : max( array_keys( $rules ) ) + 1;
 
 		$rule = array(

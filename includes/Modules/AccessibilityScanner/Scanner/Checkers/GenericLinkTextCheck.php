@@ -17,7 +17,7 @@ class GenericLinkTextCheck extends AbstractCheck {
 	 * Generic phrases that don't describe the link purpose
 	 */
 	private $generic_phrases = array(
-		// Original
+		// Original..
 		'click here',
 		'read more',
 		'learn more',
@@ -27,7 +27,7 @@ class GenericLinkTextCheck extends AbstractCheck {
 		'go',
 		'continue reading',
 
-		// Action words without context
+		// Action words without context..
 		'click',
 		'click this',
 		'click me',
@@ -39,13 +39,13 @@ class GenericLinkTextCheck extends AbstractCheck {
 		'continue',
 		'open',
 
-		// Vague references
+		// Vague references..
 		'this link',
 		'this page',
 		'this',
 		'that',
 
-		// Read/view variations
+		// Read/view variations..
 		'see more',
 		'view more',
 		'view all',
@@ -55,14 +55,14 @@ class GenericLinkTextCheck extends AbstractCheck {
 		'read',
 		'view',
 
-		// Download without context
+		// Download without context..
 		'download',
 		'download here',
 		'download now',
 		'get it',
 		'get it here',
 
-		// Information references
+		// Information references..
 		'info',
 		'information',
 		'details',
@@ -74,7 +74,7 @@ class GenericLinkTextCheck extends AbstractCheck {
 		'discover',
 		'discover more',
 
-		// Article references
+		// Article references..
 		'full article',
 		'full story',
 		'full post',
@@ -82,7 +82,7 @@ class GenericLinkTextCheck extends AbstractCheck {
 		'story',
 		'post',
 
-		// Symbols and arrows
+		// Symbols and arrows..
 		'>>',
 		'»',
 		'...',
@@ -131,7 +131,7 @@ class GenericLinkTextCheck extends AbstractCheck {
 		foreach ( $links as $link ) {
 			$href = $link->getAttribute( 'href' );
 
-			// Skip anchor links and javascript
+			// Skip anchor links and javascript..
 			if ( empty( $href ) || strpos( $href, '#' ) === 0 || strpos( $href, 'javascript:' ) === 0 ) {
 				continue;
 			}
@@ -139,9 +139,9 @@ class GenericLinkTextCheck extends AbstractCheck {
 			$text       = trim( $link->textContent );
 			$clean_text = strtolower( preg_replace( '/\s+/', ' ', $text ) );
 
-			// Check for generic phrases
+			// Check for generic phrases..
 			if ( in_array( $clean_text, $this->generic_phrases, true ) ) {
-				// Check if aria-label provides context
+				// Check if aria-label provides context..
 				if ( $this->has_accessible_context( $link ) ) {
 					continue;
 				}
@@ -156,15 +156,15 @@ class GenericLinkTextCheck extends AbstractCheck {
 				continue;
 			}
 
-			// Check for very short links (1-2 characters, excluding numbers)
+			// Check for very short links (1-2 characters, excluding numbers)..
 			$text_length = mb_strlen( trim( $text ) );
 			if ( $text_length > 0 && $text_length < $this->min_text_length ) {
-				// Allow single numbers (pagination)
+				// Allow single numbers (pagination)..
 				if ( preg_match( '/^\d+$/', $text ) ) {
 					continue;
 				}
 
-				// Allow if has aria-label
+				// Allow if has aria-label..
 				if ( $this->has_accessible_context( $link ) ) {
 					continue;
 				}
@@ -180,7 +180,7 @@ class GenericLinkTextCheck extends AbstractCheck {
 				continue;
 			}
 
-			// Check for URL as link text
+			// Check for URL as link text..
 			if ( preg_match( '/^https?:\/\//i', $text ) || preg_match( '/^www\./i', $text ) ) {
 				$issues[] = array(
 					'element'    => 'a',
@@ -192,8 +192,8 @@ class GenericLinkTextCheck extends AbstractCheck {
 				);
 			}
 
-			// Check for identical link text with different destinations
-			// (This is tracked per-scan, would need session state to implement fully)
+			// Check for identical link text with different destinations..
+			// (This is tracked per-scan, would need session state to implement fully)..
 		}
 
 		return $issues;
@@ -203,19 +203,19 @@ class GenericLinkTextCheck extends AbstractCheck {
 	 * Check if link has accessible context via aria-label or aria-labelledby
 	 */
 	private function has_accessible_context( $link ) {
-		// Check aria-label
+		// Check aria-label..
 		$aria_label = trim( $link->getAttribute( 'aria-label' ) );
 		if ( ! empty( $aria_label ) && strlen( $aria_label ) >= $this->min_text_length ) {
 			return true;
 		}
 
-		// Check aria-labelledby
+		// Check aria-labelledby..
 		$aria_labelledby = trim( $link->getAttribute( 'aria-labelledby' ) );
 		if ( ! empty( $aria_labelledby ) ) {
 			return true;
 		}
 
-		// Check title (fallback, less preferred)
+		// Check title (fallback, less preferred)..
 		$title = trim( $link->getAttribute( 'title' ) );
 		if ( ! empty( $title ) && strlen( $title ) >= $this->min_text_length ) {
 			return true;

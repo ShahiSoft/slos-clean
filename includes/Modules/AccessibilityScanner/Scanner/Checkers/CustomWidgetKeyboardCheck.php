@@ -30,7 +30,7 @@ class CustomWidgetKeyboardCheck extends AbstractCheck {
 		$dom    = $this->get_dom( $content );
 		$xpath  = new \DOMXPath( $dom );
 
-		// Find elements with mouse events but no keyboard events
+		// Find elements with mouse events but no keyboard events..
 		$elements = $xpath->query( '//*[@onmouseover or @onmouseout or @onmousedown or @onmouseup]' );
 
 		foreach ( $elements as $element ) {

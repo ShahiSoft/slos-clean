@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Load schema functions
+// Load schema functions..
 require_once SHAHI_LEGALFLOWSUITE_PATH . 'config/multisite-sync-schema.php';
 
 /**
@@ -34,19 +34,19 @@ class Config_Sync_Service {
 	 * @return array|WP_Error Export data or error
 	 */
 	public function export_config( $options = array(), $metadata = array() ) {
-		// Use default options if none specified
+		// Use default options if none specified..
 		if ( empty( $options ) ) {
 			$options = slos_get_default_export_options();
 		}
 
-		// Validate options against exclusion list
+		// Validate options against exclusion list..
 		$excluded = slos_get_config_sync_schema()['exclusions']['never_sync'];
 		$options  = array_diff( $options, $excluded );
 
-		// Build profile
+		// Build profile..
 		$profile = slos_get_config_profile_template();
 
-		// Merge custom metadata
+		// Merge custom metadata..
 		if ( ! empty( $metadata['name'] ) ) {
 			$profile['profile']['name'] = sanitize_text_field( $metadata['name'] );
 		}
@@ -54,7 +54,7 @@ class Config_Sync_Service {
 			$profile['profile']['description'] = sanitize_textarea_field( $metadata['description'] );
 		}
 
-		// Export settings
+		// Export settings..
 		$settings = array();
 		foreach ( $options as $option_key ) {
 			$value = get_option( $option_key, null );
@@ -65,10 +65,10 @@ class Config_Sync_Service {
 
 		$profile['settings'] = $settings;
 
-		// Detect active modules
+		// Detect active modules..
 		$profile['modules'] = $this->detect_active_modules( $options );
 
-		// Validate profile
+		// Validate profile..
 		$validation = slos_validate_config_profile( $profile );
 		if ( is_wp_error( $validation ) ) {
 			return $validation;
@@ -104,7 +104,7 @@ class Config_Sync_Service {
 
 		$options = wp_parse_args( $options, $default_options );
 
-		// Validate profile
+		// Validate profile..
 		if ( ! $options['skip_validation'] ) {
 			$validation = slos_validate_config_profile( $profile );
 			if ( is_wp_error( $validation ) ) {
@@ -112,15 +112,15 @@ class Config_Sync_Service {
 			}
 		}
 
-		// Sanitize profile
+		// Sanitize profile..
 		$profile = slos_sanitize_config_profile( $profile );
 
-		// Determine which settings to import
+		// Determine which settings to import..
 		$settings_to_import = ! empty( $options['selected_settings'] )
 			? array_intersect_key( $profile['settings'], array_flip( $options['selected_settings'] ) )
 			: $profile['settings'];
 
-		// Filter against safe import list
+		// Filter against safe import list..
 		$safe_options       = slos_get_safe_import_options();
 		$settings_to_import = array_intersect_key( $settings_to_import, array_flip( $safe_options ) );
 
@@ -132,7 +132,7 @@ class Config_Sync_Service {
 			'dry_run'  => $options['dry_run'],
 		);
 
-		// Import each setting
+		// Import each setting..
 		foreach ( $settings_to_import as $option_key => $value ) {
 			try {
 				$result = $this->import_option( $option_key, $value, $options );
@@ -182,30 +182,30 @@ class Config_Sync_Service {
 			'warnings' => array(),
 		);
 
-		// Check if option exists
+		// Check if option exists..
 		$current_value = get_option( $option_key, null );
 		$option_exists = null !== $current_value;
 
-		// Handle merge mode
+		// Handle merge mode..
 		if ( $options['merge'] && $option_exists && is_array( $current_value ) && is_array( $value ) ) {
 			$value                = array_merge( $current_value, $value );
 			$result['warnings'][] = __( 'Merged with existing data', 'shahi-legalflowsuite' );
 		}
 
-		// Validate value using schema
+		// Validate value using schema..
 		$validated_value = $this->validate_option_value( $option_key, $value );
 		if ( is_wp_error( $validated_value ) ) {
 			return $validated_value;
 		}
 
-		// Dry run: don't actually update
+		// Dry run: don't actually update..
 		if ( $options['dry_run'] ) {
 			$result['imported'] = true;
 			$result['message']  = __( 'Would be imported (dry run)', 'shahi-legalflowsuite' );
 			return $result;
 		}
 
-		// Update option
+		// Update option..
 		$updated = update_option( $option_key, $validated_value, false );
 
 		if ( $updated || get_option( $option_key ) === $validated_value ) {
@@ -238,17 +238,17 @@ class Config_Sync_Service {
 	private function validate_option_value( $option_key, $value ) {
 		$schema = slos_get_config_sync_schema();
 
-		// Banner settings validation
+		// Banner settings validation..
 		if ( 'slos_banner_settings' === $option_key ) {
 			return $this->validate_banner_settings( $value );
 		}
 
-		// Geo rules validation
+		// Geo rules validation..
 		if ( 'slos_geo_rules' === $option_key ) {
 			return $this->validate_geo_rules( $value );
 		}
 
-		// Generic array/object validation
+		// Generic array/object validation..
 		if ( is_array( $value ) || is_object( $value ) ) {
 			return $value;
 		}
@@ -270,17 +270,17 @@ class Config_Sync_Service {
 
 		$schema = slos_get_config_sync_schema()['validation_rules']['banner_settings'];
 
-		// Validate position
+		// Validate position..
 		if ( ! empty( $settings['position'] ) && ! in_array( $settings['position'], $schema['position']['values'], true ) ) {
 			$settings['position'] = $schema['position']['default'];
 		}
 
-		// Validate theme
+		// Validate theme..
 		if ( ! empty( $settings['theme'] ) && ! in_array( $settings['theme'], $schema['theme']['values'], true ) ) {
 			$settings['theme'] = $schema['theme']['default'];
 		}
 
-		// Ensure enabled is boolean
+		// Ensure enabled is boolean..
 		if ( isset( $settings['enabled'] ) ) {
 			$settings['enabled'] = (bool) $settings['enabled'];
 		}
@@ -309,17 +309,17 @@ class Config_Sync_Service {
 				continue;
 			}
 
-			// Validate priority
+			// Validate priority..
 			if ( isset( $rule['priority'] ) ) {
 				$rule['priority'] = max( $schema['priority']['min'], min( $schema['priority']['max'], (int) $rule['priority'] ) );
 			}
 
-			// Validate consent model
+			// Validate consent model..
 			if ( ! empty( $rule['consent_model'] ) && ! in_array( $rule['consent_model'], $valid_models, true ) ) {
 				$rule['consent_model'] = 'opt-in'; // Safe default
 			}
 
-			// Validate countries is array
+			// Validate countries is array..
 			if ( ! empty( $rule['countries'] ) && ! is_array( $rule['countries'] ) ) {
 				$rule['countries'] = array();
 			}
@@ -370,7 +370,7 @@ class Config_Sync_Service {
 			return $profile;
 		}
 
-		// Create uploads directory if needed
+		// Create uploads directory if needed..
 		$upload_dir = wp_upload_dir();
 		$export_dir = trailingslashit( $upload_dir['basedir'] ) . 'slos-exports';
 
@@ -378,12 +378,12 @@ class Config_Sync_Service {
 			wp_mkdir_p( $export_dir );
 		}
 
-		// Generate filename
+		// Generate filename..
 		$filename  = sanitize_file_name( $filename );
 		$timestamp = gmdate( 'Y-m-d-His' );
 		$filepath  = $export_dir . '/' . $filename . '-' . $timestamp . '.json';
 
-		// Write JSON file
+		// Write JSON file..
 		$json = wp_json_encode( $profile, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE );
 
 		if ( false === $json ) {
@@ -418,12 +418,12 @@ class Config_Sync_Service {
 	 * @return array|WP_Error Import results or error
 	 */
 	public function import_from_file( $filepath, $options = array() ) {
-		// Validate file exists
+		// Validate file exists..
 		if ( ! file_exists( $filepath ) ) {
 			return new WP_Error( 'file_not_found', __( 'Configuration file not found', 'shahi-legalflowsuite' ) );
 		}
 
-		// Read file
+		// Read file..
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 		$json = file_get_contents( $filepath );
 
@@ -431,7 +431,7 @@ class Config_Sync_Service {
 			return new WP_Error( 'file_read_failed', __( 'Failed to read configuration file', 'shahi-legalflowsuite' ) );
 		}
 
-		// Parse JSON
+		// Parse JSON..
 		$profile = json_decode( $json, true );
 
 		if ( null === $profile || JSON_ERROR_NONE !== json_last_error() ) {
@@ -491,7 +491,7 @@ class Config_Sync_Service {
 			);
 		}
 
-		// Sort by modified time (newest first)
+		// Sort by modified time (newest first)..
 		usort(
 			$exports,
 			function ( $a, $b ) {
@@ -518,7 +518,7 @@ class Config_Sync_Service {
 			return new WP_Error( 'file_not_found', __( 'Export file not found', 'shahi-legalflowsuite' ) );
 		}
 
-		// Security check: ensure it's in the exports directory
+		// Security check: ensure it's in the exports directory..
 		if ( 0 !== strpos( realpath( $filepath ), realpath( $export_dir ) ) ) {
 			return new WP_Error( 'invalid_path', __( 'Invalid file path', 'shahi-legalflowsuite' ) );
 		}
@@ -559,13 +559,13 @@ class Config_Sync_Service {
 		$keys1 = array_keys( $profile1['settings'] ?? array() );
 		$keys2 = array_keys( $profile2['settings'] ?? array() );
 
-		// Find added keys
+		// Find added keys..
 		$diff['added'] = array_diff( $keys2, $keys1 );
 
-		// Find removed keys
+		// Find removed keys..
 		$diff['removed'] = array_diff( $keys1, $keys2 );
 
-		// Find changed/unchanged
+		// Find changed/unchanged..
 		$common_keys = array_intersect( $keys1, $keys2 );
 
 		foreach ( $common_keys as $key ) {

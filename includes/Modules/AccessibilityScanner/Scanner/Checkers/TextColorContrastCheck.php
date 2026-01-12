@@ -75,10 +75,10 @@ class TextColorContrastCheck extends AbstractCheck {
 		$dom    = $this->get_dom( $content );
 		$xpath  = new \DOMXPath( $dom );
 
-		// 1. Check elements with inline styles
+		// 1. Check elements with inline styles..
 		$this->check_inline_styles( $xpath, $issues );
 
-		// 2. Check <style> tags for low-contrast patterns
+		// 2. Check <style> tags for low-contrast patterns..
 		$this->check_style_tags( $dom, $issues );
 
 		return $issues;
@@ -131,7 +131,7 @@ class TextColorContrastCheck extends AbstractCheck {
 		foreach ( $styles as $style ) {
 			$css = $style->textContent;
 
-			// Extract color declarations from CSS
+			// Extract color declarations from CSS..
 			preg_match_all( '/([^{}]+)\{([^}]+)\}/s', $css, $matches, PREG_SET_ORDER );
 
 			foreach ( $matches as $match ) {
@@ -148,7 +148,7 @@ class TextColorContrastCheck extends AbstractCheck {
 				if ( $color && $bg_color ) {
 					$ratio = $this->calculate_contrast_ratio( $color, $bg_color );
 
-					// Use 4.5:1 as default (normal text)
+					// Use 4.5:1 as default (normal text)..
 					if ( $ratio < 4.5 ) {
 						$issues[] = array(
 							'element'    => 'style',
@@ -169,7 +169,7 @@ class TextColorContrastCheck extends AbstractCheck {
 	 * Extract color value from style string
 	 */
 	private function extract_color( $style, $property ) {
-		// Match property with various color formats
+		// Match property with various color formats..
 		$pattern = '/' . preg_quote( $property, '/' ) . '\s*:\s*([^;]+)/i';
 		if ( preg_match( $pattern, $style, $matches ) ) {
 			return $this->parse_color( trim( $matches[1] ) );
@@ -183,12 +183,12 @@ class TextColorContrastCheck extends AbstractCheck {
 	private function parse_color( $color_str ) {
 		$color_str = strtolower( trim( $color_str ) );
 
-		// Named color
+		// Named color..
 		if ( isset( $this->named_colors[ $color_str ] ) ) {
 			return $this->named_colors[ $color_str ];
 		}
 
-		// 6-digit hex (#RRGGBB)
+		// 6-digit hex (#RRGGBB)..
 		if ( preg_match( '/^#([a-f0-9]{6})$/i', $color_str, $matches ) ) {
 			$hex = $matches[1];
 			return array(
@@ -198,7 +198,7 @@ class TextColorContrastCheck extends AbstractCheck {
 			);
 		}
 
-		// 3-digit hex (#RGB)
+		// 3-digit hex (#RGB)..
 		if ( preg_match( '/^#([a-f0-9]{3})$/i', $color_str, $matches ) ) {
 			$hex = $matches[1];
 			return array(
@@ -208,7 +208,7 @@ class TextColorContrastCheck extends AbstractCheck {
 			);
 		}
 
-		// 8-digit hex (#RRGGBBAA)
+		// 8-digit hex (#RRGGBBAA)..
 		if ( preg_match( '/^#([a-f0-9]{8})$/i', $color_str, $matches ) ) {
 			$hex = $matches[1];
 			return array(
@@ -218,7 +218,7 @@ class TextColorContrastCheck extends AbstractCheck {
 			);
 		}
 
-		// RGB/RGBA
+		// RGB/RGBA..
 		if ( preg_match( '/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i', $color_str, $matches ) ) {
 			return array(
 				(int) $matches[1],
@@ -227,7 +227,7 @@ class TextColorContrastCheck extends AbstractCheck {
 			);
 		}
 
-		// HSL/HSLA
+		// HSL/HSLA..
 		if ( preg_match( '/hsla?\(\s*(\d+)\s*,\s*(\d+)%\s*,\s*(\d+)%/i', $color_str, $matches ) ) {
 			return $this->hsl_to_rgb(
 				(int) $matches[1],
@@ -319,7 +319,7 @@ class TextColorContrastCheck extends AbstractCheck {
 		$font_size   = 16; // Default
 		$font_weight = 400; // Default
 
-		// Extract font-size
+		// Extract font-size..
 		if ( preg_match( '/font-size\s*:\s*([\d.]+)(px|pt|em|rem)/i', $style, $matches ) ) {
 			$value = (float) $matches[1];
 			$unit  = strtolower( $matches[2] );
@@ -337,7 +337,7 @@ class TextColorContrastCheck extends AbstractCheck {
 			}
 		}
 
-		// Extract font-weight
+		// Extract font-weight..
 		if ( preg_match( '/font-weight\s*:\s*(\d+|bold|bolder)/i', $style, $matches ) ) {
 			$weight = strtolower( $matches[1] );
 			if ( $weight === 'bold' || $weight === 'bolder' ) {
@@ -347,13 +347,13 @@ class TextColorContrastCheck extends AbstractCheck {
 			}
 		}
 
-		// Check heading tags (typically large/bold)
+		// Check heading tags (typically large/bold)..
 		$tag = strtolower( $element->tagName );
 		if ( in_array( $tag, array( 'h1', 'h2', 'h3' ), true ) ) {
 			return true;
 		}
 
-		// Large text: >= 24px OR >= 18.67px bold
+		// Large text: >= 24px OR >= 18.67px bold..
 		if ( $font_size >= 24 ) {
 			return true;
 		}

@@ -33,7 +33,7 @@ class DecorativeImageCheck extends AbstractCheck {
 			$src = $img->getAttribute( 'src' );
 			$alt = $img->getAttribute( 'alt' );
 
-			// Heuristic: filename contains "decorative", "spacer", "line", "divider"
+			// Heuristic: filename contains "decorative", "spacer", "line", "divider"..
 			if ( preg_match( '/(decorative|spacer|line|divider|separator|bg|background)/i', $src ) ) {
 				if ( ! empty( $alt ) ) {
 					$issues[] = array(
@@ -44,7 +44,7 @@ class DecorativeImageCheck extends AbstractCheck {
 				}
 			}
 
-			// Check for role="presentation" or role="none"
+			// Check for role="presentation" or role="none"..
 			$role = $img->getAttribute( 'role' );
 			if ( ( $role === 'presentation' || $role === 'none' ) && ! empty( $alt ) ) {
 				$issues[] = array(

@@ -30,7 +30,7 @@ class HeadingNestingCheck extends AbstractCheck {
 		$dom    = $this->get_dom( $content );
 		$xpath  = new \DOMXPath( $dom );
 
-		// Check sections
+		// Check sections..
 		$sections = $dom->getElementsByTagName( 'section' );
 		foreach ( $sections as $section ) {
 			if ( ! $this->has_heading( $section ) ) {
@@ -42,7 +42,7 @@ class HeadingNestingCheck extends AbstractCheck {
 			}
 		}
 
-		// Check articles
+		// Check articles..
 		$articles = $dom->getElementsByTagName( 'article' );
 		foreach ( $articles as $article ) {
 			if ( ! $this->has_heading( $article ) ) {
@@ -58,9 +58,9 @@ class HeadingNestingCheck extends AbstractCheck {
 	}
 
 	private function has_heading( $element ) {
-		// Check direct children or descendants for h1-h6
-		// This is a simplified check. A robust one would check if the heading belongs to this section scope.
-		// For now, we check if there is ANY heading inside.
+		// Check direct children or descendants for h1-h6..
+		// This is a simplified check. A robust one would check if the heading belongs to this section scope...
+		// For now, we check if there is ANY heading inside...
 		$headings = array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' );
 		foreach ( $headings as $h ) {
 			if ( $element->getElementsByTagName( $h )->length > 0 ) {

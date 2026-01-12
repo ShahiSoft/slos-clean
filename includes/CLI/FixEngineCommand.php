@@ -334,12 +334,12 @@ class FixEngineCommand {
 	 * @when after_wp_load
 	 */
 	public function inventory( $args, $assoc_args ) {
-		// Get canonical auto-fixable IDs from the registry.
+		// Get canonical auto-fixable IDs from the registry...
 		$auto_fixable_ids = CanonicalIds::get_auto_fixable();
 		$auto_fixable_set = array_fill_keys( $auto_fixable_ids, true );
 		$total_canonical  = count( $auto_fixable_ids );
 
-		// Initialize FixEngine via Bootstrap and get all registered fixers.
+		// Initialize FixEngine via Bootstrap and get all registered fixers...
 		$engine = FixEngineBootstrap::get_engine();
 		$engine->initialize();
 		$fixer_array = $engine->get_fixers_array();
@@ -355,8 +355,8 @@ class FixEngineCommand {
 		$implemented_set   = array_fill_keys( $implemented_ids, true );
 		$total_implemented = count( $implemented_ids );
 
-		// Compute missing canonical IDs that are marked auto-fixable but do
-		// not yet have a corresponding FixEngine fixer.
+		// Compute missing canonical IDs that are marked auto-fixable but do..
+		// not yet have a corresponding FixEngine fixer...
 		$missing = array();
 		foreach ( $auto_fixable_ids as $id ) {
 			if ( ! isset( $implemented_set[ $id ] ) ) {
@@ -430,7 +430,7 @@ class FixEngineCommand {
 	}
 }
 
-// Register WP-CLI commands
+// Register WP-CLI commands..
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	\WP_CLI::add_command( 'slos fixengine', __NAMESPACE__ . '\\FixEngineCommand' );
 }

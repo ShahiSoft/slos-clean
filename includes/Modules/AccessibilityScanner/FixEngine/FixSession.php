@@ -130,7 +130,7 @@ final class FixSession {
 				++$this->total_skipped;
 			} else {
 				$this->total_fixes += $result->get_fixes_applied();
-				// Update content with fixed version
+				// Update content with fixed version..
 				if ( $result->has_changes() ) {
 					$this->current_content = $result->get_fixed_content();
 				}

@@ -22,7 +22,7 @@ final class DownloadLinkFixer extends AbstractFixer {
 
 		$download_extensions = array( 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'zip', 'ppt', 'pptx', 'csv', 'txt', 'rtf', 'exe', 'dmg', 'pkg', 'rar', '7z', 'tar', 'gz' );
 
-		// Convert to array to avoid issues with modifying during iteration
+		// Convert to array to avoid issues with modifying during iteration..
 		$links_array = array();
 		foreach ( $links as $link ) {
 			$links_array[] = $link;
@@ -31,7 +31,7 @@ final class DownloadLinkFixer extends AbstractFixer {
 		foreach ( $links_array as $link ) {
 			$href = $link->getAttribute( 'href' );
 
-			// Skip if no href
+			// Skip if no href..
 			if ( empty( $href ) ) {
 				continue;
 			}
@@ -40,7 +40,7 @@ final class DownloadLinkFixer extends AbstractFixer {
 			$file_ext    = '';
 			$href_lower  = strtolower( $href );
 
-			// Check file extension
+			// Check file extension..
 			foreach ( $download_extensions as $ext ) {
 				if ( preg_match( '/\.' . preg_quote( $ext, '/' ) . '(\?|#|$)/i', $href_lower ) ) {
 					$is_download = true;
@@ -49,7 +49,7 @@ final class DownloadLinkFixer extends AbstractFixer {
 				}
 			}
 
-			// Also check for download attribute
+			// Also check for download attribute..
 			if ( ! $is_download && $link->hasAttribute( 'download' ) ) {
 				$is_download = true;
 				$path        = parse_url( $href, PHP_URL_PATH );
@@ -63,9 +63,9 @@ final class DownloadLinkFixer extends AbstractFixer {
 
 			if ( $is_download ) {
 				$text = trim( $link->textContent );
-				// Check if already has file type indicator (PDF), (2.5MB), etc.
+				// Check if already has file type indicator (PDF), (2.5MB), etc...
 				if ( ! preg_match( '/\([A-Z]{2,4}(\s*,?\s*[\d.]\s*(KB|MB|GB))?\)/i', $text ) ) {
-					// Clear existing content and set new
+					// Clear existing content and set new..
 					while ( $link->firstChild ) {
 						$link->removeChild( $link->firstChild );
 					}

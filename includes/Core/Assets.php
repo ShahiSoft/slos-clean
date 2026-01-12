@@ -16,7 +16,7 @@
 
 namespace ShahiLegalFlowSuite\Core;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -64,10 +64,10 @@ class Assets {
 		$this->use_minified = ! defined( 'SCRIPT_DEBUG' ) || ! SCRIPT_DEBUG;
 		$this->assets_url   = SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/';
 
-		// Add filter to prevent style caching during development
+		// Add filter to prevent style caching during development..
 		add_filter( 'style_loader_tag', array( $this, 'add_nocache_to_styles' ), 10, 4 );
 
-		// Add body class for dormant features
+		// Add body class for dormant features..
 		add_filter( 'admin_body_class', array( $this, 'admin_body_class' ) );
 	}
 
@@ -152,14 +152,14 @@ class Assets {
 	 * @return void
 	 */
 	public function enqueue_admin_styles( $hook ) {
-		// Only load on plugin pages
+		// Only load on plugin pages..
 		if ( ! $this->is_plugin_page( $hook ) ) {
 			return;
 		}
 
 		$page_type = $this->get_current_page_type( $hook );
 
-		// Design System Foundation (loaded first - Phase 1)
+		// Design System Foundation (loaded first - Phase 1)..
 		$this->enqueue_style(
 			'slos-design-system',
 			'css/slos-design-system',
@@ -167,7 +167,7 @@ class Assets {
 			$this->version
 		);
 
-		// Component Library (depends on design system - Phase 1.3)
+		// Component Library (depends on design system - Phase 1.3)..
 		$this->enqueue_style(
 			'slos-components',
 			'css/slos-components',
@@ -175,8 +175,8 @@ class Assets {
 			$this->version
 		);
 
-		// Browser & Accessibility Enhancements (Phase 6 - Tasks 15 & 16)
-		// WCAG 2.1 AA compliance, keyboard navigation, cross-browser compatibility
+		// Browser & Accessibility Enhancements (Phase 6 - Tasks 15 & 16)..
+		// WCAG 2.1 AA compliance, keyboard navigation, cross-browser compatibility..
 		$this->enqueue_style(
 			'slos-browser-a11y-enhancements',
 			'css/slos-browser-a11y-enhancements',
@@ -184,7 +184,7 @@ class Assets {
 			$this->version
 		);
 
-		// Global admin styles (loaded on all plugin pages)
+		// Global admin styles (loaded on all plugin pages)..
 		$this->enqueue_style(
 			'shahi-admin-global',
 			'css/admin-global',
@@ -192,10 +192,10 @@ class Assets {
 			$this->version
 		);
 
-		// Add inline CSS for admin menu highlighting
+		// Add inline CSS for admin menu highlighting..
 		$this->add_admin_menu_style();
 
-		// Component library styles - load only if page needs them
+		// Component library styles - load only if page needs them..
 		if ( $this->needs_component_library( $page_type ) ) {
 			$this->enqueue_style(
 				'shahi-components',
@@ -204,7 +204,7 @@ class Assets {
 				$this->version
 			);
 
-			// Animation library (dependency: components)
+			// Animation library (dependency: components)..
 			$this->enqueue_style(
 				'shahi-animations',
 				'css/animations',
@@ -212,7 +212,7 @@ class Assets {
 				$this->version
 			);
 
-			// Utility classes (dependency: components)
+			// Utility classes (dependency: components)..
 			$this->enqueue_style(
 				'shahi-utilities',
 				'css/utilities',
@@ -221,7 +221,7 @@ class Assets {
 			);
 		}
 
-		// Onboarding styles - load only if onboarding not completed
+		// Onboarding styles - load only if onboarding not completed..
 		if ( $this->should_load_onboarding() ) {
 			$this->enqueue_style(
 				'shahi-onboarding',
@@ -231,7 +231,7 @@ class Assets {
 			);
 		}
 
-		// Page-specific styles
+		// Page-specific styles..
 		if ( $this->is_dashboard_page( $hook ) ) {
 			$this->enqueue_style(
 				'shahi-admin-dashboard',
@@ -261,7 +261,7 @@ class Assets {
 				$this->version
 			);
 		} elseif ( $this->is_accessibility_dashboard_page( $hook ) ) {
-			// Accessibility Dashboard - use the same modern styling as Module Dashboard
+			// Accessibility Dashboard - use the same modern styling as Module Dashboard..
 			$this->enqueue_style(
 				'shahi-admin-module-dashboard',
 				'css/admin-module-dashboard',
@@ -269,7 +269,7 @@ class Assets {
 				$this->version
 			);
 
-			// Auto-Fix Progress Popup CSS for Dashboard Fix All buttons
+			// Auto-Fix Progress Popup CSS for Dashboard Fix All buttons..
 			wp_enqueue_style(
 				'slos-autofix-progress',
 				$this->assets_url . 'css/slos-autofix-progress.css',
@@ -277,14 +277,14 @@ class Assets {
 				$this->version
 			);
 
-			// Scan Progress Modal CSS (for dashboard-triggered scans)
+			// Scan Progress Modal CSS (for dashboard-triggered scans)..
 			wp_enqueue_style(
 				'slos-scan-progress',
 				$this->assets_url . 'css/slos-scan-progress.css',
 				array(),
 				$this->version
 			);
-			// Chart.js for trends visualization - bundled locally for WordPress.org compliance
+			// Chart.js for trends visualization - bundled locally for WordPress.org compliance..
 			wp_enqueue_script(
 				'chartjs',
 				SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/js/vendor/chart.umd.min.js',
@@ -300,10 +300,10 @@ class Assets {
 				$this->version
 			);
 
-			// Add inline CSS to ensure tabs are visible and bright
+			// Add inline CSS to ensure tabs are visible and bright..
 			$this->add_settings_tab_style();
 		} elseif ( $this->is_accessibility_scanner_page( $hook ) ) {
-			// Accessibility Scanner module styles
+			// Accessibility Scanner module styles..
 			$this->enqueue_style(
 				'shahi-accessibility-scanner',
 				'css/accessibility-scanner/admin',
@@ -311,7 +311,7 @@ class Assets {
 				$this->version
 			);
 
-			// Auto-Fix Progress Popup CSS
+			// Auto-Fix Progress Popup CSS..
 			wp_enqueue_style(
 				'slos-autofix-progress',
 				$this->assets_url . 'css/slos-autofix-progress.css',
@@ -319,7 +319,7 @@ class Assets {
 				$this->version
 			);
 
-			// Scan Progress Modal CSS
+			// Scan Progress Modal CSS..
 			wp_enqueue_style(
 				'slos-scan-progress',
 				$this->assets_url . 'css/slos-scan-progress.css',
@@ -327,7 +327,7 @@ class Assets {
 				$this->version
 			);
 
-			// Dormant features CSS - hide autofix UI when dormant
+			// Dormant features CSS - hide autofix UI when dormant..
 			if ( defined( 'SLOS_DORMANT_AUTOFIX' ) && SLOS_DORMANT_AUTOFIX ) {
 				wp_enqueue_style(
 					'slos-dormant-features',
@@ -345,7 +345,7 @@ class Assets {
 			);
 		}
 
-		// Load RTL styles if needed
+		// Load RTL styles if needed..
 		$this->maybe_enqueue_rtl_styles();
 	}
 
@@ -470,16 +470,16 @@ class Assets {
 	private function add_menu_highlight_script() {
 		$inline_script = "
         jQuery(document).ready(function($) {
-            // Remove all current classes first to avoid conflicts
+            // Remove all current classes first to avoid conflicts..
             $('#adminmenu .wp-submenu li').removeClass('current');
             $('#adminmenu .wp-submenu li a').removeClass('current');
             
-            // Get current page parameter
+            // Get current page parameter..
             var urlParams = new URLSearchParams(window.location.search);
             var currentPage = urlParams.get('page');
             
             if (currentPage) {
-                // Find and highlight exact match only
+                // Find and highlight exact match only..
                 $('#adminmenu .wp-submenu a').each(function() {
                     var href = $(this).attr('href');
                     if (href && href.indexOf('page=' + currentPage) > -1) {
@@ -508,7 +508,7 @@ class Assets {
 			return;
 		}
 
-		// Enqueue consent module RTL styles
+		// Enqueue consent module RTL styles..
 		$this->enqueue_style(
 			'shahi-consent-rtl',
 			'css/consent-rtl',
@@ -527,14 +527,14 @@ class Assets {
 	 * @return void
 	 */
 	public function enqueue_admin_scripts( $hook ) {
-		// Only load on plugin pages
+		// Only load on plugin pages..
 		if ( ! $this->is_plugin_page( $hook ) ) {
 			return;
 		}
 
 		$page_type = $this->get_current_page_type( $hook );
 
-		// Global admin scripts (loaded on all plugin pages)
+		// Global admin scripts (loaded on all plugin pages)..
 		$this->enqueue_script(
 			'shahi-admin-global',
 			'js/admin-global',
@@ -543,13 +543,13 @@ class Assets {
 			true
 		);
 
-		// Add inline script for admin menu highlighting
+		// Add inline script for admin menu highlighting..
 		$this->add_menu_highlight_script();
 
-		// Localize script with common data
+		// Localize script with common data..
 		$this->localize_global_script();
 
-		// Component library - load only if page needs it
+		// Component library - load only if page needs it..
 		if ( $this->needs_component_library( $page_type ) ) {
 			$this->enqueue_script(
 				'shahi-components',
@@ -560,7 +560,7 @@ class Assets {
 			);
 		}
 
-		// Onboarding script - load only if onboarding not completed
+		// Onboarding script - load only if onboarding not completed..
 		if ( $this->should_load_onboarding() ) {
 			$this->enqueue_script(
 				'shahi-onboarding',
@@ -573,7 +573,7 @@ class Assets {
 			$this->localize_onboarding_script();
 		}
 
-		// Page-specific scripts
+		// Page-specific scripts..
 		if ( $this->is_dashboard_page( $hook ) ) {
 			$this->enqueue_script(
 				'shahi-admin-dashboard',
@@ -605,7 +605,7 @@ class Assets {
 
 			$this->localize_module_dashboard_script();
 		} elseif ( $this->is_accessibility_dashboard_page( $hook ) ) {
-			// Accessibility Dashboard - use the same scripts as Module Dashboard
+			// Accessibility Dashboard - use the same scripts as Module Dashboard..
 			$this->enqueue_script(
 				'shahi-admin-module-dashboard',
 				'js/admin-module-dashboard',
@@ -613,7 +613,7 @@ class Assets {
 				$this->version,
 				true
 			);
-			// Chart.js for trends visualization - bundled locally for WordPress.org compliance
+			// Chart.js for trends visualization - bundled locally for WordPress.org compliance..
 			wp_enqueue_script(
 				'chartjs',
 				SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/js/vendor/chart.umd.min.js',
@@ -622,8 +622,8 @@ class Assets {
 				true
 			);
 
-			// Also add accessibility-specific scripts if needed
-			// Force non-minified version (minified version doesn't exist yet)
+			// Also add accessibility-specific scripts if needed..
+			// Force non-minified version (minified version doesn't exist yet)..
 			wp_enqueue_script(
 				'slos-scanner-admin',
 				$this->assets_url . 'js/slos-scanner-admin.js',
@@ -641,7 +641,7 @@ class Assets {
 				)
 			);
 
-			// Scan Progress Modal assets (dashboard entry points)
+			// Scan Progress Modal assets (dashboard entry points)..
 			wp_enqueue_script(
 				'slos-scan-progress',
 				$this->assets_url . 'js/slos-scan-progress.js',
@@ -652,8 +652,8 @@ class Assets {
 
 			$this->localize_scan_progress_script();
 
-			// Auto-Fix Progress Popup Assets for Dashboard Fix All buttons
-			// Force non-minified version (minified version doesn't exist yet)
+			// Auto-Fix Progress Popup Assets for Dashboard Fix All buttons..
+			// Force non-minified version (minified version doesn't exist yet)..
 			wp_enqueue_script(
 				'slos-autofix-progress',
 				$this->assets_url . 'js/slos-autofix-progress.js',
@@ -662,7 +662,7 @@ class Assets {
 				true
 			);
 
-			// Localize Auto-Fix Progress with fixer data
+			// Localize Auto-Fix Progress with fixer data..
 			$this->localize_autofix_progress_script();
 		} elseif ( $this->is_settings_page( $hook ) ) {
 			$this->enqueue_script(
@@ -675,7 +675,7 @@ class Assets {
 
 			$this->localize_settings_script();
 
-			// Export/Import functionality
+			// Export/Import functionality..
 			$this->enqueue_script(
 				'shahi-admin-export-import',
 				'js/admin-export-import',
@@ -696,7 +696,7 @@ class Assets {
 
 			$this->localize_consent_script();
 		} elseif ( $this->is_accessibility_scanner_page( $hook ) ) {
-			// Accessibility Scanner module scripts
+			// Accessibility Scanner module scripts..
 			$this->enqueue_script(
 				'shahi-accessibility-scanner',
 				'js/accessibility-scanner/admin',
@@ -707,8 +707,8 @@ class Assets {
 
 			$this->localize_accessibility_scanner_script();
 
-			// Also add slos-scanner-admin for Fix All buttons
-			// Force non-minified version (minified version doesn't exist yet)
+			// Also add slos-scanner-admin for Fix All buttons..
+			// Force non-minified version (minified version doesn't exist yet)..
 			wp_enqueue_script(
 				'slos-scanner-admin',
 				$this->assets_url . 'js/slos-scanner-admin.js',
@@ -726,7 +726,7 @@ class Assets {
 				)
 			);
 
-			// Scan Progress Modal assets
+			// Scan Progress Modal assets..
 			wp_enqueue_script(
 				'slos-scan-progress',
 				$this->assets_url . 'js/slos-scan-progress.js',
@@ -737,8 +737,8 @@ class Assets {
 
 			$this->localize_scan_progress_script();
 
-			// Auto-Fix Progress Popup Assets
-			// Force non-minified version (minified version doesn't exist yet)
+			// Auto-Fix Progress Popup Assets..
+			// Force non-minified version (minified version doesn't exist yet)..
 			wp_enqueue_script(
 				'slos-autofix-progress',
 				$this->assets_url . 'js/slos-autofix-progress.js',
@@ -767,11 +767,11 @@ class Assets {
 		$relative_path = $file . $suffix . '.css';
 		$file_url      = $this->assets_url . $relative_path;
 
-		// Aggressive cache-bust: use file modification time + file size for maximum freshness
+		// Aggressive cache-bust: use file modification time + file size for maximum freshness..
 		if ( ! $version ) {
 			$file_path = SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'assets/' . $relative_path;
 			if ( file_exists( $file_path ) ) {
-				// Combine mtime and file size to create unique version
+				// Combine mtime and file size to create unique version..
 				$version = filemtime( $file_path ) . '.' . filesize( $file_path );
 			} else {
 				$version = $this->version;
@@ -803,11 +803,11 @@ class Assets {
 		$relative_path = $file . $suffix . '.js';
 		$file_url      = $this->assets_url . $relative_path;
 
-		// Aggressive cache-bust: use file modification time + file size for maximum freshness
+		// Aggressive cache-bust: use file modification time + file size for maximum freshness..
 		if ( ! $version ) {
 			$file_path = SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'assets/' . $relative_path;
 			if ( file_exists( $file_path ) ) {
-				// Combine mtime and file size to create unique version
+				// Combine mtime and file size to create unique version..
 				$version = filemtime( $file_path ) . '.' . filesize( $file_path );
 			} else {
 				$version = $this->version;
@@ -1079,17 +1079,17 @@ class Assets {
 	 * @return bool True if plugin page, false otherwise.
 	 */
 	private function is_plugin_page( $hook ) {
-		// Check if hook contains our plugin slug
+		// Check if hook contains our plugin slug..
 		if ( strpos( $hook, 'shahi-legalflowsuite' ) !== false ) {
 			return true;
 		}
 
-		// Check if hook contains slos (module pages)
+		// Check if hook contains slos (module pages)..
 		if ( strpos( $hook, 'slos-' ) !== false ) {
 			return true;
 		}
 
-		// Check if it's a top-level plugin page
+		// Check if it's a top-level plugin page..
 		$plugin_pages = array(
 			'toplevel_page_shahi-legalflowsuite',
 			'shahi-legalflowsuite_page_shahi-dashboard',
@@ -1122,7 +1122,7 @@ class Assets {
 	 * @return bool True if old modules page, false otherwise.
 	 */
 	private function is_modules_page( $hook ) {
-		// Legacy modules page - no longer used, V3 module dashboard is used instead
+		// Legacy modules page - no longer used, V3 module dashboard is used instead..
 		return false;
 	}
 
@@ -1134,7 +1134,7 @@ class Assets {
 	 * @return bool True if module dashboard page, false otherwise.
 	 */
 	private function is_module_dashboard_page( $hook ) {
-		// Match the modules page (shahi-legalflowsuite-modules) which uses the V3 dashboard
+		// Match the modules page (shahi-legalflowsuite-modules) which uses the V3 dashboard..
 		return strpos( $hook, 'shahi-legalflowsuite-modules' ) !== false || strpos( $hook, 'module-dashboard' ) !== false;
 	}
 
@@ -1207,7 +1207,7 @@ class Assets {
 	public function register_styles() {
 		$suffix = $this->use_minified ? '.min' : '';
 
-		// Analytics page styles (future use)
+		// Analytics page styles (future use)..
 		wp_register_style(
 			'shahi-admin-analytics',
 			$this->assets_url . 'css/admin-analytics' . $suffix . '.css',
@@ -1215,7 +1215,7 @@ class Assets {
 			$this->version
 		);
 
-		// Onboarding styles (future use)
+		// Onboarding styles (future use)..
 		wp_register_style(
 			'shahi-admin-onboarding',
 			$this->assets_url . 'css/admin-onboarding' . $suffix . '.css',
@@ -1235,7 +1235,7 @@ class Assets {
 	public function register_scripts() {
 		$suffix = $this->use_minified ? '.min' : '';
 
-		// Analytics page scripts (future use)
+		// Analytics page scripts (future use)..
 		wp_register_script(
 			'shahi-admin-analytics',
 			$this->assets_url . 'js/admin-analytics' . $suffix . '.js',
@@ -1244,7 +1244,7 @@ class Assets {
 			true
 		);
 
-		// Onboarding scripts (future use)
+		// Onboarding scripts (future use)..
 		wp_register_script(
 			'shahi-admin-onboarding',
 			$this->assets_url . 'js/admin-onboarding' . $suffix . '.js',
@@ -1263,7 +1263,7 @@ class Assets {
 	 * @return void
 	 */
 	public function enqueue_frontend_styles() {
-		// Legal Document Shortcode styles
+		// Legal Document Shortcode styles..
 		wp_enqueue_style(
 			'slos-legal-doc-shortcode',
 			SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/css/slos-legal-doc-shortcode.css',
@@ -1282,8 +1282,8 @@ class Assets {
 	 * @return void
 	 */
 	public function enqueue_frontend_scripts() {
-		// Frontend scripts will be added if public-facing components are created
-		// Currently, this is an admin-only plugin
+		// Frontend scripts will be added if public-facing components are created..
+		// Currently, this is an admin-only plugin..
 	}
 
 	/**
@@ -1299,13 +1299,13 @@ class Assets {
 	 * @return string Modified link tag.
 	 */
 	public function add_nocache_to_styles( $tag, $handle, $href, $media ) {
-		// Only apply to our plugin's styles
+		// Only apply to our plugin's styles..
 		if ( strpos( $handle, 'shahi-' ) === 0 ) {
-			// Add unique timestamp to force refresh
+			// Add unique timestamp to force refresh..
 			$separator = ( strpos( $href, '?' ) !== false ) ? '&' : '?';
 			$href      = $href . $separator . 't=' . time();
 
-			// Rebuild tag with no-cache headers
+			// Rebuild tag with no-cache headers..
 			// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- Filter callback modifying enqueued stylesheet
 			$tag = sprintf(
 				'<link rel="stylesheet" id="%s-css" href="%s" type="text/css" media="%s" />' . "\n",
@@ -1326,8 +1326,8 @@ class Assets {
 	 * @return bool True if accessibility scanner page, false otherwise.
 	 */
 	private function is_accessibility_scanner_page( $hook ) {
-		// Check if we're on the accessibility page with tools/scanner tab
-		// The hook is like: shahi-legalflowsuite_page_slos-accessibility
+		// Check if we're on the accessibility page with tools/scanner tab..
+		// The hook is like: shahi-legalflowsuite_page_slos-accessibility..
 		if ( strpos( $hook, 'slos-accessibility' ) !== false ) {
 			$tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'tools';
 			return $tab === 'tools' || $tab === 'scanner';
@@ -1342,10 +1342,10 @@ class Assets {
 	 * @return bool True if accessibility dashboard page, false otherwise.
 	 */
 	private function is_accessibility_dashboard_page( $hook ) {
-		// Check if we're on the main accessibility page with dashboard tab
-		// The hook is like: shahi-legalflowsuite_page_slos-accessibility
+		// Check if we're on the main accessibility page with dashboard tab..
+		// The hook is like: shahi-legalflowsuite_page_slos-accessibility..
 		if ( strpos( $hook, 'slos-accessibility' ) !== false ) {
-			// Check if tab parameter is dashboard (or default to true for all accessibility pages)
+			// Check if tab parameter is dashboard (or default to true for all accessibility pages)..
 			$tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'tools';
 			return $tab === 'dashboard';
 		}
@@ -1428,8 +1428,8 @@ class Assets {
 	 * @return void
 	 */
 	private function localize_autofix_progress_script() {
-		// Get fixer list for JS from the canonical FixEngine to avoid
-		// duplicate catalogs and keep metadata in sync across backend and frontend.
+		// Get fixer list for JS from the canonical FixEngine to avoid..
+		// duplicate catalogs and keep metadata in sync across backend and frontend...
 		$fixers = array();
 		if ( class_exists( '\\ShahiLegalFlowSuite\\Modules\\AccessibilityScanner\\FixEngine\\Bootstrap' ) ) {
 			$scanner_data = \ShahiLegalFlowSuite\Modules\AccessibilityScanner\FixEngine\Bootstrap::get_scanner_data();

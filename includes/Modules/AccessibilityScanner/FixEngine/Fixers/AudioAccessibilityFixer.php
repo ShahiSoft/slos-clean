@@ -61,21 +61,21 @@ final class AudioAccessibilityFixer extends AbstractFixer {
 			$fixed_this  = false;
 			$fix_details = array( 'src' => $audio->getAttribute( 'src' ) );
 
-			// Ensure controls attribute is present
+			// Ensure controls attribute is present..
 			if ( ! $audio->hasAttribute( 'controls' ) ) {
 				$audio->setAttribute( 'controls', '' );
 				$fix_details['added_controls'] = true;
 				$fixed_this                    = true;
 			}
 
-			// Prevent autoplay for accessibility
+			// Prevent autoplay for accessibility..
 			if ( $audio->hasAttribute( 'autoplay' ) ) {
 				$audio->removeAttribute( 'autoplay' );
 				$fix_details['removed_autoplay'] = true;
 				$fixed_this                      = true;
 			}
 
-			// Add aria-label if no accessible name
+			// Add aria-label if no accessible name..
 			$has_accessible_name = $audio->hasAttribute( 'aria-label' ) ||
 									$audio->hasAttribute( 'aria-labelledby' ) ||
 									$audio->hasAttribute( 'title' );
@@ -83,14 +83,14 @@ final class AudioAccessibilityFixer extends AbstractFixer {
 			if ( ! $has_accessible_name ) {
 				$src = $audio->getAttribute( 'src' );
 				if ( ! $src ) {
-					// Check for source element
+					// Check for source element..
 					$sources = $this->query( './/source[@src]', $audio );
 					if ( count( $sources ) > 0 ) {
 						$src = $sources[0]->getAttribute( 'src' );
 					}
 				}
 
-				// Generate label from filename
+				// Generate label from filename..
 				if ( $src ) {
 					$filename = basename( wp_parse_url( $src, PHP_URL_PATH ) ?: $src );
 					$label    = pathinfo( $filename, PATHINFO_FILENAME );
@@ -104,7 +104,7 @@ final class AudioAccessibilityFixer extends AbstractFixer {
 				$fixed_this                 = true;
 			}
 
-			// Add preload="metadata" for performance and accessibility
+			// Add preload="metadata" for performance and accessibility..
 			if ( ! $audio->hasAttribute( 'preload' ) ) {
 				$audio->setAttribute( 'preload', 'metadata' );
 				$fix_details['added_preload'] = true;

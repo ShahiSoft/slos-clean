@@ -14,7 +14,7 @@
 
 namespace ShahiLegalFlowSuite\Widgets;
 
-// Exit if accessed directly.
+// Exit if accessed directly...
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -70,7 +70,7 @@ class QuickActionsWidget extends \WP_Widget {
 		echo '<div class="shahi-widget shahi-quick-actions-widget-content">';
 		echo '<ul class="shahi-actions-list">';
 
-		// Dashboard link.
+		// Dashboard link...
 		if ( $show_dashboard ) {
 			$dashboard_url = admin_url( 'admin.php?page=shahi-legalflowsuite' );
 			echo '<li>';
@@ -81,7 +81,7 @@ class QuickActionsWidget extends \WP_Widget {
 			echo '</li>';
 		}
 
-		// Settings link.
+		// Settings link...
 		if ( $show_settings ) {
 			$settings_url = admin_url( 'admin.php?page=shahi-legalflowsuite-settings' );
 			echo '<li>';
@@ -92,7 +92,7 @@ class QuickActionsWidget extends \WP_Widget {
 			echo '</li>';
 		}
 
-		// Modules link.
+		// Modules link...
 		if ( $show_modules ) {
 			$modules_url = admin_url( 'admin.php?page=shahi-legalflowsuite-modules' );
 			echo '<li>';
@@ -103,7 +103,7 @@ class QuickActionsWidget extends \WP_Widget {
 			echo '</li>';
 		}
 
-		// Add template item link.
+		// Add template item link...
 		if ( $show_add_item ) {
 			$add_item_url = admin_url( 'post-new.php?post_type=shahi_legalflowsuite_item' );
 			echo '<li>';

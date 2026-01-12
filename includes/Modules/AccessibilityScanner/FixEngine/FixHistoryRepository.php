@@ -120,7 +120,7 @@ final class FixHistoryRepository {
 			$this->save_result( $session_id, $post_id, $user_id, $result );
 		}
 
-		// Also save session summary to post meta
+		// Also save session summary to post meta..
 		update_post_meta( $post_id, '_slos_last_fix_session', $session->to_array() );
 		update_post_meta( $post_id, '_slos_last_fix_date', current_time( 'mysql' ) );
 

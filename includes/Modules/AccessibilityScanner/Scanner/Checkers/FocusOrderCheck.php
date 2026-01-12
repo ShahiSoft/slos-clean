@@ -30,7 +30,7 @@ class FocusOrderCheck extends AbstractCheck {
 		$dom    = $this->get_dom( $content );
 		$xpath  = new \DOMXPath( $dom );
 
-		// Check for positive tabindex values which disrupt natural tab order
+		// Check for positive tabindex values which disrupt natural tab order..
 		$elements = $xpath->query( '//*[@tabindex]' );
 
 		foreach ( $elements as $element ) {

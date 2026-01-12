@@ -15,7 +15,7 @@ namespace ShahiLegalFlowSuite\Services;
 
 use ShahiLegalFlowSuite\Database\Repositories\Consent_Repository;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -83,7 +83,7 @@ class Consent_Service extends Base_Service {
 	public function record_consent( array $data ) {
 		$this->clear_errors();
 
-		// Validate required fields
+		// Validate required fields..
 		if ( ! $this->validate_required( $data['type'] ?? '', 'type' ) ) {
 			return false;
 		}
@@ -92,17 +92,17 @@ class Consent_Service extends Base_Service {
 			return false;
 		}
 
-		// Validate consent type
+		// Validate consent type..
 		if ( ! $this->validate_in_list( $data['type'], $this->allowed_types, 'type' ) ) {
 			return false;
 		}
 
-		// Validate consent status
+		// Validate consent status..
 		if ( ! $this->validate_in_list( $data['status'], $this->allowed_statuses, 'status' ) ) {
 			return false;
 		}
 
-		// Prepare consent data
+		// Prepare consent data..
 		$consent_data = array(
 			'user_id'        => $data['user_id'] ?? get_current_user_id(),
 			'type'           => $this->sanitize_string( $data['type'] ),
@@ -126,14 +126,14 @@ class Consent_Service extends Base_Service {
 			'policy_version' => $data['policy_version'] ?? $this->get_policy_version(),
 		);
 
-		// Merge additional metadata if provided
+		// Merge additional metadata if provided..
 		if ( ! empty( $data['metadata'] ) && is_array( $data['metadata'] ) ) {
 			$existing_metadata        = $this->parse_metadata( $consent_data['metadata'] );
 			$merged_metadata          = array_merge( $existing_metadata, $data['metadata'] );
 			$consent_data['metadata'] = $this->prepare_metadata( $merged_metadata );
 		}
 
-		// Create consent record
+		// Create consent record..
 		$consent_id = $this->repository->create( $consent_data );
 
 		if ( ! $consent_id ) {
@@ -141,7 +141,7 @@ class Consent_Service extends Base_Service {
 			return false;
 		}
 
-		// Log consent action
+		// Log consent action..
 		$this->audit_logger->log(
 			array(
 				'consent_id'     => $consent_id,
@@ -181,21 +181,21 @@ class Consent_Service extends Base_Service {
 	public function update_consent( int $consent_id, array $data ): bool {
 		$this->clear_errors();
 
-		// Check if consent exists
+		// Check if consent exists..
 		if ( ! $this->repository->exists( $consent_id ) ) {
 			$this->add_error( 'not_found', 'Consent not found' );
 			return false;
 		}
 
-		// Get previous state
+		// Get previous state..
 		$previous_consent = $this->repository->find( $consent_id );
 
-		// Validate status if provided
+		// Validate status if provided..
 		if ( isset( $data['status'] ) && ! $this->validate_in_list( $data['status'], $this->allowed_statuses, 'status' ) ) {
 			return false;
 		}
 
-		// Prepare update data
+		// Prepare update data..
 		$update_data = array();
 
 		if ( isset( $data['status'] ) ) {
@@ -206,7 +206,7 @@ class Consent_Service extends Base_Service {
 			$update_data['metadata'] = $this->prepare_metadata( $data['metadata'] );
 		}
 
-		// Update consent record
+		// Update consent record..
 		$updated = $this->repository->update( $consent_id, $update_data );
 
 		if ( ! $updated ) {
@@ -214,7 +214,7 @@ class Consent_Service extends Base_Service {
 			return false;
 		}
 
-		// Log consent update
+		// Log consent update..
 		$this->audit_logger->log(
 			array(
 				'consent_id'     => $consent_id,
@@ -253,16 +253,16 @@ class Consent_Service extends Base_Service {
 	public function withdraw_consent( int $consent_id ): bool {
 		$this->clear_errors();
 
-		// Check if consent exists
+		// Check if consent exists..
 		if ( ! $this->repository->exists( $consent_id ) ) {
 			$this->add_error( 'not_found', 'Consent not found' );
 			return false;
 		}
 
-		// Get previous state
+		// Get previous state..
 		$previous_consent = $this->repository->find( $consent_id );
 
-		// Withdraw consent
+		// Withdraw consent..
 		$withdrawn = $this->repository->withdraw( $consent_id );
 
 		if ( ! $withdrawn ) {
@@ -270,7 +270,7 @@ class Consent_Service extends Base_Service {
 			return false;
 		}
 
-		// Log consent withdrawal
+		// Log consent withdrawal..
 		$this->audit_logger->log(
 			array(
 				'consent_id'     => $consent_id,
@@ -353,18 +353,18 @@ class Consent_Service extends Base_Service {
 	public function delete_consent( int $consent_id ): bool {
 		$this->clear_errors();
 
-		// Validate admin capability
+		// Validate admin capability..
 		if ( ! $this->validate_capability( 'manage_options' ) ) {
 			return false;
 		}
 
-		// Check if consent exists
+		// Check if consent exists..
 		if ( ! $this->repository->exists( $consent_id ) ) {
 			$this->add_error( 'not_found', 'Consent not found' );
 			return false;
 		}
 
-		// Delete consent
+		// Delete consent..
 		$deleted = $this->repository->delete( $consent_id );
 
 		if ( ! $deleted ) {
@@ -425,7 +425,7 @@ class Consent_Service extends Base_Service {
 
 		$table = $wpdb->prefix . 'slos_consent';
 
-		// Build WHERE clause
+		// Build WHERE clause..
 		$where  = array( '1=1' );
 		$values = array();
 
@@ -454,7 +454,7 @@ class Consent_Service extends Base_Service {
 			$values[] = $search;
 		}
 
-		// Geo-based filters
+		// Geo-based filters..
 		if ( ! empty( $filters['geo_rule_id'] ) ) {
 			$where[]  = 'geo_rule_id = %d';
 			$values[] = intval( $filters['geo_rule_id'] );
@@ -472,7 +472,7 @@ class Consent_Service extends Base_Service {
 
 		$where_sql = implode( ' AND ', $where );
 
-		// Pagination
+		// Pagination..
 		$page     = max( 1, intval( $pagination['page'] ?? 1 ) );
 		$per_page = min( 100, max( 1, intval( $pagination['per_page'] ?? 25 ) ) );
 		$offset   = ( $page - 1 ) * $per_page;
@@ -511,7 +511,7 @@ class Consent_Service extends Base_Service {
 
 		$table = $wpdb->prefix . 'slos_consent';
 
-		// Build WHERE clause
+		// Build WHERE clause..
 		$where  = array( '1=1' );
 		$values = array();
 
@@ -540,7 +540,7 @@ class Consent_Service extends Base_Service {
 			$values[] = $search;
 		}
 
-		// Geo-based filters
+		// Geo-based filters..
 		if ( ! empty( $filters['geo_rule_id'] ) ) {
 			$where[]  = 'geo_rule_id = %d';
 			$values[] = intval( $filters['geo_rule_id'] );
@@ -578,7 +578,7 @@ class Consent_Service extends Base_Service {
 
 		$table = $wpdb->prefix . 'slos_consent';
 
-		// Stats by region
+		// Stats by region..
 		$by_region = $wpdb->get_results(
 			"SELECT region, COUNT(*) as count, status
 			 FROM {$table}
@@ -588,7 +588,7 @@ class Consent_Service extends Base_Service {
 			ARRAY_A
 		);
 
-		// Stats by geo rule
+		// Stats by geo rule..
 		$by_geo_rule = $wpdb->get_results(
 			"SELECT geo_rule_id, COUNT(*) as count, status
 			 FROM {$table}
@@ -598,7 +598,7 @@ class Consent_Service extends Base_Service {
 			ARRAY_A
 		);
 
-		// Stats by country
+		// Stats by country..
 		$by_country = $wpdb->get_results(
 			"SELECT country_code, COUNT(*) as count
 			 FROM {$table}
@@ -609,7 +609,7 @@ class Consent_Service extends Base_Service {
 			ARRAY_A
 		);
 
-		// Get geo rule names
+		// Get geo rule names..
 		$geo_rules  = get_option( 'slos_geo_rules', array() );
 		$rule_names = array();
 		foreach ( $geo_rules as $rule ) {
@@ -618,7 +618,7 @@ class Consent_Service extends Base_Service {
 			}
 		}
 
-		// Add rule names to stats
+		// Add rule names to stats..
 		foreach ( $by_geo_rule as &$stat ) {
 			$stat['rule_name'] = $rule_names[ $stat['geo_rule_id'] ] ?? __( 'Unknown Rule', 'shahi-legalflowsuite' );
 		}
@@ -669,7 +669,7 @@ class Consent_Service extends Base_Service {
 	public function bulk_withdraw_user_consents( int $user_id, string $type = '' ): int {
 		$this->clear_errors();
 
-		// Get user's active consents
+		// Get user's active consents..
 		$consents = $type
 			? $this->repository->find_by( 'user_id', $user_id, array() )
 			: $this->repository->get_active_consents( $user_id );
@@ -677,12 +677,12 @@ class Consent_Service extends Base_Service {
 		$withdrawn_count = 0;
 
 		foreach ( $consents as $consent ) {
-			// Skip if filtering by type and doesn't match
+			// Skip if filtering by type and doesn't match..
 			if ( $type && $consent->type !== $type ) {
 				continue;
 			}
 
-			// Skip if already withdrawn
+			// Skip if already withdrawn..
 			if ( 'withdrawn' === $consent->status ) {
 				continue;
 			}
@@ -719,7 +719,7 @@ class Consent_Service extends Base_Service {
 	public function validate_consent_data( array $data ): bool {
 		$this->clear_errors();
 
-		// Required fields
+		// Required fields..
 		$required_fields = array( 'type', 'status' );
 
 		foreach ( $required_fields as $field ) {
@@ -728,12 +728,12 @@ class Consent_Service extends Base_Service {
 			}
 		}
 
-		// Validate type
+		// Validate type..
 		if ( isset( $data['type'] ) && ! in_array( $data['type'], $this->allowed_types, true ) ) {
 			$this->add_validation_error( 'type', sprintf( 'Invalid consent type. Allowed types: %s', implode( ', ', $this->allowed_types ) ) );
 		}
 
-		// Validate status
+		// Validate status..
 		if ( isset( $data['status'] ) && ! in_array( $data['status'], $this->allowed_statuses, true ) ) {
 			$this->add_validation_error( 'status', sprintf( 'Invalid consent status. Allowed statuses: %s', implode( ', ', $this->allowed_statuses ) ) );
 		}
@@ -775,12 +775,12 @@ class Consent_Service extends Base_Service {
 	public function get_user_preferences( int $user_id = 0, string $ip_hash = '' ): array {
 		$this->clear_errors();
 
-		// If no user and no IP hash, return defaults
+		// If no user and no IP hash, return defaults..
 		if ( ! $user_id && empty( $ip_hash ) ) {
 			return $this->get_default_preferences();
 		}
 
-		// Get consents from repository
+		// Get consents from repository..
 		if ( $user_id ) {
 			$consents = $this->repository->find_by_user( $user_id );
 		} elseif ( ! empty( $ip_hash ) ) {
@@ -789,16 +789,16 @@ class Consent_Service extends Base_Service {
 			return $this->get_default_preferences();
 		}
 
-		// Build preferences array
+		// Build preferences array..
 		$preferences = array();
 
 		foreach ( $this->allowed_types as $type ) {
-			// Find most recent consent for this type
+			// Find most recent consent for this type..
 			$recent_consent = null;
 
 			foreach ( $consents as $consent ) {
 				if ( $consent->type === $type ) {
-					// Keep the most recent one
+					// Keep the most recent one..
 					if ( ! $recent_consent || strtotime( $consent->updated_at ) > strtotime( $recent_consent->updated_at ) ) {
 						$recent_consent = $consent;
 					}
@@ -808,7 +808,7 @@ class Consent_Service extends Base_Service {
 			if ( $recent_consent ) {
 				$preferences[ $type ] = $recent_consent->status;
 			} else {
-				// Never asked about this type
+				// Never asked about this type..
 				$preferences[ $type ] = 'not_asked';
 			}
 		}
@@ -828,7 +828,7 @@ class Consent_Service extends Base_Service {
 		$preferences = array();
 
 		foreach ( $this->allowed_types as $type ) {
-			// 'necessary' is always pre-consented per GDPR
+			// 'necessary' is always pre-consented per GDPR..
 			$preferences[ $type ] = ( 'necessary' === $type ) ? 'accepted' : 'not_asked';
 		}
 
@@ -855,13 +855,13 @@ class Consent_Service extends Base_Service {
 	public function should_show_banner( int $user_id = 0, string $ip_hash = '' ): bool {
 		$this->clear_errors();
 
-		// Get user's preferences
+		// Get user's preferences..
 		$preferences = $this->get_user_preferences( $user_id, $ip_hash );
 
-		// Check if user has made a choice about non-necessary consents
+		// Check if user has made a choice about non-necessary consents..
 		foreach ( $this->allowed_types as $type ) {
 			if ( 'necessary' !== $type && 'not_asked' === ( $preferences[ $type ] ?? 'not_asked' ) ) {
-				// User hasn't been asked about this type yet
+				// User hasn't been asked about this type yet..
 				return true;
 			}
 		}
@@ -883,7 +883,7 @@ class Consent_Service extends Base_Service {
 	public function record_multiple_consents( array $data ): array {
 		$this->clear_errors();
 
-		// Validate user identification
+		// Validate user identification..
 		$user_id    = $data['user_id'] ?? 0;
 		$ip_address = $data['ip_address'] ?? $this->get_user_ip();
 		$ip_hash    = $this->hash_ip( $ip_address );
@@ -896,7 +896,7 @@ class Consent_Service extends Base_Service {
 			);
 		}
 
-		// Validate consents array
+		// Validate consents array..
 		if ( ! isset( $data['consents'] ) || ! is_array( $data['consents'] ) || empty( $data['consents'] ) ) {
 			$this->add_error( 'invalid_consents', 'Consents array is required and cannot be empty' );
 			return array(
@@ -909,7 +909,7 @@ class Consent_Service extends Base_Service {
 		$failed_count  = 0;
 		$failed_types  = array();
 
-		// Record each consent
+		// Record each consent..
 		foreach ( $data['consents'] as $type => $status ) {
 			$consent_data = array(
 				'user_id'    => $user_id ?: null,
@@ -1069,7 +1069,7 @@ class Consent_Service extends Base_Service {
 			return 'default-1.0';
 		}
 
-		// Create version based on config hash
+		// Create version based on config hash..
 		$config_string = wp_json_encode( $banner_config );
 		$version_hash  = substr( md5( $config_string ), 0, 8 );
 
@@ -1087,12 +1087,12 @@ class Consent_Service extends Base_Service {
 	private function get_policy_version(): string {
 		$legal_pages = get_option( 'slos_legal_pages', array() );
 
-		// Try to get version from privacy policy metadata
+		// Try to get version from privacy policy metadata..
 		if ( isset( $legal_pages['privacy_policy']['version'] ) ) {
 			return $legal_pages['privacy_policy']['version'];
 		}
 
-		// Fallback to plugin version
+		// Fallback to plugin version..
 		if ( defined( 'SHAHI_LEGALFLOWSUITE_VERSION' ) ) {
 			return 'v' . SHAHI_LEGALFLOWSUITE_VERSION;
 		}
@@ -1123,7 +1123,7 @@ class Consent_Service extends Base_Service {
 		global $wpdb;
 		$table = $wpdb->prefix . 'slos_consent';
 
-		// Parse arguments with defaults
+		// Parse arguments with defaults..
 		$defaults = array(
 			'interval'     => 'daily',
 			'days_back'    => 30,
@@ -1134,19 +1134,19 @@ class Consent_Service extends Base_Service {
 		);
 		$args     = wp_parse_args( $args, $defaults );
 
-		// Validate interval
+		// Validate interval..
 		$allowed_intervals = array( 'daily', 'weekly', 'monthly' );
 		if ( ! in_array( $args['interval'], $allowed_intervals, true ) ) {
 			$args['interval'] = 'daily';
 		}
 
-		// Validate group_by
+		// Validate group_by..
 		$allowed_groups = array( 'none', 'status', 'type', 'region' );
 		if ( ! in_array( $args['group_by'], $allowed_groups, true ) ) {
 			$args['group_by'] = 'none';
 		}
 
-		// Build date format based on interval
+		// Build date format based on interval..
 		$date_format_map = array(
 			'daily'   => '%Y-%m-%d',
 			'weekly'  => '%Y-W%u',  // Year-Week number
@@ -1154,10 +1154,10 @@ class Consent_Service extends Base_Service {
 		);
 		$date_format     = $date_format_map[ $args['interval'] ];
 
-		// Calculate start date
+		// Calculate start date..
 		$start_date = gmdate( 'Y-m-d H:i:s', strtotime( "-{$args['days_back']} days" ) );
 
-		// Build WHERE clause
+		// Build WHERE clause..
 		$where_clauses = array( 'created_at >= %s' );
 		$where_values  = array( $start_date );
 
@@ -1178,9 +1178,9 @@ class Consent_Service extends Base_Service {
 
 		$where_sql = implode( ' AND ', $where_clauses );
 
-		// Build SELECT and GROUP BY based on grouping
+		// Build SELECT and GROUP BY based on grouping..
 		if ( 'none' === $args['group_by'] ) {
-			// Simple time-series aggregation
+			// Simple time-series aggregation..
 			$query = "
 				SELECT 
 					DATE_FORMAT(created_at, '{$date_format}') as period,
@@ -1191,7 +1191,7 @@ class Consent_Service extends Base_Service {
 				ORDER BY period ASC
 			";
 		} else {
-			// Grouped time-series
+			// Grouped time-series..
 			$group_column = 'region' === $args['group_by'] ? 'country_code' : $args['group_by'];
 			$query        = "
 				SELECT 
@@ -1205,10 +1205,10 @@ class Consent_Service extends Base_Service {
 			";
 		}
 
-		// Execute query
+		// Execute query..
 		$results = $wpdb->get_results( $wpdb->prepare( $query, ...$where_values ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
-		// Process results into chart-friendly format
+		// Process results into chart-friendly format..
 		if ( 'none' === $args['group_by'] ) {
 			return $this->format_simple_time_series( $results, $args );
 		} else {
@@ -1262,7 +1262,7 @@ class Consent_Service extends Base_Service {
 		$labels = array();
 		$groups = array();
 
-		// Collect all periods and groups
+		// Collect all periods and groups..
 		foreach ( $results as $row ) {
 			$period = $row['period'];
 			$group  = $row['group_value'] ?? __( 'Unknown', 'shahi-legalflowsuite' );
@@ -1279,7 +1279,7 @@ class Consent_Service extends Base_Service {
 			$groups[ $group ][ $period ] = $count;
 		}
 
-		// Format labels
+		// Format labels..
 		$formatted_labels = array_map(
 			function ( $period ) use ( $args ) {
 				return $this->format_period_label( $period, $args['interval'] );
@@ -1287,7 +1287,7 @@ class Consent_Service extends Base_Service {
 			$labels
 		);
 
-		// Build datasets
+		// Build datasets..
 		$datasets = array();
 		foreach ( $groups as $group => $data ) {
 			$values = array();
@@ -1301,7 +1301,7 @@ class Consent_Service extends Base_Service {
 			);
 		}
 
-		// Calculate metadata
+		// Calculate metadata..
 		$total_values = array();
 		foreach ( $datasets as $dataset ) {
 			$total_values[] = array_sum( $dataset['data'] );
@@ -1334,7 +1334,7 @@ class Consent_Service extends Base_Service {
 		}
 
 		if ( 'weekly' === $interval ) {
-			// Format: 2024-W01 -> Week 1, 2024
+			// Format: 2024-W01 -> Week 1, 2024..
 			preg_match( '/(\d{4})-W(\d{2})/', $period, $matches );
 			if ( $matches ) {
 				return sprintf( __( 'Week %1$d, %2$d', 'shahi-legalflowsuite' ), (int) $matches[2], (int) $matches[1] );
@@ -1379,7 +1379,7 @@ class Consent_Service extends Base_Service {
 		}
 
 		if ( 'region' === $group_by ) {
-			// Return country code as-is (could enhance with country names later)
+			// Return country code as-is (could enhance with country names later)..
 			return strtoupper( $group );
 		}
 
@@ -1414,27 +1414,27 @@ class Consent_Service extends Base_Service {
 	public function get_by_email( string $email, array $args = array() ): array {
 		$this->clear_errors();
 
-		// Validate email
+		// Validate email..
 		$email = sanitize_email( $email );
 		if ( empty( $email ) || ! is_email( $email ) ) {
 			$this->add_error( 'invalid_email', __( 'Invalid email address provided.', 'shahi-legalflowsuite' ) );
 			return array();
 		}
 
-		// Fetch raw consent records
+		// Fetch raw consent records..
 		$consents = $this->repository->find_by_email( $email, $args );
 
-		// Enrich with user data and decode metadata
+		// Enrich with user data and decode metadata..
 		$enriched = array();
 		foreach ( $consents as $consent ) {
 			$record = $consent;
 
-			// Decode metadata
+			// Decode metadata..
 			if ( isset( $record['metadata'] ) && is_string( $record['metadata'] ) ) {
 				$record['metadata'] = json_decode( $record['metadata'], true ) ?: array();
 			}
 
-			// Add user data if user_id exists
+			// Add user data if user_id exists..
 			if ( ! empty( $record['user_id'] ) ) {
 				$user = get_userdata( $record['user_id'] );
 				if ( $user ) {
@@ -1442,7 +1442,7 @@ class Consent_Service extends Base_Service {
 					$record['user_email'] = $user->user_email;
 				}
 			} else {
-				// Guest consent - get email from metadata
+				// Guest consent - get email from metadata..
 				$record['user_name']  = __( 'Guest', 'shahi-legalflowsuite' );
 				$record['user_email'] = $record['metadata']['email'] ?? $email;
 			}

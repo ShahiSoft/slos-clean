@@ -93,19 +93,19 @@ class TimingControlCheck extends AbstractCheck {
 		$dom    = $this->get_dom( $content );
 		$xpath  = new \DOMXPath( $dom );
 
-		// 1. Check meta refresh tags
+		// 1. Check meta refresh tags..
 		$this->check_meta_refresh( $xpath, $issues );
 
-		// 2. Check for session timeout UI patterns
+		// 2. Check for session timeout UI patterns..
 		$this->check_session_timeout_patterns( $xpath, $issues );
 
-		// 3. Check for countdown timers
+		// 3. Check for countdown timers..
 		$this->check_countdown_timers( $xpath, $issues );
 
-		// 4. Check for JavaScript timing patterns
+		// 4. Check for JavaScript timing patterns..
 		$this->check_script_timing( $dom, $issues );
 
-		// 5. Check form submission timeouts
+		// 5. Check form submission timeouts..
 		$this->check_form_timeouts( $xpath, $issues );
 
 		return $issues;
@@ -126,8 +126,8 @@ class TimingControlCheck extends AbstractCheck {
 			if ( preg_match( '/^(\d+)/', $content_attr, $matches ) ) {
 				$seconds = (int) $matches[1];
 
-				// 0 is immediate redirect (usually acceptable for redirects)
-				// > 72000 (20 hours) is considered essentially unlimited
+				// 0 is immediate redirect (usually acceptable for redirects)..
+				// > 72000 (20 hours) is considered essentially unlimited..
 				if ( $seconds > 0 && $seconds < 72000 ) {
 					$has_url = stripos( $content_attr, 'url=' ) !== false;
 
@@ -164,11 +164,11 @@ class TimingControlCheck extends AbstractCheck {
 	 */
 	private function check_session_timeout_patterns( $xpath, &$issues ) {
 		foreach ( $this->timeout_patterns as $pattern ) {
-			// Check class and id attributes
+			// Check class and id attributes..
 			$elements = $xpath->query( "//*[contains(@class, '$pattern') or contains(@id, '$pattern')]" );
 
 			foreach ( $elements as $element ) {
-				// Check if there's an extend/continue button nearby
+				// Check if there's an extend/continue button nearby..
 				$has_extend_button = $this->has_extend_mechanism( $element );
 
 				if ( $has_extend_button ) {
@@ -253,7 +253,7 @@ class TimingControlCheck extends AbstractCheck {
 		foreach ( $scripts as $script ) {
 			$js = $script->textContent;
 
-			// Check for setTimeout with redirect/location change
+			// Check for setTimeout with redirect/location change..
 			if ( preg_match( '/setTimeout\s*\([^,]*(?:location|redirect|href|navigate)[^,]*,\s*(\d+)\s*\)/i', $js, $matches ) ) {
 				$ms      = (int) $matches[1];
 				$seconds = $ms / 1000;
@@ -270,7 +270,7 @@ class TimingControlCheck extends AbstractCheck {
 				}
 			}
 
-			// Check for countdown patterns in JS
+			// Check for countdown patterns in JS..
 			$countdown_patterns = array(
 				'/setInterval\s*\([^,]*(?:countdown|timer)/i',
 				'/(?:countdown|remaining|expires?)\s*=\s*\d+/i',
@@ -298,7 +298,7 @@ class TimingControlCheck extends AbstractCheck {
 	 * @param array     $issues Issues array by reference.
 	 */
 	private function check_form_timeouts( $xpath, &$issues ) {
-		// Check for quiz/exam forms that might be timed
+		// Check for quiz/exam forms that might be timed..
 		$timed_form_patterns = array(
 			'quiz',
 			'exam',
@@ -324,7 +324,7 @@ class TimingControlCheck extends AbstractCheck {
 			}
 		}
 
-		// Check for CAPTCHA with time limits
+		// Check for CAPTCHA with time limits..
 		$captchas = $xpath->query( "//*[contains(@class, 'captcha') or contains(@id, 'captcha')]" );
 
 		foreach ( $captchas as $captcha ) {

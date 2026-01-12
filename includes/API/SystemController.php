@@ -14,7 +14,7 @@
 
 namespace ShahiLegalFlowSuite\API;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -35,7 +35,7 @@ class SystemController {
 	 * @return void
 	 */
 	public function register_routes() {
-		// Health check
+		// Health check..
 		register_rest_route(
 			RestAPI::get_namespace(),
 			'/system/status',
@@ -46,7 +46,7 @@ class SystemController {
 			)
 		);
 
-		// Plugin info
+		// Plugin info..
 		register_rest_route(
 			RestAPI::get_namespace(),
 			'/system/info',
@@ -73,7 +73,7 @@ class SystemController {
 			'checks'  => array(),
 		);
 
-		// Database check
+		// Database check..
 		$db_check                     = $wpdb->check_connection();
 		$status['checks']['database'] = array(
 			'status'  => $db_check ? 'ok' : 'error',
@@ -84,7 +84,7 @@ class SystemController {
 			$status['healthy'] = false;
 		}
 
-		// Tables check
+		// Tables check..
 		$required_tables = array(
 			$wpdb->prefix . 'shahi_analytics',
 		);
@@ -101,7 +101,7 @@ class SystemController {
 			'message' => empty( $missing_tables ) ? 'All tables exist' : 'Missing tables: ' . implode( ', ', $missing_tables ),
 		);
 
-		// PHP version check
+		// PHP version check..
 		$php_version     = PHP_VERSION;
 		$php_min_version = '7.4';
 		$php_ok          = version_compare( $php_version, $php_min_version, '>=' );
@@ -111,7 +111,7 @@ class SystemController {
 			'message' => "PHP $php_version" . ( $php_ok ? '' : " (minimum $php_min_version recommended)" ),
 		);
 
-		// WordPress version check
+		// WordPress version check..
 		global $wp_version;
 		$wp_min_version = '5.8';
 		$wp_ok          = version_compare( $wp_version, $wp_min_version, '>=' );
@@ -121,7 +121,7 @@ class SystemController {
 			'message' => "WordPress $wp_version" . ( $wp_ok ? '' : " (minimum $wp_min_version recommended)" ),
 		);
 
-		// Memory check
+		// Memory check..
 		$memory_limit               = ini_get( 'memory_limit' );
 		$status['checks']['memory'] = array(
 			'status'  => 'ok',

@@ -30,7 +30,7 @@ class ErrorMessageCheck extends AbstractCheck {
 		$dom    = $this->get_dom( $content );
 		$xpath  = new \DOMXPath( $dom );
 
-		// Find inputs with aria-invalid="true"
+		// Find inputs with aria-invalid="true"..
 		$inputs = $xpath->query( '//*[@aria-invalid="true"]' );
 
 		foreach ( $inputs as $input ) {

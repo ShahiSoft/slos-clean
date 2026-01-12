@@ -16,7 +16,7 @@ namespace ShahiLegalFlowSuite\Services;
 use ShahiLegalFlowSuite\Database\Repositories\Company_Profile_Repository;
 use ShahiLegalFlowSuite\Database\Repositories\Legal_Doc_Repository;
 
-// Exit if accessed directly.
+// Exit if accessed directly...
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -64,7 +64,7 @@ class Document_Generator extends Base_Service {
 	 * @var array
 	 */
 	const DOCUMENT_TYPES = array(
-		// Core Legal Documents
+		// Core Legal Documents..
 		'privacy-policy'            => 'Privacy Policy',
 		'terms-of-service'          => 'Terms of Service',
 		'cookie-policy'             => 'Cookie Policy',
@@ -73,18 +73,18 @@ class Document_Generator extends Base_Service {
 		'copyright-dmca-policy'     => 'Copyright & DMCA Policy',
 		'accessibility-statement'   => 'Accessibility Statement',
 
-		// Business Operations
+		// Business Operations..
 		'contact-imprint'           => 'Contact Information / Imprint',
 		'data-processing-agreement' => 'Data Processing Agreement',
 		'security-policy'           => 'Security Policy',
 		'anti-spam-policy'          => 'Anti-Spam Policy',
 
-		// User Conduct
+		// User Conduct..
 		'terms-of-use'              => 'Terms of Use',
 		'community-guidelines'      => 'Community Guidelines',
 		'age-verification-policy'   => 'Age Verification Policy',
 
-		// E-Commerce
+		// E-Commerce..
 		'refund-policy'             => 'Refund & Return Policy',
 		'shipping-policy'           => 'Shipping Policy',
 		'warranty-policy'           => 'Warranty Policy',
@@ -92,12 +92,12 @@ class Document_Generator extends Base_Service {
 		'subscription-agreement'    => 'Subscription Agreement',
 		'affiliate-terms'           => 'Affiliate Program Terms',
 
-		// Software & API
+		// Software & API..
 		'eula'                      => 'End User License Agreement',
 		'api-terms'                 => 'API Terms of Service',
 		'content-licensing'         => 'Content Licensing Agreement',
 
-		// Specialized
+		// Specialized..
 		'nda'                       => 'Non-Disclosure Agreement',
 		'mobile-app-terms'          => 'Mobile App Terms',
 	);
@@ -137,7 +137,7 @@ class Document_Generator extends Base_Service {
 	 * @return array|\WP_Error Generated document data or error
 	 */
 	public function generate( string $document_type, int $profile_id = null, array $options = array() ) {
-		// Check if document type is dormant
+		// Check if document type is dormant..
 		if ( defined( 'SLOS_ACTIVE_LEGAL_DOCS' ) && is_array( SLOS_ACTIVE_LEGAL_DOCS ) ) {
 			if ( ! in_array( $document_type, SLOS_ACTIVE_LEGAL_DOCS, true ) ) {
 				return new \WP_Error(
@@ -148,7 +148,7 @@ class Document_Generator extends Base_Service {
 			}
 		}
 
-		// Validate document type
+		// Validate document type..
 		if ( ! $this->is_valid_type( $document_type ) ) {
 			return new \WP_Error(
 				'invalid_document_type',
@@ -157,13 +157,13 @@ class Document_Generator extends Base_Service {
 			);
 		}
 
-		// Get company profile
+		// Get company profile..
 		$profile = $this->get_profile( $profile_id );
 		if ( is_wp_error( $profile ) ) {
 			return $profile;
 		}
 
-		// Validate profile is ready for generation
+		// Validate profile is ready for generation..
 		$validation = $this->validate_generation_ready( $profile, $document_type );
 		if ( ! $validation['ready'] ) {
 			return new \WP_Error(
@@ -173,19 +173,19 @@ class Document_Generator extends Base_Service {
 			);
 		}
 
-		// Load template
+		// Load template..
 		$template = $this->load_template( $document_type, $options );
 		if ( is_wp_error( $template ) ) {
 			return $template;
 		}
 
-		// Resolve placeholders
+		// Resolve placeholders..
 		$content = $this->resolve_placeholders( $template, $profile );
 
-		// Add legal disclaimer
+		// Add legal disclaimer..
 		$content = $this->add_legal_disclaimer( $content, $document_type );
 
-		// Build document data
+		// Build document data..
 		$document = array(
 			'type'       => $document_type,
 			'title'      => $this->get_document_title( $document_type ),
@@ -212,7 +212,7 @@ class Document_Generator extends Base_Service {
 		 */
 		$document = apply_filters( 'slos_document_generated', $document, $document_type, $profile, $options );
 
-		// Auto-save if requested
+		// Auto-save if requested..
 		if ( ! empty( $options['auto_save'] ) ) {
 			$saved = $this->save_as_draft( $document );
 			if ( is_wp_error( $saved ) ) {
@@ -253,14 +253,14 @@ class Document_Generator extends Base_Service {
 	public function validate_generation_ready( array $profile, string $document_type ) {
 		$validation_result = $this->validator->validate_for_generation( $profile );
 
-		// validate_for_generation returns true|\WP_Error
+		// validate_for_generation returns true|\WP_Error..
 		$is_ready       = ( true === $validation_result );
 		$missing_fields = array();
 
 		if ( is_wp_error( $validation_result ) ) {
 			$error_data     = $validation_result->get_error_data();
 			$missing_fields = $error_data['missing'] ?? array();
-			// Convert to simple labels for UI
+			// Convert to simple labels for UI..
 			$missing_fields = array_map(
 				function ( $field ) {
 					return $field['label'] ?? $field['field'] ?? '';
@@ -269,10 +269,10 @@ class Document_Generator extends Base_Service {
 			);
 		}
 
-		// Document-specific validation
+		// Document-specific validation..
 		switch ( $document_type ) {
 			case 'cookie-policy':
-				// Ensure cookie data exists
+				// Ensure cookie data exists..
 				$cookies = $profile['cookies'] ?? array();
 				if ( empty( $cookies['essential'] ) ) {
 					$is_ready         = false;
@@ -281,7 +281,7 @@ class Document_Generator extends Base_Service {
 				break;
 
 			case 'terms-of-service':
-				// Ensure service description exists
+				// Ensure service description exists..
 				$website = $profile['website'] ?? array();
 				if ( empty( $website['service_description'] ) ) {
 					$is_ready         = false;
@@ -318,12 +318,7 @@ class Document_Generator extends Base_Service {
 		$template_dir  = $this->get_template_directory();
 		$template_file = $template_dir . '/' . $document_type . '.html';
 
-		// Debug logging
-		error_log( 'SLOS Template dir: ' . $template_dir );
-		error_log( 'SLOS Template file: ' . $template_file );
-		error_log( 'SLOS File exists: ' . ( file_exists( $template_file ) ? 'yes' : 'no' ) );
-
-		// Check for custom template first
+		// Check for custom template first..
 		$custom_template = $this->get_custom_template( $document_type );
 		if ( $custom_template ) {
 			$template_file = $custom_template;
@@ -340,7 +335,10 @@ class Document_Generator extends Base_Service {
 		$template_file = apply_filters( 'slos_document_template_file', $template_file, $document_type, $options );
 
 		if ( ! file_exists( $template_file ) ) {
-			error_log( 'SLOS Template NOT FOUND: ' . $template_file );
+			if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+				error_log( 'SLOS Template NOT FOUND: ' . $template_file );
+			}
 			return new \WP_Error(
 				'template_not_found',
 				/* translators: %s: document type */
@@ -389,7 +387,7 @@ class Document_Generator extends Base_Service {
 			return $content;
 		}
 
-		// Add disclaimer as footer
+		// Add disclaimer as footer..
 		$content .= "\n\n" . '<div class="slos-legal-disclaimer">' . wp_kses_post( $disclaimer ) . '</div>';
 
 		return $content;
@@ -432,16 +430,14 @@ class Document_Generator extends Base_Service {
 			'metadata'   => wp_json_encode( $document['metadata'] ?? array() ),
 		);
 
-		// Debug log
-		error_log( 'SLOS save_as_draft doc_data: ' . print_r( $doc_data, true ) );
-
 		$result = $this->doc_repository->save( $doc_data );
-
-		error_log( 'SLOS save_as_draft result: ' . var_export( $result, true ) );
 
 		if ( ! $result ) {
 			global $wpdb;
-			error_log( 'SLOS save_as_draft DB error: ' . $wpdb->last_error );
+			if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+				error_log( 'SLOS save_as_draft DB error: ' . $wpdb->last_error );
+			}
 			return new \WP_Error(
 				'save_failed',
 				__( 'Failed to save document.', 'shahi-legalflowsuite' ),
@@ -449,7 +445,7 @@ class Document_Generator extends Base_Service {
 			);
 		}
 
-		// Create version history entry
+		// Create version history entry..
 		if ( is_numeric( $result ) ) {
 			$this->doc_repository->create_version(
 				$result,
@@ -535,7 +531,7 @@ class Document_Generator extends Base_Service {
 			);
 		}
 
-		// Generate fresh content
+		// Generate fresh content..
 		$profile_id   = $existing['profile_id'] ?? null;
 		$new_document = $this->generate( $existing['doc_type'], $profile_id, $options );
 
@@ -543,7 +539,7 @@ class Document_Generator extends Base_Service {
 			return $new_document;
 		}
 
-		// Create version of old content before updating
+		// Create version of old content before updating..
 		$this->doc_repository->create_version(
 			$document_id,
 			array(
@@ -552,7 +548,7 @@ class Document_Generator extends Base_Service {
 			)
 		);
 
-		// Update existing document
+		// Update existing document..
 		$update_data = array(
 			'id'         => $document_id,
 			'content'    => $new_document['content'],
@@ -569,7 +565,7 @@ class Document_Generator extends Base_Service {
 			);
 		}
 
-		// Create new version entry
+		// Create new version entry..
 		$this->doc_repository->create_version(
 			$document_id,
 			array(
@@ -620,7 +616,7 @@ class Document_Generator extends Base_Service {
 			return false;
 		}
 
-		// Normalize repository result for consistent access
+		// Normalize repository result for consistent access..
 		if ( is_object( $document ) ) {
 			$document = get_object_vars( $document );
 		}
@@ -636,7 +632,7 @@ class Document_Generator extends Base_Service {
 			return true;
 		}
 
-		// Get current profile
+		// Get current profile..
 		$profile_id = $document['profile_id'] ?? null;
 		$profile    = $this->get_profile( $profile_id );
 
@@ -677,7 +673,7 @@ class Document_Generator extends Base_Service {
 	 * @return string Hash string
 	 */
 	protected function hash_profile( array $profile ): string {
-		// Remove volatile fields
+		// Remove volatile fields..
 		unset( $profile['created_at'], $profile['updated_at'] );
 		return md5( wp_json_encode( $profile ) );
 	}
@@ -712,7 +708,7 @@ class Document_Generator extends Base_Service {
 	 * @return string Directory path
 	 */
 	protected function get_template_directory(): string {
-		// Use plugin constant for reliable path
+		// Use plugin constant for reliable path..
 		$default = defined( 'SHAHI_LEGALFLOWSUITE_PLUGIN_DIR' )
 			? SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'templates/legaldocs'
 			: dirname( __DIR__, 2 ) . '/templates/legaldocs';
@@ -792,7 +788,7 @@ class Document_Generator extends Base_Service {
 	 * @return array Context data including profile, validation, and fields
 	 */
 	public function get_generation_context( string $document_type ): array {
-		// Validate document type
+		// Validate document type..
 		if ( ! $this->is_valid_type( $document_type ) ) {
 			return array(
 				'is_valid'       => false,
@@ -801,7 +797,7 @@ class Document_Generator extends Base_Service {
 			);
 		}
 
-		// Get current profile
+		// Get current profile..
 		$profile_data = $this->get_profile();
 
 		if ( is_wp_error( $profile_data ) ) {
@@ -812,13 +808,13 @@ class Document_Generator extends Base_Service {
 			);
 		}
 
-		// Validate profile for this document type
+		// Validate profile for this document type..
 		$validation = $this->validate_generation_ready( $profile_data, $document_type );
 
-		// Build field map for UI
+		// Build field map for UI..
 		$field_map = $this->build_context_fields( $profile_data, $document_type );
 
-		// Check for existing document
+		// Check for existing document..
 		$existing_doc = $this->doc_repository->find_by_type( $document_type );
 		$is_outdated  = false;
 
@@ -853,7 +849,7 @@ class Document_Generator extends Base_Service {
 	protected function build_context_fields( array $profile, string $document_type ): array {
 		$fields = array();
 
-		// Company section
+		// Company section..
 		$company           = $profile['company'] ?? array();
 		$fields['company'] = array(
 			'label'  => __( 'Company Information', 'shahi-legalflowsuite' ),
@@ -877,7 +873,7 @@ class Document_Generator extends Base_Service {
 					'label'    => __( 'Address', 'shahi-legalflowsuite' ),
 					'value'    => $this->format_address_for_display( $company['address'] ?? array() ),
 					'required' => true,
-					'editable' => false, // Complex field
+					'editable' => false, // Complex field.
 				),
 				array(
 					'key'      => 'company.business_type',
@@ -889,7 +885,7 @@ class Document_Generator extends Base_Service {
 			),
 		);
 
-		// Contacts section
+		// Contacts section..
 		$contacts           = $profile['contacts'] ?? array();
 		$dpo                = $contacts['dpo'] ?? array();
 		$fields['contacts'] = array(
@@ -919,7 +915,7 @@ class Document_Generator extends Base_Service {
 			),
 		);
 
-		// Website section
+		// Website section..
 		$website           = $profile['website'] ?? array();
 		$fields['website'] = array(
 			'label'  => __( 'Website Information', 'shahi-legalflowsuite' ),
@@ -941,7 +937,7 @@ class Document_Generator extends Base_Service {
 			),
 		);
 
-		// Data Collection section (especially for Privacy Policy)
+		// Data Collection section (especially for Privacy Policy)..
 		if ( 'privacy-policy' === $document_type ) {
 			$data_collection           = $profile['data_collection'] ?? array();
 			$fields['data_collection'] = array(
@@ -952,20 +948,20 @@ class Document_Generator extends Base_Service {
 						'label'    => __( 'Personal Data Types', 'shahi-legalflowsuite' ),
 						'value'    => implode( ', ', $data_collection['personal_data_types'] ?? array() ),
 						'required' => true,
-						'editable' => false, // Array field
+						'editable' => false, // Array field.
 					),
 					array(
 						'key'      => 'data_collection.purposes',
 						'label'    => __( 'Processing Purposes', 'shahi-legalflowsuite' ),
 						'value'    => implode( ', ', $data_collection['purposes'] ?? array() ),
 						'required' => true,
-						'editable' => false, // Array field
+						'editable' => false, // Array field.
 					),
 				),
 			);
 		}
 
-		// Cookie section (for Cookie Policy)
+		// Cookie section (for Cookie Policy)..
 		if ( 'cookie-policy' === $document_type ) {
 			$cookies           = $profile['cookies'] ?? array();
 			$fields['cookies'] = array(
@@ -982,7 +978,7 @@ class Document_Generator extends Base_Service {
 			);
 		}
 
-		// Legal section
+		// Legal section..
 		$legal           = $profile['legal'] ?? array();
 		$fields['legal'] = array(
 			'label'  => __( 'Legal Settings', 'shahi-legalflowsuite' ),
@@ -1004,7 +1000,7 @@ class Document_Generator extends Base_Service {
 			),
 		);
 
-		// Retention section
+		// Retention section..
 		$retention           = $profile['retention'] ?? array();
 		$fields['retention'] = array(
 			'label'  => __( 'Data Retention', 'shahi-legalflowsuite' ),
@@ -1063,7 +1059,7 @@ class Document_Generator extends Base_Service {
 	 * @return string|\WP_Error HTML content or error
 	 */
 	public function generate_preview( string $document_type, array $overrides = array() ) {
-		// Validate document type
+		// Validate document type..
 		if ( ! $this->is_valid_type( $document_type ) ) {
 			return new \WP_Error(
 				'invalid_document_type',
@@ -1071,29 +1067,29 @@ class Document_Generator extends Base_Service {
 			);
 		}
 
-		// Get profile and apply overrides
+		// Get profile and apply overrides..
 		$profile = $this->get_profile();
 
 		if ( is_wp_error( $profile ) ) {
 			return $profile;
 		}
 
-		// Apply any field overrides from the UI
+		// Apply any field overrides from the UI..
 		if ( ! empty( $overrides ) ) {
 			$profile = $this->apply_overrides( $profile, $overrides );
 		}
 
-		// Load template
+		// Load template..
 		$template = $this->load_template( $document_type, array( 'preview' => true ) );
 
 		if ( is_wp_error( $template ) ) {
 			return $template;
 		}
 
-		// Resolve placeholders
+		// Resolve placeholders..
 		$content = $this->resolve_placeholders( $template, $profile );
 
-		// Add legal disclaimer
+		// Add legal disclaimer..
 		$content = $this->add_legal_disclaimer( $content, $document_type );
 
 		/**
@@ -1117,12 +1113,12 @@ class Document_Generator extends Base_Service {
 	 */
 	protected function apply_overrides( array $profile, array $overrides ): array {
 		foreach ( $overrides as $key => $value ) {
-			// Support dot notation: company.legal_name
+			// Support dot notation: company.legal_name..
 			$keys    = explode( '.', $key );
 			$current = &$profile;
 
 			foreach ( $keys as $i => $k ) {
-				if ( $i === count( $keys ) - 1 ) {
+				if ( count( $keys ) - 1 === $i ) {
 					$current[ $k ] = $value;
 				} else {
 					if ( ! isset( $current[ $k ] ) || ! is_array( $current[ $k ] ) ) {
@@ -1149,7 +1145,7 @@ class Document_Generator extends Base_Service {
 	 * @return int|\WP_Error Document ID or error
 	 */
 	public function generate_from_profile( string $document_type, array $overrides = array(), int $user_id = 0 ) {
-		// Validate document type
+		// Validate document type..
 		if ( ! $this->is_valid_type( $document_type ) ) {
 			return new \WP_Error(
 				'invalid_document_type',
@@ -1157,14 +1153,14 @@ class Document_Generator extends Base_Service {
 			);
 		}
 
-		// Get current profile
+		// Get current profile..
 		$profile = $this->get_profile();
 
 		if ( is_wp_error( $profile ) ) {
 			return $profile;
 		}
 
-		// Validate profile is ready
+		// Validate profile is ready..
 		$validation = $this->validate_generation_ready( $profile, $document_type );
 
 		if ( ! $validation['ready'] ) {
@@ -1175,7 +1171,7 @@ class Document_Generator extends Base_Service {
 			);
 		}
 
-		// Apply overrides if any
+		// Apply overrides if any..
 		if ( ! empty( $overrides ) && isset( $overrides['change_reason'] ) ) {
 			$change_reason = sanitize_text_field( $overrides['change_reason'] );
 			unset( $overrides['change_reason'] );
@@ -1187,19 +1183,19 @@ class Document_Generator extends Base_Service {
 			$profile = $this->apply_overrides( $profile, $overrides );
 		}
 
-		// Set user ID
+		// Set user ID..
 		if ( ! $user_id ) {
 			$user_id = get_current_user_id();
 		}
 
-		// Check if document already exists
+		// Check if document already exists..
 		$existing = $this->normalize_document_data( $this->doc_repository->find_by_type( $document_type ) );
 
 		if ( $existing ) {
-			// Regenerate existing document
+			// Regenerate existing document..
 			$doc_id = $existing['id'] ?? 0;
 
-			// Store old version before regenerating
+			// Store old version before regenerating..
 			$this->doc_repository->create_version(
 				$doc_id,
 				array(
@@ -1208,7 +1204,7 @@ class Document_Generator extends Base_Service {
 				)
 			);
 
-			// Generate fresh content
+			// Generate fresh content..
 			$options = array( 'auto_save' => false );
 			$result  = $this->generate( $document_type, null, $options );
 
@@ -1216,7 +1212,7 @@ class Document_Generator extends Base_Service {
 				return $result;
 			}
 
-			// Update existing document
+			// Update existing document..
 			$update_data = array(
 				'id'         => $doc_id,
 				'content'    => $result['content'],
@@ -1243,7 +1239,7 @@ class Document_Generator extends Base_Service {
 				);
 			}
 
-			// Create new version entry
+			// Create new version entry..
 			$this->doc_repository->create_version(
 				$doc_id,
 				array(
@@ -1266,7 +1262,7 @@ class Document_Generator extends Base_Service {
 			return $doc_id;
 		}
 
-		// Generate new document
+		// Generate new document..
 		$options = array( 'auto_save' => false );
 		$result  = $this->generate( $document_type, null, $options );
 
@@ -1274,7 +1270,7 @@ class Document_Generator extends Base_Service {
 			return $result;
 		}
 
-		// Prepare document data for saving
+		// Prepare document data for saving..
 		$document_data = array(
 			'title'      => $this->get_document_title( $document_type ),
 			'content'    => $result['content'],
@@ -1298,14 +1294,14 @@ class Document_Generator extends Base_Service {
 			'updated_at' => current_time( 'mysql' ),
 		);
 
-		// Save to database
+		// Save to database..
 		$doc_id = $this->save_as_draft( $document_data );
 
 		if ( is_wp_error( $doc_id ) ) {
 			return $doc_id;
 		}
 
-		// Create initial version entry
+		// Create initial version entry..
 		$this->doc_repository->create_version(
 			$doc_id,
 			array(

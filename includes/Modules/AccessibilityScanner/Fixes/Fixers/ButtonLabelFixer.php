@@ -59,7 +59,7 @@ class ButtonLabelFixer extends BaseFixer {
 		$xpath         = new \DOMXPath( $dom );
 		$fixes_applied = 0;
 
-		// Find buttons without accessible text
+		// Find buttons without accessible text..
 		$buttons = $xpath->query( '//button[not(normalize-space(text())) and not(@aria-label) and not(@aria-labelledby) and not(@title)]' );
 
 		foreach ( $buttons as $button ) {
@@ -68,7 +68,7 @@ class ButtonLabelFixer extends BaseFixer {
 			++$fixes_applied;
 		}
 
-		// Find input buttons without value or aria-label
+		// Find input buttons without value or aria-label..
 		$input_buttons = $xpath->query( '//input[@type="button" or @type="submit" or @type="reset"][not(@value) and not(@aria-label)]' );
 
 		foreach ( $input_buttons as $input ) {
@@ -87,7 +87,7 @@ class ButtonLabelFixer extends BaseFixer {
 			++$fixes_applied;
 		}
 
-		// Find links that look like buttons without text
+		// Find links that look like buttons without text..
 		$link_buttons = $xpath->query( '//a[contains(@class, "btn") or contains(@class, "button")][not(normalize-space(text())) and not(@aria-label)]' );
 
 		foreach ( $link_buttons as $link ) {
@@ -106,12 +106,12 @@ class ButtonLabelFixer extends BaseFixer {
 	 * @return string Generated label
 	 */
 	private function generate_button_label( $button ) {
-		// Check for title attribute
+		// Check for title attribute..
 		if ( $button->hasAttribute( 'title' ) ) {
 			return trim( $button->getAttribute( 'title' ) );
 		}
 
-		// Check for icon classes that might indicate purpose
+		// Check for icon classes that might indicate purpose..
 		$class = $button->getAttribute( 'class' );
 
 		$icon_patterns = array(
@@ -145,7 +145,7 @@ class ButtonLabelFixer extends BaseFixer {
 			}
 		}
 
-		// Check for child icons
+		// Check for child icons..
 		if ( $button->getElementsByTagName( 'i' )->length > 0 ||
 			$button->getElementsByTagName( 'svg' )->length > 0 ) {
 			$icon = $button->getElementsByTagName( 'i' )->item( 0 );
@@ -159,7 +159,7 @@ class ButtonLabelFixer extends BaseFixer {
 			}
 		}
 
-		// Check data attributes
+		// Check data attributes..
 		foreach ( array( 'data-action', 'data-label', 'data-title' ) as $attr ) {
 			if ( $button->hasAttribute( $attr ) ) {
 				$value = trim( $button->getAttribute( $attr ) );
@@ -169,7 +169,7 @@ class ButtonLabelFixer extends BaseFixer {
 			}
 		}
 
-		// Default fallback
+		// Default fallback..
 		return 'Button';
 	}
 }

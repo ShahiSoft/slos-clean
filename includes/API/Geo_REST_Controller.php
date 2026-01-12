@@ -35,7 +35,7 @@ class Geo_REST_Controller extends Base_REST_Controller {
 	 * Register routes
 	 */
 	public function register_routes() {
-		// GET /geo/region (public)
+		// GET /geo/region (public)..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/region',
@@ -48,7 +48,7 @@ class Geo_REST_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// POST /geo/presets/{preset_key}/apply (admin only)
+		// POST /geo/presets/{preset_key}/apply (admin only)..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/presets/(?P<preset_key>[a-zA-Z0-9_-]+)/apply',
@@ -71,7 +71,7 @@ class Geo_REST_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// GET /geo/presets (admin only)
+		// GET /geo/presets (admin only)..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/presets',
@@ -90,7 +90,7 @@ class Geo_REST_Controller extends Base_REST_Controller {
 	 */
 	public function get_region( WP_REST_Request $request ) {
 		$data = $this->service->get_region_for_request();
-		// Also include suggested template for convenience
+		// Also include suggested template for convenience..
 		$data['template'] = $this->service->map_region_to_template( $data['region'] );
 		return $this->success_response( $data );
 	}
@@ -144,7 +144,7 @@ class Geo_REST_Controller extends Base_REST_Controller {
 		$presets = $matcher->get_all_presets();
 		$stats   = $matcher->get_preset_stats();
 
-		// Enrich with application status.
+		// Enrich with application status...
 		$enriched = array();
 		foreach ( $presets as $key => $preset ) {
 			$preset['key']        = $key;

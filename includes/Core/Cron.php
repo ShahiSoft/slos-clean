@@ -15,7 +15,7 @@ namespace ShahiLegalFlowSuite\Core;
 use ShahiLegalFlowSuite\Services\Consent_Export_Service;
 use ShahiLegalFlowSuite\Services\Consent_Audit_Logger;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -36,33 +36,33 @@ class Cron {
 	 * @return void
 	 */
 	public function __construct() {
-		// Schedule events on plugin activation
+		// Schedule events on plugin activation..
 		add_action( 'slos_plugin_activated', array( $this, 'schedule_events' ) );
 
-		// Clear events on plugin deactivation
+		// Clear events on plugin deactivation..
 		add_action( 'slos_plugin_deactivated', array( $this, 'clear_events' ) );
 
-		// Register cron event handlers
+		// Register cron event handlers..
 		add_action( 'slos_export_consents_weekly', array( $this, 'run_weekly_export' ) );
 		add_action( 'slos_export_consents_daily', array( $this, 'run_daily_export' ) );
 		add_action( 'slos_purge_consent_logs', array( $this, 'run_log_purge' ) );
 
-		// Add custom cron intervals
+		// Add custom cron intervals..
 		add_filter( 'cron_schedules', array( $this, 'add_cron_intervals' ) );
 
-		// Initialize schedules on init if not already scheduled
+		// Initialize schedules on init if not already scheduled..
 		add_action( 'init', array( $this, 'init_schedules' ) );
 	}
 
 	/**
-	 * Add custom cron intervals
+	 * Add custom cron intervals.
 	 *
 	 * @since 3.0.1
-	 * @param array $schedules Existing schedules
-	 * @return array Modified schedules
+	 * @param array $schedules Existing schedules.
+	 * @return array Modified schedules.
 	 */
 	public function add_cron_intervals( array $schedules ): array {
-		// Add weekly schedule if not exists
+		// Add weekly schedule if not exists..
 		if ( ! isset( $schedules['weekly'] ) ) {
 			$schedules['weekly'] = array(
 				'interval' => WEEK_IN_SECONDS,
@@ -99,11 +99,11 @@ class Cron {
 
 		$frequency = get_option( 'slos_export_frequency', 'weekly' );
 
-		// Clear existing schedules
+		// Clear existing schedules..
 		wp_clear_scheduled_hook( 'slos_export_consents_weekly' );
 		wp_clear_scheduled_hook( 'slos_export_consents_daily' );
 
-		// Schedule based on frequency
+		// Schedule based on frequency..
 		switch ( $frequency ) {
 			case 'daily':
 				if ( ! wp_next_scheduled( 'slos_export_consents_daily' ) ) {
@@ -144,7 +144,7 @@ class Cron {
 			return;
 		}
 
-		// Schedule daily log purge if not already scheduled
+		// Schedule daily log purge if not already scheduled..
 		if ( ! wp_next_scheduled( 'slos_purge_consent_logs' ) ) {
 			wp_schedule_event( time(), 'daily', 'slos_purge_consent_logs' );
 		}
@@ -168,21 +168,27 @@ class Cron {
 		$deleted_count = $logger->purge_old_logs( $retention );
 
 		if ( false !== $deleted_count ) {
-			// Log success
+			// Log success..
 			do_action( 'slos_cron_purge_success', $deleted_count, $retention );
 
-			error_log(
-				sprintf(
-					'SLOS: Purged %d consent log(s) older than %d days',
-					$deleted_count,
-					$retention
-				)
-			);
+			if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+				error_log(
+					sprintf(
+						'SLOS: Purged %d consent log(s) older than %d days',
+						$deleted_count,
+						$retention
+					)
+				);
+			}
 		} else {
-			// Log failure
+			// Log failure..
 			do_action( 'slos_cron_purge_failed', $retention );
 
-			error_log( 'SLOS: Consent log purge failed' );
+			if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+				error_log( 'SLOS: Consent log purge failed' );
+			}
 		}
 	}
 
@@ -219,10 +225,10 @@ class Cron {
 	}
 
 	/**
-	 * Execute consent export
+	 * Execute consent export.
 	 *
 	 * @since 3.0.1
-	 * @param string $frequency Export frequency (weekly|daily)
+	 * @param string $frequency Export frequency (weekly|daily).
 	 * @return void
 	 */
 	private function run_export( string $frequency ) {
@@ -240,7 +246,7 @@ class Cron {
 			'limit'  => get_option( 'slos_export_limit', 10000 ),
 		);
 
-		// Apply filters for date range
+		// Apply filters for date range..
 		$date_range = get_option( 'slos_export_date_range', 'all' );
 		if ( 'last_7_days' === $date_range ) {
 			$args['date_from'] = gmdate( 'Y-m-d', strtotime( '-7 days' ) );
@@ -248,38 +254,44 @@ class Cron {
 			$args['date_from'] = gmdate( 'Y-m-d', strtotime( '-30 days' ) );
 		}
 
-		// Run export
+		// Run export..
 		$result = $service->run_scheduled_export( $args );
 
 		if ( $result ) {
-			// Log success
+			// Log success..
 			do_action( 'slos_cron_export_success', $frequency, $args );
 
-			error_log(
-				sprintf(
-					'SLOS: Scheduled %s export completed successfully',
-					$frequency
-				)
-			);
+			if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+				error_log(
+					sprintf(
+						'SLOS: Scheduled %s export completed successfully',
+						$frequency
+					)
+				);
+			}
 		} else {
-			// Log failure
+			// Log failure..
 			do_action( 'slos_cron_export_failed', $frequency, $args );
 
-			error_log(
-				sprintf(
-					'SLOS: Scheduled %s export failed',
-					$frequency
-				)
-			);
+			if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+				error_log(
+					sprintf(
+						'SLOS: Scheduled %s export failed',
+						$frequency
+					)
+				);
+			}
 		}
 	}
 
 	/**
-	 * Get scheduled event info
+	 * Get scheduled event info.
 	 *
 	 * @since 3.0.1
-	 * @param string $hook Hook name
-	 * @return array|false Event info or false if not scheduled
+	 * @param string $hook Hook name.
+	 * @return array|false Event info or false if not scheduled.
 	 */
 	public static function get_scheduled_event( string $hook ) {
 		$timestamp = wp_next_scheduled( $hook );

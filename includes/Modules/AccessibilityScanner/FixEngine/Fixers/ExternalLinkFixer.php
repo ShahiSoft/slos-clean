@@ -20,7 +20,7 @@ final class ExternalLinkFixer extends AbstractFixer {
 		$links       = $dom->getElementsByTagName( 'a' );
 		$fixed_count = 0;
 
-		// Get home URL safely (replicate legacy behavior).
+		// Get home URL safely (replicate legacy behavior)...
 		$home_url  = function_exists( 'home_url' ) ? home_url() : ( isset( $_SERVER['HTTP_HOST'] ) ? '//' . $_SERVER['HTTP_HOST'] : '' );
 		$home_host = parse_url( $home_url, PHP_URL_HOST ) ?: '';
 
@@ -32,12 +32,12 @@ final class ExternalLinkFixer extends AbstractFixer {
 		foreach ( $links_array as $link ) {
 			$href = $link->getAttribute( 'href' );
 
-			// Skip empty hrefs
+			// Skip empty hrefs..
 			if ( empty( $href ) ) {
 				continue;
 			}
 
-			// Skip internal links (relative, anchors, mailto, tel, javascript)
+			// Skip internal links (relative, anchors, mailto, tel, javascript)..
 			if ( preg_match( '/^(\/(?!\/)|#|mailto:|tel:|javascript:)/i', $href ) ) {
 				continue;
 			}
@@ -52,7 +52,7 @@ final class ExternalLinkFixer extends AbstractFixer {
 
 			if ( $is_external ) {
 				$text = trim( $link->textContent );
-				// Check if already marked as external
+				// Check if already marked as external..
 				if ( strpos( $text, '(external' ) === false &&
 					strpos( $text, '(opens' ) === false &&
 					! $link->hasAttribute( 'aria-label' ) ) {

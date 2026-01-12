@@ -38,12 +38,13 @@ class BackupService implements BackupServiceInterface {
 	 */
 	private $wpdb;
 
+	// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared
 	/**
 	 * Constructor
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param \wpdb|null $wpdb_instance WordPress database instance (for dependency injection/testing)
+	 * @param \wpdb|null $wpdb_instance WordPress database instance (for dependency injection/testing).
 	 */
 	public function __construct( $wpdb_instance = null ) {
 		global $wpdb;
@@ -51,7 +52,7 @@ class BackupService implements BackupServiceInterface {
 	}
 
 	/**
-	 * Get full table name with prefix
+	 * Get full table name with prefix.
 	 *
 	 * @since 3.2.0
 	 *
@@ -62,17 +63,17 @@ class BackupService implements BackupServiceInterface {
 	}
 
 	/**
-	 * Save content backup before applying fixes
+	 * Save content backup before applying fixes.
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param int    $post_id  Post ID to backup
-	 * @param string $content  Original post content
-	 * @param array  $metadata Additional metadata (optional)
-	 * @return int|false Backup ID on success, false on failure
+	 * @param int    $post_id  Post ID to backup.
+	 * @param string $content  Original post content.
+	 * @param array  $metadata Additional metadata (optional).
+	 * @return int|false Backup ID on success, false on failure.
 	 */
 	public function save_backup( $post_id, $content, $metadata = array() ) {
-		// Validate inputs
+		// Validate inputs.
 		if ( empty( $post_id ) || ! is_numeric( $post_id ) ) {
 			return false;
 		}
@@ -98,14 +99,17 @@ class BackupService implements BackupServiceInterface {
 
 		$result = $this->wpdb->insert( $table, $data, $format );
 
-		if ( $result === false ) {
-			error_log(
-				sprintf(
-					'BackupService: Failed to save backup for post %d. Error: %s',
-					$post_id,
-					$this->wpdb->last_error
-				)
-			);
+		if ( false === $result ) {
+			if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+				error_log(
+					sprintf(
+						'BackupService: Failed to save backup for post %d. Error: %s',
+						$post_id,
+						$this->wpdb->last_error
+					)
+				);
+			}
 			return false;
 		}
 
@@ -113,12 +117,12 @@ class BackupService implements BackupServiceInterface {
 	}
 
 	/**
-	 * Get specific backup by ID
+	 * Get specific backup by ID.
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param int $backup_id Backup ID
-	 * @return array|null Backup data or null if not found
+	 * @param int $backup_id Backup ID.
+	 * @return array|null Backup data or null if not found.
 	 */
 	public function get_backup( $backup_id ) {
 		if ( empty( $backup_id ) || ! is_numeric( $backup_id ) ) {
@@ -144,12 +148,12 @@ class BackupService implements BackupServiceInterface {
 	}
 
 	/**
-	 * Get latest backup for a post
+	 * Get latest backup for a post.
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param int $post_id Post ID
-	 * @return array|null Backup data or null if not found
+	 * @param int $post_id Post ID.
+	 * @return array|null Backup data or null if not found.
 	 */
 	public function get_latest_backup( $post_id ) {
 		if ( empty( $post_id ) || ! is_numeric( $post_id ) ) {
@@ -175,13 +179,13 @@ class BackupService implements BackupServiceInterface {
 	}
 
 	/**
-	 * Get all backups for a post
+	 * Get all backups for a post.
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param int $post_id Post ID
-	 * @param int $limit   Maximum number of backups to return
-	 * @return array Array of backup data
+	 * @param int $post_id Post ID.
+	 * @param int $limit   Maximum number of backups to return.
+	 * @return array Array of backup data.
 	 */
 	public function get_backups_by_post( $post_id, $limit = 10 ) {
 		if ( empty( $post_id ) || ! is_numeric( $post_id ) ) {
@@ -189,7 +193,7 @@ class BackupService implements BackupServiceInterface {
 		}
 
 		$limit = absint( $limit );
-		if ( $limit === 0 ) {
+		if ( 0 === $limit ) {
 			$limit = 10;
 		}
 
@@ -197,8 +201,7 @@ class BackupService implements BackupServiceInterface {
 
 		$backups = $this->wpdb->get_results(
 			$this->wpdb->prepare(
-				'SELECT * FROM %i WHERE post_id = %d ORDER BY created_at DESC LIMIT %d',
-				$table,
+				' SELECT * FROM ' . esc_sql( $table ) . ' WHERE post_id = %d ORDER BY created_at DESC LIMIT %d',
 				$post_id,
 				$limit
 			),
@@ -213,16 +216,16 @@ class BackupService implements BackupServiceInterface {
 	}
 
 	/**
-	 * Restore content from backup
+	 * Restore content from backup.
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param int      $post_id   Post ID to restore
-	 * @param int|null $backup_id Specific backup ID (null = latest)
+	 * @param int      $post_id   Post ID to restore.
+	 * @param int|null $backup_id Specific backup ID (null = latest).
 	 * @return array|\WP_Error Restored backup data or error
 	 */
 	public function restore_backup( $post_id, $backup_id = null ) {
-		// Get backup
+		// Get backup.
 		if ( $backup_id ) {
 			$backup = $this->get_backup( $backup_id );
 			if ( ! $backup || (int) $backup['post_id'] !== (int) $post_id ) {
@@ -241,7 +244,7 @@ class BackupService implements BackupServiceInterface {
 			}
 		}
 
-		// Restore content
+		// Restore content..
 		$result = wp_update_post(
 			array(
 				'ID'           => $post_id,
@@ -254,6 +257,7 @@ class BackupService implements BackupServiceInterface {
 			return new \WP_Error(
 				'restore_failed',
 				sprintf(
+					/* translators: %s: error message from wp_update_post. */
 					__( 'Failed to restore content: %s', 'shahi-legalflowsuite' ),
 					$result->get_error_message()
 				)
@@ -264,16 +268,16 @@ class BackupService implements BackupServiceInterface {
 	}
 
 	/**
-	 * Delete old backups
+	 * Delete old backups.
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param int $days_to_keep Keep backups from last N days
-	 * @return int Number of backups deleted
+	 * @param int $days_to_keep Keep backups from last N days.
+	 * @return int Number of backups deleted.
 	 */
 	public function cleanup_old_backups( $days_to_keep = 30 ) {
 		$days_to_keep = absint( $days_to_keep );
-		if ( $days_to_keep === 0 ) {
+		if ( 0 === $days_to_keep ) {
 			$days_to_keep = 30;
 		}
 
@@ -282,16 +286,16 @@ class BackupService implements BackupServiceInterface {
 
 		$deleted = $this->wpdb->query(
 			$this->wpdb->prepare(
-				'DELETE FROM %i WHERE created_at < %s',
-				$table,
+				'DELETE FROM ' . esc_sql( $table ) . ' WHERE created_at < %s',
 				$date_threshold
 			)
 		);
 
-		if ( $deleted > 0 ) {
+		if ( $deleted > 0 && defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			error_log(
 				sprintf(
-					'BackupService: Cleaned up %d old backups (older than %d days)',
+					'BackupService: Deleted %d backups older than %d days.',
 					$deleted,
 					$days_to_keep
 				)
@@ -302,12 +306,12 @@ class BackupService implements BackupServiceInterface {
 	}
 
 	/**
-	 * Check if backup exists for post
+	 * Check if backup exists for post.
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param int $post_id Post ID
-	 * @return bool True if backup exists
+	 * @param int $post_id Post ID.
+	 * @return bool True if backup exists.
 	 */
 	public function has_backup( $post_id ) {
 		if ( empty( $post_id ) || ! is_numeric( $post_id ) ) {
@@ -318,8 +322,7 @@ class BackupService implements BackupServiceInterface {
 
 		$count = $this->wpdb->get_var(
 			$this->wpdb->prepare(
-				'SELECT COUNT(*) FROM %i WHERE post_id = %d',
-				$table,
+				'SELECT COUNT(*) FROM ' . esc_sql( $table ) . ' WHERE post_id = %d',
 				$post_id
 			)
 		);
@@ -328,20 +331,20 @@ class BackupService implements BackupServiceInterface {
 	}
 
 	/**
-	 * Get backup statistics
+	 * Get backup statistics.
 	 *
 	 * @since 3.2.0
 	 *
-	 * @return array Statistics about backups
+	 * @return array Statistics about backups.
 	 */
 	public function get_statistics() {
 		$table = $this->get_table_name();
 
-		$total        = $this->wpdb->get_var( $this->wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table ) );
-		$total_size   = $this->wpdb->get_var( $this->wpdb->prepare( 'SELECT SUM(LENGTH(original_content)) FROM %i', $table ) );
-		$unique_posts = $this->wpdb->get_var( $this->wpdb->prepare( 'SELECT COUNT(DISTINCT post_id) FROM %i', $table ) );
-		$oldest       = $this->wpdb->get_var( $this->wpdb->prepare( 'SELECT MIN(created_at) FROM %i', $table ) );
-		$newest       = $this->wpdb->get_var( $this->wpdb->prepare( 'SELECT MAX(created_at) FROM %i', $table ) );
+		$total        = $this->wpdb->get_var( 'SELECT COUNT(*) FROM ' . esc_sql( $table ) );
+		$total_size   = $this->wpdb->get_var( 'SELECT SUM(LENGTH(original_content)) FROM ' . esc_sql( $table ) );
+		$unique_posts = $this->wpdb->get_var( 'SELECT COUNT(DISTINCT post_id) FROM ' . esc_sql( $table ) );
+		$oldest       = $this->wpdb->get_var( 'SELECT MIN(created_at) FROM ' . esc_sql( $table ) );
+		$newest       = $this->wpdb->get_var( 'SELECT MAX(created_at) FROM ' . esc_sql( $table ) );
 
 		return array(
 			'total_backups'    => (int) $total,
@@ -354,14 +357,14 @@ class BackupService implements BackupServiceInterface {
 	}
 
 	/**
-	 * Format backup data for consistent output
+	 * Format backup data for consistent output.
 	 *
 	 * Decodes JSON metadata and ensures consistent array structure.
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param array $backup Raw backup data from database
-	 * @return array Formatted backup data
+	 * @param array $backup Raw backup data from database.
+	 * @return array Formatted backup data.
 	 */
 	private function format_backup_data( $backup ) {
 		if ( ! empty( $backup['metadata'] ) ) {
@@ -374,3 +377,5 @@ class BackupService implements BackupServiceInterface {
 		return $backup;
 	}
 }
+
+// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared

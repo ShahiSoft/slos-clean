@@ -31,7 +31,7 @@ class AutocompleteCheck extends AbstractCheck {
 		$inputs = $dom->getElementsByTagName( 'input' );
 
 		$typesToCheck = array( 'text', 'email', 'tel', 'password', 'search' );
-		// Heuristic: check name or id for common personal fields
+		// Heuristic: check name or id for common personal fields..
 		$personalFields = array( 'name', 'email', 'phone', 'tel', 'address', 'city', 'state', 'zip', 'postal', 'country', 'cc', 'card' );
 
 		foreach ( $inputs as $input ) {

@@ -93,26 +93,26 @@ class Security_Module extends Module {
 	 * @return void
 	 */
 	public function init() {
-		// Check if module is dormant (safety check)
+		// Check if module is dormant (safety check)..
 		if ( defined( 'SLOS_DORMANT_MODULES' ) && in_array( 'security', SLOS_DORMANT_MODULES, true ) ) {
 			return;
 		}
 
 		$this->security = new Security();
 
-		// Add rate limiting
+		// Add rate limiting..
 		add_action( 'init', array( $this, 'check_rate_limit' ) );
 
-		// Check IP blacklist
+		// Check IP blacklist..
 		add_action( 'init', array( $this, 'check_ip_blacklist' ) );
 
-		// Add security headers
+		// Add security headers..
 		add_action( 'send_headers', array( $this, 'add_security_headers' ) );
 
-		// Track failed login attempts
+		// Track failed login attempts..
 		add_action( 'wp_login_failed', array( $this, 'track_failed_login' ) );
 
-		// Track successful logins
+		// Track successful logins..
 		add_action( 'wp_login', array( $this, 'track_successful_login' ), 10, 2 );
 	}
 
@@ -137,7 +137,7 @@ class Security_Module extends Module {
 		$ip    = $this->security->get_client_ip();
 		$limit = $this->get_setting( 'rate_limit', 60 ); // 60 requests per minute default
 
-		// Placeholder - Would implement actual rate limiting logic
+		// Placeholder - Would implement actual rate limiting logic..
 	}
 
 	/**
@@ -168,16 +168,16 @@ class Security_Module extends Module {
 			return;
 		}
 
-		// Add X-Content-Type-Options
+		// Add X-Content-Type-Options..
 		header( 'X-Content-Type-Options: nosniff' );
 
-		// Add X-Frame-Options
+		// Add X-Frame-Options..
 		header( 'X-Frame-Options: SAMEORIGIN' );
 
-		// Add X-XSS-Protection
+		// Add X-XSS-Protection..
 		header( 'X-XSS-Protection: 1; mode=block' );
 
-		// Add Referrer-Policy
+		// Add Referrer-Policy..
 		header( 'Referrer-Policy: strict-origin-when-cross-origin' );
 	}
 
@@ -191,14 +191,14 @@ class Security_Module extends Module {
 	public function track_failed_login( $username ) {
 		$ip = $this->security->get_client_ip();
 
-		// Increment failed attempts counter
+		// Increment failed attempts counter..
 		$key      = 'failed_login_' . md5( $ip );
 		$attempts = get_transient( $key ) ?: 0;
 		++$attempts;
 
 		set_transient( $key, $attempts, HOUR_IN_SECONDS );
 
-		// Auto-block after 5 failed attempts
+		// Auto-block after 5 failed attempts..
 		if ( $attempts >= 5 ) {
 			$this->add_to_blacklist( $ip );
 		}
@@ -215,7 +215,7 @@ class Security_Module extends Module {
 	public function track_successful_login( $username, $user ) {
 		$ip = $this->security->get_client_ip();
 
-		// Clear failed attempts counter
+		// Clear failed attempts counter..
 		$key = 'failed_login_' . md5( $ip );
 		delete_transient( $key );
 	}

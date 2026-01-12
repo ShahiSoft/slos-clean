@@ -13,7 +13,7 @@
 
 namespace ShahiLegalFlowSuite\Services;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -48,7 +48,7 @@ class DSR_Report_Service extends Base_Service {
 		parent::__construct();
 		$this->repository = new \ShahiLegalFlowSuite\Database\Repositories\DSR_Repository();
 
-		// Schedule monthly report email if not already scheduled
+		// Schedule monthly report email if not already scheduled..
 		if ( ! wp_next_scheduled( 'slos_dsr_monthly_report' ) ) {
 			wp_schedule_event( time(), 'monthly', 'slos_dsr_monthly_report' );
 		}
@@ -68,11 +68,11 @@ class DSR_Report_Service extends Base_Service {
 		global $wpdb;
 		$table = $this->repository->get_full_table_name();
 
-		// Ensure valid date range
+		// Ensure valid date range..
 		$start_date = gmdate( 'Y-m-d 00:00:00', strtotime( $start_date ) );
 		$end_date   = gmdate( 'Y-m-d 23:59:59', strtotime( $end_date ) );
 
-		// Build report structure
+		// Build report structure..
 		$report = array(
 			'period'        => array(
 				'start' => $start_date,
@@ -110,7 +110,7 @@ class DSR_Report_Service extends Base_Service {
 		global $wpdb;
 		$table = $this->repository->get_full_table_name();
 
-		// Total requests in period
+		// Total requests in period..
 		$total = (int) $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(*) FROM {$table} WHERE submitted_at BETWEEN %s AND %s",
@@ -119,7 +119,7 @@ class DSR_Report_Service extends Base_Service {
 			)
 		);
 
-		// Completed requests
+		// Completed requests..
 		$completed = (int) $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(*) FROM {$table} WHERE submitted_at BETWEEN %s AND %s AND status = 'completed'",
@@ -128,7 +128,7 @@ class DSR_Report_Service extends Base_Service {
 			)
 		);
 
-		// Open requests (not completed or rejected)
+		// Open requests (not completed or rejected)..
 		$open = (int) $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(*) FROM {$table} WHERE submitted_at BETWEEN %s AND %s AND status NOT IN ('completed', 'rejected')",
@@ -137,7 +137,7 @@ class DSR_Report_Service extends Base_Service {
 			)
 		);
 
-		// Rejected requests
+		// Rejected requests..
 		$rejected = (int) $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(*) FROM {$table} WHERE submitted_at BETWEEN %s AND %s AND status = 'rejected'",
@@ -146,7 +146,7 @@ class DSR_Report_Service extends Base_Service {
 			)
 		);
 
-		// Completion rate
+		// Completion rate..
 		$completion_rate = $total > 0 ? round( ( $completed / $total ) * 100, 2 ) : 0;
 
 		return array(
@@ -269,7 +269,7 @@ class DSR_Report_Service extends Base_Service {
 		global $wpdb;
 		$table = $this->repository->get_full_table_name();
 
-		// Average response time for completed requests (in days)
+		// Average response time for completed requests (in days)..
 		$avg_response = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT AVG(DATEDIFF(completed_at, submitted_at)) 
@@ -282,7 +282,7 @@ class DSR_Report_Service extends Base_Service {
 			)
 		);
 
-		// Fastest response time
+		// Fastest response time..
 		$fastest = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT MIN(DATEDIFF(completed_at, submitted_at)) 
@@ -295,7 +295,7 @@ class DSR_Report_Service extends Base_Service {
 			)
 		);
 
-		// Slowest response time
+		// Slowest response time..
 		$slowest = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT MAX(DATEDIFF(completed_at, submitted_at)) 
@@ -327,7 +327,7 @@ class DSR_Report_Service extends Base_Service {
 		global $wpdb;
 		$table = $this->repository->get_full_table_name();
 
-		// Total completed requests
+		// Total completed requests..
 		$total_completed = (int) $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(*) FROM {$table} 
@@ -338,7 +338,7 @@ class DSR_Report_Service extends Base_Service {
 			)
 		);
 
-		// SLA breaches (completed after due date)
+		// SLA breaches (completed after due date)..
 		$breaches = (int) $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(*) FROM {$table} 
@@ -350,10 +350,10 @@ class DSR_Report_Service extends Base_Service {
 			)
 		);
 
-		// SLA compliance rate
+		// SLA compliance rate..
 		$compliance_rate = $total_completed > 0 ? round( ( ( $total_completed - $breaches ) / $total_completed ) * 100, 2 ) : 100;
 
-		// Currently overdue (open requests past deadline)
+		// Currently overdue (open requests past deadline)..
 		$currently_overdue = (int) $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(*) FROM {$table} 
@@ -381,13 +381,13 @@ class DSR_Report_Service extends Base_Service {
 	public function export_to_csv( array $report ): string {
 		$csv = array();
 
-		// Header
+		// Header..
 		$csv[] = 'DSR Compliance Report';
 		$csv[] = 'Period: ' . $report['period']['start'] . ' to ' . $report['period']['end'];
 		$csv[] = 'Generated: ' . $report['generated_at'];
 		$csv[] = '';
 
-		// Summary section
+		// Summary section..
 		$csv[] = 'SUMMARY METRICS';
 		$csv[] = 'Metric,Value';
 		$csv[] = 'Total Requests,' . $report['summary']['total_requests'];
@@ -397,7 +397,7 @@ class DSR_Report_Service extends Base_Service {
 		$csv[] = 'Completion Rate,' . $report['summary']['completion_rate'] . '%';
 		$csv[] = '';
 
-		// By Type
+		// By Type..
 		$csv[] = 'REQUESTS BY TYPE';
 		$csv[] = 'Type,Count';
 		foreach ( $report['by_type'] as $type => $count ) {
@@ -405,7 +405,7 @@ class DSR_Report_Service extends Base_Service {
 		}
 		$csv[] = '';
 
-		// By Status
+		// By Status..
 		$csv[] = 'REQUESTS BY STATUS';
 		$csv[] = 'Status,Count';
 		foreach ( $report['by_status'] as $status => $count ) {
@@ -413,7 +413,7 @@ class DSR_Report_Service extends Base_Service {
 		}
 		$csv[] = '';
 
-		// By Regulation
+		// By Regulation..
 		$csv[] = 'REQUESTS BY REGULATION';
 		$csv[] = 'Regulation,Count';
 		foreach ( $report['by_regulation'] as $regulation => $count ) {
@@ -421,7 +421,7 @@ class DSR_Report_Service extends Base_Service {
 		}
 		$csv[] = '';
 
-		// Performance
+		// Performance..
 		$csv[] = 'PERFORMANCE METRICS';
 		$csv[] = 'Metric,Value';
 		$csv[] = 'Average Response Time,' . $report['performance']['avg_response_days'] . ' days';
@@ -429,7 +429,7 @@ class DSR_Report_Service extends Base_Service {
 		$csv[] = 'Slowest Response,' . $report['performance']['slowest_days'] . ' days';
 		$csv[] = '';
 
-		// SLA
+		// SLA..
 		$csv[] = 'SLA COMPLIANCE';
 		$csv[] = 'Metric,Value';
 		$csv[] = 'Total Completed,' . $report['sla']['total_completed'];
@@ -448,8 +448,8 @@ class DSR_Report_Service extends Base_Service {
 	 * @return string PDF content (text format for basic implementation).
 	 */
 	public function export_to_pdf( array $report ): string {
-		// For basic implementation, return formatted text
-		// In production, integrate with PDF library like TCPDF or FPDF
+		// For basic implementation, return formatted text..
+		// In production, integrate with PDF library like TCPDF or FPDF..
 		$pdf_content = array();
 
 		$pdf_content[] = '═══════════════════════════════════════════════════════════════';
@@ -532,22 +532,22 @@ class DSR_Report_Service extends Base_Service {
 	 * @return bool True if email sent.
 	 */
 	public function send_monthly_report(): bool {
-		// Generate report for previous month
+		// Generate report for previous month..
 		$start_date = gmdate( 'Y-m-01', strtotime( 'first day of last month' ) );
 		$end_date   = gmdate( 'Y-m-t', strtotime( 'last day of last month' ) );
 
 		$report = $this->generate_report( $start_date, $end_date );
 
-		// Check if there are any requests in the period
+		// Check if there are any requests in the period..
 		if ( $report['summary']['total_requests'] === 0 ) {
 			return false; // Don't send empty report
 		}
 
-		// Get admin email
+		// Get admin email..
 		$settings    = get_option( 'slos_dsr_settings', array() );
 		$admin_email = isset( $settings['admin_email'] ) ? sanitize_email( $settings['admin_email'] ) : get_option( 'admin_email' );
 
-		// Build email content
+		// Build email content..
 		$site_name = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
 		$month     = gmdate( 'F Y', strtotime( $start_date ) );
 
@@ -595,7 +595,7 @@ class DSR_Report_Service extends Base_Service {
 			$site_name
 		);
 
-		// Attach CSV export
+		// Attach CSV export..
 		$csv_content = $this->export_to_csv( $report );
 		$upload_dir  = wp_upload_dir();
 		$temp_file   = $upload_dir['basedir'] . '/dsr-report-' . gmdate( 'Y-m', strtotime( $start_date ) ) . '.csv';
@@ -606,7 +606,7 @@ class DSR_Report_Service extends Base_Service {
 
 		$sent = wp_mail( $admin_email, $subject, $message, array(), $attachments );
 
-		// Clean up temp file
+		// Clean up temp file..
 		if ( file_exists( $temp_file ) ) {
 			unlink( $temp_file );
 		}
@@ -652,7 +652,7 @@ class DSR_Report_Service extends Base_Service {
 			ARRAY_A
 		);
 
-		// Anonymize: only include non-identifying data
+		// Anonymize: only include non-identifying data..
 		return array_map(
 			function ( $sample ) {
 				return array(

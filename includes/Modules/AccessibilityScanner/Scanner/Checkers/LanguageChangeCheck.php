@@ -212,27 +212,27 @@ class LanguageChangeCheck extends AbstractCheck {
 		$dom    = $this->get_dom( $content );
 		$xpath  = new \DOMXPath( $dom );
 
-		// Get document language
+		// Get document language..
 		$html_lang = $this->get_document_language( $dom );
 
-		// Get all text nodes with content
+		// Get all text nodes with content..
 		$text_nodes = $xpath->query( '//text()[normalize-space()]' );
 
 		foreach ( $text_nodes as $text_node ) {
 			$text   = strtolower( $text_node->textContent );
 			$parent = $text_node->parentNode;
 
-			// Skip script and style elements
+			// Skip script and style elements..
 			if ( $this->is_in_script_or_style( $parent ) ) {
 				continue;
 			}
 
-			// Skip if parent or ancestor has lang attribute
+			// Skip if parent or ancestor has lang attribute..
 			if ( $this->has_lang_attribute( $parent ) ) {
 				continue;
 			}
 
-			// Check for foreign phrases
+			// Check for foreign phrases..
 			$detected = $this->detect_foreign_phrase( $text, $html_lang );
 			if ( $detected ) {
 				$issues[] = array(
@@ -248,7 +248,7 @@ class LanguageChangeCheck extends AbstractCheck {
 			}
 		}
 
-		// Also check for elements that might need lang but don't have it
+		// Also check for elements that might need lang but don't have it..
 		$this->check_quote_elements( $xpath, $html_lang, $issues );
 
 		return $issues;
@@ -313,15 +313,15 @@ class LanguageChangeCheck extends AbstractCheck {
 	 */
 	private function detect_foreign_phrase( $text, $doc_lang ) {
 		foreach ( $this->foreign_phrases as $lang_code => $phrases ) {
-			// Skip if same as document language
+			// Skip if same as document language..
 			if ( $lang_code === $doc_lang ) {
 				continue;
 			}
 
 			foreach ( $phrases as $phrase ) {
-				// Use word boundary check for single words
+				// Use word boundary check for single words..
 				if ( strpos( $phrase, ' ' ) === false ) {
-					// Single word - check word boundaries
+					// Single word - check word boundaries..
 					if ( preg_match( '/\b' . preg_quote( $phrase, '/' ) . '\b/i', $text ) ) {
 						return array(
 							'lang'   => $lang_code,
@@ -329,7 +329,7 @@ class LanguageChangeCheck extends AbstractCheck {
 						);
 					}
 				} else {
-					// Multi-word phrase - direct substring match
+					// Multi-word phrase - direct substring match..
 					if ( strpos( $text, $phrase ) !== false ) {
 						return array(
 							'lang'   => $lang_code,
@@ -350,13 +350,13 @@ class LanguageChangeCheck extends AbstractCheck {
 	 * @param array     $issues Issues array by reference.
 	 */
 	private function check_quote_elements( $xpath, $doc_lang, &$issues ) {
-		// Check blockquote and q elements with cite attribute pointing to foreign sources
+		// Check blockquote and q elements with cite attribute pointing to foreign sources..
 		$quotes = $xpath->query( '//blockquote[@cite] | //q[@cite]' );
 
 		foreach ( $quotes as $quote ) {
 			$cite = $quote->getAttribute( 'cite' );
 
-			// Check for common foreign language domain patterns
+			// Check for common foreign language domain patterns..
 			$foreign_domains = array(
 				'.fr/' => 'fr',
 				'.de/' => 'de',

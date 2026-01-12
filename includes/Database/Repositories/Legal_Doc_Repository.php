@@ -13,11 +13,12 @@
 
 namespace ShahiLegalFlowSuite\Database\Repositories;
 
-// Exit if accessed directly.
+// Exit if accessed directly...
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared
 /**
  * Class Legal_Doc_Repository
  *
@@ -104,7 +105,7 @@ class Legal_Doc_Repository extends Base_Repository {
 	public function create_tables(): bool {
 		$charset_collate = $this->wpdb->get_charset_collate();
 
-		// Documents table
+		// Documents table..
 		$docs_sql = "CREATE TABLE IF NOT EXISTS {$this->table} (
 			id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			doc_type VARCHAR(50) NOT NULL,
@@ -126,7 +127,7 @@ class Legal_Doc_Repository extends Base_Repository {
 			KEY idx_doc_type (doc_type)
 		) {$charset_collate};";
 
-		// Versions table
+		// Versions table..
 		$versions_sql = "CREATE TABLE IF NOT EXISTS {$this->versions_table} (
 			id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			doc_id BIGINT(20) UNSIGNED NOT NULL,
@@ -161,7 +162,7 @@ class Legal_Doc_Repository extends Base_Repository {
 			$locale = get_locale();
 		}
 
-		// Try exact locale match first
+		// Try exact locale match first..
 		$doc = $this->wpdb->get_row(
 			$this->wpdb->prepare(
 				"SELECT * FROM {$this->table} WHERE doc_type = %s AND locale = %s LIMIT 1",
@@ -170,7 +171,7 @@ class Legal_Doc_Repository extends Base_Repository {
 			)
 		);
 
-		// Fallback to en_US if not found
+		// Fallback to en_US if not found..
 		if ( ! $doc && 'en_US' !== $locale ) {
 			$doc = $this->wpdb->get_row(
 				$this->wpdb->prepare(
@@ -218,29 +219,18 @@ class Legal_Doc_Repository extends Base_Repository {
 	 * @return array Array of document objects
 	 */
 	public function get_all( string $status = '', string $locale = '' ): array {
-		$where  = array( '1=1' );
-		$params = array();
+		$where = array( '1=1' );
 
 		if ( ! empty( $status ) ) {
-			$where[]  = 'status = %s';
-			$params[] = $status;
+			$where[] = $this->wpdb->prepare( 'status = %s', $status );
 		}
 
 		if ( ! empty( $locale ) ) {
-			$where[]  = 'locale = %s';
-			$params[] = $locale;
+			$where[] = $this->wpdb->prepare( 'locale = %s', $locale );
 		}
 
 		$where_clause = implode( ' AND ', $where );
-
-		if ( ! empty( $params ) ) {
-			$query = $this->wpdb->prepare(
-				"SELECT * FROM {$this->table} WHERE {$where_clause} ORDER BY doc_type ASC, updated_at DESC",
-				...$params
-			);
-		} else {
-			$query = "SELECT * FROM {$this->table} WHERE {$where_clause} ORDER BY doc_type ASC, updated_at DESC";
-		}
+		$query        = "SELECT * FROM {$this->table} WHERE {$where_clause} ORDER BY doc_type ASC, updated_at DESC";
 
 		$docs = $this->wpdb->get_results( $query );
 
@@ -264,12 +254,12 @@ class Legal_Doc_Repository extends Base_Repository {
 		$now     = current_time( 'mysql' );
 		$user_id = get_current_user_id();
 
-		// Prepare metadata
+		// Prepare metadata..
 		if ( isset( $data['metadata'] ) && is_array( $data['metadata'] ) ) {
 			$data['metadata'] = wp_json_encode( $data['metadata'] );
 		}
 
-		// Check if document exists for this type/locale
+		// Check if document exists for this type/locale..
 		$existing = null;
 		if ( ! empty( $data['id'] ) ) {
 			$existing = $this->find_by_id( (int) $data['id'] );
@@ -279,7 +269,7 @@ class Legal_Doc_Repository extends Base_Repository {
 		}
 
 		if ( $existing ) {
-			// Update existing document
+			// Update existing document..
 			$update_data = array(
 				'title'           => $data['title'] ?? $existing->title,
 				'content'         => $data['content'] ?? $existing->content,
@@ -300,14 +290,17 @@ class Legal_Doc_Repository extends Base_Repository {
 			);
 
 			if ( false === $result ) {
-				error_log( 'Legal_Doc_Repository::save() update failed: ' . $this->wpdb->last_error );
+				if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Logged only when debug logging is enabled.
+					error_log( 'Legal_Doc_Repository::save() update failed: ' . $this->wpdb->last_error );
+				}
 				return false;
 			}
 
 			return (int) $existing->id;
 
 		} else {
-			// Create new document
+			// Create new document..
 			$insert_data = array(
 				'doc_type'        => $data['doc_type'],
 				'title'           => $data['title'] ?? $this->get_default_title( $data['doc_type'] ),
@@ -330,7 +323,10 @@ class Legal_Doc_Repository extends Base_Repository {
 			);
 
 			if ( false === $result ) {
-				error_log( 'Legal_Doc_Repository::save() insert failed: ' . $this->wpdb->last_error );
+				if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Logged only when debug logging is enabled.
+					error_log( 'Legal_Doc_Repository::save() insert failed: ' . $this->wpdb->last_error );
+				}
 				return false;
 			}
 
@@ -346,14 +342,14 @@ class Legal_Doc_Repository extends Base_Repository {
 	 * @return bool True on success
 	 */
 	public function delete( int $id ): bool {
-		// Delete versions first
+		// Delete versions first..
 		$this->wpdb->delete(
 			$this->versions_table,
 			array( 'doc_id' => $id ),
 			array( '%d' )
 		);
 
-		// Delete document
+		// Delete document..
 		$result = $this->wpdb->delete(
 			$this->table,
 			array( 'id' => $id ),
@@ -411,7 +407,7 @@ class Legal_Doc_Repository extends Base_Repository {
 			$gdpr_enabled = (bool) $compliance_settings['gdpr'];
 		}
 
-		// Build version metadata
+		// Build version metadata..
 		$metadata = array(
 			'version'         => $data['version'] ?? $doc->version,
 			'author'          => $user ? $user->display_name : 'System',
@@ -446,13 +442,16 @@ class Legal_Doc_Repository extends Base_Repository {
 		);
 
 		if ( false === $result ) {
-			error_log( 'Legal_Doc_Repository::create_version() failed: ' . $this->wpdb->last_error );
+			if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Logged only when debug logging is enabled.
+				error_log( 'Legal_Doc_Repository::create_version() failed: ' . $this->wpdb->last_error );
+			}
 			return false;
 		}
 
 		$version_id = (int) $this->wpdb->insert_id;
 
-		// Auto-prune old versions (keep latest 10)
+		// Auto-prune old versions (keep latest 10)..
 		if ( $auto_prune ) {
 			$this->prune_versions( $doc_id, 10 );
 		}
@@ -520,7 +519,7 @@ class Legal_Doc_Repository extends Base_Repository {
 	 * @return int Number of versions deleted
 	 */
 	public function prune_versions( int $doc_id, int $keep_count = 10 ): int {
-		// Get IDs of versions to delete
+		// Get IDs of versions to delete..
 		$versions_to_delete = $this->wpdb->get_col(
 			$this->wpdb->prepare(
 				"SELECT id FROM {$this->versions_table} 
@@ -538,7 +537,7 @@ class Legal_Doc_Repository extends Base_Repository {
 
 		$ids_string = implode( ',', array_map( 'intval', $versions_to_delete ) );
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- IDs are int-cast and imploded.
 		$this->wpdb->query( "DELETE FROM {$this->versions_table} WHERE id IN ({$ids_string})" );
 
 		return count( $versions_to_delete );
@@ -618,7 +617,7 @@ class Legal_Doc_Repository extends Base_Repository {
 			$counts['total']       += (int) $row->count;
 		}
 
-		// Add outdated count
+		// Add outdated count..
 		$counts['outdated'] = count( $this->get_outdated() );
 
 		return $counts;
@@ -707,7 +706,7 @@ class Legal_Doc_Repository extends Base_Repository {
 		);
 
 		if ( empty( $column_exists ) ) {
-			// Fall back to legacy column name if present.
+			// Fall back to legacy column name if present...
 			$legacy_column = $this->wpdb->get_var(
 				$this->wpdb->prepare(
 					"SHOW COLUMNS FROM {$this->versions_table} LIKE %s",

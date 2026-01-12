@@ -27,10 +27,10 @@ class ColorRelianceCheck extends AbstractCheck {
 
 	public function check( $content ) {
 		$issues = array();
-		// Strip tags to check text content
+		// Strip tags to check text content..
 		$text = strip_tags( $content );
 
-		// Phrases that imply color reliance
+		// Phrases that imply color reliance..
 		$patterns = array(
 			'/click the (red|green|blue|yellow|orange|purple|black|white) button/i',
 			'/items in (red|green|blue)/i',

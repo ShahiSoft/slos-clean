@@ -4,6 +4,8 @@
  *
  * Migrates from separate fix_history and scan_results tables
  * to unified schema with proper foreign keys
+ *
+ * @package ShahiLegalFlowSuite
  */
 
 namespace ShahiLegalFlowSuite\Modules\AccessibilityScanner\FixEngine\Migrations;
@@ -12,12 +14,41 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL, WordPress.WP.AlternativeFunctions, WordPress.PHP.DevelopmentFunctions, WordPress.Security.EscapeOutput, WordPress.DateTime.RestrictedFunctions
+
+/**
+ * Database Schema Migration class.
+ *
+ * Handles migration from legacy schema to new unified schema.
+ */
 class DatabaseSchemaMigration {
 
+	/**
+	 * WordPress database object.
+	 *
+	 * @var \wpdb
+	 */
 	private $wpdb;
+
+	/**
+	 * Backup directory path.
+	 *
+	 * @var string
+	 */
 	private $backup_dir;
+
+	/**
+	 * Dry run mode flag.
+	 *
+	 * @var bool
+	 */
 	private $dry_run = false;
 
+	/**
+	 * Constructor.
+	 *
+	 * @param bool $dry_run Whether to run in dry-run mode.
+	 */
 	public function __construct( $dry_run = false ) {
 		global $wpdb;
 		$this->wpdb       = $wpdb;
@@ -88,13 +119,13 @@ class DatabaseSchemaMigration {
 
 		$sql = '';
 		foreach ( $tables as $table ) {
-			// Export table structure
+			// Export table structure..
 			$create_table = $this->wpdb->get_row( $this->wpdb->prepare( 'SHOW CREATE TABLE %i', $table ), ARRAY_N );
 			if ( $create_table ) {
 				$sql .= $create_table[1] . ";\n\n";
 			}
 
-			// Export data
+			// Export data..
 			$rows = $this->wpdb->get_results( $this->wpdb->prepare( 'SELECT * FROM %i', $table ), ARRAY_A );
 			if ( $rows ) {
 				foreach ( $rows as $row ) {
@@ -154,7 +185,7 @@ class DatabaseSchemaMigration {
 		}
 
 		foreach ( $indexes as $index ) {
-			// Check if index exists
+			// Check if index exists..
 			$table_info       = $this->wpdb->get_results( $this->wpdb->prepare( 'SHOW INDEX FROM %i', $fix_history_table ) );
 			$existing_indexes = wp_list_pluck( $table_info, 'Key_name' );
 			$index_name       = $index['name'] ?? '';
@@ -165,7 +196,7 @@ class DatabaseSchemaMigration {
 					$fix_history_table
 				);
 				$result = $this->wpdb->query( $sql );
-				if ( $result === false ) {
+				if ( false === $result ) {
 					return array(
 						'success' => false,
 						'error'   => $this->wpdb->last_error,
@@ -184,12 +215,12 @@ class DatabaseSchemaMigration {
 	 * Add foreign key constraints
 	 */
 	private function add_foreign_keys() {
-		// Note: WordPress typically doesn't use foreign keys due to MyISAM legacy
-		// This is optional and requires InnoDB engine
+		// Note: WordPress typically doesn't use foreign keys due to MyISAM legacy..
+		// This is optional and requires InnoDB engine..
 
 		$fix_history_table = $this->wpdb->prefix . 'slos_fix_history';
 
-		// Check if table is InnoDB
+		// Check if table is InnoDB..
 		$engine = $this->wpdb->get_var(
 			$this->wpdb->prepare(
 				'SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = %s',
@@ -197,14 +228,14 @@ class DatabaseSchemaMigration {
 			)
 		);
 
-		if ( $engine !== 'InnoDB' ) {
-			// Convert to InnoDB
+		if ( 'InnoDB' !== $engine ) {
+			// Convert to InnoDB..
 			if ( ! $this->dry_run ) {
 				$this->wpdb->query( $this->wpdb->prepare( 'ALTER TABLE %i ENGINE=InnoDB', $fix_history_table ) );
 			}
 		}
 
-		// Add foreign key to posts table
+		// Add foreign key to posts table..
 		$fk_sql = $this->wpdb->prepare(
 			'ALTER TABLE %i ADD CONSTRAINT fk_fix_history_post FOREIGN KEY (post_id) REFERENCES %i(ID) ON DELETE CASCADE',
 			$fix_history_table,
@@ -218,7 +249,7 @@ class DatabaseSchemaMigration {
 			);
 		}
 
-		// Check if FK exists
+		// Check if FK exists..
 		$fk_exists = $this->wpdb->get_var(
 			$this->wpdb->prepare(
 				"SELECT COUNT(*) FROM information_schema.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME = 'fk_fix_history_post' AND TABLE_NAME = %s",
@@ -228,10 +259,12 @@ class DatabaseSchemaMigration {
 
 		if ( ! $fk_exists ) {
 			$result = $this->wpdb->query( $fk_sql );
-			if ( $result === false ) {
-				// FK might fail if data integrity issues exist
-				// This is not critical, so log and continue
-				error_log( 'Could not add foreign key: ' . $this->wpdb->last_error );
+			if ( false === $result ) {
+				// FK might fail if data integrity issues exist..
+				// This is not critical, so log and continue..
+				if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+					error_log( 'Could not add foreign key: ' . $this->wpdb->last_error );
+				}
 			}
 		}
 
@@ -248,10 +281,10 @@ class DatabaseSchemaMigration {
 		$fix_history_table = $this->wpdb->prefix . 'slos_fix_history';
 
 		$optimizations = array(
-			// Convert status to ENUM for better performance
+			// Convert status to ENUM for better performance..
 			$this->wpdb->prepare( "ALTER TABLE %i MODIFY status ENUM('success', 'failed', 'skipped', 'partial') NOT NULL DEFAULT 'success'", $fix_history_table ),
 
-			// Add compression for large text fields
+			// Add compression for large text fields..
 			$this->wpdb->prepare( 'ALTER TABLE %i MODIFY fixes_applied JSON', $fix_history_table ),
 			$this->wpdb->prepare( 'ALTER TABLE %i MODIFY metadata JSON', $fix_history_table ),
 		);
@@ -264,8 +297,8 @@ class DatabaseSchemaMigration {
 		}
 
 		foreach ( $optimizations as $sql ) {
-			// Some optimizations might fail on older MySQL versions
-			// Continue on error
+			// Some optimizations might fail on older MySQL versions..
+			// Continue on error..
 			$this->wpdb->query( $sql );
 		}
 
@@ -281,7 +314,7 @@ class DatabaseSchemaMigration {
 	private function verify_integrity() {
 		$fix_history_table = $this->wpdb->prefix . 'slos_fix_history';
 
-		// Check for orphaned records
+		// Check for orphaned records..
 		$orphaned = $this->wpdb->get_var(
 			$this->wpdb->prepare(
 				'SELECT COUNT(*) FROM %i h LEFT JOIN %i p ON h.post_id = p.ID WHERE p.ID IS NULL AND h.post_id > 0',
@@ -290,7 +323,7 @@ class DatabaseSchemaMigration {
 			)
 		);
 
-		// Check for NULL required fields
+		// Check for NULL required fields..
 		$null_fixers = $this->wpdb->get_var(
 			$this->wpdb->prepare(
 				"SELECT COUNT(*) FROM %i WHERE fixer_id IS NULL OR fixer_id = ''",
@@ -313,7 +346,7 @@ class DatabaseSchemaMigration {
 			);
 		}
 
-		// Count total records
+		// Count total records..
 		$total_records = $this->wpdb->get_var( $this->wpdb->prepare( 'SELECT COUNT(*) FROM %i', $fix_history_table ) );
 
 		return array(
@@ -326,6 +359,9 @@ class DatabaseSchemaMigration {
 
 	/**
 	 * Rollback migration
+	 *
+	 * @param string $backup_file Path to backup file.
+	 * @return array Result array with success status.
 	 */
 	public function rollback( $backup_file ) {
 		if ( ! file_exists( $backup_file ) ) {
@@ -337,7 +373,7 @@ class DatabaseSchemaMigration {
 
 		$sql = file_get_contents( $backup_file );
 
-		// Split into individual queries
+		// Split into individual queries..
 		$queries = array_filter( explode( ";\n", $sql ) );
 
 		foreach ( $queries as $query ) {
@@ -347,7 +383,7 @@ class DatabaseSchemaMigration {
 			}
 
 			$result = $this->wpdb->query( $query );
-			if ( $result === false ) {
+			if ( false === $result ) {
 				return array(
 					'success' => false,
 					'error'   => $this->wpdb->last_error,
@@ -362,11 +398,11 @@ class DatabaseSchemaMigration {
 	}
 }
 
-// CLI execution
-if ( php_sapi_name() === 'cli' && basename( __FILE__ ) === basename( $_SERVER['SCRIPT_FILENAME'] ) ) {
+// CLI execution..
+if ( 'cli' === php_sapi_name() && isset( $_SERVER['SCRIPT_FILENAME'] ) && basename( __FILE__ ) === basename( sanitize_text_field( wp_unslash( $_SERVER['SCRIPT_FILENAME'] ) ) ) ) {
 	require_once __DIR__ . '/../../../vendor/autoload.php';
 
-	$dry_run = in_array( '--dry-run', $argv );
+	$dry_run = in_array( '--dry-run', $argv, true );
 
 	echo "=== Phase 3: Database Schema Migration ===\n";
 	if ( $dry_run ) {
@@ -383,3 +419,5 @@ if ( php_sapi_name() === 'cli' && basename( __FILE__ ) === basename( $_SERVER['S
 		echo 'Backup: ' . $results['steps']['backup_tables']['backup_file'] . "\n";
 	}
 }
+
+// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL, WordPress.WP.AlternativeFunctions, WordPress.PHP.DevelopmentFunctions, WordPress.Security.EscapeOutput, WordPress.DateTime.RestrictedFunctions

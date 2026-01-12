@@ -58,7 +58,7 @@ final class FormLabelFixer extends AbstractFixer {
 		$fixes_applied = 0;
 		$details       = array();
 
-		// Process inputs (excluding hidden, submit, button, image, reset)
+		// Process inputs (excluding hidden, submit, button, image, reset)..
 		$inputs = $this->query( '//input[not(@type="hidden") and not(@type="submit") and not(@type="button") and not(@type="image") and not(@type="reset")]' );
 
 		foreach ( $inputs as $input ) {
@@ -73,7 +73,7 @@ final class FormLabelFixer extends AbstractFixer {
 			}
 		}
 
-		// Process selects
+		// Process selects..
 		$selects = $this->query( '//select' );
 
 		foreach ( $selects as $select ) {
@@ -88,7 +88,7 @@ final class FormLabelFixer extends AbstractFixer {
 			}
 		}
 
-		// Process textareas
+		// Process textareas..
 		$textareas = $this->query( '//textarea' );
 
 		foreach ( $textareas as $textarea ) {
@@ -123,17 +123,17 @@ final class FormLabelFixer extends AbstractFixer {
 	 * @return bool
 	 */
 	private function has_accessible_label( \DOMElement $input ): bool {
-		// Has aria-label
+		// Has aria-label..
 		if ( ! empty( $input->getAttribute( 'aria-label' ) ) ) {
 			return true;
 		}
 
-		// Has aria-labelledby
+		// Has aria-labelledby..
 		if ( ! empty( $input->getAttribute( 'aria-labelledby' ) ) ) {
 			return true;
 		}
 
-		// Check for associated label
+		// Check for associated label..
 		$id = $input->getAttribute( 'id' );
 		if ( ! empty( $id ) ) {
 			$labels = $this->query( "//label[@for='{$id}']" );
@@ -142,11 +142,11 @@ final class FormLabelFixer extends AbstractFixer {
 			}
 		}
 
-		// Check if wrapped in label
+		// Check if wrapped in label..
 		$parent = $input->parentNode;
 		while ( $parent ) {
 			if ( $parent instanceof \DOMElement && $parent->nodeName === 'label' ) {
-				// Check label has text
+				// Check label has text..
 				$label_text = trim( str_replace( $input->textContent, '', $parent->textContent ) );
 				if ( ! empty( $label_text ) ) {
 					return true;
@@ -155,7 +155,7 @@ final class FormLabelFixer extends AbstractFixer {
 			$parent = $parent->parentNode;
 		}
 
-		// Has title (acceptable for accessibility)
+		// Has title (acceptable for accessibility)..
 		if ( ! empty( $input->getAttribute( 'title' ) ) ) {
 			return true;
 		}
@@ -176,14 +176,14 @@ final class FormLabelFixer extends AbstractFixer {
 			return null;
 		}
 
-		// Ensure input has ID
+		// Ensure input has ID..
 		$id = $input->getAttribute( 'id' );
 		if ( empty( $id ) ) {
 			$id = 'slos-input-' . wp_generate_uuid4();
 			$input->setAttribute( 'id', $id );
 		}
 
-		// Add aria-label (safest approach that doesn't alter layout)
+		// Add aria-label (safest approach that doesn't alter layout)..
 		$input->setAttribute( 'aria-label', $label_text );
 
 		return array(
@@ -202,13 +202,13 @@ final class FormLabelFixer extends AbstractFixer {
 	 * @return string
 	 */
 	private function derive_label_text( \DOMElement $input ): string {
-		// Check placeholder
+		// Check placeholder..
 		$placeholder = $input->getAttribute( 'placeholder' );
 		if ( ! empty( $placeholder ) ) {
 			return $placeholder;
 		}
 
-		// Check name attribute
+		// Check name attribute..
 		$name = $input->getAttribute( 'name' );
 		if ( ! empty( $name ) ) {
 			$readable = $this->humanize_field_name( $name );
@@ -217,7 +217,7 @@ final class FormLabelFixer extends AbstractFixer {
 			}
 		}
 
-		// Check type for common patterns
+		// Check type for common patterns..
 		$type = $input->getAttribute( 'type' ) ?: 'text';
 
 		$type_labels = array(
@@ -236,26 +236,26 @@ final class FormLabelFixer extends AbstractFixer {
 			return $type_labels[ $type ];
 		}
 
-		// Check nearby text
+		// Check nearby text..
 		$nearby_text = $this->find_nearby_label_text( $input );
 		if ( ! empty( $nearby_text ) ) {
 			return $nearby_text;
 		}
 
-		// For select, check first option
+		// For select, check first option..
 		if ( $input->nodeName === 'select' ) {
 			$options = $input->getElementsByTagName( 'option' );
 			if ( $options->length > 0 ) {
 				$first_option = $options->item( 0 );
 				$first_text   = trim( $first_option->textContent );
-				// Common placeholder patterns
+				// Common placeholder patterns..
 				if ( preg_match( '/^(select|choose|pick)/i', $first_text ) ) {
 					return $first_text;
 				}
 			}
 		}
 
-		// Fallback
+		// Fallback..
 		if ( $input->nodeName === 'textarea' ) {
 			return __( 'Text input', 'shahi-legalflowsuite' );
 		}
@@ -270,19 +270,19 @@ final class FormLabelFixer extends AbstractFixer {
 	 * @return string
 	 */
 	private function humanize_field_name( string $name ): string {
-		// Remove common prefixes
+		// Remove common prefixes..
 		$name = preg_replace( '/^(input_|field_|form_|txt_|txt|fld_|fld)/i', '', $name );
 
-		// Remove array notation
+		// Remove array notation..
 		$name = preg_replace( '/\[\d*\]/', '', $name );
 
-		// Convert separators to spaces
+		// Convert separators to spaces..
 		$name = str_replace( array( '_', '-', '[', ']' ), ' ', $name );
 
-		// Handle camelCase
+		// Handle camelCase..
 		$name = preg_replace( '/([a-z])([A-Z])/', '$1 $2', $name );
 
-		// Clean up
+		// Clean up..
 		$name = preg_replace( '/\s+/', ' ', trim( $name ) );
 
 		return ucwords( strtolower( $name ) );
@@ -301,7 +301,7 @@ final class FormLabelFixer extends AbstractFixer {
 			return '';
 		}
 
-		// Check previous sibling text
+		// Check previous sibling text..
 		$prev = $input->previousSibling;
 		while ( $prev ) {
 			if ( $prev instanceof \DOMText ) {
@@ -310,7 +310,7 @@ final class FormLabelFixer extends AbstractFixer {
 					return rtrim( $text, ':*' );
 				}
 			} elseif ( $prev instanceof \DOMElement ) {
-				// Check for span/strong/em with text
+				// Check for span/strong/em with text..
 				if ( in_array( $prev->nodeName, array( 'span', 'strong', 'em', 'b' ) ) ) {
 					$text = trim( $prev->textContent );
 					if ( strlen( $text ) > 2 && strlen( $text ) < 50 ) {

@@ -33,7 +33,7 @@ class DSRRequests {
 			$pending   = count( $repo->list_requests( array( 'status' => 'pending_verification' ), 1000 ) );
 			$completed = count( $repo->list_requests( array( 'status' => 'completed' ), 1000 ) );
 
-			// Calculate overdue by checking SLA deadline
+			// Calculate overdue by checking SLA deadline..
 			$overdue = $this->calculate_overdue_count( $repo );
 
 			return array(
@@ -62,18 +62,18 @@ class DSRRequests {
 	 */
 	private function calculate_overdue_count( $repo ) {
 		try {
-			// Get all non-completed requests
+			// Get all non-completed requests..
 			$active_requests = $repo->list_requests( array(), 1000 );
 			$overdue_count   = 0;
 			$sla_days        = 30; // GDPR requires response within 30 days
 
 			foreach ( $active_requests as $request ) {
-				// Skip completed or rejected requests
+				// Skip completed or rejected requests..
 				if ( in_array( $request->status, array( 'completed', 'rejected' ), true ) ) {
 					continue;
 				}
 
-				// Calculate days since submission
+				// Calculate days since submission..
 				$submitted    = strtotime( $request->submitted_at );
 				$now          = current_time( 'timestamp' );
 				$days_elapsed = floor( ( $now - $submitted ) / DAY_IN_SECONDS );
@@ -124,7 +124,7 @@ class DSRRequests {
 		$status_class = $this->get_status_class( $status );
 		$detail_url   = admin_url( 'admin.php?page=shahi-legalflowsuite-dsr-detail&request_id=' . $id );
 
-		// Calculate relative time
+		// Calculate relative time..
 		$submitted_time = strtotime( $created );
 		$time_diff      = human_time_diff( $submitted_time, current_time( 'timestamp' ) );
 
@@ -348,14 +348,14 @@ class DSRRequests {
 	public function render_content() {
 		$repo = new DSR_Repository();
 
-		// Get filter params
+		// Get filter params..
 		$status = isset( $_GET['status'] ) && $_GET['status'] !== 'all' ? sanitize_text_field( wp_unslash( $_GET['status'] ) ) : '';
 		$type   = isset( $_GET['request_type'] ) && $_GET['request_type'] !== 'all' ? sanitize_text_field( wp_unslash( $_GET['request_type'] ) ) : '';
 
-		// Get stats
+		// Get stats..
 		$stats = $this->get_request_stats();
 
-		// Get requests
+		// Get requests..
 		$args = array();
 		if ( ! empty( $status ) ) {
 			$args['status'] = $status;

@@ -30,7 +30,7 @@ class SvgAccessibilityCheck extends AbstractCheck {
 		$svgs   = $this->get_elements( $content, 'svg' );
 
 		foreach ( $svgs as $svg ) {
-			// Skip if role="presentation" or role="none" or aria-hidden="true"
+			// Skip if role="presentation" or role="none" or aria-hidden="true"..
 			$role        = $svg->getAttribute( 'role' );
 			$aria_hidden = $svg->getAttribute( 'aria-hidden' );
 

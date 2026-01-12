@@ -53,7 +53,7 @@ final class ListStructureFixer extends AbstractFixer {
 			return FixResult::error( $this->get_id(), 'Failed to parse HTML', $content );
 		}
 
-		// Find li elements not inside ul, ol, or menu
+		// Find li elements not inside ul, ol, or menu..
 		$orphan_lis = $this->query( '//li[not(parent::ul) and not(parent::ol) and not(parent::menu)]' );
 
 		if ( count( $orphan_lis ) === 0 ) {
@@ -63,7 +63,7 @@ final class ListStructureFixer extends AbstractFixer {
 		$fixes_applied = 0;
 		$details       = array();
 
-		// Group consecutive orphan li elements
+		// Group consecutive orphan li elements..
 		$groups        = array();
 		$current_group = array();
 
@@ -71,11 +71,11 @@ final class ListStructureFixer extends AbstractFixer {
 			if ( empty( $current_group ) ) {
 				$current_group[] = $li;
 			} else {
-				// Check if this li is a sibling of the last one
+				// Check if this li is a sibling of the last one..
 				$last_li = end( $current_group );
 				$next    = $last_li->nextSibling;
 
-				// Skip whitespace text nodes
+				// Skip whitespace text nodes..
 				while ( $next && $next->nodeType === XML_TEXT_NODE && trim( $next->nodeValue ) === '' ) {
 					$next = $next->nextSibling;
 				}
@@ -93,7 +93,7 @@ final class ListStructureFixer extends AbstractFixer {
 			$groups[] = $current_group;
 		}
 
-		// Wrap each group in a ul
+		// Wrap each group in a ul..
 		foreach ( $groups as $group ) {
 			if ( empty( $group ) ) {
 				continue;
@@ -103,10 +103,10 @@ final class ListStructureFixer extends AbstractFixer {
 			$first_li = $group[0];
 			$parent   = $first_li->parentNode;
 
-			// Insert ul before first li
+			// Insert ul before first li..
 			$parent->insertBefore( $ul, $first_li );
 
-			// Move all lis into ul
+			// Move all lis into ul..
 			foreach ( $group as $li ) {
 				$ul->appendChild( $li );
 			}

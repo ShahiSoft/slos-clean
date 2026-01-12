@@ -30,7 +30,7 @@ class InvalidAriaCombinationCheck extends AbstractCheck {
 		$dom    = $this->get_dom( $content );
 		$xpath  = new \DOMXPath( $dom );
 
-		// Example: aria-checked on something that isn't a checkbox/radio/switch
+		// Example: aria-checked on something that isn't a checkbox/radio/switch..
 		$elements = $xpath->query( '//*[@aria-checked]' );
 		foreach ( $elements as $element ) {
 			$role = $element->getAttribute( 'role' );

@@ -14,7 +14,7 @@
 
 namespace ShahiLegalFlowSuite\Widgets;
 
-// Exit if accessed directly.
+// Exit if accessed directly...
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -53,7 +53,7 @@ class WidgetManager {
 	 * @return void
 	 */
 	private function init_widgets() {
-		// Register widget classes (keeping only QuickActionsWidget for legal operations dashboard).
+		// Register widget classes (keeping only QuickActionsWidget for legal operations dashboard)...
 		$this->widgets = array(
 			'ShahiLegalFlowSuite\Widgets\QuickActionsWidget',
 		);
@@ -93,12 +93,12 @@ class WidgetManager {
 	 * @return void
 	 */
 	public function enqueue_widget_assets( $hook ) {
-		// Only load on widgets page.
+		// Only load on widgets page...
 		if ( 'widgets.php' !== $hook ) {
 			return;
 		}
 
-		// Add inline CSS for widget admin.
+		// Add inline CSS for widget admin...
 		$css = "
         .shahi-widget-field {
             margin-bottom: 15px;
@@ -139,14 +139,14 @@ class WidgetManager {
 	 * @return void
 	 */
 	public function enqueue_frontend_assets() {
-		// Check if any ShahiLegalFlowSuite widgets are active.
+		// Check if any ShahiLegalFlowSuite widgets are active...
 		if ( ! is_active_widget( false, false, 'shahi_stats_widget' ) &&
 			! is_active_widget( false, false, 'shahi_quick_actions_widget' ) &&
 			! is_active_widget( false, false, 'shahi_recent_activity_widget' ) ) {
 			return;
 		}
 
-		// Add inline CSS for frontend widgets.
+		// Add inline CSS for frontend widgets...
 		$css = '
         /* ShahiLegalFlowSuite Widgets Styling */
         .shahi-widget {

@@ -99,20 +99,20 @@ class LegalDocuments extends Module {
 	 * @return void
 	 */
 	public function init() {
-		// Initialize the controller
+		// Initialize the controller..
 		$this->controller = new Document_Hub_Controller();
 		$this->controller->init();
 
-		// Initialize Profile Wizard (Company Profile Setup)
+		// Initialize Profile Wizard (Company Profile Setup)..
 		if ( slos_is_feature_enabled( 'company_wizard' ) ) {
 			$this->profile_wizard = new Profile_Wizard();
 			$this->profile_wizard->init();
 		}
 
-		// Register admin menu
+		// Register admin menu..
 		add_action( 'admin_menu', array( $this, 'register_admin_menu' ), 20 );
 
-		// Enqueue assets
+		// Enqueue assets..
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 	}
 
@@ -132,7 +132,7 @@ class LegalDocuments extends Module {
 			array( $this->controller, 'render' )
 		);
 
-		// Register hidden editor page
+		// Register hidden editor page..
 		add_submenu_page(
 			null, // Hidden from menu
 			__( 'Edit Document', 'shahi-legalflowsuite' ),
@@ -151,7 +151,7 @@ class LegalDocuments extends Module {
 	 * @return void
 	 */
 	public function enqueue_assets( $hook ) {
-		// Only load on our page
+		// Only load on our page..
 		if ( false === strpos( $hook, 'slos-documents' ) ) {
 			return;
 		}

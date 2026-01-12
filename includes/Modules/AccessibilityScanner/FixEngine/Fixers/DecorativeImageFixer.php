@@ -62,26 +62,26 @@ final class DecorativeImageFixer extends AbstractFixer {
 				continue;
 			}
 
-			// Already properly marked
+			// Already properly marked..
 			if ( $img->getAttribute( 'role' ) === 'presentation' && $img->getAttribute( 'alt' ) === '' ) {
 				continue;
 			}
 
 			$modified = false;
 
-			// Set empty alt
+			// Set empty alt..
 			if ( ! $img->hasAttribute( 'alt' ) || $img->getAttribute( 'alt' ) !== '' ) {
 				$img->setAttribute( 'alt', '' );
 				$modified = true;
 			}
 
-			// Add role="presentation"
+			// Add role="presentation"..
 			if ( $img->getAttribute( 'role' ) !== 'presentation' ) {
 				$img->setAttribute( 'role', 'presentation' );
 				$modified = true;
 			}
 
-			// Add aria-hidden="true" for extra safety
+			// Add aria-hidden="true" for extra safety..
 			if ( ! $img->hasAttribute( 'aria-hidden' ) ) {
 				$img->setAttribute( 'aria-hidden', 'true' );
 				$modified = true;
@@ -121,7 +121,7 @@ final class DecorativeImageFixer extends AbstractFixer {
 		$width  = (int) $img->getAttribute( 'width' );
 		$height = (int) $img->getAttribute( 'height' );
 
-		// Common decorative filename patterns
+		// Common decorative filename patterns..
 		$decorative_patterns = array(
 			'spacer',
 			'blank',
@@ -146,17 +146,17 @@ final class DecorativeImageFixer extends AbstractFixer {
 			}
 		}
 
-		// Very small images (spacers, bullets)
+		// Very small images (spacers, bullets)..
 		if ( ( $width > 0 && $width < 5 ) || ( $height > 0 && $height < 5 ) ) {
 			return true;
 		}
 
-		// 1x1 tracking pixels
+		// 1x1 tracking pixels..
 		if ( $width === 1 && $height === 1 ) {
 			return true;
 		}
 
-		// Check for decorative classes
+		// Check for decorative classes..
 		$decorative_classes = array( 'decorative', 'bg-image', 'ornamental', 'divider-img' );
 		foreach ( $decorative_classes as $dec_class ) {
 			if ( strpos( $class, $dec_class ) !== false ) {

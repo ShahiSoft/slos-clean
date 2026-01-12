@@ -120,28 +120,28 @@ class Network_Compliance_Dashboard {
 		foreach ( $sites as $site ) {
 			switch_to_blog( $site->blog_id );
 
-			// Get compliance score
+			// Get compliance score..
 			$calculator = new Compliance_Score_Calculator();
 			$result     = $calculator->calculate();
 			$score      = $result['score'] ?? 0;
 			$scores[]   = $score;
 
-			// Count critical sites (score < 40)
+			// Count critical sites (score < 40)..
 			if ( $score < 40 ) {
 				++$critical_sites;
 			}
 
-			// Count low score sites (score < 60)
+			// Count low score sites (score < 60)..
 			if ( $score < 60 ) {
 				++$low_score_sites;
 			}
 
-			// Count issues by dimension
+			// Count issues by dimension..
 			$dimensions = $result['dimensions'] ?? array();
 			foreach ( $dimensions as $dimension ) {
 				$dim_score = $dimension['score'] ?? 100;
 				if ( $dim_score < 70 ) {
-					// Map dimension constants to issue types
+					// Map dimension constants to issue types..
 					$dim_name = strtolower( str_replace( array( 'CONSENT_', 'COOKIES' ), array( '', 'banner' ), $dimension['id'] ?? '' ) );
 					if ( isset( $issues_by_type[ $dim_name ] ) ) {
 						++$issues_by_type[ $dim_name ];
@@ -182,7 +182,7 @@ class Network_Compliance_Dashboard {
 			$score      = $result['score'] ?? 0;
 			$grade      = $result['grade'] ?? 'F';
 
-			// Count issues (dimensions with score < 70)
+			// Count issues (dimensions with score < 70)..
 			$issues_count = 0;
 			$dimensions   = $result['dimensions'] ?? array();
 			foreach ( $dimensions as $dimension ) {
@@ -191,7 +191,7 @@ class Network_Compliance_Dashboard {
 				}
 			}
 
-			// Get last scan time
+			// Get last scan time..
 			$last_scan = get_option( 'slos_cookie_scan_time', '' );
 			if ( $last_scan ) {
 				$last_scan = human_time_diff( strtotime( $last_scan ), current_time( 'timestamp' ) ) . ' ' . __( 'ago', 'shahi-legalflowsuite' );
@@ -213,7 +213,7 @@ class Network_Compliance_Dashboard {
 			restore_current_blog();
 		}
 
-		// Sort by score (lowest first)
+		// Sort by score (lowest first)..
 		usort(
 			$sites_data,
 			function ( $a, $b ) {

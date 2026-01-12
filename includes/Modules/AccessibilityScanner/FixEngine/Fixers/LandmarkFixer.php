@@ -56,7 +56,7 @@ final class LandmarkFixer extends AbstractFixer {
 		$fixes_applied = 0;
 		$details       = array();
 
-		// Map of class patterns to landmark roles
+		// Map of class patterns to landmark roles..
 		$landmark_patterns = array(
 			'navigation'    => array(
 				'classes' => array( 'nav', 'navigation', 'menu', 'navbar', 'site-navigation' ),
@@ -89,11 +89,11 @@ final class LandmarkFixer extends AbstractFixer {
 			),
 		);
 
-		// Track which roles have been assigned
+		// Track which roles have been assigned..
 		$assigned_roles = array();
 
 		foreach ( $landmark_patterns as $landmark => $config ) {
-			// Build XPath for matching
+			// Build XPath for matching..
 			$xpath_parts = array();
 
 			foreach ( $config['classes'] as $class ) {
@@ -110,12 +110,12 @@ final class LandmarkFixer extends AbstractFixer {
 			$elements = $this->query( $xpath );
 
 			foreach ( $elements as $element ) {
-				// Skip if already has a role
+				// Skip if already has a role..
 				if ( $element->hasAttribute( 'role' ) ) {
 					continue;
 				}
 
-				// Only allow one main and one banner
+				// Only allow one main and one banner..
 				if ( in_array( $config['role'], array( 'main', 'banner', 'contentinfo' ) ) ) {
 					if ( isset( $assigned_roles[ $config['role'] ] ) ) {
 						continue;
@@ -135,7 +135,7 @@ final class LandmarkFixer extends AbstractFixer {
 			}
 		}
 
-		// Also check for semantic elements missing roles (for older browsers)
+		// Also check for semantic elements missing roles (for older browsers)..
 		$semantic_role_map = array(
 			'header' => 'banner',
 			'footer' => 'contentinfo',
@@ -148,14 +148,14 @@ final class LandmarkFixer extends AbstractFixer {
 			$elements = $this->query( "//{$tag}[not(@role)]" );
 
 			foreach ( $elements as $element ) {
-				// For header/footer, only add role if they're direct children of body (page-level)
+				// For header/footer, only add role if they're direct children of body (page-level)..
 				if ( in_array( $tag, array( 'header', 'footer' ) ) ) {
 					$parent = $element->parentNode;
 					if ( $parent && $parent->nodeName !== 'body' ) {
 						continue; // Skip nested headers/footers
 					}
 
-					// Only one banner/contentinfo
+					// Only one banner/contentinfo..
 					if ( isset( $assigned_roles[ $role ] ) ) {
 						continue;
 					}

@@ -32,7 +32,7 @@ class ColorUtils {
 	public static function hex_to_rgb( $hex ) {
 		$hex = ltrim( $hex, '#' );
 
-		// Handle 3-character hex codes
+		// Handle 3-character hex codes..
 		if ( strlen( $hex ) === 3 ) {
 			$hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
 		}
@@ -70,12 +70,12 @@ class ColorUtils {
 		$g = $rgb['g'] / 255;
 		$b = $rgb['b'] / 255;
 
-		// Apply gamma correction
+		// Apply gamma correction..
 		$r = ( $r <= 0.03928 ) ? $r / 12.92 : pow( ( $r + 0.055 ) / 1.055, 2.4 );
 		$g = ( $g <= 0.03928 ) ? $g / 12.92 : pow( ( $g + 0.055 ) / 1.055, 2.4 );
 		$b = ( $b <= 0.03928 ) ? $b / 12.92 : pow( ( $b + 0.055 ) / 1.055, 2.4 );
 
-		// Calculate luminance
+		// Calculate luminance..
 		return 0.2126 * $r + 0.7152 * $g + 0.0722 * $b;
 	}
 
@@ -90,7 +90,7 @@ class ColorUtils {
 	 * @return float Contrast ratio (1-21)
 	 */
 	public static function get_contrast_ratio( $color1, $color2 ) {
-		// Convert to RGB if needed
+		// Convert to RGB if needed..
 		if ( is_string( $color1 ) ) {
 			$color1 = self::hex_to_rgb( $color1 );
 		}
@@ -101,7 +101,7 @@ class ColorUtils {
 		$l1 = self::get_relative_luminance( $color1 );
 		$l2 = self::get_relative_luminance( $color2 );
 
-		// Ensure lighter color is L1
+		// Ensure lighter color is L1..
 		if ( $l2 > $l1 ) {
 			list($l1, $l2) = array( $l2, $l1 );
 		}
@@ -154,12 +154,12 @@ class ColorUtils {
 	public static function parse_css_color( $color ) {
 		$color = trim( $color );
 
-		// Hex color
+		// Hex color..
 		if ( strpos( $color, '#' ) === 0 ) {
 			return self::hex_to_rgb( $color );
 		}
 
-		// RGB/RGBA
+		// RGB/RGBA..
 		if ( preg_match( '/rgba?\((\d+),\s*(\d+),\s*(\d+)/', $color, $matches ) ) {
 			return array(
 				'r' => (int) $matches[1],
@@ -168,7 +168,7 @@ class ColorUtils {
 			);
 		}
 
-		// Named colors (basic set)
+		// Named colors (basic set)..
 		$named_colors = array(
 			'black'  => '#000000',
 			'white'  => '#ffffff',
@@ -214,7 +214,7 @@ class ColorUtils {
 			);
 		}
 
-		// Try darkening foreground
+		// Try darkening foreground..
 		$adjusted_fg = self::adjust_color_for_contrast( $fg_rgb, $bg_rgb, $target_ratio, 'darken' );
 		if ( $adjusted_fg ) {
 			return array(
@@ -225,7 +225,7 @@ class ColorUtils {
 			);
 		}
 
-		// Fallback to black/white
+		// Fallback to black/white..
 		$use_black = self::get_relative_luminance( $bg_rgb ) > 0.5;
 		return array(
 			'foreground'   => $use_black ? '#000000' : '#ffffff',

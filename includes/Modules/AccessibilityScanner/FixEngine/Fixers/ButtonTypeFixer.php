@@ -61,14 +61,14 @@ final class ButtonTypeFixer extends AbstractFixer {
 			$modified    = false;
 			$fix_details = array();
 
-			// Add type if missing
+			// Add type if missing..
 			if ( ! $button->hasAttribute( 'type' ) ) {
 				$button->setAttribute( 'type', 'button' );
 				$modified                  = true;
 				$fix_details['type_added'] = 'button';
 			}
 
-			// Check for accessible name
+			// Check for accessible name..
 			if ( ! $this->has_accessible_name( $button ) ) {
 				$name = $this->derive_button_name( $button );
 				if ( ! empty( $name ) ) {
@@ -107,28 +107,28 @@ final class ButtonTypeFixer extends AbstractFixer {
 	 * @return bool
 	 */
 	protected function has_accessible_name( \DOMElement $button ): bool {
-		// Has text content
+		// Has text content..
 		$text = trim( $button->textContent );
 		if ( ! empty( $text ) ) {
 			return true;
 		}
 
-		// Has aria-label
+		// Has aria-label..
 		if ( ! empty( $button->getAttribute( 'aria-label' ) ) ) {
 			return true;
 		}
 
-		// Has aria-labelledby
+		// Has aria-labelledby..
 		if ( ! empty( $button->getAttribute( 'aria-labelledby' ) ) ) {
 			return true;
 		}
 
-		// Has title
+		// Has title..
 		if ( ! empty( $button->getAttribute( 'title' ) ) ) {
 			return true;
 		}
 
-		// Has image with alt
+		// Has image with alt..
 		$images = $button->getElementsByTagName( 'img' );
 		foreach ( $images as $img ) {
 			if ( ! empty( $img->getAttribute( 'alt' ) ) ) {
@@ -136,7 +136,7 @@ final class ButtonTypeFixer extends AbstractFixer {
 			}
 		}
 
-		// Has SVG with title
+		// Has SVG with title..
 		$svgs = $button->getElementsByTagName( 'svg' );
 		foreach ( $svgs as $svg ) {
 			$titles = $svg->getElementsByTagName( 'title' );
@@ -155,13 +155,13 @@ final class ButtonTypeFixer extends AbstractFixer {
 	 * @return string
 	 */
 	private function derive_button_name( \DOMElement $button ): string {
-		// Check title
+		// Check title..
 		$title = $button->getAttribute( 'title' );
 		if ( ! empty( $title ) ) {
 			return $title;
 		}
 
-		// Check for common icon classes
+		// Check for common icon classes..
 		$class = strtolower( $button->getAttribute( 'class' ) );
 
 		$icon_mappings = array(
@@ -214,7 +214,7 @@ final class ButtonTypeFixer extends AbstractFixer {
 			}
 		}
 
-		// Check for Font Awesome icons
+		// Check for Font Awesome icons..
 		if ( preg_match( '/fa-(\w+)/', $class, $matches ) ) {
 			$icon_name = str_replace( '-', ' ', $matches[1] );
 			return ucwords( $icon_name );

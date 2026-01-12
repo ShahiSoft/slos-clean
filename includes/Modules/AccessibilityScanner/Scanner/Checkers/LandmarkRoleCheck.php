@@ -70,16 +70,16 @@ class LandmarkRoleCheck extends AbstractCheck {
 		$xpath           = new \DOMXPath( $dom );
 		$landmark_counts = array();
 
-		// 1. Check explicit ARIA landmark roles
+		// 1. Check explicit ARIA landmark roles..
 		$this->check_explicit_landmarks( $xpath, $landmark_counts, $issues );
 
-		// 2. Check HTML5 implicit landmarks
+		// 2. Check HTML5 implicit landmarks..
 		$this->check_implicit_landmarks( $xpath, $dom, $landmark_counts, $issues );
 
-		// 3. Check for multiple main landmarks
+		// 3. Check for multiple main landmarks..
 		$this->check_multiple_main( $landmark_counts, $issues );
 
-		// 4. Check for missing main landmark (full page only)
+		// 4. Check for missing main landmark (full page only)..
 		$this->check_missing_main( $dom, $landmark_counts, $issues );
 
 		return $issues;
@@ -93,7 +93,7 @@ class LandmarkRoleCheck extends AbstractCheck {
 			$elements            = $xpath->query( "//*[@role='$landmark']" );
 			$counts[ $landmark ] = ( $counts[ $landmark ] ?? 0 ) + $elements->length;
 
-			// Check duplicates
+			// Check duplicates..
 			if ( $elements->length > 1 ) {
 				foreach ( $elements as $element ) {
 					if ( ! $this->has_accessible_name( $element ) ) {
@@ -113,22 +113,22 @@ class LandmarkRoleCheck extends AbstractCheck {
 	 */
 	private function check_implicit_landmarks( $xpath, $dom, &$counts, &$issues ) {
 		foreach ( $this->implicit_landmarks as $tag => $role ) {
-			// Find elements without explicit role (to avoid double counting)
+			// Find elements without explicit role (to avoid double counting)..
 			$elements = $xpath->query( "//{$tag}[not(@role)]" );
 
 			foreach ( $elements as $element ) {
-				// header/footer only count as landmarks when not nested in sectioning content
+				// header/footer only count as landmarks when not nested in sectioning content..
 				if ( in_array( $tag, array( 'header', 'footer' ), true ) ) {
 					if ( $this->is_nested_in_sectioning( $element ) ) {
 						continue; // Not a landmark when nested
 					}
 				}
 
-				// form/section need accessible name to be landmarks
+				// form/section need accessible name to be landmarks..
 				if ( in_array( $tag, array( 'form', 'section' ), true ) ) {
 					if ( ! $this->has_accessible_name( $element ) ) {
 						if ( $tag === 'section' ) {
-							// Suggest adding accessible name to section
+							// Suggest adding accessible name to section..
 							$issues[] = array(
 								'element'  => $tag,
 								'context'  => $this->get_element_html( $element ),
@@ -143,10 +143,10 @@ class LandmarkRoleCheck extends AbstractCheck {
 				$counts[ $role ] = ( $counts[ $role ] ?? 0 ) + 1;
 			}
 
-			// Check for duplicates of implicit landmarks
+			// Check for duplicates of implicit landmarks..
 			$total = $counts[ $role ] ?? 0;
 			if ( $total > 1 ) {
-				// Re-check elements for missing labels
+				// Re-check elements for missing labels..
 				$all_elements = $xpath->query( "//{$tag}[not(@role)]" );
 				$unlabeled    = 0;
 
@@ -207,7 +207,7 @@ class LandmarkRoleCheck extends AbstractCheck {
 	 * Check if full page is missing main landmark
 	 */
 	private function check_missing_main( $dom, $counts, &$issues ) {
-		// Only check if this appears to be a full page
+		// Only check if this appears to be a full page..
 		$html = $dom->getElementsByTagName( 'html' );
 		$body = $dom->getElementsByTagName( 'body' );
 

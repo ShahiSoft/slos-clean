@@ -53,13 +53,13 @@ final class FigureCaptionFixer extends AbstractFixer {
 			return FixResult::error( $this->get_id(), 'Failed to parse HTML', $content );
 		}
 
-		// Find figures with images but without figcaption
+		// Find figures with images but without figcaption..
 		$figures       = $this->query( '//figure[.//img and not(figcaption)]' );
 		$fixes_applied = 0;
 		$details       = array();
 
 		foreach ( $figures as $figure ) {
-			// Get the image inside
+			// Get the image inside..
 			$images = $this->query( './/img', $figure );
 
 			if ( count( $images ) === 0 ) {
@@ -70,29 +70,29 @@ final class FigureCaptionFixer extends AbstractFixer {
 			$alt   = $img->getAttribute( 'alt' );
 			$title = $img->getAttribute( 'title' );
 
-			// Only add figcaption if we have content for it
+			// Only add figcaption if we have content for it..
 			$caption_text = '';
 
 			if ( ! empty( $title ) ) {
 				$caption_text = $title;
 			} elseif ( ! empty( $alt ) && strlen( $alt ) > 10 ) {
-				// Use alt if it's descriptive (more than just a filename)
+				// Use alt if it's descriptive (more than just a filename)..
 				$caption_text = $alt;
 			} else {
-				// Try to extract from src filename
+				// Try to extract from src filename..
 				$src = $img->getAttribute( 'src' );
 				if ( $src ) {
 					$filename = basename( parse_url( $src, PHP_URL_PATH ) ?: $src );
 					$name     = pathinfo( $filename, PATHINFO_FILENAME );
 					$name     = str_replace( array( '-', '_' ), ' ', $name );
-					// Only use if it looks like a proper name
+					// Only use if it looks like a proper name..
 					if ( ! preg_match( '/^[a-f0-9]{8,}$/i', $name ) ) {
 						$caption_text = ucwords( $name );
 					}
 				}
 			}
 
-			// Skip if we couldn't determine a good caption
+			// Skip if we couldn't determine a good caption..
 			if ( empty( $caption_text ) ) {
 				continue;
 			}
@@ -100,7 +100,7 @@ final class FigureCaptionFixer extends AbstractFixer {
 			$figcaption              = $this->doc->createElement( 'figcaption' );
 			$figcaption->textContent = $caption_text;
 
-			// Add figcaption at the end of figure
+			// Add figcaption at the end of figure..
 			$figure->appendChild( $figcaption );
 
 			++$fixes_applied;

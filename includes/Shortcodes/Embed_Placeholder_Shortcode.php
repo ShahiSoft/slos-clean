@@ -17,7 +17,7 @@ namespace ShahiLegalFlowSuite\Shortcodes;
 
 use ShahiLegalFlowSuite\Core\I18n;
 
-// Exit if accessed directly.
+// Exit if accessed directly...
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -94,7 +94,7 @@ class Embed_Placeholder_Shortcode {
 	 * @return string HTML output
 	 */
 	public function render( $atts = array() ) {
-		// Parse attributes with defaults.
+		// Parse attributes with defaults...
 		$atts = shortcode_atts(
 			array(
 				'category' => 'marketing',
@@ -108,7 +108,7 @@ class Embed_Placeholder_Shortcode {
 			'slos_embed_placeholder'
 		);
 
-		// Sanitize inputs.
+		// Sanitize inputs...
 		$category = sanitize_key( $atts['category'] );
 		$url      = esc_url( $atts['url'] );
 		$title    = sanitize_text_field( $atts['title'] );
@@ -116,15 +116,15 @@ class Embed_Placeholder_Shortcode {
 		$width    = sanitize_text_field( $atts['width'] );
 		$height   = sanitize_text_field( $atts['height'] );
 
-		// Validate category.
+		// Validate category...
 		if ( ! in_array( $category, $this->valid_categories, true ) ) {
 			$category = 'marketing';
 		}
 
-		// Get category label.
+		// Get category label...
 		$category_label = $this->category_labels[ $category ] ?? ucfirst( $category );
 
-		// Default title and message if not provided.
+		// Default title and message if not provided...
 		if ( empty( $title ) ) {
 			$title = sprintf(
 				/* translators: %s: category label */
@@ -141,7 +141,7 @@ class Embed_Placeholder_Shortcode {
 			);
 		}
 
-		// Build inline style.
+		// Build inline style...
 		$style = array();
 		if ( $width ) {
 			$style[] = 'width: ' . esc_attr( $width ) . ( is_numeric( $width ) ? 'px' : '' );
@@ -151,7 +151,7 @@ class Embed_Placeholder_Shortcode {
 		}
 		$style_attr = ! empty( $style ) ? 'style="' . esc_attr( implode( '; ', $style ) ) . '"' : '';
 
-		// Build data attributes.
+		// Build data attributes...
 		$data_attrs = array(
 			'data-slos-placeholder' => '1',
 			'data-category'         => esc_attr( $category ),

@@ -26,7 +26,7 @@ final class AutocompleteFixer extends AbstractFixer {
 	 * Mapping of field patterns to autocomplete values
 	 */
 	private const AUTOCOMPLETE_MAP = array(
-		// Names
+		// Names..
 		'name'             => 'name',
 		'full_name'        => 'name',
 		'fullname'         => 'name',
@@ -38,7 +38,7 @@ final class AutocompleteFixer extends AbstractFixer {
 		'lname'            => 'family-name',
 		'surname'          => 'family-name',
 
-		// Contact
+		// Contact..
 		'email'            => 'email',
 		'e-mail'           => 'email',
 		'phone'            => 'tel',
@@ -46,7 +46,7 @@ final class AutocompleteFixer extends AbstractFixer {
 		'tel'              => 'tel',
 		'mobile'           => 'tel',
 
-		// Address
+		// Address..
 		'address'          => 'street-address',
 		'address1'         => 'address-line1',
 		'address2'         => 'address-line2',
@@ -59,7 +59,7 @@ final class AutocompleteFixer extends AbstractFixer {
 		'postcode'         => 'postal-code',
 		'country'          => 'country-name',
 
-		// Auth
+		// Auth..
 		'username'         => 'username',
 		'user'             => 'username',
 		'password'         => 'current-password',
@@ -68,7 +68,7 @@ final class AutocompleteFixer extends AbstractFixer {
 		'newpassword'      => 'new-password',
 		'confirm_password' => 'new-password',
 
-		// Payment (credit card)
+		// Payment (credit card)..
 		'cc_number'        => 'cc-number',
 		'card_number'      => 'cc-number',
 		'cardnumber'       => 'cc-number',
@@ -79,7 +79,7 @@ final class AutocompleteFixer extends AbstractFixer {
 		'cvv'              => 'cc-csc',
 		'cvc'              => 'cc-csc',
 
-		// Personal
+		// Personal..
 		'birthday'         => 'bday',
 		'dob'              => 'bday',
 		'birthdate'        => 'bday',
@@ -127,12 +127,12 @@ final class AutocompleteFixer extends AbstractFixer {
 		foreach ( $inputs as $input ) {
 			$type = strtolower( $input->getAttribute( 'type' ) ?: 'text' );
 
-			// Only process relevant input types
+			// Only process relevant input types..
 			if ( ! in_array( $type, array( 'text', 'email', 'tel', 'password', 'search', 'url' ), true ) ) {
 				continue;
 			}
 
-			// Handle email/tel type inputs specially
+			// Handle email/tel type inputs specially..
 			if ( $type === 'email' ) {
 				$input->setAttribute( 'autocomplete', 'email' );
 				++$fixes_applied;
@@ -153,7 +153,7 @@ final class AutocompleteFixer extends AbstractFixer {
 				continue;
 			}
 
-			// Try to determine autocomplete value from name, id, or placeholder
+			// Try to determine autocomplete value from name, id, or placeholder..
 			$name        = strtolower( $input->getAttribute( 'name' ) );
 			$id          = strtolower( $input->getAttribute( 'id' ) );
 			$placeholder = strtolower( $input->getAttribute( 'placeholder' ) );
@@ -187,9 +187,9 @@ final class AutocompleteFixer extends AbstractFixer {
 	 * Determine the appropriate autocomplete value
 	 */
 	private function determine_autocomplete( string $name, string $id, string $placeholder, string $type ): ?string {
-		// Check each against the mapping
+		// Check each against the mapping..
 		foreach ( self::AUTOCOMPLETE_MAP as $pattern => $value ) {
-			// Check if any identifier contains the pattern
+			// Check if any identifier contains the pattern..
 			if ( $this->contains_pattern( $name, $pattern ) ||
 				$this->contains_pattern( $id, $pattern ) ||
 				$this->contains_pattern( $placeholder, $pattern ) ) {
@@ -197,7 +197,7 @@ final class AutocompleteFixer extends AbstractFixer {
 			}
 		}
 
-		// Special handling for password type
+		// Special handling for password type..
 		if ( $type === 'password' ) {
 			return 'current-password';
 		}
@@ -213,7 +213,7 @@ final class AutocompleteFixer extends AbstractFixer {
 			return false;
 		}
 
-		// Normalize separators
+		// Normalize separators..
 		$haystack = str_replace( array( '-', '_', ' ' ), '', $haystack );
 		$pattern  = str_replace( array( '-', '_', ' ' ), '', $pattern );
 

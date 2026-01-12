@@ -16,7 +16,7 @@ namespace ShahiLegalFlowSuite\Services;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
-// Prevent direct access
+// Prevent direct access..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -86,7 +86,7 @@ class PDF_Generator {
 		$this->options->set( 'defaultFont', 'DejaVu Sans' );
 		$this->options->set( 'chroot', ABSPATH );
 
-		// Apply filters for custom options
+		// Apply filters for custom options..
 		$custom_options = apply_filters( 'slos_pdf_dompdf_options', array() );
 		foreach ( $custom_options as $key => $value ) {
 			$this->options->set( $key, $value );
@@ -104,7 +104,7 @@ class PDF_Generator {
 	 * @return string|WP_Error PDF binary data or error
 	 */
 	public function generate_pdf( $document, $options = array() ) {
-		// Validate input
+		// Validate input..
 		if ( empty( $document['content'] ) ) {
 			return new \WP_Error(
 				'empty_content',
@@ -112,7 +112,7 @@ class PDF_Generator {
 			);
 		}
 
-		// Check cache first
+		// Check cache first..
 		$cache_key = $this->get_cache_key( $document );
 		if ( ! isset( $options['skip_cache'] ) || ! $options['skip_cache'] ) {
 			$cached_pdf = $this->get_cached_pdf( $cache_key );
@@ -122,24 +122,24 @@ class PDF_Generator {
 		}
 
 		try {
-			// Generate HTML with branding and styling
+			// Generate HTML with branding and styling..
 			$html = $this->prepare_html( $document, $options );
 
-			// Load HTML into DOMPDF
+			// Load HTML into DOMPDF..
 			$this->dompdf->loadHtml( $html );
 
-			// Set paper size and orientation
+			// Set paper size and orientation..
 			$paper_size  = isset( $options['paper_size'] ) ? $options['paper_size'] : 'A4';
 			$orientation = isset( $options['orientation'] ) ? $options['orientation'] : 'portrait';
 			$this->dompdf->setPaper( $paper_size, $orientation );
 
-			// Render PDF
+			// Render PDF..
 			$this->dompdf->render();
 
-			// Get PDF output
+			// Get PDF output..
 			$pdf_output = $this->dompdf->output();
 
-			// Cache the PDF
+			// Cache the PDF..
 			if ( ! isset( $options['skip_cache'] ) || ! $options['skip_cache'] ) {
 				$this->cache_pdf( $cache_key, $pdf_output );
 			}
@@ -171,20 +171,20 @@ class PDF_Generator {
 		$metadata = isset( $document['metadata'] ) ? $document['metadata'] : array();
 		$title    = isset( $document['title'] ) ? $document['title'] : __( 'Legal Document', 'shahi-legalflowsuite' );
 
-		// Get CSS styles
+		// Get CSS styles..
 		$css = $this->get_pdf_styles();
 
-		// Build header
+		// Build header..
 		$header = $this->build_header( $document, $metadata );
 
-		// Check if we need table of contents
+		// Check if we need table of contents..
 		$include_toc = isset( $options['include_toc'] ) ? $options['include_toc'] : $this->should_include_toc( $content );
 		$toc         = $include_toc ? $this->generate_toc( $content ) : '';
 
-		// Build footer
+		// Build footer..
 		$footer = $this->build_footer( $document, $metadata );
 
-		// Assemble complete HTML
+		// Assemble complete HTML..
 		$html = sprintf(
 			'<!DOCTYPE html>
 <html lang="en">
@@ -235,15 +235,15 @@ class PDF_Generator {
 
 		$header = '<div class="pdf-header">';
 
-		// Logo if available
+		// Logo if available..
 		if ( $logo_url ) {
 			$header .= sprintf( '<div class="pdf-logo"><img src="%s" alt="%s" /></div>', esc_url( $logo_url ), esc_attr( $site_name ) );
 		}
 
-		// Site name
+		// Site name..
 		$header .= sprintf( '<div class="pdf-site-name">%s</div>', esc_html( $site_name ) );
 
-		// Document info
+		// Document info..
 		$header .= '<div class="pdf-doc-info">';
 		if ( $title ) {
 			$header .= sprintf( '<h1 class="pdf-title">%s</h1>', esc_html( $title ) );
@@ -301,7 +301,7 @@ class PDF_Generator {
 	 * @return string TOC HTML
 	 */
 	private function generate_toc( $content ) {
-		// Parse headings from content
+		// Parse headings from content..
 		$headings = array();
 		preg_match_all( '/<h([2-4])[^>]*>(.*?)<\/h\1>/i', $content, $matches, PREG_SET_ORDER );
 
@@ -318,8 +318,8 @@ class PDF_Generator {
 			$heading = strip_tags( $match[2] );
 			$id      = 'toc-' . $index;
 
-			// Add ID to heading in content (this would require modifying content)
-			// For simplicity, just list headings
+			// Add ID to heading in content (this would require modifying content)..
+			// For simplicity, just list headings..
 			$indent_class = 'toc-level-' . $level;
 			$toc         .= sprintf(
 				'<li class="%s">%s</li>',
@@ -341,14 +341,14 @@ class PDF_Generator {
 	 * @return bool True if TOC should be included
 	 */
 	private function should_include_toc( $content ) {
-		// Count words
+		// Count words..
 		$text       = wp_strip_all_tags( $content );
 		$word_count = str_word_count( $text );
 
-		// Count headings
+		// Count headings..
 		$heading_count = preg_match_all( '/<h[2-4][^>]*>/i', $content );
 
-		// Include TOC if content is long and has multiple sections
+		// Include TOC if content is long and has multiple sections..
 		return ( $word_count >= self::TOC_MIN_WORDS && $heading_count >= 3 );
 	}
 
@@ -364,7 +364,7 @@ class PDF_Generator {
 		if ( file_exists( $css_file ) ) {
 			$css = file_get_contents( $css_file );
 		} else {
-			// Fallback inline styles
+			// Fallback inline styles..
 			$css = $this->get_default_styles();
 		}
 
@@ -550,13 +550,13 @@ class PDF_Generator {
 	 * @return string|false PDF data or false if not cached
 	 */
 	private function get_cached_pdf( $cache_key ) {
-		// Try object cache first
+		// Try object cache first..
 		$cached = wp_cache_get( $cache_key, self::CACHE_GROUP );
 		if ( $cached ) {
 			return $cached;
 		}
 
-		// Try transient
+		// Try transient..
 		$cached = get_transient( self::CACHE_GROUP . '_' . $cache_key );
 		return $cached ? $cached : false;
 	}
@@ -570,10 +570,10 @@ class PDF_Generator {
 	 * @return bool Success
 	 */
 	private function cache_pdf( $cache_key, $pdf_data ) {
-		// Store in object cache
+		// Store in object cache..
 		wp_cache_set( $cache_key, $pdf_data, self::CACHE_GROUP, self::CACHE_EXPIRATION );
 
-		// Store in transient as fallback
+		// Store in transient as fallback..
 		return set_transient( self::CACHE_GROUP . '_' . $cache_key, $pdf_data, self::CACHE_EXPIRATION );
 	}
 
@@ -587,13 +587,13 @@ class PDF_Generator {
 	 */
 	public function clear_cache( $document_id, $version = null ) {
 		if ( $version !== null ) {
-			// Clear specific version
+			// Clear specific version..
 			$cache_key = sprintf( 'pdf_%d_v%d', $document_id, $version );
 			wp_cache_delete( $cache_key, self::CACHE_GROUP );
 			delete_transient( self::CACHE_GROUP . '_' . $cache_key );
 		} else {
-			// Clear all versions - would need to track all version numbers
-			// For now, just clear common version range
+			// Clear all versions - would need to track all version numbers..
+			// For now, just clear common version range..
 			for ( $v = 1; $v <= 100; $v++ ) {
 				$cache_key = sprintf( 'pdf_%d_v%d', $document_id, $v );
 				wp_cache_delete( $cache_key, self::CACHE_GROUP );
@@ -614,12 +614,12 @@ class PDF_Generator {
 	 * @return void
 	 */
 	public function stream_pdf( $pdf_data, $filename = 'document.pdf', $attachment = true ) {
-		// Clear any output buffers
+		// Clear any output buffers..
 		if ( ob_get_level() ) {
 			ob_end_clean();
 		}
 
-		// Set headers
+		// Set headers..
 		header( 'Content-Type: application/pdf' );
 		header( 'Content-Length: ' . strlen( $pdf_data ) );
 		header( 'Cache-Control: private, max-age=0, must-revalidate' );
@@ -631,7 +631,7 @@ class PDF_Generator {
 			header( 'Content-Disposition: inline; filename="' . $filename . '"' );
 		}
 
-		// Output PDF
+		// Output PDF..
 		echo $pdf_data;
 		exit;
 	}
@@ -648,7 +648,7 @@ class PDF_Generator {
 		$version = isset( $document['version'] ) ? $document['version'] : '1';
 		$date    = date( 'Y-m-d' );
 
-		// Sanitize title for filename
+		// Sanitize title for filename..
 		$title = sanitize_file_name( $title );
 		$title = str_replace( ' ', '-', $title );
 		$title = strtolower( $title );

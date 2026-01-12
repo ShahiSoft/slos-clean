@@ -17,7 +17,7 @@ class AriaRoleCheck extends AbstractCheck {
 	 * Valid WAI-ARIA roles (ARIA 1.2 complete list with 1.3 additions)
 	 */
 	private $valid_roles = array(
-		// Widget roles
+		// Widget roles..
 		'alert',
 		'alertdialog',
 		'button',
@@ -47,7 +47,7 @@ class AriaRoleCheck extends AbstractCheck {
 		'tooltip',
 		'treeitem',
 
-		// Composite widget roles
+		// Composite widget roles..
 		'grid',
 		'listbox',
 		'menu',
@@ -57,7 +57,7 @@ class AriaRoleCheck extends AbstractCheck {
 		'tree',
 		'treegrid',
 
-		// Document structure roles
+		// Document structure roles..
 		'application',
 		'article',
 		'blockquote',     // ARIA 1.2
@@ -98,7 +98,7 @@ class AriaRoleCheck extends AbstractCheck {
 		'time',           // ARIA 1.2
 		'toolbar',
 
-		// Landmark roles
+		// Landmark roles..
 		'banner',
 		'complementary',
 		'contentinfo',
@@ -108,15 +108,15 @@ class AriaRoleCheck extends AbstractCheck {
 		'region',
 		'search',
 
-		// Live region roles
+		// Live region roles..
 		'status',
 		'timer',
 
-		// Window roles
+		// Window roles..
 		'alertdialog',
 		'dialog',
 
-		// ARIA 1.3 additions (draft - but in use)
+		// ARIA 1.3 additions (draft - but in use)..
 		'comment',        // ARIA 1.3
 		'suggestion',     // ARIA 1.3
 	);
@@ -180,7 +180,7 @@ class AriaRoleCheck extends AbstractCheck {
 		foreach ( $elements as $element ) {
 			$role_attr = $element->getAttribute( 'role' );
 
-			// Handle multiple roles (space-separated)
+			// Handle multiple roles (space-separated)..
 			$roles = preg_split( '/\s+/', strtolower( trim( $role_attr ) ) );
 
 			foreach ( $roles as $role ) {
@@ -188,7 +188,7 @@ class AriaRoleCheck extends AbstractCheck {
 					continue;
 				}
 
-				// Check for abstract roles
+				// Check for abstract roles..
 				if ( in_array( $role, $this->abstract_roles, true ) ) {
 					$issues[] = array(
 						'element'    => $element->tagName,
@@ -199,7 +199,7 @@ class AriaRoleCheck extends AbstractCheck {
 					continue;
 				}
 
-				// Check for deprecated roles
+				// Check for deprecated roles..
 				if ( isset( $this->deprecated_roles[ $role ] ) ) {
 					$issues[] = array(
 						'element'    => $element->tagName,
@@ -211,9 +211,9 @@ class AriaRoleCheck extends AbstractCheck {
 					continue;
 				}
 
-				// Check for invalid roles
+				// Check for invalid roles..
 				if ( ! in_array( $role, $this->valid_roles, true ) ) {
-					// Check for common typos
+					// Check for common typos..
 					$suggestion = $this->get_role_suggestion( $role );
 					$message    = "The role '$role' is not a valid WAI-ARIA role.";
 
@@ -230,7 +230,7 @@ class AriaRoleCheck extends AbstractCheck {
 				}
 			}
 
-			// Check for redundant roles on native elements
+			// Check for redundant roles on native elements..
 			$this->check_redundant_roles( $element, $roles, $issues );
 		}
 
@@ -241,7 +241,7 @@ class AriaRoleCheck extends AbstractCheck {
 	 * Get suggestion for misspelled role
 	 */
 	private function get_role_suggestion( $role ) {
-		// Common typos and suggestions
+		// Common typos and suggestions..
 		$common_typos = array(
 			'buttn'      => 'button',
 			'buton'      => 'button',
@@ -267,7 +267,7 @@ class AriaRoleCheck extends AbstractCheck {
 			return $common_typos[ $role ];
 		}
 
-		// Levenshtein distance check for close matches
+		// Levenshtein distance check for close matches..
 		foreach ( $this->valid_roles as $valid_role ) {
 			if ( levenshtein( $role, $valid_role ) <= 2 ) {
 				return $valid_role;
@@ -283,7 +283,7 @@ class AriaRoleCheck extends AbstractCheck {
 	private function check_redundant_roles( $element, $roles, &$issues ) {
 		$tag = strtolower( $element->tagName );
 
-		// Native element to implicit role mapping
+		// Native element to implicit role mapping..
 		$implicit_roles = array(
 			'button'  => 'button',
 			'a'       => 'link',

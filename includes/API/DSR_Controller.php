@@ -22,7 +22,7 @@ use WP_REST_Request;
 use WP_REST_Response;
 use WP_Error;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -88,7 +88,7 @@ class DSR_Controller extends Base_REST_Controller {
 	 * @return void
 	 */
 	public function register_routes() {
-		// Public: Submit request
+		// Public: Submit request..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/submit',
@@ -132,7 +132,7 @@ class DSR_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Public: Verify email
+		// Public: Verify email..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/verify',
@@ -151,7 +151,7 @@ class DSR_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Public: Check status
+		// Public: Check status..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/status',
@@ -170,7 +170,7 @@ class DSR_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Admin: List requests
+		// Admin: List requests..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base,
@@ -211,7 +211,7 @@ class DSR_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Admin: Get single request
+		// Admin: Get single request..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/(?P<id>[\d]+)',
@@ -229,7 +229,7 @@ class DSR_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Admin: Assign request
+		// Admin: Assign request..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/(?P<id>[\d]+)/assign',
@@ -252,7 +252,7 @@ class DSR_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Admin: Add note
+		// Admin: Add note..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/(?P<id>[\d]+)/note',
@@ -276,7 +276,7 @@ class DSR_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Admin: Update status
+		// Admin: Update status..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/(?P<id>[\d]+)/status',
@@ -311,7 +311,7 @@ class DSR_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Admin: Generate export package
+		// Admin: Generate export package..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/(?P<id>[\d]+)/export',
@@ -329,7 +329,7 @@ class DSR_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Admin: Execute erasure
+		// Admin: Execute erasure..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/(?P<id>[\d]+)/erase',
@@ -352,7 +352,7 @@ class DSR_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Admin: Get timeline
+		// Admin: Get timeline..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/(?P<id>[\d]+)/timeline',
@@ -370,7 +370,7 @@ class DSR_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Admin: Get statistics
+		// Admin: Get statistics..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/stats',
@@ -381,7 +381,7 @@ class DSR_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Admin: Get audit logs
+		// Admin: Get audit logs..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/logs',
@@ -447,7 +447,7 @@ class DSR_Controller extends Base_REST_Controller {
 		$regulation   = $request->get_param( 'regulation' );
 		$details      = $request->get_param( 'details' );
 
-		// Submit via service
+		// Submit via service..
 		$result = $this->service->submit_request(
 			$user_id,
 			$request_type,
@@ -457,7 +457,7 @@ class DSR_Controller extends Base_REST_Controller {
 		);
 
 		if ( false === $result ) {
-			// Get errors from service
+			// Get errors from service..
 			$errors = $this->service->get_errors();
 			if ( ! empty( $errors ) ) {
 				$first_error = reset( $errors );
@@ -475,7 +475,7 @@ class DSR_Controller extends Base_REST_Controller {
 			);
 		}
 
-		// Retrieve created request
+		// Retrieve created request..
 		$dsr_request = $this->repository->find( $result );
 
 		if ( ! $dsr_request ) {
@@ -486,7 +486,7 @@ class DSR_Controller extends Base_REST_Controller {
 			);
 		}
 
-		// Return success with request details
+		// Return success with request details..
 		return new WP_REST_Response(
 			array(
 				'success'      => true,
@@ -511,7 +511,7 @@ class DSR_Controller extends Base_REST_Controller {
 	public function verify_email( WP_REST_Request $request ) {
 		$token = $request->get_param( 'token' );
 
-		// Verify via service
+		// Verify via service..
 		$result = $this->service->verify_email( $token );
 
 		if ( false === $result ) {
@@ -551,7 +551,7 @@ class DSR_Controller extends Base_REST_Controller {
 	public function check_status( WP_REST_Request $request ) {
 		$token = $request->get_param( 'token' );
 
-		// Find by token
+		// Find by token..
 		$dsr_request = $this->repository->find_by_token( $token );
 
 		if ( ! $dsr_request ) {
@@ -562,7 +562,7 @@ class DSR_Controller extends Base_REST_Controller {
 			);
 		}
 
-		// Prepare response data (limited public view)
+		// Prepare response data (limited public view)..
 		$response_data = array(
 			'id'           => $dsr_request->id,
 			'type'         => $dsr_request->request_type,
@@ -573,7 +573,7 @@ class DSR_Controller extends Base_REST_Controller {
 			'sla_days'     => $dsr_request->sla_days,
 		);
 
-		// Add completion date if completed
+		// Add completion date if completed..
 		if ( 'completed' === $dsr_request->status && ! empty( $dsr_request->completed_at ) ) {
 			$response_data['completed_at'] = $dsr_request->completed_at;
 		}
@@ -595,7 +595,7 @@ class DSR_Controller extends Base_REST_Controller {
 	 * @return WP_REST_Response|WP_Error Response or error
 	 */
 	public function list_requests( WP_REST_Request $request ) {
-		// Build filters
+		// Build filters..
 		$filters = array();
 
 		if ( $request->get_param( 'status' ) ) {
@@ -610,18 +610,18 @@ class DSR_Controller extends Base_REST_Controller {
 			$filters['regulation'] = $request->get_param( 'regulation' );
 		}
 
-		// Pagination
+		// Pagination..
 		$page     = $request->get_param( 'page' );
 		$per_page = $request->get_param( 'per_page' );
 		$offset   = ( $page - 1 ) * $per_page;
 
-		// Get requests
+		// Get requests..
 		$requests = $this->repository->list_requests( $filters, $per_page, $offset );
 
-		// Get statistics
+		// Get statistics..
 		$stats = $this->repository->stats_by_status();
 
-		// Get total count for pagination
+		// Get total count for pagination..
 		$total = $this->repository->count_requests( $filters );
 
 		return new WP_REST_Response(
@@ -648,7 +648,7 @@ class DSR_Controller extends Base_REST_Controller {
 	public function get_request( WP_REST_Request $request ) {
 		$id = (int) $request->get_param( 'id' );
 
-		// Find request
+		// Find request..
 		$dsr_request = $this->repository->find( $id );
 
 		if ( ! $dsr_request ) {
@@ -679,7 +679,7 @@ class DSR_Controller extends Base_REST_Controller {
 		$id       = (int) $request->get_param( 'id' );
 		$assignee = (int) $request->get_param( 'assignee' );
 
-		// Assign via service
+		// Assign via service..
 		$result = $this->service->assign_request( $id, $assignee );
 
 		if ( false === $result ) {
@@ -720,10 +720,10 @@ class DSR_Controller extends Base_REST_Controller {
 		$id   = (int) $request->get_param( 'id' );
 		$note = $request->get_param( 'note' );
 
-		// Get current user
+		// Get current user..
 		$author = get_current_user_id();
 
-		// Add note via service
+		// Add note via service..
 		$result = $this->service->add_note( $id, $note, $author );
 
 		if ( false === $result ) {
@@ -766,7 +766,7 @@ class DSR_Controller extends Base_REST_Controller {
 		$notes    = $request->get_param( 'notes' );
 		$metadata = $request->get_param( 'metadata' );
 
-		// Build metadata
+		// Build metadata..
 		if ( ! is_array( $metadata ) ) {
 			$metadata = array();
 		}
@@ -777,7 +777,7 @@ class DSR_Controller extends Base_REST_Controller {
 			$metadata['notes'] = $notes;
 		}
 
-		// Update via service
+		// Update via service..
 		$result = $this->service->transition( $id, $status, $metadata );
 
 		if ( false === $result ) {
@@ -817,7 +817,7 @@ class DSR_Controller extends Base_REST_Controller {
 	public function generate_export( WP_REST_Request $request ) {
 		$id = (int) $request->get_param( 'id' );
 
-		// Generate via service
+		// Generate via service..
 		$token = $this->service->generate_export_package( $id );
 
 		if ( false === $token ) {
@@ -859,7 +859,7 @@ class DSR_Controller extends Base_REST_Controller {
 		$id      = (int) $request->get_param( 'id' );
 		$dry_run = (bool) $request->get_param( 'dry_run' );
 
-		// If dry-run, get preview
+		// If dry-run, get preview..
 		if ( $dry_run ) {
 			$erasure_service = new \ShahiLegalFlowSuite\Services\DSR_Erasure_Service();
 			$preview         = $erasure_service->get_erasure_preview( $id );
@@ -882,7 +882,7 @@ class DSR_Controller extends Base_REST_Controller {
 			);
 		}
 
-		// Execute via service
+		// Execute via service..
 		$result = $this->service->execute_erasure( $id );
 
 		if ( false === $result ) {
@@ -922,7 +922,7 @@ class DSR_Controller extends Base_REST_Controller {
 	public function get_timeline( WP_REST_Request $request ) {
 		$id = (int) $request->get_param( 'id' );
 
-		// Get timeline via service
+		// Get timeline via service..
 		$timeline = $this->service->get_timeline( $id );
 
 		if ( false === $timeline ) {
@@ -960,7 +960,7 @@ class DSR_Controller extends Base_REST_Controller {
 	 * @return WP_REST_Response|WP_Error Response or error
 	 */
 	public function get_statistics( WP_REST_Request $request ) {
-		// Get stats from repository
+		// Get stats from repository..
 		$stats_by_status     = $this->repository->stats_by_status();
 		$stats_by_type       = $this->repository->stats_by_type();
 		$stats_by_regulation = $this->repository->stats_by_regulation();
@@ -1052,7 +1052,7 @@ class DSR_Controller extends Base_REST_Controller {
 			);
 		}
 
-		// Check for admin or DSR-specific capability
+		// Check for admin or DSR-specific capability..
 		if ( current_user_can( 'manage_options' ) || current_user_can( 'slos_manage_dsr' ) ) {
 			return true;
 		}

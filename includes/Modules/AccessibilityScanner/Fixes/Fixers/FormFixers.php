@@ -19,7 +19,7 @@ class MissingFormLabelFixer extends BaseFixer {
 		$xpath       = new \DOMXPath( $dom );
 		$fixed_count = 0;
 
-		// Get all inputs that might need labels
+		// Get all inputs that might need labels..
 		$inputs       = $dom->getElementsByTagName( 'input' );
 		$inputs_array = array();
 		foreach ( $inputs as $input ) {
@@ -29,17 +29,17 @@ class MissingFormLabelFixer extends BaseFixer {
 		foreach ( $inputs_array as $input ) {
 			$type = strtolower( $input->getAttribute( 'type' ) ?: 'text' );
 
-			// Skip hidden, submit, button, checkbox, radio (unless missing label)
+			// Skip hidden, submit, button, checkbox, radio (unless missing label)..
 			if ( in_array( $type, array( 'hidden', 'submit', 'button', 'reset', 'image' ), true ) ) {
 				continue;
 			}
 
-			// Check if already has aria-label or aria-labelledby
+			// Check if already has aria-label or aria-labelledby..
 			if ( $input->hasAttribute( 'aria-label' ) || $input->hasAttribute( 'aria-labelledby' ) ) {
 				continue;
 			}
 
-			// Check if has associated label element
+			// Check if has associated label element..
 			$input_id = $input->getAttribute( 'id' );
 			if ( $input_id ) {
 				$labels = $xpath->query( "//label[@for='" . $input_id . "']" );
@@ -48,7 +48,7 @@ class MissingFormLabelFixer extends BaseFixer {
 				}
 			}
 
-			// Check if wrapped in a label
+			// Check if wrapped in a label..
 			$parent = $input->parentNode;
 			while ( $parent && $parent->nodeName !== 'body' ) {
 				if ( strtolower( $parent->nodeName ) === 'label' ) {
@@ -57,7 +57,7 @@ class MissingFormLabelFixer extends BaseFixer {
 				$parent = $parent->parentNode;
 			}
 
-			// Need to add aria-label
+			// Need to add aria-label..
 			$name = $input->getAttribute( 'name' ) ?: $input->getAttribute( 'placeholder' ) ?: $input->getAttribute( 'id' );
 			if ( $name ) {
 				$label = ucfirst( str_replace( array( '_', '-' ), ' ', $name ) );
@@ -66,7 +66,7 @@ class MissingFormLabelFixer extends BaseFixer {
 			}
 		}
 
-		// Handle textareas
+		// Handle textareas..
 		$textareas       = $dom->getElementsByTagName( 'textarea' );
 		$textareas_array = array();
 		foreach ( $textareas as $textarea ) {
@@ -94,7 +94,7 @@ class MissingFormLabelFixer extends BaseFixer {
 			}
 		}
 
-		// Handle select elements
+		// Handle select elements..
 		$selects       = $dom->getElementsByTagName( 'select' );
 		$selects_array = array();
 		foreach ( $selects as $select ) {
@@ -222,7 +222,7 @@ class ErrorMessageFixer extends BaseFixer {
 		foreach ( $inputs as $input ) {
 			$id = $input->getAttribute( 'id' );
 			if ( $id ) {
-				// Look for error message nearby
+				// Look for error message nearby..
 				$parent = $input->parentNode;
 				if ( $parent && $parent->nextSibling ) {
 					$next = $parent->nextSibling;
@@ -383,7 +383,7 @@ class CustomControlFixer extends BaseFixer {
 		$divs        = $dom->getElementsByTagName( 'div' );
 		$fixed_count = 0;
 
-		// Find elements with click handlers (custom buttons/controls)
+		// Find elements with click handlers (custom buttons/controls)..
 		foreach ( $divs as $div ) {
 			$class   = $div->getAttribute( 'class' );
 			$onclick = $div->getAttribute( 'onclick' );
@@ -447,7 +447,7 @@ class OrphanedLabelFixer extends BaseFixer {
 
 		foreach ( $labels as $label ) {
 			if ( ! $label->hasAttribute( 'for' ) ) {
-				// Find next input sibling
+				// Find next input sibling..
 				$next = $label->nextSibling;
 				while ( $next ) {
 					if ( $next->nodeType === XML_ELEMENT_NODE ) {

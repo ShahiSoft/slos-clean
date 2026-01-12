@@ -62,19 +62,19 @@ final class MetaViewportFixer extends AbstractFixer {
 			$original_content = $content_attr;
 			$needs_fix        = false;
 
-			// Check for user-scalable=no
+			// Check for user-scalable=no..
 			if ( preg_match( '/user-scalable\s*=\s*no/i', $content_attr ) ) {
 				$content_attr = preg_replace( '/user-scalable\s*=\s*no/i', 'user-scalable=yes', $content_attr );
 				$needs_fix    = true;
 			}
 
-			// Check for maximum-scale=1.0 or similar restrictive values
+			// Check for maximum-scale=1.0 or similar restrictive values..
 			if ( preg_match( '/maximum-scale\s*=\s*1(\.0)?/i', $content_attr ) ) {
 				$content_attr = preg_replace( '/maximum-scale\s*=\s*1(\.0)?/i', 'maximum-scale=5.0', $content_attr );
 				$needs_fix    = true;
 			}
 
-			// Check for minimum-scale too high
+			// Check for minimum-scale too high..
 			if ( preg_match( '/minimum-scale\s*=\s*([0-9.]+)/i', $content_attr, $matches ) ) {
 				if ( (float) $matches[1] > 0.5 ) {
 					$content_attr = preg_replace( '/minimum-scale\s*=\s*[0-9.]+/i', 'minimum-scale=0.5', $content_attr );

@@ -18,7 +18,7 @@ use ShahiLegalFlowSuite\Services\Profile_Validator;
 use ShahiLegalFlowSuite\Database\Repositories\Company_Profile_Repository;
 use ShahiLegalFlowSuite\Database\Migrations\Migration_Company_Profile;
 
-// Exit if accessed directly.
+// Exit if accessed directly...
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -92,15 +92,15 @@ class Profile_Wizard {
 	 * @return void
 	 */
 	public function init(): void {
-		// Check if feature is enabled
+		// Check if feature is enabled..
 		if ( ! slos_is_feature_enabled( 'company_wizard' ) ) {
 			return;
 		}
 
-		// Register admin menu
+		// Register admin menu..
 		add_action( 'admin_menu', array( $this, 'register_menu' ), 25 );
 
-		// Register AJAX handlers
+		// Register AJAX handlers..
 		add_action( 'wp_ajax_slos_profile_get', array( $this, 'ajax_get_profile' ) );
 		add_action( 'wp_ajax_slos_profile_save_step', array( $this, 'ajax_save_step' ) );
 		add_action( 'wp_ajax_slos_profile_get_step', array( $this, 'ajax_get_step' ) );
@@ -108,7 +108,7 @@ class Profile_Wizard {
 		add_action( 'wp_ajax_slos_profile_get_completion', array( $this, 'ajax_get_completion' ) );
 		add_action( 'wp_ajax_slos_profile_reset', array( $this, 'ajax_reset_profile' ) );
 
-		// Enqueue scripts
+		// Enqueue scripts..
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 	}
 
@@ -137,7 +137,7 @@ class Profile_Wizard {
 	 * @return void
 	 */
 	public function enqueue_assets( string $hook ): void {
-		// Only load on wizard page
+		// Only load on wizard page..
 		if ( $this->page_hook !== $hook ) {
 			return;
 		}
@@ -145,7 +145,7 @@ class Profile_Wizard {
 		$plugin_url = SHAHI_LEGALFLOWSUITE_PLUGIN_URL;
 		$version    = SHAHI_LEGALFLOWSUITE_VERSION;
 
-		// Styles
+		// Styles..
 		wp_enqueue_style(
 			'slos-profile-wizard',
 			$plugin_url . 'assets/css/profile-wizard.css',
@@ -153,7 +153,7 @@ class Profile_Wizard {
 			$version
 		);
 
-		// Scripts
+		// Scripts..
 		wp_enqueue_script(
 			'slos-profile-wizard',
 			$plugin_url . 'assets/js/profile-wizard.js',
@@ -162,7 +162,7 @@ class Profile_Wizard {
 			true
 		);
 
-		// Get steps for JavaScript
+		// Get steps for JavaScript..
 		$steps     = $this->profile_service->get_steps();
 		$step_data = array();
 		foreach ( $steps as $num => $step ) {
@@ -174,7 +174,7 @@ class Profile_Wizard {
 			);
 		}
 
-		// Localize script data
+		// Localize script data..
 		wp_localize_script(
 			'slos-profile-wizard',
 			'slosProfileWizard',
@@ -221,7 +221,7 @@ class Profile_Wizard {
 	 * @return void
 	 */
 	public function render_wizard_page(): void {
-		// Security check
+		// Security check..
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( esc_html__( 'You do not have permission to access this page.', 'shahi-legalflowsuite' ) );
 		}
@@ -250,7 +250,7 @@ class Profile_Wizard {
 		foreach ( $step['fields'] as $field_path => $field ) {
 			$value = $this->get_nested_value( $profile ?? array(), $field_path );
 
-			// Apply default if empty
+			// Apply default if empty..
 			if ( empty( $value ) && isset( $field['default'] ) ) {
 				$value = $field['default'];
 			}
@@ -259,7 +259,7 @@ class Profile_Wizard {
 			$field_name = $field_path;
 			$required   = ! empty( $field['required'] );
 
-			// Check conditional display
+			// Check conditional display..
 			if ( isset( $field['condition'] ) ) {
 				$condition_met = $this->check_field_condition( $field['condition'], $profile );
 				if ( ! $condition_met ) {
@@ -269,7 +269,7 @@ class Profile_Wizard {
 
 			echo '<div class="slos-field-group" data-field="' . esc_attr( $field_path ) . '">';
 
-			// Label
+			// Label..
 			echo '<label for="' . esc_attr( $field_id ) . '" class="slos-field-label">';
 			echo esc_html( $field['label'] );
 			if ( $required ) {
@@ -277,15 +277,15 @@ class Profile_Wizard {
 			}
 			echo '</label>';
 
-			// Field input based on type
+			// Field input based on type..
 			$this->render_field_input( $field, $field_id, $field_name, $value );
 
-			// Help text
+			// Help text..
 			if ( ! empty( $field['help'] ) ) {
 				echo '<p class="slos-field-help">' . esc_html( $field['help'] ) . '</p>';
 			}
 
-			// Error message placeholder
+			// Error message placeholder..
 			echo '<span class="slos-field-error" id="' . esc_attr( $field_id ) . '-error"></span>';
 
 			echo '</div>';
@@ -543,7 +543,7 @@ class Profile_Wizard {
 	 * @return int Current step number
 	 */
 	protected function get_current_step(): int {
-		// Check URL parameter first
+		// Check URL parameter first..
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( isset( $_GET['step'] ) ) {
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -553,7 +553,7 @@ class Profile_Wizard {
 			}
 		}
 
-		// Fall back to saved position or step 1
+		// Fall back to saved position or step 1..
 		$profile = $this->repository->get_profile();
 		if ( $profile && ! empty( $profile['_wizard_step'] ) ) {
 			return absint( $profile['_wizard_step'] );
@@ -611,13 +611,13 @@ class Profile_Wizard {
 			wp_send_json_error( array( 'message' => __( 'Invalid step number.', 'shahi-legalflowsuite' ) ) );
 		}
 
-		// Get current profile
+		// Get current profile..
 		$profile = $this->repository->get_profile();
 		if ( ! $profile ) {
 			$profile = Migration_Company_Profile::get_default_profile_structure();
 		}
 
-		// Get step definition
+		// Get step definition..
 		$steps    = $this->profile_service->get_steps();
 		$step_def = $steps[ $step_number ] ?? null;
 
@@ -625,7 +625,7 @@ class Profile_Wizard {
 			wp_send_json_error( array( 'message' => __( 'Step not found.', 'shahi-legalflowsuite' ) ) );
 		}
 
-		// Validate step data
+		// Validate step data..
 		$validation_result = $this->validator->validate_step( $step_number, $step_data, $profile );
 		$is_valid          = ( true === $validation_result );
 		$errors            = array();
@@ -633,23 +633,23 @@ class Profile_Wizard {
 			$errors = $validation_result->get_error_data()['errors'] ?? array();
 		}
 
-		// Merge step data into profile
+		// Merge step data into profile..
 		$profile = $this->merge_step_data( $profile, $step_data, $step_def['key'] );
 
-		// Update wizard position
+		// Update wizard position..
 		$profile['_wizard_step'] = $step_number + 1;
 
-		// Save profile
+		// Save profile..
 		$result = $this->repository->save_profile( $profile, true );
 
 		if ( ! $result ) {
 			wp_send_json_error( array( 'message' => __( 'Failed to save profile.', 'shahi-legalflowsuite' ) ) );
 		}
 
-		// Recalculate completion
+		// Recalculate completion..
 		$completion_percentage = $this->validator->calculate_completion( $profile );
 
-		// Increment profile version
+		// Increment profile version..
 		$version = (int) get_option( 'slos_profile_version', 0 );
 		update_option( 'slos_profile_version', $version + 1 );
 		update_option( 'slos_profile_last_updated', current_time( 'mysql' ) );
@@ -779,7 +779,7 @@ class Profile_Wizard {
 			wp_send_json_error( array( 'message' => __( 'Failed to reset profile.', 'shahi-legalflowsuite' ) ) );
 		}
 
-		// Increment version
+		// Increment version..
 		$version = (int) get_option( 'slos_profile_version', 0 );
 		update_option( 'slos_profile_version', $version + 1 );
 
@@ -811,7 +811,7 @@ class Profile_Wizard {
 			if ( is_array( $value ) ) {
 				$sanitized[ $key ] = $this->sanitize_step_data( $value );
 			} elseif ( is_string( $value ) ) {
-				// Check for specific field types
+				// Check for specific field types..
 				if ( strpos( $key, 'email' ) !== false ) {
 					$sanitized[ $key ] = sanitize_email( $value );
 				} elseif ( strpos( $key, 'url' ) !== false ) {
@@ -841,7 +841,7 @@ class Profile_Wizard {
 	 * @return array Updated profile
 	 */
 	protected function merge_step_data( array $profile, array $data, string $step_key ): array {
-		// Handle nested data structure
+		// Handle nested data structure..
 		foreach ( $data as $field_path => $value ) {
 			$this->set_nested_value( $profile, $field_path, $value );
 		}
@@ -885,7 +885,7 @@ class Profile_Wizard {
 			return array();
 		}
 
-		// Get step definition to know which fields to extract
+		// Get step definition to know which fields to extract..
 		$steps = $this->profile_service->get_steps();
 		foreach ( $steps as $step ) {
 			if ( $step['key'] === $step_key ) {
@@ -960,7 +960,7 @@ class Profile_Wizard {
 		foreach ( $fields as $path => $field ) {
 			$field['path'] = $path;
 
-			// Handle dynamic options
+			// Handle dynamic options..
 			if ( isset( $field['options'] ) && 'countries' === $field['options'] ) {
 				$field['options'] = Migration_Company_Profile::get_countries();
 			}

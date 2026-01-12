@@ -57,7 +57,7 @@ final class VideoAccessibilityFixer extends AbstractFixer {
 		$fixes_applied = 0;
 		$details       = array();
 
-		// Fix native video elements
+		// Fix native video elements..
 		$videos = $this->query( '//video' );
 		foreach ( $videos as $video ) {
 			$fixed = $this->fix_video_element( $video );
@@ -67,7 +67,7 @@ final class VideoAccessibilityFixer extends AbstractFixer {
 			}
 		}
 
-		// Fix video iframes (YouTube, Vimeo, etc.)
+		// Fix video iframes (YouTube, Vimeo, etc.)..
 		$iframes = $this->query( '//iframe[contains(@src, "youtube") or contains(@src, "vimeo") or contains(@src, "dailymotion") or contains(@src, "video")]' );
 		foreach ( $iframes as $iframe ) {
 			$fixed = $this->fix_video_iframe( $iframe );
@@ -100,21 +100,21 @@ final class VideoAccessibilityFixer extends AbstractFixer {
 		$modified   = false;
 		$fix_detail = array( 'type' => 'video' );
 
-		// Handle autoplay - mute if autoplaying
+		// Handle autoplay - mute if autoplaying..
 		if ( $video->hasAttribute( 'autoplay' ) && ! $video->hasAttribute( 'muted' ) ) {
 			$video->setAttribute( 'muted', '' );
 			$modified                     = true;
 			$fix_detail['muted_autoplay'] = true;
 		}
 
-		// Add controls if missing
+		// Add controls if missing..
 		if ( ! $video->hasAttribute( 'controls' ) ) {
 			$video->setAttribute( 'controls', '' );
 			$modified                     = true;
 			$fix_detail['controls_added'] = true;
 		}
 
-		// Add aria-label if missing
+		// Add aria-label if missing..
 		if ( ! $video->hasAttribute( 'aria-label' ) && ! $video->hasAttribute( 'aria-labelledby' ) ) {
 			$label = $this->derive_video_label( $video );
 			$video->setAttribute( 'aria-label', $label );
@@ -122,7 +122,7 @@ final class VideoAccessibilityFixer extends AbstractFixer {
 			$fix_detail['aria_label'] = $label;
 		}
 
-		// Check for captions track
+		// Check for captions track..
 		$tracks       = $video->getElementsByTagName( 'track' );
 		$has_captions = false;
 
@@ -135,13 +135,13 @@ final class VideoAccessibilityFixer extends AbstractFixer {
 		}
 
 		if ( ! $has_captions ) {
-			// Add placeholder comment for captions
+			// Add placeholder comment for captions..
 			$comment = $this->doc->createComment( ' TODO: Add captions track for accessibility compliance (WCAG 1.2.2) ' );
 			$video->appendChild( $comment );
 			$fix_detail['captions_reminder'] = true;
 		}
 
-		// Add preload="metadata" if no preload set
+		// Add preload="metadata" if no preload set..
 		if ( ! $video->hasAttribute( 'preload' ) ) {
 			$video->setAttribute( 'preload', 'metadata' );
 			$modified = true;
@@ -161,7 +161,7 @@ final class VideoAccessibilityFixer extends AbstractFixer {
 		$fix_detail = array( 'type' => 'iframe' );
 		$src        = $iframe->getAttribute( 'src' );
 
-		// Add title if missing
+		// Add title if missing..
 		if ( empty( $iframe->getAttribute( 'title' ) ) ) {
 			$title = $this->derive_iframe_title( $src );
 			$iframe->setAttribute( 'title', $title );
@@ -169,7 +169,7 @@ final class VideoAccessibilityFixer extends AbstractFixer {
 			$fix_detail['title_added'] = $title;
 		}
 
-		// Add allow for keyboard focus
+		// Add allow for keyboard focus..
 		$allow = $iframe->getAttribute( 'allow' ) ?: '';
 		if ( strpos( $allow, 'fullscreen' ) === false ) {
 			$allow = trim( $allow . '; fullscreen' );
@@ -177,7 +177,7 @@ final class VideoAccessibilityFixer extends AbstractFixer {
 			$modified = true;
 		}
 
-		// For YouTube, ensure captions are enabled by default
+		// For YouTube, ensure captions are enabled by default..
 		if ( strpos( $src, 'youtube' ) !== false ) {
 			$parsed = parse_url( $src );
 			parse_str( $parsed['query'] ?? '', $params );
@@ -202,7 +202,7 @@ final class VideoAccessibilityFixer extends AbstractFixer {
 	 * @return string
 	 */
 	private function derive_video_label( \DOMElement $video ): string {
-		// Check for poster image name
+		// Check for poster image name..
 		$poster = $video->getAttribute( 'poster' );
 		if ( ! empty( $poster ) ) {
 			$filename = basename( parse_url( $poster, PHP_URL_PATH ) );
@@ -213,7 +213,7 @@ final class VideoAccessibilityFixer extends AbstractFixer {
 			}
 		}
 
-		// Check for source file name
+		// Check for source file name..
 		$sources = $video->getElementsByTagName( 'source' );
 		if ( $sources->length > 0 ) {
 			$src      = $sources->item( 0 )->getAttribute( 'src' );
@@ -235,17 +235,17 @@ final class VideoAccessibilityFixer extends AbstractFixer {
 	 * @return string
 	 */
 	private function derive_iframe_title( string $src ): string {
-		// YouTube
+		// YouTube..
 		if ( strpos( $src, 'youtube' ) !== false || strpos( $src, 'youtu.be' ) !== false ) {
 			return __( 'YouTube video player', 'shahi-legalflowsuite' );
 		}
 
-		// Vimeo
+		// Vimeo..
 		if ( strpos( $src, 'vimeo' ) !== false ) {
 			return __( 'Vimeo video player', 'shahi-legalflowsuite' );
 		}
 
-		// Dailymotion
+		// Dailymotion..
 		if ( strpos( $src, 'dailymotion' ) !== false ) {
 			return __( 'Dailymotion video player', 'shahi-legalflowsuite' );
 		}

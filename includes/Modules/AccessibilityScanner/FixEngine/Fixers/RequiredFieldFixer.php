@@ -53,7 +53,7 @@ final class RequiredFieldFixer extends AbstractFixer {
 			return FixResult::error( $this->get_id(), 'Failed to parse HTML', $content );
 		}
 
-		// Find all required fields without aria-required
+		// Find all required fields without aria-required..
 		$required_fields = $this->query(
 			'//input[@required and not(@aria-required)] | ' .
 			'//select[@required and not(@aria-required)] | ' .

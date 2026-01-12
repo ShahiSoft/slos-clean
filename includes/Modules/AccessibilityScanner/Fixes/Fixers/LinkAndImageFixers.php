@@ -82,9 +82,9 @@ class RedundantAltTextFixer extends BaseFixer {
 		foreach ( $images as $img ) {
 			if ( $img->hasAttribute( 'alt' ) ) {
 				$alt = trim( $img->getAttribute( 'alt' ) );
-				// Remove "image of", "picture of", "photo of" prefix
+				// Remove "image of", "picture of", "photo of" prefix..
 				$alt = preg_replace( '/^(image|picture|photo) of /i', '', $alt );
-				// Remove redundant image/png extensions
+				// Remove redundant image/png extensions..
 				$alt = preg_replace( '/\.(jpg|jpeg|png|gif|webp)$/i', '', $alt );
 				$img->setAttribute( 'alt', $alt );
 				++$fixed_count;
@@ -108,12 +108,12 @@ class DecorativeImageFixer extends BaseFixer {
 		return 'Mark decorative images with empty alt'; }
 
 	public function fix( $content ) {
-		// For decorative images, set alt to empty and add aria-hidden
+		// For decorative images, set alt to empty and add aria-hidden..
 		$dom         = $this->get_dom( $content );
 		$images      = $dom->getElementsByTagName( 'img' );
 		$fixed_count = 0;
 
-		// Check for common decorative patterns
+		// Check for common decorative patterns..
 		foreach ( $images as $img ) {
 			$class = $img->getAttribute( 'class' );
 			$src   = $img->getAttribute( 'src' );
@@ -147,14 +147,14 @@ class MissingH1Fixer extends BaseFixer {
 		$h1s = $dom->getElementsByTagName( 'h1' );
 
 		if ( $h1s->length === 0 ) {
-			// Find the first H2 and promote it to H1
+			// Find the first H2 and promote it to H1..
 			$h2s = $dom->getElementsByTagName( 'h2' );
 			if ( $h2s->length > 0 ) {
 				$first_h2        = $h2s->item( 0 );
 				$h1              = $dom->createElement( 'h1' );
 				$h1->textContent = $first_h2->textContent;
 
-				// Copy attributes
+				// Copy attributes..
 				foreach ( $first_h2->attributes as $attr ) {
 					$h1->setAttribute( $attr->nodeName, $attr->nodeValue );
 				}
@@ -167,7 +167,7 @@ class MissingH1Fixer extends BaseFixer {
 				);
 			}
 
-			// No H2 found, insert H1 at the beginning of body
+			// No H2 found, insert H1 at the beginning of body..
 			$body = $dom->getElementsByTagName( 'body' )->item( 0 );
 			if ( $body ) {
 				$h1              = $dom->createElement( 'h1' );
@@ -207,7 +207,7 @@ class MultipleH1Fixer extends BaseFixer {
 		$h1s         = $dom->getElementsByTagName( 'h1' );
 		$fixed_count = 0;
 
-		// Keep first H1, convert rest to H2
+		// Keep first H1, convert rest to H2..
 		$h1_array = array();
 		foreach ( $h1s as $h1 ) {
 			$h1_array[] = $h1;
@@ -242,7 +242,7 @@ class EmptyHeadingFixer extends BaseFixer {
 		$headings    = $xpath->query( '//h1 | //h2 | //h3 | //h4 | //h5 | //h6' );
 		$fixed_count = 0;
 
-		// Convert to array to avoid iterator issues
+		// Convert to array to avoid iterator issues..
 		$headings_array = array();
 		foreach ( $headings as $h ) {
 			$headings_array[] = $h;
@@ -282,7 +282,7 @@ class EmptyLinkFixer extends BaseFixer {
 			$has_aria = $link->hasAttribute( 'aria-label' ) && trim( $link->getAttribute( 'aria-label' ) ) !== '';
 
 			if ( $text === '' && ! $has_aria ) {
-				// Check for images with alt
+				// Check for images with alt..
 				$images = $link->getElementsByTagName( 'img' );
 				if ( $images->length === 0 ) {
 					$href  = $link->getAttribute( 'href' );
@@ -316,7 +316,7 @@ class GenericLinkTextFixer extends BaseFixer {
 		$fixed_count   = 0;
 		$generic_words = array( 'click here', 'read more', 'learn more', 'more', 'link', 'here' );
 
-		// Convert to array to avoid modification issues
+		// Convert to array to avoid modification issues..
 		$links_array = array();
 		foreach ( $links as $link ) {
 			$links_array[] = $link;
@@ -328,7 +328,7 @@ class GenericLinkTextFixer extends BaseFixer {
 			if ( in_array( $text, $generic_words ) ) {
 				$href = $link->getAttribute( 'href' );
 
-				// Try to get better text from URL
+				// Try to get better text from URL..
 				$new_text          = $this->generate_link_text( $href, $text );
 				$link->textContent = $new_text;
 				++$fixed_count;
@@ -345,7 +345,7 @@ class GenericLinkTextFixer extends BaseFixer {
 	 * Generate descriptive link text from URL
 	 */
 	private function generate_link_text( $href, $original_text ) {
-		// Try to get page title if WordPress is loaded
+		// Try to get page title if WordPress is loaded..
 		if ( function_exists( 'url_to_postid' ) && function_exists( 'get_the_title' ) ) {
 			$post_id = url_to_postid( $href );
 			if ( $post_id ) {
@@ -356,7 +356,7 @@ class GenericLinkTextFixer extends BaseFixer {
 			}
 		}
 
-		// Fallback: extract meaningful text from URL path
+		// Fallback: extract meaningful text from URL path..
 		$path = parse_url( $href, PHP_URL_PATH );
 		if ( $path ) {
 			$slug = basename( $path );
@@ -419,7 +419,7 @@ class DownloadLinkFixer extends BaseFixer {
 
 		$download_extensions = array( 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'zip', 'ppt', 'pptx', 'csv', 'txt', 'rtf', 'exe', 'dmg', 'pkg', 'rar', '7z', 'tar', 'gz' );
 
-		// Convert to array to avoid issues with modifying during iteration
+		// Convert to array to avoid issues with modifying during iteration..
 		$links_array = array();
 		foreach ( $links as $link ) {
 			$links_array[] = $link;
@@ -428,7 +428,7 @@ class DownloadLinkFixer extends BaseFixer {
 		foreach ( $links_array as $link ) {
 			$href = $link->getAttribute( 'href' );
 
-			// Skip if no href
+			// Skip if no href..
 			if ( empty( $href ) ) {
 				continue;
 			}
@@ -437,7 +437,7 @@ class DownloadLinkFixer extends BaseFixer {
 			$file_ext    = '';
 			$href_lower  = strtolower( $href );
 
-			// Check file extension
+			// Check file extension..
 			foreach ( $download_extensions as $ext ) {
 				if ( preg_match( '/\.' . preg_quote( $ext, '/' ) . '(\?|#|$)/i', $href_lower ) ) {
 					$is_download = true;
@@ -446,7 +446,7 @@ class DownloadLinkFixer extends BaseFixer {
 				}
 			}
 
-			// Also check for download attribute
+			// Also check for download attribute..
 			if ( ! $is_download && $link->hasAttribute( 'download' ) ) {
 				$is_download = true;
 				$path        = parse_url( $href, PHP_URL_PATH );
@@ -460,9 +460,9 @@ class DownloadLinkFixer extends BaseFixer {
 
 			if ( $is_download ) {
 				$text = trim( $link->textContent );
-				// Check if already has file type indicator (PDF), (2.5MB), etc.
+				// Check if already has file type indicator (PDF), (2.5MB), etc...
 				if ( ! preg_match( '/\([A-Z]{2,4}(\s*,?\s*[\d.]+\s*(KB|MB|GB))?\)/i', $text ) ) {
-					// Clear existing content and set new
+					// Clear existing content and set new..
 					while ( $link->firstChild ) {
 						$link->removeChild( $link->firstChild );
 					}
@@ -493,11 +493,11 @@ class ExternalLinkFixer extends BaseFixer {
 		$links       = $dom->getElementsByTagName( 'a' );
 		$fixed_count = 0;
 
-		// Get home URL safely
+		// Get home URL safely..
 		$home_url  = function_exists( 'home_url' ) ? home_url() : ( isset( $_SERVER['HTTP_HOST'] ) ? '//' . $_SERVER['HTTP_HOST'] : '' );
 		$home_host = parse_url( $home_url, PHP_URL_HOST ) ?: '';
 
-		// Convert to array to avoid issues with modifying during iteration
+		// Convert to array to avoid issues with modifying during iteration..
 		$links_array = array();
 		foreach ( $links as $link ) {
 			$links_array[] = $link;
@@ -506,17 +506,17 @@ class ExternalLinkFixer extends BaseFixer {
 		foreach ( $links_array as $link ) {
 			$href = $link->getAttribute( 'href' );
 
-			// Skip empty hrefs
+			// Skip empty hrefs..
 			if ( empty( $href ) ) {
 				continue;
 			}
 
-			// Skip internal links (relative, anchors, mailto, tel)
+			// Skip internal links (relative, anchors, mailto, tel)..
 			if ( preg_match( '/^(\/(?!\/)|#|mailto:|tel:|javascript:)/i', $href ) ) {
 				continue;
 			}
 
-			// Check if it's an external URL (starts with http/https and different host)
+			// Check if it's an external URL (starts with http/https and different host)..
 			$is_external = false;
 			if ( preg_match( '/^https?:\/\//i', $href ) ) {
 				$link_host = parse_url( $href, PHP_URL_HOST ) ?: '';
@@ -527,7 +527,7 @@ class ExternalLinkFixer extends BaseFixer {
 
 			if ( $is_external ) {
 				$text = trim( $link->textContent );
-				// Check if already marked as external
+				// Check if already marked as external..
 				if ( strpos( $text, '(external' ) === false &&
 					strpos( $text, '(opens' ) === false &&
 					! $link->hasAttribute( 'aria-label' ) ) {
@@ -559,7 +559,7 @@ class LinkDestinationFixer extends BaseFixer {
 		$links       = $dom->getElementsByTagName( 'a' );
 		$fixed_count = 0;
 
-		// Convert NodeList to array to avoid issues during modification
+		// Convert NodeList to array to avoid issues during modification..
 		$links_array = array();
 		foreach ( $links as $link ) {
 			$links_array[] = $link;
@@ -569,27 +569,27 @@ class LinkDestinationFixer extends BaseFixer {
 			$href     = $link->hasAttribute( 'href' ) ? trim( $link->getAttribute( 'href' ) ) : '';
 			$modified = false;
 
-			// Fix empty href
+			// Fix empty href..
 			if ( $href === '' ) {
 				$link->setAttribute( 'href', '#' );
 				$modified = true;
 			}
 
-			// Fix javascript: hrefs (any javascript: including void, functions, etc.)
+			// Fix javascript: hrefs (any javascript: including void, functions, etc.)..
 			if ( ! $modified && preg_match( '/^javascript:/i', $href ) ) {
 				$link->setAttribute( 'href', '#' );
-				// Add role button since it's likely meant to be interactive
+				// Add role button since it's likely meant to be interactive..
 				if ( ! $link->hasAttribute( 'role' ) ) {
 					$link->setAttribute( 'role', 'button' );
 				}
-				// Preserve onclick behavior hint
+				// Preserve onclick behavior hint..
 				if ( ! $link->hasAttribute( 'tabindex' ) ) {
 					$link->setAttribute( 'tabindex', '0' );
 				}
 				$modified = true;
 			}
 
-			// Fix # only hrefs that have no id target
+			// Fix # only hrefs that have no id target..
 			if ( ! $modified && $href === '#' && ! $link->hasAttribute( 'role' ) ) {
 				$link->setAttribute( 'role', 'button' );
 				$modified = true;
@@ -629,7 +629,7 @@ class SkipLinkFixer extends BaseFixer {
 			);
 		}
 
-		// Check if skip link already exists anywhere in the content
+		// Check if skip link already exists anywhere in the content..
 		$xpath         = new \DOMXPath( $dom );
 		$existing_skip = $xpath->query( "//a[contains(@class, 'skip-link') or contains(@class, 'skip-to') or @id='skip-link']" );
 
@@ -640,7 +640,7 @@ class SkipLinkFixer extends BaseFixer {
 			);
 		}
 
-		// Also check text content for "skip to"
+		// Also check text content for "skip to"..
 		$skip_text_check = $xpath->query( "//a[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'skip to')]" );
 		if ( $skip_text_check->length > 0 ) {
 			return array(
@@ -649,7 +649,7 @@ class SkipLinkFixer extends BaseFixer {
 			);
 		}
 
-		// Find or create main content target
+		// Find or create main content target..
 		$main_content = $xpath->query( "//main | //*[@role='main'] | //*[@id='main'] | //*[@id='main-content'] | //*[@id='content']" );
 
 		$target_id = 'main-content';
@@ -661,7 +661,7 @@ class SkipLinkFixer extends BaseFixer {
 				$main->setAttribute( 'id', $target_id );
 			}
 		} else {
-			// No main found, create an ID on the first substantial element
+			// No main found, create an ID on the first substantial element..
 			$first_content = $xpath->query( '//div | //article | //section' );
 			if ( $first_content->length > 0 ) {
 				$first = $first_content->item( 0 );
@@ -673,13 +673,13 @@ class SkipLinkFixer extends BaseFixer {
 			}
 		}
 
-		// Create skip link element
+		// Create skip link element..
 		$skip_link = $dom->createElement( 'a', 'Skip to main content' );
 		$skip_link->setAttribute( 'href', '#' . $target_id );
 		$skip_link->setAttribute( 'class', 'skip-link screen-reader-text' );
 		$skip_link->setAttribute( 'style', 'position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;' );
 
-		// Insert at beginning of body
+		// Insert at beginning of body..
 		if ( $body->firstChild ) {
 			$body->insertBefore( $skip_link, $body->firstChild );
 		} else {

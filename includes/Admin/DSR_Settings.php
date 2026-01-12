@@ -51,14 +51,14 @@ class DSR_Settings {
 	 * @since 3.0.2 Removed admin_menu registration - now part of DSRMainPage tabs
 	 */
 	public function __construct() {
-		// Prevent registering hooks multiple times
+		// Prevent registering hooks multiple times..
 		if ( self::$hooks_registered ) {
 			return;
 		}
 		self::$hooks_registered = true;
 
-		// Menu registration removed - settings now in DSRMainPage "Settings" tab
-		// Page still accessible as hidden page if needed for backward compatibility
+		// Menu registration removed - settings now in DSRMainPage "Settings" tab..
+		// Page still accessible as hidden page if needed for backward compatibility..
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 	}
@@ -97,7 +97,7 @@ class DSR_Settings {
 			)
 		);
 
-		// SLA Settings Section
+		// SLA Settings Section..
 		add_settings_section(
 			'slos_dsr_sla',
 			__( 'SLA Configuration (Business Days)', 'shahi-legalflowsuite' ),
@@ -125,7 +125,7 @@ class DSR_Settings {
 			);
 		}
 
-		// Data Sources Section
+		// Data Sources Section..
 		add_settings_section(
 			'slos_dsr_sources',
 			__( 'Data Sources to Search', 'shahi-legalflowsuite' ),
@@ -152,7 +152,7 @@ class DSR_Settings {
 			);
 		}
 
-		// Notifications Section
+		// Notifications Section..
 		add_settings_section(
 			'slos_dsr_notifications',
 			__( 'Notifications & Emails', 'shahi-legalflowsuite' ),
@@ -187,7 +187,7 @@ class DSR_Settings {
 			array( 'key' => 'notify_overdue' )
 		);
 
-		// Portal Appearance Section
+		// Portal Appearance Section..
 		add_settings_section(
 			'slos_dsr_appearance',
 			__( 'Portal Appearance', 'shahi-legalflowsuite' ),
@@ -236,7 +236,7 @@ class DSR_Settings {
 			)
 		);
 
-		// Advanced Section
+		// Advanced Section..
 		add_settings_section(
 			'slos_dsr_advanced',
 			__( 'Advanced Options', 'shahi-legalflowsuite' ),
@@ -849,7 +849,7 @@ class DSR_Settings {
 	public function sanitize_settings( array $input ): array {
 		$sanitized = array();
 
-		// Sanitize SLA fields (must be positive integers)
+		// Sanitize SLA fields (must be positive integers)..
 		foreach ( array( 'GDPR', 'UK-GDPR', 'CCPA', 'LGPD', 'PIPEDA', 'POPIA' ) as $reg ) {
 			$key = 'sla_' . strtolower( $reg );
 			if ( isset( $input[ $key ] ) ) {
@@ -860,7 +860,7 @@ class DSR_Settings {
 			}
 		}
 
-		// Sanitize checkboxes
+		// Sanitize checkboxes..
 		$checkbox_fields = array(
 			'notify_requester',
 			'notify_admin',
@@ -872,7 +872,7 @@ class DSR_Settings {
 			$sanitized[ $field ] = isset( $input[ $field ] ) && $input[ $field ] ? true : false;
 		}
 
-		// Sanitize sources
+		// Sanitize sources..
 		if ( isset( $input['sources'] ) && is_array( $input['sources'] ) ) {
 			$sanitized['sources'] = array();
 			foreach ( array( 'posts', 'users', 'comments', 'forms', 'logs' ) as $source ) {
@@ -880,7 +880,7 @@ class DSR_Settings {
 			}
 		}
 
-		// Sanitize text fields
+		// Sanitize text fields..
 		$text_fields = array( 'form_title', 'form_description', 'privacy_policy_url' );
 		foreach ( $text_fields as $field ) {
 			if ( isset( $input[ $field ] ) ) {
@@ -888,7 +888,7 @@ class DSR_Settings {
 			}
 		}
 
-		// Sanitize auto-delete days
+		// Sanitize auto-delete days..
 		if ( isset( $input['auto_delete_days'] ) ) {
 			$sanitized['auto_delete_days'] = absint( $input['auto_delete_days'] );
 		}

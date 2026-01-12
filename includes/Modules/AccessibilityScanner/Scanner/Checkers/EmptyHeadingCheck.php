@@ -34,7 +34,7 @@ class EmptyHeadingCheck extends AbstractCheck {
 		foreach ( $headings as $heading ) {
 			$text = trim( $heading->textContent );
 
-			// Check if it has images with alt text
+			// Check if it has images with alt text..
 			$hasAccessibleContent = false;
 			if ( $text !== '' ) {
 				$hasAccessibleContent = true;

@@ -16,14 +16,14 @@ final class TimingControlFixer extends AbstractFixer {
 	}
 
 	protected function apply_fix( string $content, array $options = array() ): FixResult {
-		// Inline the core behavior from the legacy TimingControlFixer.
+		// Inline the core behavior from the legacy TimingControlFixer...
 		$dom   = $this->parse_html( $content );
 		$xpath = new \DOMXPath( $dom );
 		$fixed = 0;
 
-		// For now, approximate the legacy behavior by focusing on
-		// meta refresh tags; additional patterns can be ported later
-		// without changing the external FixEngine API.
+		// For now, approximate the legacy behavior by focusing on..
+		// meta refresh tags; additional patterns can be ported later..
+		// without changing the external FixEngine API...
 		$metas = $dom->getElementsByTagName( 'meta' );
 		foreach ( $metas as $meta ) {
 			$http_equiv = strtolower( $meta->getAttribute( 'http-equiv' ) );

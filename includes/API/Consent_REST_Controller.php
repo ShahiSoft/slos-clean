@@ -20,7 +20,7 @@ use WP_REST_Request;
 use WP_REST_Response;
 use WP_Error;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -77,7 +77,7 @@ class Consent_REST_Controller extends Base_REST_Controller {
 	 * @return void
 	 */
 	public function register_routes() {
-		// Get all consents (admin only)
+		// Get all consents (admin only)..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base,
@@ -97,7 +97,7 @@ class Consent_REST_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Get single consent
+		// Get single consent..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/(?P<id>[\d]+)',
@@ -135,7 +135,7 @@ class Consent_REST_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Get user consents
+		// Get user consents..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/user/(?P<user_id>[\d]+)',
@@ -153,7 +153,7 @@ class Consent_REST_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Withdraw consent
+		// Withdraw consent..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/(?P<id>[\d]+)/withdraw',
@@ -171,7 +171,7 @@ class Consent_REST_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Grant consent (convenience endpoint for preferences UI)
+		// Grant consent (convenience endpoint for preferences UI)..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/grant',
@@ -199,7 +199,7 @@ class Consent_REST_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Reject consent (convenience endpoint for banner)
+		// Reject consent (convenience endpoint for banner)..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/reject',
@@ -227,7 +227,7 @@ class Consent_REST_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Withdraw consent (convenience endpoint for preferences UI)
+		// Withdraw consent (convenience endpoint for preferences UI)..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/withdraw',
@@ -255,7 +255,7 @@ class Consent_REST_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Get consent statistics (admin only)
+		// Get consent statistics (admin only)..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/stats',
@@ -266,7 +266,7 @@ class Consent_REST_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Check user consent
+		// Check user consent..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/check',
@@ -290,7 +290,7 @@ class Consent_REST_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Get valid purposes
+		// Get valid purposes..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/purposes',
@@ -301,7 +301,7 @@ class Consent_REST_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Export user consent data (GDPR Article 15)
+		// Export user consent data (GDPR Article 15)..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/export/(?P<user_id>[\d]+)',
@@ -332,7 +332,7 @@ class Consent_REST_Controller extends Base_REST_Controller {
 
 		$pagination = $this->prepare_pagination_params( $request );
 
-		// Get filters from request
+		// Get filters from request..
 		$filters = array(
 			'type'         => $this->sanitize_text_param( $request->get_param( 'type' ) ),
 			'status'       => $this->sanitize_text_param( $request->get_param( 'status' ) ),
@@ -343,7 +343,7 @@ class Consent_REST_Controller extends Base_REST_Controller {
 			'country_code' => $this->sanitize_text_param( $request->get_param( 'country_code' ) ),
 		);
 
-		// Remove empty values
+		// Remove empty values..
 		$filters = array_filter( $filters );
 
 		$consents = $this->service->get_consents( $filters, $pagination );
@@ -358,7 +358,7 @@ class Consent_REST_Controller extends Base_REST_Controller {
 			);
 		}
 
-		// Return array directly for easier frontend consumption
+		// Return array directly for easier frontend consumption..
 		$response_data = array_map( array( $this, 'prepare_item_for_response' ), $consents );
 
 		$response = new \WP_REST_Response(
@@ -411,7 +411,7 @@ class Consent_REST_Controller extends Base_REST_Controller {
 	public function create_item( $request ) {
 		$this->log_request( $request, 'Create Consent' );
 
-		// Validate required parameters
+		// Validate required parameters..
 		$validation = $this->validate_required_param( $request, 'type' );
 		if ( is_wp_error( $validation ) ) {
 			return $validation;
@@ -422,7 +422,7 @@ class Consent_REST_Controller extends Base_REST_Controller {
 			return $validation;
 		}
 
-		// Prepare consent data
+		// Prepare consent data..
 		$data = array(
 			'user_id'      => absint( $request->get_param( 'user_id' ) ) ?: get_current_user_id(),
 			'type'         => $this->sanitize_text_param( $request->get_param( 'type' ) ),
@@ -431,12 +431,12 @@ class Consent_REST_Controller extends Base_REST_Controller {
 			'source'       => $request->get_param( 'source' ) ? $this->sanitize_text_param( $request->get_param( 'source' ) ) : 'api',
 		);
 
-		// Add metadata if provided
+		// Add metadata if provided..
 		if ( $request->get_param( 'metadata' ) ) {
 			$data['metadata'] = $request->get_param( 'metadata' );
 		}
 
-		// Record consent
+		// Record consent..
 		$consent_id = $this->service->record_consent( $data );
 
 		if ( ! $consent_id ) {
@@ -480,7 +480,7 @@ class Consent_REST_Controller extends Base_REST_Controller {
 
 		$id = absint( $request->get_param( 'id' ) );
 
-		// Check if consent exists
+		// Check if consent exists..
 		$consent = $this->service->get_consent( $id );
 		if ( ! $consent ) {
 			return $this->error_response(
@@ -490,7 +490,7 @@ class Consent_REST_Controller extends Base_REST_Controller {
 			);
 		}
 
-		// Prepare update data
+		// Prepare update data..
 		$data = array();
 
 		if ( $request->get_param( 'status' ) ) {
@@ -501,7 +501,7 @@ class Consent_REST_Controller extends Base_REST_Controller {
 			$data['metadata'] = $request->get_param( 'metadata' );
 		}
 
-		// Update consent
+		// Update consent..
 		$updated = $this->service->update_consent( $id, $data );
 
 		if ( ! $updated ) {
@@ -562,7 +562,7 @@ class Consent_REST_Controller extends Base_REST_Controller {
 
 		$user_id = absint( $request->get_param( 'user_id' ) );
 
-		// Users can only view their own consents unless admin
+		// Users can only view their own consents unless admin..
 		if ( $user_id !== get_current_user_id() && ! current_user_can( 'manage_options' ) ) {
 			return $this->error_response(
 				'rest_forbidden',
@@ -592,7 +592,7 @@ class Consent_REST_Controller extends Base_REST_Controller {
 
 		$id = absint( $request->get_param( 'id' ) );
 
-		// Check if consent exists and belongs to user (or user is admin)
+		// Check if consent exists and belongs to user (or user is admin)..
 		$consent = $this->service->get_consent( $id );
 		if ( ! $consent ) {
 			return $this->error_response(
@@ -643,43 +643,43 @@ class Consent_REST_Controller extends Base_REST_Controller {
 		$session_id = $this->sanitize_text_param( $request->get_param( 'session_id' ) );
 		$purpose    = $this->sanitize_text_param( $request->get_param( 'purpose' ) );
 
-		// Use current user if not specified
+		// Use current user if not specified..
 		if ( ! $user_id ) {
 			$user_id = get_current_user_id();
 		}
 
-		// Get geo data from request or detect
+		// Get geo data from request or detect..
 		$geo_rule_id  = absint( $request->get_param( 'geo_rule_id' ) );
 		$country_code = $this->sanitize_text_param( $request->get_param( 'country_code' ) );
 		$region       = $this->sanitize_text_param( $request->get_param( 'region' ) );
 
-		// If not provided in request, detect from IP
+		// If not provided in request, detect from IP..
 		if ( empty( $country_code ) || empty( $region ) ) {
 			$region_data  = $this->geo_service->get_region_for_request();
 			$country_code = $country_code ?: ( $region_data['country_code'] ?? '' );
 			$region       = $region ?: ( $region_data['region'] ?? 'GLOBAL' );
 		}
 
-		// If geo_rule_id not provided, find matching rule
+		// If geo_rule_id not provided, find matching rule..
 		if ( ! $geo_rule_id && ! empty( $country_code ) ) {
 			$state_code    = $region_data['state'] ?? '';
 			$matching_rule = $this->rule_matcher->find_matching_rule( $country_code, $state_code );
 			$geo_rule_id   = $matching_rule['id'] ?? null;
 		}
 
-		// Phase 3.2: Extract version info and categories for audit logging
+		// Phase 3.2: Extract version info and categories for audit logging..
 		$banner_version      = $this->sanitize_text_param( $request->get_param( 'banner_version' ) );
 		$policy_version      = $this->sanitize_text_param( $request->get_param( 'policy_version' ) );
 		$categories_accepted = $request->get_param( 'categories_accepted' );
 
-		// Sanitize categories_accepted array
+		// Sanitize categories_accepted array..
 		if ( ! empty( $categories_accepted ) && is_array( $categories_accepted ) ) {
 			$categories_accepted = array_map( 'sanitize_text_field', $categories_accepted );
 		} else {
 			$categories_accepted = array();
 		}
 
-		// Prepare consent data
+		// Prepare consent data..
 		$data = array(
 			'user_id'        => $user_id,
 			'type'           => $purpose,
@@ -693,7 +693,7 @@ class Consent_REST_Controller extends Base_REST_Controller {
 			'geo_rule_id'    => $geo_rule_id,
 			'country_code'   => strtoupper( $country_code ),
 			'region'         => strtoupper( $region ),
-			// Phase 3.2: Pass version info for audit logging
+			// Phase 3.2: Pass version info for audit logging..
 			'banner_version' => $banner_version,
 			'policy_version' => $policy_version,
 			'metadata'       => array(
@@ -703,12 +703,12 @@ class Consent_REST_Controller extends Base_REST_Controller {
 				'geo_rule_id'         => $geo_rule_id,
 				'country_code'        => strtoupper( $country_code ),
 				'region'              => strtoupper( $region ),
-				// Phase 3.2: Store categories_accepted in metadata for comprehensive audit trail
+				// Phase 3.2: Store categories_accepted in metadata for comprehensive audit trail..
 				'categories_accepted' => $categories_accepted,
 			),
 		);
 
-		// Record consent
+		// Record consent..
 		$consent_id = $this->service->record_consent( $data );
 
 		if ( ! $consent_id ) {
@@ -743,43 +743,43 @@ class Consent_REST_Controller extends Base_REST_Controller {
 		$purpose = $this->sanitize_text_param( $request->get_param( 'purpose' ) );
 		$source  = $this->sanitize_text_param( $request->get_param( 'source' ) ) ?: 'banner';
 
-		// Use current user if not specified
+		// Use current user if not specified..
 		if ( ! $user_id ) {
 			$user_id = get_current_user_id();
 		}
 
-		// Get geo data from request or detect
+		// Get geo data from request or detect..
 		$geo_rule_id  = absint( $request->get_param( 'geo_rule_id' ) );
 		$country_code = $this->sanitize_text_param( $request->get_param( 'country_code' ) );
 		$region       = $this->sanitize_text_param( $request->get_param( 'region' ) );
 
-		// If not provided in request, detect from IP
+		// If not provided in request, detect from IP..
 		if ( empty( $country_code ) || empty( $region ) ) {
 			$region_data  = $this->geo_service->get_region_for_request();
 			$country_code = $country_code ?: ( $region_data['country_code'] ?? '' );
 			$region       = $region ?: ( $region_data['region'] ?? 'GLOBAL' );
 		}
 
-		// If geo_rule_id not provided, find matching rule
+		// If geo_rule_id not provided, find matching rule..
 		if ( ! $geo_rule_id && ! empty( $country_code ) ) {
 			$state_code    = $region_data['state'] ?? '';
 			$matching_rule = $this->rule_matcher->find_matching_rule( $country_code, $state_code );
 			$geo_rule_id   = $matching_rule['id'] ?? null;
 		}
 
-		// Phase 3.2: Extract version info and categories for audit logging
+		// Phase 3.2: Extract version info and categories for audit logging..
 		$banner_version      = $this->sanitize_text_param( $request->get_param( 'banner_version' ) );
 		$policy_version      = $this->sanitize_text_param( $request->get_param( 'policy_version' ) );
 		$categories_accepted = $request->get_param( 'categories_accepted' );
 
-		// Sanitize categories_accepted array
+		// Sanitize categories_accepted array..
 		if ( ! empty( $categories_accepted ) && is_array( $categories_accepted ) ) {
 			$categories_accepted = array_map( 'sanitize_text_field', $categories_accepted );
 		} else {
 			$categories_accepted = array();
 		}
 
-		// Prepare consent data
+		// Prepare consent data..
 		$data = array(
 			'user_id'        => $user_id,
 			'type'           => $purpose,
@@ -793,7 +793,7 @@ class Consent_REST_Controller extends Base_REST_Controller {
 			'geo_rule_id'    => $geo_rule_id,
 			'country_code'   => strtoupper( $country_code ),
 			'region'         => strtoupper( $region ),
-			// Phase 3.2: Pass version info for audit logging
+			// Phase 3.2: Pass version info for audit logging..
 			'banner_version' => $banner_version,
 			'policy_version' => $policy_version,
 			'metadata'       => array(
@@ -802,12 +802,12 @@ class Consent_REST_Controller extends Base_REST_Controller {
 				'geo_rule_id'         => $geo_rule_id,
 				'country_code'        => strtoupper( $country_code ),
 				'region'              => strtoupper( $region ),
-				// Phase 3.2: Store categories_accepted in metadata for comprehensive audit trail
+				// Phase 3.2: Store categories_accepted in metadata for comprehensive audit trail..
 				'categories_accepted' => $categories_accepted,
 			),
 		);
 
-		// Record rejection
+		// Record rejection..
 		$consent_id = $this->service->record_consent( $data );
 
 		if ( ! $consent_id ) {
@@ -842,12 +842,12 @@ class Consent_REST_Controller extends Base_REST_Controller {
 		$session_id = $this->sanitize_text_param( $request->get_param( 'session_id' ) );
 		$purpose    = $this->sanitize_text_param( $request->get_param( 'purpose' ) );
 
-		// Use current user if not specified
+		// Use current user if not specified..
 		if ( ! $user_id ) {
 			$user_id = get_current_user_id();
 		}
 
-		// Prepare consent data (withdrawal)
+		// Prepare consent data (withdrawal)..
 		$data = array(
 			'user_id'      => $user_id,
 			'type'         => $purpose,
@@ -865,7 +865,7 @@ class Consent_REST_Controller extends Base_REST_Controller {
 			),
 		);
 
-		// Record withdrawal
+		// Record withdrawal..
 		$consent_id = $this->service->record_consent( $data );
 
 		if ( ! $consent_id ) {
@@ -914,7 +914,7 @@ class Consent_REST_Controller extends Base_REST_Controller {
 		$user_id = absint( $request->get_param( 'user_id' ) );
 		$type    = $this->sanitize_text_param( $request->get_param( 'type' ) );
 
-		// Users can only check their own consents unless admin
+		// Users can only check their own consents unless admin..
 		if ( $user_id !== get_current_user_id() && ! current_user_can( 'manage_options' ) ) {
 			return $this->error_response(
 				'rest_forbidden',

@@ -48,13 +48,13 @@ class FormAriaCheck extends AbstractCheck {
 		foreach ( $inputs as $input ) {
 			foreach ( $input->attributes as $attr ) {
 				if ( strpos( $attr->name, 'aria-' ) === 0 ) {
-					// Basic check: is it a known ARIA attribute?
-					// This is a simplified list.
-					// A full check would validate against the ARIA spec for the specific role.
-					// For now, we just check if it looks like a typo (e.g. aria-lbel)
-					// But that's hard without a full dictionary.
+					// Basic check: is it a known ARIA attribute?..
+					// This is a simplified list...
+					// A full check would validate against the ARIA spec for the specific role...
+					// For now, we just check if it looks like a typo (e.g. aria-lbel)..
+					// But that's hard without a full dictionary...
 
-					// Let's check for common misuse: aria-hidden="true" on a focusable element
+					// Let's check for common misuse: aria-hidden="true" on a focusable element..
 					if ( $attr->name === 'aria-hidden' && $attr->value === 'true' ) {
 						$type = $input->getAttribute( 'type' );
 						if ( $type !== 'hidden' ) {

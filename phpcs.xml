@@ -13,6 +13,7 @@
                 <element value="view_shahi_analytics"/>
                 <element value="manage_shahi_modules"/>
                 <element value="edit_shahi_settings"/>
+                <element value="slos_manage_dsr"/>
             </property>
         </properties>
     </rule>

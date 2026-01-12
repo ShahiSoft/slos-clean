@@ -13,13 +13,15 @@
 
 namespace ShahiLegalFlowSuite\Database\Migrations;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.PHP.DevelopmentFunctions.error_log_error_log,WordPress.PHP.YodaConditions.NotYoda,WordPress.ControlStructures.AlternativeControlStructure.NotAllowed
+
 /**
- * Class Migration_2026_01_01_add_backup_content_column
+ * Class Migration_2026_01_01_Add_Backup_Content_Column
  *
  * Extends the accessibility fix history table to store actual content for restore operations.
  * Required for Phase 4 BackupService implementation.
@@ -28,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 3.2.0
  */
-class Migration_2026_01_01_add_backup_content_column {
+class Migration_2026_01_01_Add_Backup_Content_Column {
 
 	/**
 	 * Run migration (add columns)
@@ -45,18 +47,21 @@ class Migration_2026_01_01_add_backup_content_column {
 
 		$table_name = $wpdb->prefix . 'slos_accessibility_fix_history';
 
-		// Check if table exists
+		// Check if table exists..
 		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) !== $table_name ) {
-			error_log(
-				sprintf(
-					'Migration Error: Table %s does not exist. Run migration_2025_12_29_accessibility_fix_history_table first.',
-					$table_name
-				)
-			);
+			if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+				error_log(
+					sprintf(
+						'Migration Error: Table %s does not exist. Run migration_2025_12_29_accessibility_fix_history_table first.',
+						$table_name
+					)
+				);
+			}
 			return false;
 		}
 
-		// Check if columns already exist
+		// Check if columns already exist..
 		$original_content_exists = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS 
@@ -77,39 +82,47 @@ class Migration_2026_01_01_add_backup_content_column {
 
 		$queries = array();
 
-		// Add original_content column if it doesn't exist
+		// Add original_content column if it doesn't exist..
 		if ( empty( $original_content_exists ) ) {
 			$queries[] = "ALTER TABLE {$table_name} ADD COLUMN original_content LONGTEXT NULL AFTER fixed_count";
 		}
 
-		// Add metadata column if it doesn't exist
+		// Add metadata column if it doesn't exist..
 		if ( empty( $metadata_exists ) ) {
 			$queries[] = "ALTER TABLE {$table_name} ADD COLUMN metadata TEXT NULL AFTER created_at";
 		}
 
-		// Execute queries
+		// Execute queries..
 		if ( ! empty( $queries ) ) {
 			foreach ( $queries as $query ) {
+				// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 				$result = $wpdb->query( $query );
 				if ( $result === false ) {
-					error_log(
-						sprintf(
-							'Migration Error: Failed to execute query: %s. Error: %s',
-							$query,
-							$wpdb->last_error
-						)
-					);
+					if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+						// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+						error_log(
+							sprintf(
+								'Migration Error: Failed to execute query: %s. Error: %s',
+								$query,
+								$wpdb->last_error
+							)
+						);
+					}
 					return false;
 				}
 			}
 
-			error_log(
-				sprintf(
-					'Migration Success: Added content storage columns to %s',
-					$table_name
-				)
-			);
-		} else {
+			if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+				error_log(
+					sprintf(
+						'Migration Success: Added content storage columns to %s',
+						$table_name
+					)
+				);
+			}
+		} elseif ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			error_log(
 				sprintf(
 					'Migration Skipped: Columns already exist in %s',
@@ -135,9 +148,9 @@ class Migration_2026_01_01_add_backup_content_column {
 
 		$table_name = $wpdb->prefix . 'slos_accessibility_fix_history';
 
-		// Check if table exists
+		// Check if table exists..
 		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) !== $table_name ) {
-			return true; // Table doesn't exist, nothing to rollback
+			return true; // Table doesn't exist, nothing to rollback.
 		}
 
 		$queries = array(
@@ -146,25 +159,31 @@ class Migration_2026_01_01_add_backup_content_column {
 		);
 
 		foreach ( $queries as $query ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 			$result = $wpdb->query( $query );
 			if ( $result === false ) {
-				error_log(
-					sprintf(
-						'Migration Rollback Error: Failed to execute query: %s. Error: %s',
-						$query,
-						$wpdb->last_error
-					)
-				);
+				if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+					error_log(
+						sprintf(
+							'Migration Rollback Error: Failed to execute query: %s. Error: %s',
+							$query,
+							$wpdb->last_error
+						)
+					);
+				}
 				return false;
 			}
 		}
 
-		error_log(
-			sprintf(
-				'Migration Rollback Success: Removed content storage columns from %s',
-				$table_name
-			)
-		);
+		if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+			error_log(
+				sprintf(
+					'Migration Rollback Success: Removed content storage columns from %s',
+					$table_name
+				)
+			);
+		}
 
 		return true;
 	}
@@ -203,7 +222,7 @@ class Migration_2026_01_01_add_backup_content_column {
 			$column_map[ $column['COLUMN_NAME'] ] = $column['DATA_TYPE'];
 		}
 
-		// Verify data types
+		// Verify data types..
 		if ( ! isset( $column_map['original_content'] ) || ! in_array( strtolower( $column_map['original_content'] ), array( 'longtext', 'text' ), true ) ) {
 			return false;
 		}

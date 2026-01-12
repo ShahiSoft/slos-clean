@@ -30,11 +30,11 @@ class EmptyTableCellCheck extends AbstractCheck {
 		$dom    = $this->get_dom( $content );
 		$xpath  = new \DOMXPath( $dom );
 
-		// Check for empty TH
+		// Check for empty TH..
 		$emptyThs = $xpath->query( '//th[not(node()) or normalize-space(.) = ""]' );
 
 		foreach ( $emptyThs as $th ) {
-			// Sometimes empty top-left cell is intentional, but generally discouraged
+			// Sometimes empty top-left cell is intentional, but generally discouraged..
 			$issues[] = array(
 				'element' => 'th',
 				'context' => $this->get_element_html( $th ),

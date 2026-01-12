@@ -16,7 +16,7 @@ namespace ShahiLegalFlowSuite\Services;
 
 use ShahiLegalFlowSuite\Database\Repositories\Company_Profile_Repository;
 
-// Exit if accessed directly.
+// Exit if accessed directly...
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -196,11 +196,11 @@ class Profile_Validator extends Base_Service {
 	public function validate_step( int $step, array $data, ?array $profile = null ) {
 		$errors = array();
 
-		// Get required fields for this step
+		// Get required fields for this step..
 		$step_fields = $this->get_step_mandatory_fields( $step );
 
 		foreach ( $step_fields as $field ) {
-			// Get relative field path (remove step prefix)
+			// Get relative field path (remove step prefix)..
 			$relative_field = $this->get_relative_field_path( $field, $step );
 			$value          = $this->get_nested_value( $data, $relative_field );
 
@@ -215,7 +215,7 @@ class Profile_Validator extends Base_Service {
 					),
 				);
 			} else {
-				// Additional validation based on field type
+				// Additional validation based on field type..
 				$validation_error = $this->validate_field_value( $field, $value );
 				if ( $validation_error ) {
 					$errors[] = $validation_error;
@@ -246,7 +246,7 @@ class Profile_Validator extends Base_Service {
 	 * @return array|null Error array or null if valid
 	 */
 	protected function validate_field_value( string $field, $value ): ?array {
-		// Email validation
+		// Email validation..
 		if ( strpos( $field, 'email' ) !== false && ! empty( $value ) ) {
 			if ( ! is_email( $value ) ) {
 				return array(
@@ -261,7 +261,7 @@ class Profile_Validator extends Base_Service {
 			}
 		}
 
-		// URL validation
+		// URL validation..
 		if ( 'website.url' === $field && ! empty( $value ) ) {
 			if ( ! filter_var( $value, FILTER_VALIDATE_URL ) ) {
 				return array(
@@ -272,7 +272,7 @@ class Profile_Validator extends Base_Service {
 			}
 		}
 
-		// Phone validation (basic)
+		// Phone validation (basic)..
 		if ( strpos( $field, 'phone' ) !== false && ! empty( $value ) ) {
 			$cleaned = preg_replace( '/[^0-9+\-\s()]/', '', $value );
 			if ( strlen( $cleaned ) < 7 ) {
@@ -479,7 +479,7 @@ class Profile_Validator extends Base_Service {
 			return __( $this->field_labels[ $field ], 'shahi-legalflowsuite' );
 		}
 
-		// Generate label from field name
+		// Generate label from field name..
 		$parts = explode( '.', $field );
 		$label = end( $parts );
 		$label = str_replace( '_', ' ', $label );
@@ -511,7 +511,7 @@ class Profile_Validator extends Base_Service {
 	 * @return string Relative path within step data
 	 */
 	protected function get_relative_field_path( string $field, int $step ): string {
-		// Find section for this step
+		// Find section for this step..
 		$section = array_search( $step, $this->field_steps, true );
 
 		if ( $section && strpos( $field, $section . '.' ) === 0 ) {

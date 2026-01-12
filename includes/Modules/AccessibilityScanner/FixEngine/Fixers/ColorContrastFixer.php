@@ -43,7 +43,7 @@ final class ColorContrastFixer extends AbstractFixer {
 	}
 
 	public function can_fix( string $content ): bool {
-		// Look for inline styles with color definitions
+		// Look for inline styles with color definitions..
 		return (bool) preg_match( '/style\s*=\s*["\'][^"\']*(?:color|background):/i', $content );
 	}
 
@@ -54,7 +54,7 @@ final class ColorContrastFixer extends AbstractFixer {
 			return FixResult::error( $this->get_id(), 'Failed to parse HTML', $content );
 		}
 
-		// Find elements with inline color styles
+		// Find elements with inline color styles..
 		$elements      = $this->query( '//*[@style]' );
 		$fixes_applied = 0;
 		$details       = array();
@@ -62,15 +62,15 @@ final class ColorContrastFixer extends AbstractFixer {
 		foreach ( $elements as $element ) {
 			$style = $element->getAttribute( 'style' );
 
-			// Check if style has color-related properties
+			// Check if style has color-related properties..
 			if ( ! preg_match( '/(^|;)\s*(color|background(-color)?)\s*:/i', $style ) ) {
 				continue;
 			}
 
-			// Add data attribute for CSS-based high contrast mode override
+			// Add data attribute for CSS-based high contrast mode override..
 			$element->setAttribute( 'data-slos-contrast-check', 'true' );
 
-			// Add class for potential high-contrast mode
+			// Add class for potential high-contrast mode..
 			$existing_class = $element->getAttribute( 'class' );
 			$new_class      = trim( $existing_class . ' slos-contrast-target' );
 			$element->setAttribute( 'class', $new_class );

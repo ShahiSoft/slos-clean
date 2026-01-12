@@ -53,7 +53,7 @@ final class TableScopeFixer extends AbstractFixer {
 			return FixResult::error( $this->get_id(), 'Failed to parse HTML', $content );
 		}
 
-		// Find th elements without scope
+		// Find th elements without scope..
 		$ths           = $this->query( '//th[not(@scope)]' );
 		$fixes_applied = 0;
 		$details       = array();
@@ -94,13 +94,13 @@ final class TableScopeFixer extends AbstractFixer {
 			return null;
 		}
 
-		// Check if th is in first row (likely column header)
+		// Check if th is in first row (likely column header)..
 		$table = $this->find_ancestor_table( $th );
 		if ( ! $table ) {
 			return null;
 		}
 
-		// Skip layout tables
+		// Skip layout tables..
 		$role = $table->getAttribute( 'role' );
 		if ( $role === 'presentation' || $role === 'none' ) {
 			return null;
@@ -109,34 +109,34 @@ final class TableScopeFixer extends AbstractFixer {
 		$rows         = $this->query( './/tr', $table );
 		$is_first_row = ( count( $rows ) > 0 && $rows[0] === $parent_row );
 
-		// Check if th is in thead
+		// Check if th is in thead..
 		$parent_section = $parent_row->parentNode;
 		$is_in_thead    = ( $parent_section && $parent_section->nodeName === 'thead' );
 
-		// Check if th is first cell in row (likely row header)
+		// Check if th is first cell in row (likely row header)..
 		$is_first_cell = ( $parent_row->firstChild === $th ) ||
 							( $parent_row->getElementsByTagName( '*' )->item( 0 ) === $th );
 
-		// Count ths in this row
+		// Count ths in this row..
 		$ths_in_row = $this->query( './th', $parent_row );
 		$tds_in_row = $this->query( './td', $parent_row );
 
-		// If row is all th elements, likely column headers
+		// If row is all th elements, likely column headers..
 		if ( count( $tds_in_row ) === 0 && count( $ths_in_row ) > 1 ) {
 			return 'col';
 		}
 
-		// If in thead or first row with multiple ths
+		// If in thead or first row with multiple ths..
 		if ( $is_in_thead || $is_first_row ) {
 			return 'col';
 		}
 
-		// If first cell with td siblings, likely row header
+		// If first cell with td siblings, likely row header..
 		if ( $is_first_cell && count( $tds_in_row ) > 0 ) {
 			return 'row';
 		}
 
-		// Default to col for ambiguous cases
+		// Default to col for ambiguous cases..
 		return 'col';
 	}
 

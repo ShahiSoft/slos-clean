@@ -14,7 +14,7 @@
 
 namespace ShahiLegalFlowSuite\Shortcodes;
 
-// Exit if accessed directly.
+// Exit if accessed directly...
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -59,7 +59,7 @@ class ModuleShortcode {
 	 * @return string Shortcode output.
 	 */
 	public function render( $atts ) {
-		// Parse attributes.
+		// Parse attributes...
 		$atts = shortcode_atts(
 			array(
 				'name'             => '',        // Module ID/name (required).
@@ -72,19 +72,19 @@ class ModuleShortcode {
 			$this->tag
 		);
 
-		// Sanitize attributes.
+		// Sanitize attributes...
 		$module_name      = sanitize_key( $atts['name'] );
 		$display          = sanitize_key( $atts['display'] );
 		$show_status      = sanitize_key( $atts['show_status'] ) === 'yes';
 		$show_description = sanitize_key( $atts['show_description'] ) === 'yes';
 		$show_link        = sanitize_key( $atts['show_link'] ) === 'yes';
 
-		// Validate module name.
+		// Validate module name...
 		if ( empty( $module_name ) ) {
 			return '<p class="shahi-error">' . esc_html__( 'Module name is required.', 'shahi-legalflowsuite' ) . '</p>';
 		}
 
-		// Get module data.
+		// Get module data...
 		$module = $this->get_module_data( $module_name );
 
 		if ( ! $module ) {
@@ -95,7 +95,7 @@ class ModuleShortcode {
 			) . '</p>';
 		}
 
-		// Build CSS classes.
+		// Build CSS classes...
 		$classes = array(
 			'shahi-shortcode',
 			'shahi-module-shortcode',
@@ -103,7 +103,7 @@ class ModuleShortcode {
 			'module-' . sanitize_html_class( $module_name ),
 		);
 
-		// Build output.
+		// Build output...
 		ob_start();
 		?>
 		<div class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
@@ -142,24 +142,24 @@ class ModuleShortcode {
 	 * @return array|false Module data or false if not found.
 	 */
 	private function get_module_data( $module_name ) {
-		// Get all modules.
+		// Get all modules...
 		$modules = get_option( 'shahi_modules', array() );
 
 		if ( ! is_array( $modules ) ) {
 			$modules = array();
 		}
 
-		// Check if module exists.
+		// Check if module exists...
 		if ( isset( $modules[ $module_name ] ) ) {
 			$module = $modules[ $module_name ];
 
-			// Add link to module settings.
+			// Add link to module settings...
 			$module['link'] = admin_url( 'admin.php?page=shahi-modules&module=' . $module_name );
 
 			return $module;
 		}
 
-		// Module not found.
+		// Module not found...
 		return false;
 	}
 

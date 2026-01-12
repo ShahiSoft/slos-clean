@@ -106,35 +106,35 @@ class DSR_Portal extends Module {
 	 * @return void
 	 */
 	public function init(): void {
-		// Check if module is dormant (safety check)
+		// Check if module is dormant (safety check)..
 		if ( defined( 'SLOS_DORMANT_MODULES' ) && in_array( 'dsr-portal', SLOS_DORMANT_MODULES, true ) ) {
 			return;
 		}
 
-		// Only proceed if module is enabled
+		// Only proceed if module is enabled..
 		if ( ! $this->is_enabled() ) {
 			return;
 		}
 
-		// Register REST API endpoints
+		// Register REST API endpoints..
 		add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
 
-		// Register shortcodes
+		// Register shortcodes..
 		add_action( 'init', array( $this, 'register_shortcodes' ) );
 
-		// Register admin pages
+		// Register admin pages..
 		if ( is_admin() ) {
 			add_action( 'admin_menu', array( $this, 'register_admin_menu' ), 20 );
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
 
-			// Initialize DSR_Settings early so settings are registered during admin_init
+			// Initialize DSR_Settings early so settings are registered during admin_init..
 			new \ShahiLegalFlowSuite\Admin\DSR_Settings();
 		}
 
-		// Register frontend assets
+		// Register frontend assets..
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_assets' ) );
 
-		// Fire initialization hook
+		// Fire initialization hook..
 		do_action( 'slos_dsr_portal_init' );
 	}
 
@@ -168,17 +168,17 @@ class DSR_Portal extends Module {
 	 * @return void
 	 */
 	public function register_admin_menu(): void {
-		// Register main DSR page (tabbed interface)
+		// Register main DSR page (tabbed interface)..
 		add_submenu_page(
 			'shahi-legalflowsuite',
 			__( 'Requests', 'shahi-legalflowsuite' ),
 			'📋 ' . __( 'Requests', 'shahi-legalflowsuite' ),
-			'slos_manage_dsr',
+			'slos_manage_dsr', // phpcs:ignore WordPress.WP.Capabilities.Unknown -- Custom capability registered in MenuManager
 			'slos-requests',
 			array( $this, 'render_main_page' )
 		);
 
-		// Fire hook for additional pages (legacy support)
+		// Fire hook for additional pages (legacy support)..
 		do_action( 'slos_dsr_register_admin_menu' );
 	}
 
@@ -201,17 +201,17 @@ class DSR_Portal extends Module {
 	 * @return void
 	 */
 	public function enqueue_admin_assets( string $hook ): void {
-		// Bail early if hook is missing to avoid deprecated warnings
+		// Bail early if hook is missing to avoid deprecated warnings..
 		if ( empty( $hook ) ) {
 			return;
 		}
 
-		// Check if we're on a DSR page
+		// Check if we're on a DSR page..
 		if ( strpos( $hook, 'slos-requests' ) === false && strpos( $hook, 'slos-dsr' ) === false && strpos( $hook, 'dsr' ) === false ) {
 			return;
 		}
 
-		// Enqueue modern CSS
+		// Enqueue modern CSS..
 		wp_enqueue_style(
 			'slos-dsr-modern',
 			SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/css/dsr-modern.css',
@@ -219,7 +219,7 @@ class DSR_Portal extends Module {
 			SHAHI_LEGALFLOWSUITE_VERSION
 		);
 
-		// Enqueue modern JavaScript
+		// Enqueue modern JavaScript..
 		wp_enqueue_script(
 			'slos-dsr-modern',
 			SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/js/dsr-modern.js',
@@ -228,7 +228,7 @@ class DSR_Portal extends Module {
 			true
 		);
 
-		// Localize script with useful data
+		// Localize script with useful data..
 		wp_localize_script(
 			'slos-dsr-modern',
 			'slosDSR',
@@ -293,7 +293,6 @@ class DSR_Portal extends Module {
 	 */
 	protected function on_activate(): void {
 		do_action( 'slos_dsr_portal_activate' );
-		error_log( 'DSR Portal module activated.' );
 	}
 
 	/**
@@ -304,7 +303,6 @@ class DSR_Portal extends Module {
 	 */
 	protected function on_deactivate(): void {
 		do_action( 'slos_dsr_portal_deactivate' );
-		error_log( 'DSR Portal module deactivated.' );
 	}
 
 	/**

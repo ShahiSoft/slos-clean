@@ -239,7 +239,7 @@ class DatabaseHelper {
 			if ( is_null( $value ) ) {
 				$conditions[] = "{$column} IS NULL";
 			} elseif ( is_array( $value ) ) {
-				// IN clause
+				// IN clause..
 				$placeholders = implode( ', ', array_fill( 0, count( $value ), '%s' ) );
 				$conditions[] = $wpdb->prepare( "{$column} IN ({$placeholders})", $value );
 			} else {

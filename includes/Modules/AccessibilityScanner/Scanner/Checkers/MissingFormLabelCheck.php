@@ -29,7 +29,7 @@ class MissingFormLabelCheck extends AbstractCheck {
 		$issues = array();
 		$dom    = $this->get_dom( $content );
 
-		// Collect all labels with 'for' attribute
+		// Collect all labels with 'for' attribute..
 		$labels      = $dom->getElementsByTagName( 'label' );
 		$labelForIds = array();
 		foreach ( $labels as $label ) {
@@ -57,12 +57,12 @@ class MissingFormLabelCheck extends AbstractCheck {
 			$tagName = $element->tagName;
 			$type    = $element->getAttribute( 'type' );
 
-			// Skip inputs that don't need labels
+			// Skip inputs that don't need labels..
 			if ( $tagName === 'input' && in_array( $type, array( 'hidden', 'submit', 'button', 'image', 'reset' ) ) ) {
 				continue;
 			}
 
-			// Check 1: aria-label or aria-labelledby
+			// Check 1: aria-label or aria-labelledby..
 			if ( $element->hasAttribute( 'aria-label' ) && trim( $element->getAttribute( 'aria-label' ) ) !== '' ) {
 				continue;
 			}
@@ -70,12 +70,12 @@ class MissingFormLabelCheck extends AbstractCheck {
 				continue;
 			}
 
-			// Check 2: title attribute (fallback)
+			// Check 2: title attribute (fallback)..
 			if ( $element->hasAttribute( 'title' ) && trim( $element->getAttribute( 'title' ) ) !== '' ) {
 				continue;
 			}
 
-			// Check 3: Nested inside label
+			// Check 3: Nested inside label..
 			$parent   = $element->parentNode;
 			$isNested = false;
 			while ( $parent && $parent instanceof \DOMElement ) {
@@ -89,7 +89,7 @@ class MissingFormLabelCheck extends AbstractCheck {
 				continue;
 			}
 
-			// Check 4: Label with 'for' attribute matching ID
+			// Check 4: Label with 'for' attribute matching ID..
 			if ( $element->hasAttribute( 'id' ) ) {
 				$id = $element->getAttribute( 'id' );
 				if ( in_array( $id, $labelForIds ) ) {

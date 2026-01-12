@@ -80,10 +80,10 @@ class ConsentUxChecker {
 	public function get_consent_pages(): array {
 		$pages = array();
 
-		// Get legal pages from option
+		// Get legal pages from option..
 		$legal_pages = get_option( 'slos_legal_pages', array() );
 
-		// Add consent/legal page types
+		// Add consent/legal page types..
 		$page_types = array(
 			'privacy-policy',
 			'cookie-policy',
@@ -98,16 +98,16 @@ class ConsentUxChecker {
 			}
 		}
 
-		// Also check for WordPress privacy policy page
+		// Also check for WordPress privacy policy page..
 		$wp_privacy_page = get_option( 'wp_page_for_privacy_policy' );
 		if ( $wp_privacy_page && ! in_array( $wp_privacy_page, $pages, true ) ) {
 			$pages[] = absint( $wp_privacy_page );
 		}
 
-		// Allow filtering
+		// Allow filtering..
 		$pages = apply_filters( 'slos_consent_ux_pages', $pages );
 
-		// Remove duplicates and ensure valid page IDs
+		// Remove duplicates and ensure valid page IDs..
 		$pages = array_unique( array_filter( array_map( 'absint', $pages ) ) );
 
 		return $pages;
@@ -121,7 +121,7 @@ class ConsentUxChecker {
 	 * @return array Scan results
 	 */
 	public function scan( bool $force_refresh = false ): array {
-		// Check cache first
+		// Check cache first..
 		if ( ! $force_refresh ) {
 			$cached = get_transient( self::CACHE_KEY );
 			if ( false !== $cached ) {
@@ -129,7 +129,7 @@ class ConsentUxChecker {
 			}
 		}
 
-		// Reset counters
+		// Reset counters..
 		$this->issue_counts = array(
 			'critical' => 0,
 			'warning'  => 0,
@@ -137,7 +137,7 @@ class ConsentUxChecker {
 		);
 		$this->all_issues   = array();
 
-		// Get pages to scan
+		// Get pages to scan..
 		$pages = $this->get_consent_pages();
 
 		if ( empty( $pages ) ) {
@@ -146,19 +146,19 @@ class ConsentUxChecker {
 			return $results;
 		}
 
-		// Scan each page
+		// Scan each page..
 		$page_results = array();
 		foreach ( $pages as $page_id ) {
 			$page_results[ $page_id ] = $this->scan_page( $page_id );
 		}
 
-		// Build final results
+		// Build final results..
 		$results = $this->build_results( $page_results );
 
-		// Cache results
+		// Cache results..
 		set_transient( self::CACHE_KEY, $results, self::CACHE_EXPIRATION );
 
-		// Fire action for other modules to react
+		// Fire action for other modules to react..
 		do_action( 'slos_consent_ux_scan_completed', $results );
 
 		return $results;
@@ -187,7 +187,7 @@ class ConsentUxChecker {
 
 		$issues = array();
 
-		// Get page HTML
+		// Get page HTML..
 		$html = $this->get_page_html( $page );
 
 		if ( empty( $html ) ) {
@@ -201,13 +201,13 @@ class ConsentUxChecker {
 			);
 		}
 
-		// Run checks
+		// Run checks..
 		$issues = array_merge( $issues, $this->check_focus_order( $html, $page_id ) );
 		$issues = array_merge( $issues, $this->check_aria_attributes( $html, $page_id ) );
 		$issues = array_merge( $issues, $this->check_contrast( $html, $page_id ) );
 		$issues = array_merge( $issues, $this->check_heading_structure( $html, $page_id ) );
 
-		// Count issues by severity
+		// Count issues by severity..
 		foreach ( $issues as $issue ) {
 			$severity = $issue['severity'] ?? 'notice';
 			if ( isset( $this->issue_counts[ $severity ] ) ) {
@@ -234,10 +234,10 @@ class ConsentUxChecker {
 	 * @return string Page HTML
 	 */
 	private function get_page_html( $page ): string {
-		// Apply content filters (shortcodes, blocks, etc.)
+		// Apply content filters (shortcodes, blocks, etc.)..
 		$content = apply_filters( 'the_content', $page->post_content );
 
-		// Wrap in basic HTML structure for DOM parsing
+		// Wrap in basic HTML structure for DOM parsing..
 		$html  = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>';
 		$html .= '<main id="main-content">';
 		$html .= '<h1>' . esc_html( $page->post_title ) . '</h1>';
@@ -258,18 +258,18 @@ class ConsentUxChecker {
 	private function check_focus_order( string $html, int $page_id ): array {
 		$issues = array();
 
-		// Use existing checkers
+		// Use existing checkers..
 		$focus_order_checker  = new FocusOrderCheck();
 		$positive_tab_checker = new PositiveTabIndexCheck();
 		$interactive_checker  = new InteractiveElementCheck();
 
-		// Parse HTML
+		// Parse HTML..
 		libxml_use_internal_errors( true );
 		$dom = new \DOMDocument();
 		$dom->loadHTML( $html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
 		libxml_clear_errors();
 
-		// Check for positive tabindex (anti-pattern)
+		// Check for positive tabindex (anti-pattern)..
 		$xpath             = new \DOMXPath( $dom );
 		$positive_tabindex = $xpath->query( '//*[@tabindex > 0]' );
 		if ( $positive_tabindex->length > 0 ) {
@@ -284,7 +284,7 @@ class ConsentUxChecker {
 			);
 		}
 
-		// Check for interactive elements without proper keyboard access
+		// Check for interactive elements without proper keyboard access..
 		$interactive_elements = $xpath->query( '//div[@onclick] | //span[@onclick] | //*[@role="button" and not(@tabindex)]' );
 		if ( $interactive_elements->length > 0 ) {
 			$issues[] = array(
@@ -312,7 +312,7 @@ class ConsentUxChecker {
 	private function check_aria_attributes( string $html, int $page_id ): array {
 		$issues = array();
 
-		// Parse HTML
+		// Parse HTML..
 		libxml_use_internal_errors( true );
 		$dom = new \DOMDocument();
 		$dom->loadHTML( $html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
@@ -320,7 +320,7 @@ class ConsentUxChecker {
 
 		$xpath = new \DOMXPath( $dom );
 
-		// Check for buttons without accessible labels
+		// Check for buttons without accessible labels..
 		$unlabeled_buttons = $xpath->query( '//button[not(text()) and not(@aria-label) and not(@aria-labelledby)]' );
 		if ( $unlabeled_buttons->length > 0 ) {
 			$issues[] = array(
@@ -334,7 +334,7 @@ class ConsentUxChecker {
 			);
 		}
 
-		// Check for form inputs without labels
+		// Check for form inputs without labels..
 		$unlabeled_inputs = $xpath->query( '//input[@type!="hidden" and not(@aria-label) and not(@aria-labelledby) and not(@id)] | //input[@id and not(//label[@for=@id])]' );
 		if ( $unlabeled_inputs->length > 0 ) {
 			$issues[] = array(
@@ -348,7 +348,7 @@ class ConsentUxChecker {
 			);
 		}
 
-		// Check for invalid ARIA roles
+		// Check for invalid ARIA roles..
 		$elements_with_role = $xpath->query( '//*[@role]' );
 		$invalid_roles      = 0;
 		$valid_roles        = array(
@@ -456,10 +456,10 @@ class ConsentUxChecker {
 	private function check_contrast( string $html, int $page_id ): array {
 		$issues = array();
 
-		// Note: Full contrast checking requires CSS and rendering, which is complex
-		// Here we do basic checks for common patterns
+		// Note: Full contrast checking requires CSS and rendering, which is complex..
+		// Here we do basic checks for common patterns..
 
-		// Parse HTML
+		// Parse HTML..
 		libxml_use_internal_errors( true );
 		$dom = new \DOMDocument();
 		$dom->loadHTML( $html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
@@ -467,7 +467,7 @@ class ConsentUxChecker {
 
 		$xpath = new \DOMXPath( $dom );
 
-		// Check for inline styles with color values that might have contrast issues
+		// Check for inline styles with color values that might have contrast issues..
 		$inline_colors = $xpath->query( '//*[@style and contains(@style, "color")]' );
 		if ( $inline_colors->length > 0 ) {
 			$issues[] = array(
@@ -481,7 +481,7 @@ class ConsentUxChecker {
 			);
 		}
 
-		// Check for common low-contrast combinations in class names
+		// Check for common low-contrast combinations in class names..
 		$low_contrast_classes = $xpath->query( '//*[contains(@class, "text-gray") or contains(@class, "text-muted") or contains(@class, "text-light")]' );
 		if ( $low_contrast_classes->length > 0 ) {
 			$issues[] = array(
@@ -509,7 +509,7 @@ class ConsentUxChecker {
 	private function check_heading_structure( string $html, int $page_id ): array {
 		$issues = array();
 
-		// Parse HTML
+		// Parse HTML..
 		libxml_use_internal_errors( true );
 		$dom = new \DOMDocument();
 		$dom->loadHTML( $html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
@@ -517,7 +517,7 @@ class ConsentUxChecker {
 
 		$xpath = new \DOMXPath( $dom );
 
-		// Check for H1
+		// Check for H1..
 		$h1_count = $xpath->query( '//h1' )->length;
 		if ( $h1_count === 0 ) {
 			$issues[] = array(
@@ -540,7 +540,7 @@ class ConsentUxChecker {
 			);
 		}
 
-		// Check for skipped heading levels
+		// Check for skipped heading levels..
 		$all_headings   = $xpath->query( '//h1 | //h2 | //h3 | //h4 | //h5 | //h6' );
 		$heading_levels = array();
 		foreach ( $all_headings as $heading ) {
@@ -571,7 +571,7 @@ class ConsentUxChecker {
 			}
 		}
 
-		// Check for empty headings
+		// Check for empty headings..
 		$empty_headings = $xpath->query( '//h1[not(normalize-space(text()))] | //h2[not(normalize-space(text()))] | //h3[not(normalize-space(text()))] | //h4[not(normalize-space(text()))] | //h5[not(normalize-space(text()))] | //h6[not(normalize-space(text()))]' );
 		if ( $empty_headings->length > 0 ) {
 			$issues[] = array(
@@ -607,7 +607,7 @@ class ConsentUxChecker {
 			}
 		}
 
-		// Calculate health score (0-100)
+		// Calculate health score (0-100)..
 		$health_score = 100;
 		if ( $total_pages > 0 ) {
 			$health_score  = max( 0, 100 - ( ( $pages_with_issues / $total_pages ) * 50 ) );
@@ -661,7 +661,7 @@ class ConsentUxChecker {
 		$results = $this->get_cached_results();
 
 		if ( false === $results ) {
-			// No cached results, run scan
+			// No cached results, run scan..
 			$results = $this->scan();
 		}
 

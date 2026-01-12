@@ -59,11 +59,11 @@ class MissingFormLabelFixer extends BaseFixer {
 		$xpath         = new \DOMXPath( $dom );
 		$fixes_applied = 0;
 
-		// Find form inputs without labels or aria-label
+		// Find form inputs without labels or aria-label..
 		$inputs = $xpath->query( '//input[@type!="hidden" and @type!="submit" and @type!="button" and @type!="reset"][not(@aria-label) and not(@aria-labelledby)]' );
 
 		foreach ( $inputs as $input ) {
-			// Check if there's already a label for this input
+			// Check if there's already a label for this input..
 			$input_id = $input->getAttribute( 'id' );
 			if ( ! empty( $input_id ) ) {
 				$existing_label = $xpath->query( "//label[@for='$input_id']" );
@@ -72,7 +72,7 @@ class MissingFormLabelFixer extends BaseFixer {
 				}
 			}
 
-			// Generate label from context
+			// Generate label from context..
 			$label_text = $this->generate_label_text( $input, $xpath );
 
 			if ( ! empty( $label_text ) ) {
@@ -92,18 +92,18 @@ class MissingFormLabelFixer extends BaseFixer {
 	 * @return string Generated label text
 	 */
 	private function generate_label_text( $input, $xpath ) {
-		// Check for placeholder
+		// Check for placeholder..
 		if ( $input->hasAttribute( 'placeholder' ) ) {
 			return trim( $input->getAttribute( 'placeholder' ) );
 		}
 
-		// Check for name attribute
+		// Check for name attribute..
 		if ( $input->hasAttribute( 'name' ) ) {
 			$name = $input->getAttribute( 'name' );
 			return ucwords( str_replace( array( '_', '-' ), ' ', $name ) );
 		}
 
-		// Default based on input type
+		// Default based on input type..
 		$type = $input->getAttribute( 'type' );
 		return ucfirst( $type ? $type : 'Input' );
 	}

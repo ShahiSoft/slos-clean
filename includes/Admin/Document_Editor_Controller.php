@@ -49,7 +49,7 @@ class Document_Editor_Controller {
 	 * @return void
 	 */
 	public function render() {
-		// Security check
+		// Security check..
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( esc_html__( 'You do not have permission to access this page.', 'shahi-legalflowsuite' ) );
 		}
@@ -73,10 +73,10 @@ class Document_Editor_Controller {
 			$error = __( 'No document ID specified.', 'shahi-legalflowsuite' );
 		}
 
-		// Enqueue editor assets
+		// Enqueue editor assets..
 		$this->enqueue_assets();
 
-		// Render the template
+		// Render the template..
 		$this->render_template( $document, $error );
 	}
 
@@ -87,10 +87,10 @@ class Document_Editor_Controller {
 	 * @return void
 	 */
 	private function enqueue_assets() {
-		// Enqueue WordPress editor
+		// Enqueue WordPress editor..
 		wp_enqueue_editor();
 
-		// Enqueue document hub styles for consistent styling
+		// Enqueue document hub styles for consistent styling..
 		wp_enqueue_style(
 			'slos-document-hub',
 			SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/css/document-hub.css',
@@ -98,7 +98,7 @@ class Document_Editor_Controller {
 			SHAHI_LEGALFLOWSUITE_VERSION
 		);
 
-		// Localize script data
+		// Localize script data..
 		wp_localize_script(
 			'jquery',
 			'slosEditor',
@@ -245,7 +245,7 @@ class Document_Editor_Controller {
 
 				<script>
 				jQuery(document).ready(function($) {
-					// Copy shortcode functionality
+					// Copy shortcode functionality..
 					$('.slos-copy-shortcode').on('click', function() {
 						var shortcode = $('#slos-shortcode').text();
 						navigator.clipboard.writeText(shortcode).then(function() {
@@ -253,7 +253,7 @@ class Document_Editor_Controller {
 						});
 					});
 
-					// Form submission via AJAX
+					// Form submission via AJAX..
 					$('#slos-document-editor-form').on('submit', function(e) {
 						e.preventDefault();
 						
@@ -261,7 +261,7 @@ class Document_Editor_Controller {
 						var $button = $form.find('button[name="save"]');
 						var originalText = $button.html();
 						
-						// Update editor content
+						// Update editor content..
 						if (typeof tinymce !== 'undefined' && tinymce.get('document_content')) {
 							tinymce.get('document_content').save();
 						}

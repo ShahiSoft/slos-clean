@@ -32,11 +32,11 @@ class PlaceholderLabelCheck extends AbstractCheck {
 
 		foreach ( $inputs as $input ) {
 			if ( $input->hasAttribute( 'placeholder' ) ) {
-				// Check if it has a label (MissingFormLabelCheck handles missing label,
-				// but here we specifically flag the placeholder usage if label is missing OR if placeholder duplicates label)
+				// Check if it has a label (MissingFormLabelCheck handles missing label,..
+				// but here we specifically flag the placeholder usage if label is missing OR if placeholder duplicates label)..
 
-				// If label is missing, MissingFormLabelCheck catches it.
-				// Here we check if placeholder is redundant with label.
+				// If label is missing, MissingFormLabelCheck catches it...
+				// Here we check if placeholder is redundant with label...
 
 				$placeholder = trim( $input->getAttribute( 'placeholder' ) );
 				$label       = $this->get_associated_label( $input, $dom );
@@ -55,7 +55,7 @@ class PlaceholderLabelCheck extends AbstractCheck {
 	}
 
 	private function get_associated_label( $input, $dom ) {
-		// Check explicit label
+		// Check explicit label..
 		if ( $input->hasAttribute( 'id' ) ) {
 			$id     = $input->getAttribute( 'id' );
 			$xpath  = new \DOMXPath( $dom );
@@ -65,17 +65,17 @@ class PlaceholderLabelCheck extends AbstractCheck {
 			}
 		}
 
-		// Check implicit label
+		// Check implicit label..
 		$parent = $input->parentNode;
 		while ( $parent && $parent instanceof \DOMElement ) {
 			if ( $parent->tagName === 'label' ) {
-				// Get text content excluding input value if any
+				// Get text content excluding input value if any..
 				return trim( $parent->textContent );
 			}
 			$parent = $parent->parentNode;
 		}
 
-		// Check aria-label
+		// Check aria-label..
 		if ( $input->hasAttribute( 'aria-label' ) ) {
 			return trim( $input->getAttribute( 'aria-label' ) );
 		}

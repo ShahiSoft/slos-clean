@@ -30,7 +30,7 @@ class TableHeaderCheck extends AbstractCheck {
 		$tables = $this->get_elements( $content, 'table' );
 
 		foreach ( $tables as $table ) {
-			// Check if table has role="presentation" or role="none", if so skip
+			// Check if table has role="presentation" or role="none", if so skip..
 			$role = $table->getAttribute( 'role' );
 			if ( $role === 'presentation' || $role === 'none' ) {
 				continue;

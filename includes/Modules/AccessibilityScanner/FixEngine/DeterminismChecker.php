@@ -87,7 +87,7 @@ class DeterminismChecker {
 			$hashes[] = $hash;
 		}
 
-		// Check if all hashes are identical
+		// Check if all hashes are identical..
 		$is_deterministic = count( array_unique( $hashes ) ) === 1;
 
 		return array(
@@ -115,7 +115,7 @@ class DeterminismChecker {
 		);
 
 		foreach ( $fixers as $id => $fixer ) {
-			// Test with relevant sample
+			// Test with relevant sample..
 			$sample = $this->map_fixer_to_sample( $id );
 
 			if ( ! $sample ) {
@@ -182,7 +182,7 @@ class DeterminismChecker {
 			: 0;
 		$report          .= "**Determinism Rate:** {$determinism_rate}%\n\n";
 
-		// Non-deterministic fixers (priority issues)
+		// Non-deterministic fixers (priority issues)..
 		if ( $r['non_deterministic'] > 0 ) {
 			$report .= "## Non-Deterministic Fixers (Require Investigation)\n\n";
 			foreach ( $r['details'] as $id => $detail ) {
@@ -195,7 +195,7 @@ class DeterminismChecker {
 			}
 		}
 
-		// Deterministic fixers
+		// Deterministic fixers..
 		$report .= "## Deterministic Fixers\n\n";
 		foreach ( $r['details'] as $id => $detail ) {
 			if ( isset( $detail['deterministic'] ) && $detail['deterministic'] ) {
@@ -224,7 +224,7 @@ class DeterminismChecker {
 	}
 }
 
-// Run if executed directly
+// Run if executed directly..
 if ( php_sapi_name() === 'cli' && basename( __FILE__ ) === basename( $_SERVER['SCRIPT_FILENAME'] ) ) {
 	require_once __DIR__ . '/../../../vendor/autoload.php';
 

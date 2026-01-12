@@ -33,7 +33,7 @@ class AudioAccessibilityCheck extends AbstractCheck {
 		$audios = $xpath->query( '//audio' );
 
 		foreach ( $audios as $audio ) {
-			// Check for controls
+			// Check for controls..
 			if ( ! $audio->hasAttribute( 'controls' ) ) {
 				$issues[] = array(
 					'element' => 'audio',
@@ -42,7 +42,7 @@ class AudioAccessibilityCheck extends AbstractCheck {
 				);
 			}
 
-			// Check for autoplay
+			// Check for autoplay..
 			if ( $audio->hasAttribute( 'autoplay' ) ) {
 				$issues[] = array(
 					'element' => 'audio',

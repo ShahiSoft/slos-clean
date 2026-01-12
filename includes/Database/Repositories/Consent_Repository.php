@@ -12,7 +12,7 @@
 
 namespace ShahiLegalFlowSuite\Database\Repositories;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -233,31 +233,31 @@ class Consent_Repository extends Base_Repository {
 		$where_clauses = array( '1=1' );
 		$where_values  = array();
 
-		// User ID filter
+		// User ID filter..
 		if ( ! empty( $args['user_id'] ) ) {
 			$where_clauses[] = 'user_id = %d';
 			$where_values[]  = (int) $args['user_id'];
 		}
 
-		// Type filter
+		// Type filter..
 		if ( ! empty( $args['type'] ) ) {
 			$where_clauses[] = 'type = %s';
 			$where_values[]  = sanitize_text_field( $args['type'] );
 		}
 
-		// Status filter
+		// Status filter..
 		if ( ! empty( $args['status'] ) ) {
 			$where_clauses[] = 'status = %s';
 			$where_values[]  = sanitize_text_field( $args['status'] );
 		}
 
-		// Date from filter
+		// Date from filter..
 		if ( ! empty( $args['date_from'] ) ) {
 			$where_clauses[] = 'created_at >= %s';
 			$where_values[]  = sanitize_text_field( $args['date_from'] ) . ' 00:00:00';
 		}
 
-		// Date to filter
+		// Date to filter..
 		if ( ! empty( $args['date_to'] ) ) {
 			$where_clauses[] = 'created_at <= %s';
 			$where_values[]  = sanitize_text_field( $args['date_to'] ) . ' 23:59:59';
@@ -292,7 +292,7 @@ class Consent_Repository extends Base_Repository {
 	public function find_by_email( string $email, array $args = array() ): array {
 		global $wpdb;
 
-		// Sanitize email
+		// Sanitize email..
 		$email = sanitize_email( $email );
 		if ( empty( $email ) ) {
 			return array();
@@ -300,14 +300,14 @@ class Consent_Repository extends Base_Repository {
 
 		$consents = array();
 
-		// 1. Find consents via user_id (registered users)
+		// 1. Find consents via user_id (registered users)..
 		$user = get_user_by( 'email', $email );
 		if ( $user ) {
 			$consents = array_merge( $consents, $this->find_by_user( $user->ID, $args ) );
 		}
 
-		// 2. Find consents via metadata (guest consents with email stored)
-		// Look for email in JSON metadata field
+		// 2. Find consents via metadata (guest consents with email stored)..
+		// Look for email in JSON metadata field..
 		$metadata_results = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT * FROM {$this->table} 
@@ -318,11 +318,11 @@ class Consent_Repository extends Base_Repository {
 			ARRAY_A
 		);
 
-		// Verify email is actually in metadata (not just a substring match)
+		// Verify email is actually in metadata (not just a substring match)..
 		foreach ( $metadata_results as $record ) {
 			$metadata = isset( $record['metadata'] ) ? json_decode( $record['metadata'], true ) : array();
 			if ( is_array( $metadata ) && isset( $metadata['email'] ) && $metadata['email'] === $email ) {
-				// Check if this consent isn't already in our results (avoid duplicates)
+				// Check if this consent isn't already in our results (avoid duplicates)..
 				$already_included = false;
 				foreach ( $consents as $existing ) {
 					if ( isset( $existing['id'] ) && $existing['id'] == $record['id'] ) {
@@ -336,7 +336,7 @@ class Consent_Repository extends Base_Repository {
 			}
 		}
 
-		// Sort by created_at DESC
+		// Sort by created_at DESC..
 		usort(
 			$consents,
 			function ( $a, $b ) {

@@ -13,7 +13,7 @@
 
 namespace ShahiLegalFlowSuite\Services;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -26,6 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 3.0.1
  */
 class Consent_Audit_Logger extends Base_Service {
+	// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 	/**
 	 * Log table name
@@ -42,13 +43,13 @@ class Consent_Audit_Logger extends Base_Service {
 	 * @var array
 	 */
 	private $allowed_methods = array(
-		'banner',              // Consent via banner interaction
-		'preferences_center',  // Consent via preferences center
-		'admin_manual',        // Manual consent entry by admin
-		'api',                 // Programmatic API consent
-		'import',              // Bulk imported consent
-		'website',             // Legacy website method (backward compat)
-		'admin',               // Legacy admin method (backward compat)
+		'banner',              // Consent via banner interaction.
+		'preferences_center',  // Consent via preferences center.
+		'admin_manual',        // Manual consent entry by admin.
+		'api',                 // Programmatic API consent.
+		'import',              // Bulk imported consent.
+		'website',             // Legacy website method (backward compat).
+		'admin',               // Legacy admin method (backward compat).
 	);
 
 	/**
@@ -69,7 +70,7 @@ class Consent_Audit_Logger extends Base_Service {
 	 * @since 3.1.1 Extended method taxonomy with banner, preferences_center, admin_manual, api, import
 	 *
 	 * @param array $data {
-	 *     Log data
+	 *     Log data.
 	 *
 	 *     @type int    $consent_id     Consent record ID
 	 *     @type int    $user_id        User ID
@@ -100,15 +101,16 @@ class Consent_Audit_Logger extends Base_Service {
 
 		$data = wp_parse_args( $data, $defaults );
 
-		// Validate required fields
+		// Validate required fields..
 		if ( empty( $data['action'] ) ) {
 			return false;
 		}
 
-		// Validate method taxonomy
+		// Validate method taxonomy..
 		if ( ! empty( $data['method'] ) && ! in_array( $data['method'], $this->allowed_methods, true ) ) {
-			// Log warning but continue with fallback
-			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			// Log warning but continue with fallback..
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 				error_log(
 					sprintf(
 						'Invalid consent logging method "%s" provided. Allowed: %s',
@@ -117,11 +119,11 @@ class Consent_Audit_Logger extends Base_Service {
 					)
 				);
 			}
-			// Fallback to website for unknown methods
+			// Fallback to website for unknown methods..
 			$data['method'] = 'website';
 		}
 
-		// Prepare data for insertion
+		// Prepare data for insertion..
 		$insert_data = array(
 			'consent_id'     => absint( $data['consent_id'] ),
 			'user_id'        => absint( $data['user_id'] ),
@@ -135,7 +137,7 @@ class Consent_Audit_Logger extends Base_Service {
 			'created_at'     => current_time( 'mysql' ),
 		);
 
-		// Insert log
+		// Insert log..
 		$result = $wpdb->insert(
 			$this->table_name,
 			$insert_data,
@@ -148,7 +150,7 @@ class Consent_Audit_Logger extends Base_Service {
 
 		$log_id = $wpdb->insert_id;
 
-		// Fire action for extensibility
+		// Fire action for extensibility..
 		do_action( 'slos_consent_logged', $log_id, $data );
 
 		return $log_id;
@@ -159,7 +161,7 @@ class Consent_Audit_Logger extends Base_Service {
 	 *
 	 * @since 3.0.1
 	 * @param array $args {
-	 *     Search arguments
+	 *     Search arguments.
 	 *
 	 *     @type int    $user_id   Filter by user ID
 	 *     @type string $purpose   Filter by purpose
@@ -189,31 +191,31 @@ class Consent_Audit_Logger extends Base_Service {
 		$where_clauses = array( '1=1' );
 		$where_values  = array();
 
-		// User ID filter
+		// User ID filter..
 		if ( ! empty( $args['user_id'] ) ) {
 			$where_clauses[] = 'user_id = %d';
 			$where_values[]  = absint( $args['user_id'] );
 		}
 
-		// Purpose filter
+		// Purpose filter..
 		if ( ! empty( $args['purpose'] ) ) {
 			$where_clauses[] = 'purpose = %s';
 			$where_values[]  = sanitize_text_field( $args['purpose'] );
 		}
 
-		// Action filter
+		// Action filter..
 		if ( ! empty( $args['action'] ) ) {
 			$where_clauses[] = 'action = %s';
 			$where_values[]  = sanitize_text_field( $args['action'] );
 		}
 
-		// Date from filter
+		// Date from filter..
 		if ( ! empty( $args['date_from'] ) ) {
 			$where_clauses[] = 'created_at >= %s';
 			$where_values[]  = sanitize_text_field( $args['date_from'] ) . ' 00:00:00';
 		}
 
-		// Date to filter
+		// Date to filter..
 		if ( ! empty( $args['date_to'] ) ) {
 			$where_clauses[] = 'created_at <= %s';
 			$where_values[]  = sanitize_text_field( $args['date_to'] ) . ' 23:59:59';
@@ -221,11 +223,11 @@ class Consent_Audit_Logger extends Base_Service {
 
 		$where = implode( ' AND ', $where_clauses );
 
-		// Add limit and offset to values
+		// Add limit and offset to values..
 		$where_values[] = absint( $args['limit'] );
 		$where_values[] = absint( $args['offset'] );
 
-		// Build query
+		// Build query..
 		$sql = "SELECT * FROM {$this->table_name} WHERE {$where} ORDER BY created_at DESC LIMIT %d OFFSET %d";
 
 		if ( ! empty( $where_values ) ) {
@@ -236,7 +238,7 @@ class Consent_Audit_Logger extends Base_Service {
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		$results = $wpdb->get_results( $sql, ARRAY_A );
 
-		// Decode JSON fields
+		// Decode JSON fields..
 		foreach ( $results as &$result ) {
 			if ( ! empty( $result['previous_state'] ) ) {
 				$result['previous_state'] = json_decode( $result['previous_state'], true );
@@ -253,8 +255,8 @@ class Consent_Audit_Logger extends Base_Service {
 	 * Get total count of logs matching filters
 	 *
 	 * @since 3.0.1
-	 * @param array $args Search arguments (same as search method)
-	 * @return int Total count
+	 * @param array $args Search arguments (same as search method).
+	 * @return int Total count.
 	 */
 	public function count( array $args = array() ): int {
 		global $wpdb;
@@ -272,31 +274,31 @@ class Consent_Audit_Logger extends Base_Service {
 		$where_clauses = array( '1=1' );
 		$where_values  = array();
 
-		// User ID filter
+		// User ID filter..
 		if ( ! empty( $args['user_id'] ) ) {
 			$where_clauses[] = 'user_id = %d';
 			$where_values[]  = absint( $args['user_id'] );
 		}
 
-		// Purpose filter
+		// Purpose filter..
 		if ( ! empty( $args['purpose'] ) ) {
 			$where_clauses[] = 'purpose = %s';
 			$where_values[]  = sanitize_text_field( $args['purpose'] );
 		}
 
-		// Action filter
+		// Action filter..
 		if ( ! empty( $args['action'] ) ) {
 			$where_clauses[] = 'action = %s';
 			$where_values[]  = sanitize_text_field( $args['action'] );
 		}
 
-		// Date from filter
+		// Date from filter..
 		if ( ! empty( $args['date_from'] ) ) {
 			$where_clauses[] = 'created_at >= %s';
 			$where_values[]  = sanitize_text_field( $args['date_from'] ) . ' 00:00:00';
 		}
 
-		// Date to filter
+		// Date to filter..
 		if ( ! empty( $args['date_to'] ) ) {
 			$where_clauses[] = 'created_at <= %s';
 			$where_values[]  = sanitize_text_field( $args['date_to'] ) . ' 23:59:59';
@@ -319,8 +321,8 @@ class Consent_Audit_Logger extends Base_Service {
 	 * Get log by ID
 	 *
 	 * @since 3.0.1
-	 * @param int $log_id Log ID
-	 * @return array|null Log data or null if not found
+	 * @param int $log_id Log ID.
+	 * @return array|null Log data or null if not found.
 	 */
 	public function get_log( int $log_id ) {
 		global $wpdb;
@@ -337,7 +339,7 @@ class Consent_Audit_Logger extends Base_Service {
 			return null;
 		}
 
-		// Decode JSON fields
+		// Decode JSON fields..
 		if ( ! empty( $result['previous_state'] ) ) {
 			$result['previous_state'] = json_decode( $result['previous_state'], true );
 		}
@@ -352,8 +354,8 @@ class Consent_Audit_Logger extends Base_Service {
 	 * Purge old logs based on retention policy
 	 *
 	 * @since 3.0.1
-	 * @param int $days Number of days to retain (default: from settings)
-	 * @return int|false Number of deleted rows or false on error
+	 * @param int $days Number of days to retain (default: from settings).
+	 * @return int|false Number of deleted rows or false on error.
 	 */
 	public function purge_old_logs( int $days = null ) {
 		global $wpdb;
@@ -362,7 +364,7 @@ class Consent_Audit_Logger extends Base_Service {
 			$days = (int) get_option( 'consent_log_retention_days', 365 );
 		}
 
-		// Safety check: minimum 30 days retention
+		// Safety check: minimum 30 days retention..
 		if ( $days < 30 ) {
 			$days = 30;
 		}
@@ -376,7 +378,7 @@ class Consent_Audit_Logger extends Base_Service {
 		$result = $wpdb->query( $sql );
 
 		if ( false !== $result && $result > 0 ) {
-			// Fire action for purge completion
+			// Fire action for purge completion..
 			do_action( 'slos_consent_logs_purged', $result, $days );
 		}
 
@@ -387,8 +389,8 @@ class Consent_Audit_Logger extends Base_Service {
 	 * Get logs for a specific consent ID
 	 *
 	 * @since 3.0.1
-	 * @param int $consent_id Consent ID
-	 * @return array Array of log records
+	 * @param int $consent_id Consent ID.
+	 * @return array Array of log records.
 	 */
 	public function get_consent_history( int $consent_id ): array {
 		global $wpdb;
@@ -401,7 +403,7 @@ class Consent_Audit_Logger extends Base_Service {
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		$results = $wpdb->get_results( $sql, ARRAY_A );
 
-		// Decode JSON fields
+		// Decode JSON fields..
 		foreach ( $results as &$result ) {
 			if ( ! empty( $result['previous_state'] ) ) {
 				$result['previous_state'] = json_decode( $result['previous_state'], true );
@@ -418,9 +420,9 @@ class Consent_Audit_Logger extends Base_Service {
 	 * Get logs for a specific user
 	 *
 	 * @since 3.0.1
-	 * @param int $user_id User ID
-	 * @param int $limit   Maximum results (default: 50)
-	 * @return array Array of log records
+	 * @param int $user_id User ID.
+	 * @param int $limit   Maximum results (default: 50).
+	 * @return array Array of log records.
 	 */
 	public function get_user_logs( int $user_id, int $limit = 50 ): array {
 		return $this->search(
@@ -435,8 +437,8 @@ class Consent_Audit_Logger extends Base_Service {
 	 * Get recent logs
 	 *
 	 * @since 3.0.1
-	 * @param int $limit Maximum results (default: 20)
-	 * @return array Array of log records
+	 * @param int $limit Maximum results (default: 20).
+	 * @return array Array of log records.
 	 */
 	public function get_recent( int $limit = 20 ): array {
 		return $this->search(
@@ -450,9 +452,9 @@ class Consent_Audit_Logger extends Base_Service {
 	 * Get statistics by action type
 	 *
 	 * @since 3.0.1
-	 * @param string $date_from Optional start date (Y-m-d format)
-	 * @param string $date_to   Optional end date (Y-m-d format)
-	 * @return array Array of action => count pairs
+	 * @param string $date_from Optional start date (Y-m-d format).
+	 * @param string $date_to   Optional end date (Y-m-d format).
+	 * @return array Array of action => count pairs.
 	 */
 	public function get_stats_by_action( string $date_from = null, string $date_to = null ): array {
 		global $wpdb;
@@ -503,9 +505,10 @@ class Consent_Audit_Logger extends Base_Service {
 		 * Filter allowed consent logging methods
 		 *
 		 * @since 3.1.1
-		 * @param array $methods Default allowed methods
-		 * @return array Filtered methods
+		 * @param array $methods Default allowed methods.
+		 * @return array Filtered methods.
 		 */
 		return apply_filters( 'slos_consent_logging_methods', $this->allowed_methods );
 	}
 }
+// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared

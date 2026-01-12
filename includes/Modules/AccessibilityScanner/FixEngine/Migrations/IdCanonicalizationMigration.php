@@ -29,7 +29,7 @@ class IdCanonicalizationMigration {
 	 * Maps old IDs (aliases) to canonical IDs
 	 */
 	private static $legacy_map = array(
-		// Legacy key => Canonical ID
+		// Legacy key => Canonical ID..
 		'generic-link'               => 'generic-link-text',
 		'missing-label'              => 'missing-form-label',
 		'redundant-alt'              => 'redundant-alt-text',
@@ -93,13 +93,13 @@ class IdCanonicalizationMigration {
 
 		Logger::info( 'Starting ID canonicalization migration', array( 'dry_run' => $dry_run ) );
 
-		// 1. Migrate postmeta
+		// 1. Migrate postmeta..
 		$results['postmeta_updated'] = self::migrate_postmeta( $dry_run, $results['changes'] );
 
-		// 2. Migrate options
+		// 2. Migrate options..
 		$results['options_updated'] = self::migrate_options( $dry_run, $results['changes'] );
 
-		// 3. Migrate fix_history table
+		// 3. Migrate fix_history table..
 		$results['history_updated'] = self::migrate_fix_history( $dry_run, $results['changes'] );
 
 		Logger::info( 'ID canonicalization migration completed', $results );
@@ -194,7 +194,7 @@ class IdCanonicalizationMigration {
 
 		$table = $wpdb->prefix . 'slos_fix_history';
 
-		// Check if table exists
+		// Check if table exists..
 		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) !== $table ) {
 			return 0;
 		}
@@ -239,7 +239,7 @@ class IdCanonicalizationMigration {
 		if ( is_array( $data ) ) {
 			$new_data = array();
 			foreach ( $data as $key => $value ) {
-				// Check if key is a legacy ID
+				// Check if key is a legacy ID..
 				$new_key = $key;
 				if ( isset( self::$legacy_map[ $key ] ) ) {
 					$new_key   = self::$legacy_map[ $key ];
@@ -250,7 +250,7 @@ class IdCanonicalizationMigration {
 					);
 				}
 
-				// Check if value contains IDs
+				// Check if value contains IDs..
 				if ( is_string( $value ) && isset( self::$legacy_map[ $value ] ) ) {
 					$new_value            = self::$legacy_map[ $value ];
 					$changes[]            = array(
@@ -277,17 +277,17 @@ class IdCanonicalizationMigration {
 	 * @return array Rollback results
 	 */
 	public static function rollback(): array {
-		// Create reverse map
+		// Create reverse map..
 		$reverse_map = array_flip( self::$legacy_map );
 
-		// Temporarily swap map
+		// Temporarily swap map..
 		$original_map     = self::$legacy_map;
 		self::$legacy_map = $reverse_map;
 
-		// Run migration in reverse
+		// Run migration in reverse..
 		$results = self::run( false );
 
-		// Restore map
+		// Restore map..
 		self::$legacy_map = $original_map;
 
 		Logger::warning( 'ID canonicalization migration rolled back', $results );

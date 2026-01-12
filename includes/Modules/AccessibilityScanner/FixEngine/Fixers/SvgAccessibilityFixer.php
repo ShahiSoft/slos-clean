@@ -61,11 +61,11 @@ final class SvgAccessibilityFixer extends AbstractFixer {
 			$modified   = false;
 			$fix_detail = array();
 
-			// Check if SVG is decorative
+			// Check if SVG is decorative..
 			$is_decorative = $this->is_decorative_svg( $svg );
 
 			if ( $is_decorative ) {
-				// Mark as decorative
+				// Mark as decorative..
 				if ( ! $svg->hasAttribute( 'aria-hidden' ) ) {
 					$svg->setAttribute( 'aria-hidden', 'true' );
 					$modified             = true;
@@ -76,19 +76,19 @@ final class SvgAccessibilityFixer extends AbstractFixer {
 					$modified = true;
 				}
 			} else {
-				// Make accessible
+				// Make accessible..
 				if ( ! $svg->hasAttribute( 'role' ) ) {
 					$svg->setAttribute( 'role', 'img' );
 					$modified = true;
 				}
 
-				// Ensure focusable="false" for better IE/Edge handling
+				// Ensure focusable="false" for better IE/Edge handling..
 				if ( ! $svg->hasAttribute( 'focusable' ) ) {
 					$svg->setAttribute( 'focusable', 'false' );
 					$modified = true;
 				}
 
-				// Add title if missing
+				// Add title if missing..
 				$title = $this->get_svg_title( $svg );
 				if ( ! $title ) {
 					$title_text = $this->generate_svg_title( $svg );
@@ -99,20 +99,20 @@ final class SvgAccessibilityFixer extends AbstractFixer {
 						$title_element->setAttribute( 'id', $title_id );
 						$title_element->textContent = $title_text;
 
-						// Insert as first child
+						// Insert as first child..
 						if ( $svg->firstChild ) {
 							$svg->insertBefore( $title_element, $svg->firstChild );
 						} else {
 							$svg->appendChild( $title_element );
 						}
 
-						// Update aria-labelledby
+						// Update aria-labelledby..
 						$svg->setAttribute( 'aria-labelledby', $title_id );
 						$modified                  = true;
 						$fix_detail['title_added'] = $title_text;
 					}
 				} else {
-					// Ensure title has ID and is referenced
+					// Ensure title has ID and is referenced..
 					$title_id = $title->getAttribute( 'id' );
 					if ( empty( $title_id ) ) {
 						$title_id = 'svg-title-' . wp_generate_uuid4();
@@ -158,7 +158,7 @@ final class SvgAccessibilityFixer extends AbstractFixer {
 	 * @return bool
 	 */
 	private function is_decorative_svg( \DOMElement $svg ): bool {
-		// Check explicit decorative markers
+		// Check explicit decorative markers..
 		if ( $svg->getAttribute( 'aria-hidden' ) === 'true' ) {
 			return true;
 		}
@@ -166,7 +166,7 @@ final class SvgAccessibilityFixer extends AbstractFixer {
 			return true;
 		}
 
-		// Check class for decorative patterns
+		// Check class for decorative patterns..
 		$class               = strtolower( $svg->getAttribute( 'class' ) );
 		$decorative_patterns = array( 'icon', 'decorative', 'ornament', 'divider', 'separator' );
 
@@ -176,13 +176,13 @@ final class SvgAccessibilityFixer extends AbstractFixer {
 			}
 		}
 
-		// Check if it's very small (likely an icon)
+		// Check if it's very small (likely an icon)..
 		$width  = $svg->getAttribute( 'width' );
 		$height = $svg->getAttribute( 'height' );
 
 		if ( ( is_numeric( $width ) && (float) $width < 32 ) ||
 			( is_numeric( $height ) && (float) $height < 32 ) ) {
-			// Small SVGs are often icons - only decorative if no meaningful content
+			// Small SVGs are often icons - only decorative if no meaningful content..
 			if ( ! $this->get_svg_title( $svg ) && empty( trim( $svg->textContent ) ) ) {
 				return true;
 			}
@@ -217,16 +217,16 @@ final class SvgAccessibilityFixer extends AbstractFixer {
 	 * @return string
 	 */
 	private function generate_svg_title( \DOMElement $svg ): string {
-		// Check for aria-label
+		// Check for aria-label..
 		$aria_label = $svg->getAttribute( 'aria-label' );
 		if ( ! empty( $aria_label ) ) {
 			return $aria_label;
 		}
 
-		// Check parent for context
+		// Check parent for context..
 		$parent = $svg->parentNode;
 		if ( $parent instanceof \DOMElement ) {
-			// If inside button or link, use their label
+			// If inside button or link, use their label..
 			if ( in_array( $parent->nodeName, array( 'button', 'a' ) ) ) {
 				$parent_label = $parent->getAttribute( 'aria-label' );
 				if ( ! empty( $parent_label ) ) {
@@ -240,10 +240,10 @@ final class SvgAccessibilityFixer extends AbstractFixer {
 			}
 		}
 
-		// Try to derive from class
+		// Try to derive from class..
 		$class = $svg->getAttribute( 'class' );
 		if ( ! empty( $class ) ) {
-			// Extract meaningful part from class
+			// Extract meaningful part from class..
 			$class = preg_replace( '/^(svg-|icon-|fa-|bi-|feather-)/', '', $class );
 			$class = str_replace( array( '-', '_' ), ' ', $class );
 			$class = trim( $class );

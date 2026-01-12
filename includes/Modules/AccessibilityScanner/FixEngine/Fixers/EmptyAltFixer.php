@@ -53,13 +53,13 @@ final class EmptyAltFixer extends AbstractFixer {
 			return FixResult::error( $this->get_id(), 'Failed to parse HTML', $content );
 		}
 
-		// Find images with empty alt that are NOT decorative
+		// Find images with empty alt that are NOT decorative..
 		$images        = $this->query( '//img[@alt="" and not(@role="presentation") and not(@aria-hidden="true")]' );
 		$fixes_applied = 0;
 		$details       = array();
 
 		foreach ( $images as $img ) {
-			// Skip if image appears decorative
+			// Skip if image appears decorative..
 			if ( $this->appears_decorative( $img ) ) {
 				continue;
 			}
@@ -101,7 +101,7 @@ final class EmptyAltFixer extends AbstractFixer {
 		$src   = strtolower( $img->getAttribute( 'src' ) );
 		$class = strtolower( $img->getAttribute( 'class' ) );
 
-		// Common decorative patterns
+		// Common decorative patterns..
 		$decorative_patterns = array(
 			'spacer',
 			'blank',
@@ -121,7 +121,7 @@ final class EmptyAltFixer extends AbstractFixer {
 			}
 		}
 
-		// Check dimensions - very small images are often decorative
+		// Check dimensions - very small images are often decorative..
 		$width  = (int) $img->getAttribute( 'width' );
 		$height = (int) $img->getAttribute( 'height' );
 
@@ -140,7 +140,7 @@ final class EmptyAltFixer extends AbstractFixer {
 	 * @return string
 	 */
 	private function generate_alt_from_context( \DOMElement $img, string $src ): string {
-		// Check if image is inside a link with text
+		// Check if image is inside a link with text..
 		$parent = $img->parentNode;
 		if ( $parent && $parent->nodeName === 'a' ) {
 			$link_text = trim( $parent->textContent );
@@ -149,13 +149,13 @@ final class EmptyAltFixer extends AbstractFixer {
 			}
 		}
 
-		// Check for title attribute
+		// Check for title attribute..
 		$title = $img->getAttribute( 'title' );
 		if ( ! empty( $title ) ) {
 			return $title;
 		}
 
-		// Check for nearby figcaption
+		// Check for nearby figcaption..
 		if ( $parent && $parent->nodeName === 'figure' ) {
 			$figcaption = $parent->getElementsByTagName( 'figcaption' )->item( 0 );
 			if ( $figcaption ) {
@@ -166,7 +166,7 @@ final class EmptyAltFixer extends AbstractFixer {
 			}
 		}
 
-		// Try to generate from filename
+		// Try to generate from filename..
 		return $this->humanize_filename( basename( parse_url( $src, PHP_URL_PATH ) ?: '' ) );
 	}
 

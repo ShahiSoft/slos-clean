@@ -30,13 +30,13 @@ class BackgroundImageCheck extends AbstractCheck {
 		$dom    = $this->get_dom( $content );
 		$xpath  = new \DOMXPath( $dom );
 
-		// Find elements with style attribute containing 'background' or 'background-image'
+		// Find elements with style attribute containing 'background' or 'background-image'..
 		$elements = $xpath->query( '//*[@style]' );
 
 		foreach ( $elements as $element ) {
 			$style = $element->getAttribute( 'style' );
 			if ( preg_match( '/background(-image)?\s*:/i', $style ) && preg_match( '/url\(/i', $style ) ) {
-				// Check if element has text content or aria-label
+				// Check if element has text content or aria-label..
 				$text            = trim( $element->textContent );
 				$aria_label      = $element->getAttribute( 'aria-label' );
 				$aria_labelledby = $element->getAttribute( 'aria-labelledby' );

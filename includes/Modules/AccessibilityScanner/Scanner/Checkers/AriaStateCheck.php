@@ -36,7 +36,7 @@ class AriaStateCheck extends AbstractCheck {
 			$elements = $xpath->query( "//*[@$state]" );
 			foreach ( $elements as $element ) {
 				$value = $element->getAttribute( $state );
-				// aria-checked and aria-pressed can be 'mixed'
+				// aria-checked and aria-pressed can be 'mixed'..
 				if ( ( $state === 'aria-checked' || $state === 'aria-pressed' ) && $value === 'mixed' ) {
 					continue;
 				}

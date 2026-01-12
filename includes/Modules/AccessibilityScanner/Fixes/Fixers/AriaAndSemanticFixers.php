@@ -14,7 +14,7 @@ class AriaRoleFixer extends BaseFixer {
 	public function get_description() {
 		return 'Fix invalid or missing ARIA roles'; }
 
-	// Valid ARIA roles per WAI-ARIA spec
+	// Valid ARIA roles per WAI-ARIA spec..
 	private static $valid_roles = array(
 		'alert',
 		'alertdialog',
@@ -92,20 +92,20 @@ class AriaRoleFixer extends BaseFixer {
 		$xpath       = new \DOMXPath( $dom );
 		$fixed_count = 0;
 
-		// Find all elements with role attribute
+		// Find all elements with role attribute..
 		$elements_with_role = $xpath->query( '//*[@role]' );
 		foreach ( $elements_with_role as $element ) {
 			$role = strtolower( trim( $element->getAttribute( 'role' ) ) );
 
-			// Check if role is invalid
+			// Check if role is invalid..
 			if ( ! in_array( $role, self::$valid_roles, true ) ) {
-				// Remove invalid role - better than leaving an invalid one
+				// Remove invalid role - better than leaving an invalid one..
 				$element->removeAttribute( 'role' );
 				++$fixed_count;
 			}
 		}
 
-		// Add role="navigation" to nav elements without role
+		// Add role="navigation" to nav elements without role..
 		$navs = $dom->getElementsByTagName( 'nav' );
 		foreach ( $navs as $nav ) {
 			if ( ! $nav->hasAttribute( 'role' ) ) {
@@ -114,7 +114,7 @@ class AriaRoleFixer extends BaseFixer {
 			}
 		}
 
-		// Add role="main" to main elements without role
+		// Add role="main" to main elements without role..
 		$mains = $dom->getElementsByTagName( 'main' );
 		foreach ( $mains as $main ) {
 			if ( ! $main->hasAttribute( 'role' ) ) {
@@ -147,7 +147,7 @@ class AriaAttributeFixer extends BaseFixer {
 		$valid_aria = array( 'aria-label', 'aria-labelledby', 'aria-hidden', 'aria-live', 'aria-modal', 'aria-required', 'aria-disabled', 'aria-expanded' );
 
 		foreach ( $elements as $element ) {
-			// Check for misspelled aria attributes
+			// Check for misspelled aria attributes..
 			$attributes = array();
 			foreach ( $element->attributes as $attr ) {
 				$attributes[ $attr->name ] = $attr->value;
@@ -155,7 +155,7 @@ class AriaAttributeFixer extends BaseFixer {
 
 			foreach ( $attributes as $name => $value ) {
 				if ( stripos( $name, 'aria-' ) === 0 && ! in_array( $name, $valid_aria ) ) {
-					// Check if it's a typo of a valid aria attribute
+					// Check if it's a typo of a valid aria attribute..
 					$similar = $this->find_similar( $name, $valid_aria );
 					if ( $similar && levenshtein( $name, $similar ) <= 2 ) {
 						$element->removeAttribute( $name );
@@ -206,16 +206,16 @@ class AriaStateFixer extends BaseFixer {
 		$xpath       = new \DOMXPath( $dom );
 		$fixed_count = 0;
 
-		// Fix toggle buttons (aria-pressed).
+		// Fix toggle buttons (aria-pressed)...
 		$fixed_count += $this->fix_toggle_buttons( $xpath );
 
-		// Fix expandable elements (aria-expanded).
+		// Fix expandable elements (aria-expanded)...
 		$fixed_count += $this->fix_expandables( $xpath );
 
-		// Fix tab elements (aria-selected).
+		// Fix tab elements (aria-selected)...
 		$fixed_count += $this->fix_tabs( $xpath );
 
-		// Fix checkbox-like elements (aria-checked).
+		// Fix checkbox-like elements (aria-checked)...
 		$fixed_count += $this->fix_checkboxes( $xpath );
 
 		return array(
@@ -233,7 +233,7 @@ class AriaStateFixer extends BaseFixer {
 	private function fix_toggle_buttons( \DOMXPath $xpath ) {
 		$fixed = 0;
 
-		// Find buttons that look like toggles.
+		// Find buttons that look like toggles...
 		$toggles = $xpath->query(
 			'//button[contains(@class, "toggle") or contains(@class, "switch") or ' .
 			'contains(@class, "btn-toggle")]' .
@@ -241,7 +241,7 @@ class AriaStateFixer extends BaseFixer {
 		);
 
 		foreach ( $toggles as $toggle ) {
-			// Determine initial state from class or aria-checked.
+			// Determine initial state from class or aria-checked...
 			$class      = $toggle->getAttribute( 'class' );
 			$is_pressed = (
 				preg_match( '/\b(active|on|pressed|selected)\b/i', $class ) ||
@@ -264,7 +264,7 @@ class AriaStateFixer extends BaseFixer {
 	private function fix_expandables( \DOMXPath $xpath ) {
 		$fixed = 0;
 
-		// Find elements that control expandable content.
+		// Find elements that control expandable content...
 		$triggers = $xpath->query(
 			'//*[contains(@class, "accordion") or contains(@class, "collapse") or ' .
 			'contains(@class, "expandable") or contains(@class, "dropdown") or ' .
@@ -275,7 +275,7 @@ class AriaStateFixer extends BaseFixer {
 		);
 
 		foreach ( $triggers as $trigger ) {
-			// Determine initial state.
+			// Determine initial state...
 			$class       = $trigger->getAttribute( 'class' );
 			$is_expanded = preg_match( '/\b(open|expanded|show|active)\b/i', $class );
 
@@ -283,7 +283,7 @@ class AriaStateFixer extends BaseFixer {
 			++$fixed;
 		}
 
-		// Also look for standalone buttons with collapse-like behavior.
+		// Also look for standalone buttons with collapse-like behavior...
 		$collapse_btns = $xpath->query(
 			'//button[@data-toggle="collapse" or @data-bs-toggle="collapse"][not(@aria-expanded)]'
 		);
@@ -305,20 +305,20 @@ class AriaStateFixer extends BaseFixer {
 	private function fix_tabs( \DOMXPath $xpath ) {
 		$fixed = 0;
 
-		// Find tab elements.
+		// Find tab elements...
 		$tabs = $xpath->query(
 			'//*[@role="tab"][not(@aria-selected)] | ' .
 			'//*[@role="tablist"]//*[contains(@class, "tab")][not(@aria-selected)]'
 		);
 
 		foreach ( $tabs as $tab ) {
-			// Determine if active.
+			// Determine if active...
 			$class     = $tab->getAttribute( 'class' );
 			$is_active = preg_match( '/\b(active|selected|current)\b/i', $class );
 
 			$tab->setAttribute( 'aria-selected', $is_active ? 'true' : 'false' );
 
-			// Ensure it has role="tab".
+			// Ensure it has role="tab"...
 			if ( ! $tab->hasAttribute( 'role' ) ) {
 				$tab->setAttribute( 'role', 'tab' );
 			}
@@ -338,7 +338,7 @@ class AriaStateFixer extends BaseFixer {
 	private function fix_checkboxes( \DOMXPath $xpath ) {
 		$fixed = 0;
 
-		// Find custom checkbox elements.
+		// Find custom checkbox elements...
 		$checkboxes = $xpath->query(
 			'//*[@role="checkbox"][not(@aria-checked)] | ' .
 			'//*[@role="switch"][not(@aria-checked)]'
@@ -369,7 +369,7 @@ class LandmarkRoleFixer extends BaseFixer {
 		$dom         = $this->get_dom( $content );
 		$fixed_count = 0;
 
-		// Add landmark roles to semantic elements
+		// Add landmark roles to semantic elements..
 		$landmarks = array(
 			'header'  => 'banner',
 			'nav'     => 'navigation',
@@ -454,7 +454,7 @@ class InvalidAriaCombinationFixer extends BaseFixer {
 		return 'Fix invalid ARIA combinations'; }
 
 	public function fix( $content ) {
-		// Complex ARIA validation - delegate to content check
+		// Complex ARIA validation - delegate to content check..
 		return array(
 			'fixed_count' => 0,
 			'content'     => $content,
@@ -480,12 +480,12 @@ class HiddenContentFixer extends BaseFixer {
 			$style = $element->getAttribute( 'style' );
 			$class = $element->getAttribute( 'class' );
 
-			// Detect visually hidden but semantically important content
+			// Detect visually hidden but semantically important content..
 			if ( preg_match( '/(display:\s*none|visibility:\s*hidden)/i', $style ) ||
 				preg_match( '/(hidden|display-none|screen-reader)/i', $class ) ) {
 
 				if ( ! $element->hasAttribute( 'role' ) ) {
-					// If contains important text, ensure it's accessible
+					// If contains important text, ensure it's accessible..
 					$text = trim( $element->textContent );
 					if ( ! empty( $text ) ) {
 						$element->setAttribute( 'aria-hidden', 'false' );
@@ -516,7 +516,7 @@ class SemanticHtmlFixer extends BaseFixer {
 		$divs        = $dom->getElementsByTagName( 'div' );
 		$fixed_count = 0;
 
-		// Convert div with role to semantic element
+		// Convert div with role to semantic element..
 		$div_array = array();
 		foreach ( $divs as $d ) {
 			$div_array[] = $d;
@@ -538,7 +538,7 @@ class SemanticHtmlFixer extends BaseFixer {
 				$new_element              = $dom->createElement( $new_tag );
 				$new_element->textContent = $div->textContent;
 
-				// Copy attributes
+				// Copy attributes..
 				foreach ( $div->attributes as $attr ) {
 					if ( $attr->name !== 'role' ) {
 						$new_element->setAttribute( $attr->name, $attr->value );
@@ -607,16 +607,16 @@ class PageStructureFixer extends BaseFixer {
 		$xpath       = new \DOMXPath( $dom );
 		$fixed_count = 0;
 
-		// Add main landmark if missing.
+		// Add main landmark if missing...
 		$fixed_count += $this->add_main_landmark( $xpath, $dom );
 
-		// Add skip-to-content link if missing.
+		// Add skip-to-content link if missing...
 		$fixed_count += $this->add_skip_link( $xpath, $dom );
 
-		// Add landmark roles to semantic-looking containers.
+		// Add landmark roles to semantic-looking containers...
 		$fixed_count += $this->add_landmark_roles( $xpath );
 
-		// Ensure proper aria-labels on duplicate landmarks.
+		// Ensure proper aria-labels on duplicate landmarks...
 		$fixed_count += $this->label_duplicate_landmarks( $xpath );
 
 		return array(
@@ -633,13 +633,13 @@ class PageStructureFixer extends BaseFixer {
 	 * @return int Number of fixes applied.
 	 */
 	private function add_main_landmark( \DOMXPath $xpath, \DOMDocument $dom ) {
-		// Check if main element exists.
+		// Check if main element exists...
 		$main = $xpath->query( '//main | //*[@role="main"]' );
 		if ( $main->length > 0 ) {
 			return 0;
 		}
 
-		// Look for content container that should be main.
+		// Look for content container that should be main...
 		$content_candidates = $xpath->query(
 			'//*[@id="content" or @id="main-content" or @id="primary" or ' .
 			'contains(@class, "content-area") or contains(@class, "main-content") or ' .
@@ -651,7 +651,7 @@ class PageStructureFixer extends BaseFixer {
 			if ( $container instanceof \DOMElement ) {
 				$container->setAttribute( 'role', 'main' );
 
-				// Ensure it has an ID for skip link.
+				// Ensure it has an ID for skip link...
 				if ( ! $container->hasAttribute( 'id' ) ) {
 					$container->setAttribute( 'id', 'main-content' );
 				}
@@ -671,7 +671,7 @@ class PageStructureFixer extends BaseFixer {
 	 * @return int Number of fixes applied.
 	 */
 	private function add_skip_link( \DOMXPath $xpath, \DOMDocument $dom ) {
-		// Check if skip link already exists.
+		// Check if skip link already exists...
 		$skip = $xpath->query(
 			'//a[contains(@class, "skip") or contains(@href, "#main") or ' .
 			'contains(@href, "#content") or contains(text(), "Skip")]'
@@ -681,7 +681,7 @@ class PageStructureFixer extends BaseFixer {
 			return 0;
 		}
 
-		// Find target for skip link.
+		// Find target for skip link...
 		$main = $xpath->query( '//main | //*[@role="main"] | //*[@id="content"] | //*[@id="main-content"]' );
 		if ( $main->length === 0 ) {
 			return 0;
@@ -695,18 +695,18 @@ class PageStructureFixer extends BaseFixer {
 			$target->setAttribute( 'id', $target_id );
 		}
 
-		// Create skip link.
+		// Create skip link...
 		$skip_link = $dom->createElement( 'a' );
 		$skip_link->setAttribute( 'href', '#' . $target_id );
 		$skip_link->setAttribute( 'class', 'slos-skip-link screen-reader-text' );
 		$skip_link->textContent = 'Skip to main content';
 
-		// Insert at beginning of body.
+		// Insert at beginning of body...
 		$body = $dom->getElementsByTagName( 'body' )->item( 0 );
 		if ( $body && $body->firstChild ) {
 			$body->insertBefore( $skip_link, $body->firstChild );
 
-			// Inject skip link styles.
+			// Inject skip link styles...
 			$this->inject_skip_link_styles( $dom );
 
 			return 1;
@@ -724,7 +724,7 @@ class PageStructureFixer extends BaseFixer {
 	private function add_landmark_roles( \DOMXPath $xpath ) {
 		$fixed = 0;
 
-		// Containers that should be navigation.
+		// Containers that should be navigation...
 		$nav_candidates = $xpath->query(
 			'//div[contains(@class, "nav") or contains(@class, "menu") or ' .
 			'contains(@id, "nav") or contains(@id, "menu")]' .
@@ -736,7 +736,7 @@ class PageStructureFixer extends BaseFixer {
 			++$fixed;
 		}
 
-		// Containers that should be complementary (aside).
+		// Containers that should be complementary (aside)...
 		$aside_candidates = $xpath->query(
 			'//div[contains(@class, "sidebar") or contains(@class, "widget-area") or ' .
 			'contains(@id, "sidebar")]' .
@@ -748,7 +748,7 @@ class PageStructureFixer extends BaseFixer {
 			++$fixed;
 		}
 
-		// Containers that should be search.
+		// Containers that should be search...
 		$search_candidates = $xpath->query(
 			'//div[contains(@class, "search") or contains(@id, "search")]' .
 			'[not(@role)][.//input[@type="search" or @type="text"]]'
@@ -771,7 +771,7 @@ class PageStructureFixer extends BaseFixer {
 	private function label_duplicate_landmarks( \DOMXPath $xpath ) {
 		$fixed = 0;
 
-		// Check for multiple nav elements.
+		// Check for multiple nav elements...
 		$navs = $xpath->query( '//nav | //*[@role="navigation"]' );
 		if ( $navs->length > 1 ) {
 			$nav_count = 0;
@@ -779,7 +779,7 @@ class PageStructureFixer extends BaseFixer {
 				if ( ! $nav->hasAttribute( 'aria-label' ) && ! $nav->hasAttribute( 'aria-labelledby' ) ) {
 					++$nav_count;
 
-					// Try to derive label from heading or class.
+					// Try to derive label from heading or class...
 					$label = $this->derive_landmark_label( $nav, $xpath );
 					if ( $label ) {
 						$nav->setAttribute( 'aria-label', $label );
@@ -800,13 +800,13 @@ class PageStructureFixer extends BaseFixer {
 	 * @return string|null The derived label or null.
 	 */
 	private function derive_landmark_label( \DOMElement $element, \DOMXPath $xpath ) {
-		// Check for heading inside.
+		// Check for heading inside...
 		$heading = $xpath->query( './/h1 | .//h2 | .//h3 | .//h4', $element )->item( 0 );
 		if ( $heading ) {
 			return trim( $heading->textContent );
 		}
 
-		// Check class for hints.
+		// Check class for hints...
 		$class = strtolower( $element->getAttribute( 'class' ) );
 		$id    = strtolower( $element->getAttribute( 'id' ) );
 
@@ -905,7 +905,7 @@ class VideoAccessibilityFixer extends BaseFixer {
 
 			$tracks = $video->getElementsByTagName( 'track' );
 			if ( $tracks->length === 0 ) {
-				// No captions, add note
+				// No captions, add note..
 				$p              = $dom->createElement( 'p' );
 				$p->textContent = 'Captions are required for video accessibility.';
 				$video->parentNode->insertBefore( $p, $video->nextSibling );
@@ -939,7 +939,7 @@ class AudioAccessibilityFixer extends BaseFixer {
 				++$fixed_count;
 			}
 
-			// Add note about transcript
+			// Add note about transcript..
 			$p              = $dom->createElement( 'p' );
 			$p->textContent = 'Transcript: Required for audio accessibility.';
 			$audio->parentNode->insertBefore( $p, $audio->nextSibling );
@@ -963,7 +963,7 @@ class MediaAlternativeFixer extends BaseFixer {
 		return 'Add alternatives to media'; }
 
 	public function fix( $content ) {
-		// Handled by other media fixers
+		// Handled by other media fixers..
 		return array(
 			'fixed_count' => 0,
 			'content'     => $content,

@@ -14,7 +14,7 @@
 
 namespace ShahiLegalFlowSuite\API;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -35,7 +35,7 @@ class ModulesController {
 	 * @return void
 	 */
 	public function register_routes() {
-		// List all modules
+		// List all modules..
 		register_rest_route(
 			RestAPI::get_namespace(),
 			'/modules',
@@ -46,7 +46,7 @@ class ModulesController {
 			)
 		);
 
-		// Get single module
+		// Get single module..
 		register_rest_route(
 			RestAPI::get_namespace(),
 			'/modules/(?P<id>[a-zA-Z0-9_-]+)',
@@ -64,7 +64,7 @@ class ModulesController {
 			)
 		);
 
-		// Enable module
+		// Enable module..
 		register_rest_route(
 			RestAPI::get_namespace(),
 			'/modules/(?P<id>[a-zA-Z0-9_-]+)/enable',
@@ -82,7 +82,7 @@ class ModulesController {
 			)
 		);
 
-		// Disable module
+		// Disable module..
 		register_rest_route(
 			RestAPI::get_namespace(),
 			'/modules/(?P<id>[a-zA-Z0-9_-]+)/disable',
@@ -100,7 +100,7 @@ class ModulesController {
 			)
 		);
 
-		// Update module settings
+		// Update module settings..
 		register_rest_route(
 			RestAPI::get_namespace(),
 			'/modules/(?P<id>[a-zA-Z0-9_-]+)/settings',
@@ -134,7 +134,7 @@ class ModulesController {
 		$modules = get_option( 'shahi_modules', array() );
 
 		if ( empty( $modules ) ) {
-			// Return default modules structure
+			// Return default modules structure..
 			$modules = $this->get_default_modules();
 		}
 
@@ -240,7 +240,7 @@ class ModulesController {
 			return RestAPI::error( 'Module not found', 404 );
 		}
 
-		// Merge new settings with existing
+		// Merge new settings with existing..
 		if ( ! isset( $modules[ $module_id ]['settings'] ) ) {
 			$modules[ $module_id ]['settings'] = array();
 		}

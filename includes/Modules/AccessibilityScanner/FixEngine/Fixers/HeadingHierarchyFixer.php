@@ -53,7 +53,7 @@ final class HeadingHierarchyFixer extends AbstractFixer {
 			return FixResult::error( $this->get_id(), 'Failed to parse HTML', $content );
 		}
 
-		// Get all headings in document order
+		// Get all headings in document order..
 		$headings = $this->query( '//h1 | //h2 | //h3 | //h4 | //h5 | //h6' );
 
 		if ( count( $headings ) < 2 ) {
@@ -67,31 +67,31 @@ final class HeadingHierarchyFixer extends AbstractFixer {
 		foreach ( $headings as $heading ) {
 			$current_level = (int) substr( $heading->nodeName, 1 );
 
-			// First heading
+			// First heading..
 			if ( $last_level === 0 ) {
 				$last_level = $current_level;
 				continue;
 			}
 
-			// Check for skipped level (going from h2 to h4, etc.)
+			// Check for skipped level (going from h2 to h4, etc.)..
 			if ( $current_level > $last_level + 1 ) {
 				$correct_level = $last_level + 1;
 				$new_tag_name  = 'h' . $correct_level;
 
-				// Create new heading element
+				// Create new heading element..
 				$new_heading = $this->doc->createElement( $new_tag_name );
 
-				// Copy attributes
+				// Copy attributes..
 				foreach ( $heading->attributes as $attr ) {
 					$new_heading->setAttribute( $attr->nodeName, $attr->nodeValue );
 				}
 
-				// Copy children
+				// Copy children..
 				while ( $heading->firstChild ) {
 					$new_heading->appendChild( $heading->firstChild );
 				}
 
-				// Replace
+				// Replace..
 				$heading->parentNode->replaceChild( $new_heading, $heading );
 
 				++$fixes_applied;
