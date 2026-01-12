@@ -17,7 +17,7 @@ namespace ShahiLegalFlowSuite\Ajax;
 
 use ShahiLegalFlowSuite\Core\Security;
 
-// Exit if accessed directly..
+// Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -136,13 +136,13 @@ class AjaxHandler {
 	 * @return bool True if verified, dies with error if not
 	 */
 	public static function verify_request( $nonce_action, $capability = 'manage_options' ) {
-		// Verify nonce..
+		// Verify nonce
 		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], $nonce_action ) ) {
 			self::error( 'Security check failed' );
 			return false;
 		}
 
-		// Check capability..
+		// Check capability
 		if ( ! current_user_can( $capability ) ) {
 			self::error( 'Insufficient permissions' );
 			return false;
