@@ -345,8 +345,34 @@ class ComplianceMainPage {
 		$dsr         = $dsr_service->get_ops_statistics();
 
 		// 4. Get Accessibility statistics..
-		$accessibility_scanner = new \ShahiLegalFlowSuite\Modules\AccessibilityScanner\AccessibilityScanner();
-		$accessibility         = $accessibility_scanner->get_ops_statistics();
+		$accessibility       = array(
+			'total_issues'        => 0,
+			'critical_issues'     => 0,
+			'warning_issues'      => 0,
+			'notice_issues'       => 0,
+			'pages_scanned'       => 0,
+			'accessibility_score' => 0,
+			'pass_rate'           => 100.0,
+			'last_scan_time'      => '',
+			'hours_since_scan'    => null,
+			'scan_freshness'      => 'never',
+			'by_severity'         => array(
+				'critical' => 0,
+				'warning'  => 0,
+				'notice'   => 0,
+			),
+		);
+
+		$module_manager = \ShahiLegalFlowSuite\Modules\ModuleManager::get_instance();
+		$accessibility_module = $module_manager ? $module_manager->get_module( 'accessibility-scanner' ) : null;
+
+		if ( ! $accessibility_module && class_exists( '\\ShahiLegalFlowSuite\\Modules\\AccessibilityScanner\\AccessibilityScanner' ) ) {
+			$accessibility_module = new \ShahiLegalFlowSuite\Modules\AccessibilityScanner\AccessibilityScanner();
+		}
+
+		if ( $accessibility_module && method_exists( $accessibility_module, 'get_ops_statistics' ) ) {
+			$accessibility = $accessibility_module->get_ops_statistics();
+		}
 
 		// 5. Get Consent UX Checker statistics (Phase 2.3)..
 		$consent_ux_checker = new \ShahiLegalFlowSuite\Modules\AccessibilityScanner\ConsentUxChecker();
