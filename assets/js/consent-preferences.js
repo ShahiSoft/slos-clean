@@ -8,11 +8,11 @@
  * - View consent history timeline
  * - Download consent data (GDPR Article 15)
  *
- * @package ShahiLegalFlowSuite
+ * @package
  * @since 3.0.1
  */
 
-(function() {
+(function () {
 	'use strict';
 
 	/**
@@ -30,9 +30,11 @@
 			this.isLoggedIn = this.config.isLoggedIn || false;
 			this.i18n = this.config.i18n || {};
 			this.settings = this.config.config || {};
-			this.container = document.getElementById('slos-consent-preferences');
+			this.container = document.getElementById(
+				'slos-consent-preferences'
+			);
 			this.loadingEl = document.querySelector('.slos-consent-loading');
-			
+
 			this.state = {
 				consents: {},
 				purposes: [],
@@ -57,7 +59,7 @@
 			try {
 				await this.loadPurposes();
 				await this.loadConsents();
-				
+
 				if (this.settings.showHistory && this.isLoggedIn) {
 					await this.loadHistory();
 				}
@@ -65,7 +67,10 @@
 				this.render();
 				this.hideLoading();
 			} catch (error) {
-				console.error('[SLOS Consent Preferences] Initialization failed:', error);
+				console.error(
+					'[SLOS Consent Preferences] Initialization failed:',
+					error
+				);
 				this.showError(this.t('errorLoading'));
 				this.hideLoading();
 			}
@@ -76,18 +81,54 @@
 		 */
 		async loadPurposes() {
 			try {
-				const response = await this.apiRequest('GET', '/consents/purposes');
+				const response = await this.apiRequest(
+					'GET',
+					'/consents/purposes'
+				);
 				this.state.purposes = response.data || [];
 			} catch (error) {
-				console.error('[SLOS Consent Preferences] Failed to load purposes:', error);
+				console.error(
+					'[SLOS Consent Preferences] Failed to load purposes:',
+					error
+				);
 				// Fallback to default purposes
 				this.state.purposes = [
-					{ id: 'necessary', name: this.t('necessary'), description: this.t('necessaryDesc'), required: true },
-					{ id: 'functional', name: this.t('functional'), description: this.t('functionalDesc'), required: false },
-					{ id: 'analytics', name: this.t('analytics'), description: this.t('analyticsDesc'), required: false },
-					{ id: 'marketing', name: this.t('marketing'), description: this.t('marketingDesc'), required: false },
-					{ id: 'advertising', name: this.t('advertising'), description: this.t('advertisingDesc'), required: false },
-					{ id: 'personalization', name: this.t('personalization'), description: this.t('personalizationDesc'), required: false },
+					{
+						id: 'necessary',
+						name: this.t('necessary'),
+						description: this.t('necessaryDesc'),
+						required: true,
+					},
+					{
+						id: 'functional',
+						name: this.t('functional'),
+						description: this.t('functionalDesc'),
+						required: false,
+					},
+					{
+						id: 'analytics',
+						name: this.t('analytics'),
+						description: this.t('analyticsDesc'),
+						required: false,
+					},
+					{
+						id: 'marketing',
+						name: this.t('marketing'),
+						description: this.t('marketingDesc'),
+						required: false,
+					},
+					{
+						id: 'advertising',
+						name: this.t('advertising'),
+						description: this.t('advertisingDesc'),
+						required: false,
+					},
+					{
+						id: 'personalization',
+						name: this.t('personalization'),
+						description: this.t('personalizationDesc'),
+						required: false,
+					},
 				];
 			}
 		}
@@ -108,7 +149,10 @@
 				const response = await this.apiRequest('GET', endpoint);
 				this.state.consents = response.data?.consents || {};
 			} catch (error) {
-				console.error('[SLOS Consent Preferences] Failed to load consents:', error);
+				console.error(
+					'[SLOS Consent Preferences] Failed to load consents:',
+					error
+				);
 				this.state.consents = {};
 			}
 		}
@@ -122,10 +166,16 @@
 			}
 
 			try {
-				const response = await this.apiRequest('GET', `/consents/logs?user_id=${this.userId}`);
+				const response = await this.apiRequest(
+					'GET',
+					`/consents/logs?user_id=${this.userId}`
+				);
 				this.state.history = response.data || [];
 			} catch (error) {
-				console.error('[SLOS Consent Preferences] Failed to load history:', error);
+				console.error(
+					'[SLOS Consent Preferences] Failed to load history:',
+					error
+				);
 				this.state.history = [];
 			}
 		}
@@ -165,9 +215,11 @@
 		 * Render purposes list with toggles
 		 */
 		renderPurposesList() {
-			const purposesHtml = this.state.purposes.map(purpose => {
-				return this.renderPurpose(purpose);
-			}).join('');
+			const purposesHtml = this.state.purposes
+				.map((purpose) => {
+					return this.renderPurpose(purpose);
+				})
+				.join('');
 
 			return `
 				<div class="slos-pref-list">
@@ -178,20 +230,32 @@
 
 		/**
 		 * Render single purpose item
+		 *
+		 * @param purpose
 		 */
 		renderPurpose(purpose) {
 			const purposeId = purpose.id || purpose;
 			const purposeName = purpose.name || this.capitalize(purposeId);
-			const purposeDesc = purpose.description || this.getPurposeDescription(purposeId);
+			const purposeDesc =
+				purpose.description || this.getPurposeDescription(purposeId);
 			const isRequired = purpose.required || purposeId === 'necessary';
-			const isEnabled = this.state.consents[purposeId] === true || isRequired;
+			const isEnabled =
+				this.state.consents[purposeId] === true || isRequired;
 
 			return `
-				<label class="slos-pref-item ${isRequired ? 'slos-required' : ''}" data-purpose="${purposeId}">
+				<label class="slos-pref-item ${
+					isRequired ? 'slos-required' : ''
+				}" data-purpose="${purposeId}">
 					<div class="slos-pref-info">
 						<div class="slos-pref-name">
 							<strong>${purposeName}</strong>
-							${isRequired ? `<span class="slos-badge slos-badge-required">${this.t('required')}</span>` : ''}
+							${
+								isRequired
+									? `<span class="slos-badge slos-badge-required">${this.t(
+											'required'
+									  )}</span>`
+									: ''
+							}
 						</div>
 						<div class="slos-pref-desc">${purposeDesc}</div>
 					</div>
@@ -226,11 +290,15 @@
 					<button class="slos-btn slos-btn-ghost" data-action="reject-all">
 						${this.t('rejectAll')}
 					</button>
-					${this.settings.showDownload ? `
+					${
+						this.settings.showDownload
+							? `
 						<button class="slos-btn slos-btn-ghost" data-action="download">
 							${this.t('downloadData')}
 						</button>
-					` : ''}
+					`
+							: ''
+					}
 				</div>
 			`;
 		}
@@ -248,37 +316,54 @@
 				`;
 			}
 
-			const historyItems = this.state.history.slice(0, 10).map(item => {
-				const date = new Date(item.created_at).toLocaleDateString();
-				const time = new Date(item.created_at).toLocaleTimeString();
-				const action = this.getActionLabel(item.action);
-				const purpose = this.capitalize(item.purpose || 'all');
+			const historyItems = this.state.history
+				.slice(0, 10)
+				.map((item) => {
+					const date = new Date(item.created_at).toLocaleDateString();
+					const time = new Date(item.created_at).toLocaleTimeString();
+					const action = this.getActionLabel(item.action);
+					const purpose = this.capitalize(item.purpose || 'all');
 
-				return `
+					return `
 					<li class="slos-history-item">
 						<span class="slos-history-date">${date} ${time}</span>
 						<span class="slos-history-action slos-action-${item.action}">${action}</span>
 						<span class="slos-history-purpose">${purpose}</span>
 					</li>
 				`;
-			}).join('');
+				})
+				.join('');
 
 			const hasHistory = this.state.history.length > 0;
 
 			return `
 				<div class="slos-pref-history ${this.state.showHistory ? 'slos-expanded' : ''}">
 					<button class="slos-history-toggle" data-action="toggle-history">
-						<span>${this.state.showHistory ? this.t('hideHistory') : this.t('viewHistory')}</span>
-						<span class="slos-icon ${this.state.showHistory ? 'slos-icon-up' : 'slos-icon-down'}">▼</span>
+						<span>${
+							this.state.showHistory
+								? this.t('hideHistory')
+								: this.t('viewHistory')
+						}</span>
+						<span class="slos-icon ${
+							this.state.showHistory
+								? 'slos-icon-up'
+								: 'slos-icon-down'
+						}">▼</span>
 					</button>
-					<div class="slos-history-list" style="${this.state.showHistory ? '' : 'display:none;'}">
-						${hasHistory ? `
+					<div class="slos-history-list" style="${
+						this.state.showHistory ? '' : 'display:none;'
+					}">
+						${
+							hasHistory
+								? `
 							<ul>
 								${historyItems}
 							</ul>
-						` : `
+						`
+								: `
 							<p class="slos-notice">${this.t('noHistory')}</p>
-						`}
+						`
+						}
 					</div>
 				</div>
 			`;
@@ -300,33 +385,51 @@
 		 */
 		bindEvents() {
 			// Save button
-			const saveBtn = this.container.querySelector('[data-action="save"]');
+			const saveBtn = this.container.querySelector(
+				'[data-action="save"]'
+			);
 			if (saveBtn) {
 				saveBtn.addEventListener('click', () => this.handleSave());
 			}
 
 			// Accept all button
-			const acceptBtn = this.container.querySelector('[data-action="accept-all"]');
+			const acceptBtn = this.container.querySelector(
+				'[data-action="accept-all"]'
+			);
 			if (acceptBtn) {
-				acceptBtn.addEventListener('click', () => this.handleAcceptAll());
+				acceptBtn.addEventListener('click', () =>
+					this.handleAcceptAll()
+				);
 			}
 
 			// Reject all button
-			const rejectBtn = this.container.querySelector('[data-action="reject-all"]');
+			const rejectBtn = this.container.querySelector(
+				'[data-action="reject-all"]'
+			);
 			if (rejectBtn) {
-				acceptBtn.addEventListener('click', () => this.handleRejectAll());
+				acceptBtn.addEventListener('click', () =>
+					this.handleRejectAll()
+				);
 			}
 
 			// Download button
-			const downloadBtn = this.container.querySelector('[data-action="download"]');
+			const downloadBtn = this.container.querySelector(
+				'[data-action="download"]'
+			);
 			if (downloadBtn) {
-				downloadBtn.addEventListener('click', () => this.handleDownload());
+				downloadBtn.addEventListener('click', () =>
+					this.handleDownload()
+				);
 			}
 
 			// History toggle
-			const historyToggle = this.container.querySelector('[data-action="toggle-history"]');
+			const historyToggle = this.container.querySelector(
+				'[data-action="toggle-history"]'
+			);
 			if (historyToggle) {
-				historyToggle.addEventListener('click', () => this.toggleHistory());
+				historyToggle.addEventListener('click', () =>
+					this.toggleHistory()
+				);
 			}
 		}
 
@@ -340,7 +443,9 @@
 			this.showSaving();
 
 			try {
-				const checkboxes = this.container.querySelectorAll('input[type="checkbox"][data-purpose]:not([disabled])');
+				const checkboxes = this.container.querySelectorAll(
+					'input[type="checkbox"][data-purpose]:not([disabled])'
+				);
 				const updates = [];
 
 				for (const checkbox of checkboxes) {
@@ -383,8 +488,12 @@
 		 * Handle accept all
 		 */
 		async handleAcceptAll() {
-			const checkboxes = this.container.querySelectorAll('input[type="checkbox"][data-purpose]:not([disabled])');
-			checkboxes.forEach(checkbox => { checkbox.checked = true; });
+			const checkboxes = this.container.querySelectorAll(
+				'input[type="checkbox"][data-purpose]:not([disabled])'
+			);
+			checkboxes.forEach((checkbox) => {
+				checkbox.checked = true;
+			});
 			await this.handleSave();
 		}
 
@@ -392,8 +501,12 @@
 		 * Handle reject all (except required)
 		 */
 		async handleRejectAll() {
-			const checkboxes = this.container.querySelectorAll('input[type="checkbox"][data-purpose]:not([disabled])');
-			checkboxes.forEach(checkbox => { checkbox.checked = false; });
+			const checkboxes = this.container.querySelectorAll(
+				'input[type="checkbox"][data-purpose]:not([disabled])'
+			);
+			checkboxes.forEach((checkbox) => {
+				checkbox.checked = false;
+			});
 			await this.handleSave();
 		}
 
@@ -402,14 +515,21 @@
 		 */
 		async handleDownload() {
 			try {
-				const response = await this.apiRequest('GET', `/consents/export/${this.userId}`);
+				const response = await this.apiRequest(
+					'GET',
+					`/consents/export/${this.userId}`
+				);
 				const data = response.data || {};
-				
-				const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+
+				const blob = new Blob([JSON.stringify(data, null, 2)], {
+					type: 'application/json',
+				});
 				const url = URL.createObjectURL(blob);
 				const link = document.createElement('a');
 				link.href = url;
-				link.download = `consent-data-${this.userId}-${Date.now()}.json`;
+				link.download = `consent-data-${
+					this.userId
+				}-${Date.now()}.json`;
 				document.body.appendChild(link);
 				link.click();
 				document.body.removeChild(link);
@@ -417,7 +537,10 @@
 
 				this.showSuccess(this.t('downloadReady'));
 			} catch (error) {
-				console.error('[SLOS Consent Preferences] Download failed:', error);
+				console.error(
+					'[SLOS Consent Preferences] Download failed:',
+					error
+				);
 				this.showError(this.t('errorDownload'));
 			}
 		}
@@ -427,9 +550,14 @@
 		 */
 		toggleHistory() {
 			this.state.showHistory = !this.state.showHistory;
-			const historyList = this.container.querySelector('.slos-history-list');
-			const icon = this.container.querySelector('.slos-history-toggle .slos-icon');
-			const toggleBtn = this.container.querySelector('.slos-history-toggle span:first-child');
+			const historyList =
+				this.container.querySelector('.slos-history-list');
+			const icon = this.container.querySelector(
+				'.slos-history-toggle .slos-icon'
+			);
+			const toggleBtn = this.container.querySelector(
+				'.slos-history-toggle span:first-child'
+			);
 
 			if (this.state.showHistory) {
 				historyList.style.display = '';
@@ -446,36 +574,44 @@
 
 		/**
 		 * Grant consent for purpose
+		 *
+		 * @param purpose
 		 */
 		async grantConsent(purpose) {
 			return await this.apiRequest('POST', '/consents', {
 				user_id: this.userId,
 				session_id: this.sessionId,
-				purpose: purpose,
+				purpose,
 				action: 'grant',
 			});
 		}
 
 		/**
 		 * Withdraw consent for purpose
+		 *
+		 * @param purpose
 		 */
 		async withdrawConsent(purpose) {
 			// Find consent ID for this purpose
 			return await this.apiRequest('POST', '/consents', {
 				user_id: this.userId,
 				session_id: this.sessionId,
-				purpose: purpose,
+				purpose,
 				action: 'withdraw',
 			});
 		}
 
 		/**
 		 * Make API request
+		 *
+		 * @param method
+		 * @param endpoint
+		 * @param data
 		 */
 		async apiRequest(method, endpoint, data = null) {
 			const url = `${this.api}${endpoint}`;
 			const options = {
-				method: method,
+				method,
 				headers: {
 					'Content-Type': 'application/json',
 					'X-WP-Nonce': this.config.nonce || '',
@@ -487,9 +623,11 @@
 			}
 
 			const response = await fetch(url, options);
-			
+
 			if (!response.ok) {
-				throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+				throw new Error(
+					`API request failed: ${response.status} ${response.statusText}`
+				);
 			}
 
 			return await response.json();
@@ -517,10 +655,13 @@
 		 * Show saving state
 		 */
 		showSaving() {
-			const saveBtn = this.container.querySelector('[data-action="save"]');
+			const saveBtn = this.container.querySelector(
+				'[data-action="save"]'
+			);
 			if (saveBtn) {
 				saveBtn.disabled = true;
-				saveBtn.querySelector('.slos-btn-text').textContent = this.t('saving');
+				saveBtn.querySelector('.slos-btn-text').textContent =
+					this.t('saving');
 				const spinner = saveBtn.querySelector('.slos-btn-spinner');
 				if (spinner) spinner.style.display = 'inline-block';
 			}
@@ -530,10 +671,13 @@
 		 * Hide saving state
 		 */
 		hideSaving() {
-			const saveBtn = this.container.querySelector('[data-action="save"]');
+			const saveBtn = this.container.querySelector(
+				'[data-action="save"]'
+			);
 			if (saveBtn) {
 				saveBtn.disabled = false;
-				saveBtn.querySelector('.slos-btn-text').textContent = this.t('savePreferences');
+				saveBtn.querySelector('.slos-btn-text').textContent =
+					this.t('savePreferences');
 				const spinner = saveBtn.querySelector('.slos-btn-spinner');
 				if (spinner) spinner.style.display = 'none';
 			}
@@ -541,6 +685,8 @@
 
 		/**
 		 * Show success message
+		 *
+		 * @param message
 		 */
 		showSuccess(message) {
 			this.showNotification(message, 'success');
@@ -548,6 +694,8 @@
 
 		/**
 		 * Show error message
+		 *
+		 * @param message
 		 */
 		showError(message) {
 			this.showNotification(message, 'error');
@@ -555,13 +703,17 @@
 
 		/**
 		 * Show notification
+		 *
+		 * @param message
+		 * @param type
 		 */
 		showNotification(message, type = 'info') {
 			const notification = document.createElement('div');
 			notification.className = `slos-notification slos-notification-${type}`;
 			notification.textContent = message;
-			notification.style.cssText = 'position:fixed;top:20px;right:20px;z-index:9999;padding:12px 24px;border-radius:4px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.15);';
-			
+			notification.style.cssText =
+				'position:fixed;top:20px;right:20px;z-index:9999;padding:12px 24px;border-radius:4px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.15);';
+
 			if (type === 'success') {
 				notification.style.borderLeft = '4px solid #4CAF50';
 			} else if (type === 'error') {
@@ -577,6 +729,8 @@
 
 		/**
 		 * Get translation string
+		 *
+		 * @param key
 		 */
 		t(key) {
 			return this.i18n[key] || key;
@@ -584,6 +738,8 @@
 
 		/**
 		 * Capitalize string
+		 *
+		 * @param str
 		 */
 		capitalize(str) {
 			if (!str) return '';
@@ -592,6 +748,8 @@
 
 		/**
 		 * Get purpose description
+		 *
+		 * @param purpose
 		 */
 		getPurposeDescription(purpose) {
 			const key = `${purpose}Desc`;
@@ -600,6 +758,8 @@
 
 		/**
 		 * Get action label for history
+		 *
+		 * @param action
 		 */
 		getActionLabel(action) {
 			if (action === 'grant' || action === 'granted') {
@@ -621,5 +781,4 @@
 	} else {
 		new ConsentPreferences();
 	}
-
 })();

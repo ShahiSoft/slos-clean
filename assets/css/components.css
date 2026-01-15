@@ -334,7 +334,6 @@
 	align-items: center;
 	cursor: pointer;
 	user-select: none;
-	user-select: none;
 }
 
 .shahi-toggle-input {
@@ -711,7 +710,6 @@
 	margin: 0;
 	line-height: 1.2;
 	background: var(--slos-gradient-primary);
-	background-clip: text;
 	-webkit-text-fill-color: transparent;
 	background-clip: text;
 }

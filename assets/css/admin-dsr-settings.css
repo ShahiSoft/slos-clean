@@ -34,7 +34,7 @@
 }
 
 .slos-dsr-settings .form-table h3 {
-	margin: 20px 0 10px 0;
+	margin: 20px 0 10px;
 	padding-top: 10px;
 	border-top: 1px solid #334155;
 	font-size: 14px;
@@ -56,7 +56,7 @@
 .slos-dsr-settings input[type="url"]:focus,
 .slos-dsr-settings input[type="number"]:focus {
 	border-color: var(--slos-accent-primary, #6b8e4e);
-	box-shadow: 0 0 0 2px rgba(107, 142, 78, 0.2);
+	box-shadow: 0 0 0 2px rgb(107 142 78 / 20%);
 	outline: none;
 }
 
@@ -83,7 +83,7 @@
 
 .slos-dsr-settings textarea:focus {
 	border-color: var(--slos-accent-primary, #6b8e4e);
-	box-shadow: 0 0 0 2px rgba(107, 142, 78, 0.2);
+	box-shadow: 0 0 0 2px rgb(107 142 78 / 20%);
 	outline: none;
 }
 
@@ -147,7 +147,7 @@
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (width <= 768px) {
 	.slos-dsr-settings .form-table th {
 		width: 100%;
 		display: block;
@@ -167,7 +167,7 @@
 
 /* Success Message */
 .slos-dsr-settings .updated {
-	background-color: rgba(245, 158, 11, 0.1);
+	background-color: rgb(245 158 11 / 10%);
 	border: 1px solid #f59e0b;
 	border-radius: 4px;
 	padding: 12px;

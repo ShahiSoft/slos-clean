@@ -4,7 +4,7 @@
  * Handles the display and interaction of legal document acceptance
  * banners and modals on the frontend.
  *
- * @package    ShahiLegalFlowSuite
+ * @package
  * @subpackage Assets
  * @since      3.0.0
  * @version    1.0.0
@@ -16,7 +16,7 @@
 	/**
 	 * Legal Acceptance Handler
 	 */
-	var SlosLegalAcceptance = {
+	const SlosLegalAcceptance = {
 		/**
 		 * Configuration
 		 */
@@ -27,16 +27,16 @@
 		/**
 		 * Initialize
 		 */
-		init: function () {
+		init() {
 			// Load configuration from inline JSON
-			var dataEl = $( '#slos-acceptance-data' );
+			let dataEl = $('#slos-acceptance-data');
 			if (dataEl.length) {
 				try {
-					this.config      = JSON.parse( dataEl.text() );
-					this.documents   = this.config.documents || [];
+					this.config = JSON.parse(dataEl.text());
+					this.documents = this.config.documents || [];
 					this.displayType = this.config.displayType || 'banner';
 				} catch (e) {
-					console.error( 'Failed to parse acceptance data:', e );
+					console.error('Failed to parse acceptance data:', e);
 					return;
 				}
 			}
@@ -52,11 +52,11 @@
 		/**
 		 * Bind event handlers
 		 */
-		bindEvents: function () {
-			var self = this;
+		bindEvents() {
+			let self = this;
 
 			// Banner events
-			$( '#slos-acceptance-banner' ).on(
+			$('#slos-acceptance-banner').on(
 				'click',
 				'.slos-review-btn',
 				function (e) {
@@ -65,7 +65,7 @@
 				}
 			);
 
-			$( '#slos-acceptance-banner' ).on(
+			$('#slos-acceptance-banner').on(
 				'click',
 				'.slos-dismiss-btn',
 				function (e) {
@@ -75,7 +75,7 @@
 			);
 
 			// Modal events
-			$( '#slos-acceptance-modal' ).on(
+			$('#slos-acceptance-modal').on(
 				'click',
 				'[data-action="close"]',
 				function (e) {
@@ -84,7 +84,7 @@
 				}
 			);
 
-			$( '#slos-acceptance-modal' ).on(
+			$('#slos-acceptance-modal').on(
 				'click',
 				'.slos-accept-all-btn',
 				function (e) {
@@ -94,17 +94,14 @@
 			);
 
 			// View document button
-			$( '.slos-view-document-btn' ).on(
-				'click',
-				function (e) {
-					e.preventDefault();
-					var docId = $( this ).data( 'doc-id' );
-					self.viewDocument( docId );
-				}
-			);
+			$('.slos-view-document-btn').on('click', function (e) {
+				e.preventDefault();
+				var docId = $(this).data('doc-id');
+				self.viewDocument(docId);
+			});
 
 			// Checkbox change - enable/disable accept button
-			$( '#slos-acceptance-modal' ).on(
+			$('#slos-acceptance-modal').on(
 				'change',
 				'.slos-accept-checkbox',
 				function () {
@@ -113,31 +110,33 @@
 			);
 
 			// Click backdrop to close
-			$( '#slos-acceptance-modal' ).on(
+			$('#slos-acceptance-modal').on(
 				'click',
 				'.slos-acceptance-modal-backdrop',
 				function (e) {
-					if ($( e.target ).hasClass( 'slos-acceptance-modal-backdrop' )) {
+					if (
+						$(e.target).hasClass('slos-acceptance-modal-backdrop')
+					) {
 						self.closeModal();
 					}
 				}
 			);
 
 			// ESC key to close modal
-			$( document ).on(
-				'keydown',
-				function (e) {
-					if (e.key === 'Escape' && $( '#slos-acceptance-modal' ).is( ':visible' )) {
-						self.closeModal();
-					}
+			$(document).on('keydown', function (e) {
+				if (
+					e.key === 'Escape' &&
+					$('#slos-acceptance-modal').is(':visible')
+				) {
+					self.closeModal();
 				}
-			);
+			});
 		},
 
 		/**
 		 * Show banner or modal
 		 */
-		show: function () {
+		show() {
 			if (this.displayType === 'banner') {
 				this.showBanner();
 			} else {
@@ -148,196 +147,186 @@
 		/**
 		 * Show banner
 		 */
-		showBanner: function () {
-			$( '#slos-acceptance-banner' ).addClass( 'slos-show' );
+		showBanner() {
+			$('#slos-acceptance-banner').addClass('slos-show');
 		},
 
 		/**
 		 * Dismiss banner
 		 */
-		dismissBanner: function () {
-			var self = this;
+		dismissBanner() {
+			let self = this;
 
 			// Warning if documents are required
-			if ( ! confirm( this.config.strings.confirmDismiss )) {
+			if (!confirm(this.config.strings.confirmDismiss)) {
 				return;
 			}
 
-			$( '#slos-acceptance-banner' ).removeClass( 'slos-show' );
+			$('#slos-acceptance-banner').removeClass('slos-show');
 
 			// Set dismissal cookie (24 hours)
-			this.setCookie( 'slos_acceptance_dismissed', '1', 1 );
+			this.setCookie('slos_acceptance_dismissed', '1', 1);
 		},
 
 		/**
 		 * Show modal
 		 */
-		showModal: function () {
-			$( '#slos-acceptance-modal' ).fadeIn( 200 );
-			$( 'body' ).addClass( 'slos-modal-open' );
+		showModal() {
+			$('#slos-acceptance-modal').fadeIn(200);
+			$('body').addClass('slos-modal-open');
 
 			// Focus on first checkbox
-			setTimeout(
-				function () {
-					$( '#slos-acceptance-modal .slos-accept-checkbox:first' ).focus();
-				},
-				250
-			);
+			setTimeout(function () {
+				$('#slos-acceptance-modal .slos-accept-checkbox:first').focus();
+			}, 250);
 		},
 
 		/**
 		 * Close modal
 		 */
-		closeModal: function () {
+		closeModal() {
 			// Warning if documents are required
-			if ( ! confirm( this.config.strings.confirmDismiss )) {
+			if (!confirm(this.config.strings.confirmDismiss)) {
 				return;
 			}
 
-			$( '#slos-acceptance-modal' ).fadeOut( 200 );
-			$( 'body' ).removeClass( 'slos-modal-open' );
+			$('#slos-acceptance-modal').fadeOut(200);
+			$('body').removeClass('slos-modal-open');
 		},
 
 		/**
 		 * Accept all documents
 		 */
-		acceptAll: function () {
-			var self       = this;
-			var checkboxes = $( '.slos-accept-checkbox:checked' );
+		acceptAll() {
+			let self = this;
+			let checkboxes = $('.slos-accept-checkbox:checked');
 
 			if (checkboxes.length !== this.documents.length) {
-				alert( this.config.strings.selectAll );
+				alert(this.config.strings.selectAll);
 				return;
 			}
 
 			// Show loading
-			this.showLoading( true );
+			this.showLoading(true);
 
 			// Collect document IDs
-			var docIds = [];
-			checkboxes.each(
-				function () {
-					docIds.push( parseInt( $( this ).val() ) );
-				}
-			);
+			let docIds = [];
+			checkboxes.each(function () {
+				docIds.push(parseInt($(this).val()));
+			});
 
 			// Send acceptance for each document
-			var promises = [];
-			docIds.forEach(
-				function (docId) {
-					promises.push( self.recordAcceptance( docId ) );
-				}
-			);
+			let promises = [];
+			docIds.forEach(function (docId) {
+				promises.push(self.recordAcceptance(docId));
+			});
 
 			// Wait for all acceptances to complete
-			Promise.all( promises )
-				.then(
-					function (results) {
-						self.onAcceptanceSuccess( results );
-					}
-				)
-				.catch(
-					function (error) {
-						self.onAcceptanceError( error );
-					}
-				);
+			Promise.all(promises)
+				.then(function (results) {
+					self.onAcceptanceSuccess(results);
+				})
+				.catch(function (error) {
+					self.onAcceptanceError(error);
+				});
 		},
 
 		/**
 		 * Record acceptance via REST API
+		 *
+		 * @param docId
 		 */
-		recordAcceptance: function (docId) {
-			var self = this;
+		recordAcceptance(docId) {
+			let self = this;
 
-			return new Promise(
-				function (resolve, reject) {
-					$.ajax(
-						{
-							url: self.config.restUrl + '/' + docId,
-							method: 'POST',
-							beforeSend: function (xhr) {
+			return new Promise(function (resolve, reject) {
+				$.ajax({
+					url: self.config.restUrl + '/' + docId,
+					method: 'POST',
+					beforeSend (xhr) {
 								xhr.setRequestHeader( 'X-WP-Nonce', self.config.nonce );
 							},
-							data: JSON.stringify(
-								{
-									metadata: {
-										source: 'frontend_modal',
-										url: window.location.href,
-										timestamp: new Date().toISOString()
-									}
-								}
-							),
-						contentType: 'application/json',
-						success: function (response) {
+					data: JSON.stringify({
+						metadata: {
+							source: 'frontend_modal',
+							url: window.location.href,
+							timestamp: new Date().toISOString(),
+						},
+					}),
+					contentType: 'application/json',
+					success (response) {
 							if (response.success) {
 								resolve( response );
 							} else {
 								reject( response );
 							}
 						},
-							error: function (xhr, status, error) {
-								reject( { error: error, status: status } );
-							}
-						}
-					);
-				}
-			);
+					error: function (xhr, status, error) {
+						reject({ error: error, status: status });
+					},
+				});
+			});
 		},
 
 		/**
 		 * Handle successful acceptance
+		 *
+		 * @param results
 		 */
-		onAcceptanceSuccess: function (results) {
-			this.showLoading( false );
+		onAcceptanceSuccess(results) {
+			this.showLoading(false);
 
 			// Show success message
 			this.showSuccessMessage();
 
 			// Remove from display after delay
-			setTimeout(
-				function () {
-					$( '#slos-acceptance-banner' ).fadeOut();
-					$( '#slos-acceptance-modal' ).fadeOut();
-					$( 'body' ).removeClass( 'slos-modal-open' );
-				},
-				2000
-			);
+			setTimeout(function () {
+				$('#slos-acceptance-banner').fadeOut();
+				$('#slos-acceptance-modal').fadeOut();
+				$('body').removeClass('slos-modal-open');
+			}, 2000);
 
 			// Fire custom event
-			$( document ).trigger( 'slos:acceptance:recorded', [results] );
+			$(document).trigger('slos:acceptance:recorded', [results]);
 		},
 
 		/**
 		 * Handle acceptance error
+		 *
+		 * @param error
 		 */
-		onAcceptanceError: function (error) {
-			this.showLoading( false );
+		onAcceptanceError(error) {
+			this.showLoading(false);
 
-			console.error( 'Acceptance error:', error );
-			alert( this.config.strings.error );
+			console.error('Acceptance error:', error);
+			alert(this.config.strings.error);
 		},
 
 		/**
 		 * Show success message
 		 */
-		showSuccessMessage: function () {
-			var $modal = $( '#slos-acceptance-modal' );
-			var $body  = $modal.find( '.slos-acceptance-modal-body' );
+		showSuccessMessage() {
+			let $modal = $('#slos-acceptance-modal');
+			let $body = $modal.find('.slos-acceptance-modal-body');
 
 			$body.html(
 				'<div class="slos-acceptance-success">' +
-				'<span class="dashicons dashicons-yes-alt"></span>' +
-				'<h3>' + this.config.strings.accepted + '</h3>' +
-				'</div>'
+					'<span class="dashicons dashicons-yes-alt"></span>' +
+					'<h3>' +
+					this.config.strings.accepted +
+					'</h3>' +
+					'</div>'
 			);
 		},
 
 		/**
 		 * Show/hide loading spinner
+		 *
+		 * @param show
 		 */
-		showLoading: function (show) {
-			var $loading = $( '.slos-acceptance-modal-loading' );
-			var $footer  = $( '.slos-acceptance-modal-footer' );
+		showLoading(show) {
+			let $loading = $('.slos-acceptance-modal-loading');
+			let $footer = $('.slos-acceptance-modal-footer');
 
 			if (show) {
 				$loading.show();
@@ -351,37 +340,46 @@
 		/**
 		 * Update accept button state
 		 */
-		updateAcceptButton: function () {
-			var totalCheckboxes   = $( '.slos-accept-checkbox' ).length;
-			var checkedCheckboxes = $( '.slos-accept-checkbox:checked' ).length;
-			var $acceptBtn        = $( '.slos-accept-all-btn' );
+		updateAcceptButton() {
+			let totalCheckboxes = $('.slos-accept-checkbox').length;
+			let checkedCheckboxes = $('.slos-accept-checkbox:checked').length;
+			let $acceptBtn = $('.slos-accept-all-btn');
 
 			if (checkedCheckboxes === totalCheckboxes) {
-				$acceptBtn.prop( 'disabled', false );
+				$acceptBtn.prop('disabled', false);
 			} else {
-				$acceptBtn.prop( 'disabled', true );
+				$acceptBtn.prop('disabled', true);
 			}
 		},
 
 		/**
 		 * View full document
+		 *
+		 * @param docId
 		 */
-		viewDocument: function (docId) {
+		viewDocument(docId) {
 			// Build URL to document
-			var url = this.config.restUrl.replace( '/acceptance', '/legaldocs/' + docId );
+			let url = this.config.restUrl.replace(
+				'/acceptance',
+				'/legaldocs/' + docId
+			);
 
 			// Open in new window
-			window.open( url, '_blank', 'noopener,noreferrer' );
+			window.open(url, '_blank', 'noopener,noreferrer');
 		},
 
 		/**
 		 * Set cookie
+		 *
+		 * @param name
+		 * @param value
+		 * @param days
 		 */
-		setCookie: function (name, value, days) {
-			var expires = '';
+		setCookie(name, value, days) {
+			let expires = '';
 			if (days) {
-				var date = new Date();
-				date.setTime( date.getTime() + (days * 24 * 60 * 60 * 1000) );
+				let date = new Date();
+				date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
 				expires = '; expires=' + date.toUTCString();
 			}
 			document.cookie = name + '=' + (value || '') + expires + '; path=/';
@@ -389,33 +387,35 @@
 
 		/**
 		 * Get cookie
+		 *
+		 * @param name
 		 */
-		getCookie: function (name) {
-			var nameEQ = name + '=';
-			var ca     = document.cookie.split( ';' );
-			for (var i = 0; i < ca.length; i++) {
-				var c = ca[i];
-				while (c.charAt( 0 ) === ' ') {
-					c = c.substring( 1, c.length );
+		getCookie(name) {
+			let nameEQ = name + '=';
+			let ca = document.cookie.split(';');
+			for (let i = 0; i < ca.length; i++) {
+				let c = ca[i];
+				while (c.charAt(0) === ' ') {
+					c = c.substring(1, c.length);
 				}
-				if (c.indexOf( nameEQ ) === 0) {
-					return c.substring( nameEQ.length, c.length );
+				if (c.indexOf(nameEQ) === 0) {
+					return c.substring(nameEQ.length, c.length);
 				}
 			}
 			return null;
-		}
+		},
 	};
 
 	/**
 	 * Check for pending acceptances on page load
 	 */
-	var SlosAcceptanceChecker = {
+	const SlosAcceptanceChecker = {
 		/**
 		 * Initialize
 		 */
-		init: function () {
+		init() {
 			// Only check if no inline data provided
-			if ($( '#slos-acceptance-data' ).length === 0) {
+			if ($('#slos-acceptance-data').length === 0) {
 				this.checkPendingAcceptances();
 			}
 		},
@@ -423,78 +423,81 @@
 		/**
 		 * Check for pending acceptances via REST API
 		 */
-		checkPendingAcceptances: function () {
-			var self = this;
+		checkPendingAcceptances() {
+			let self = this;
 
 			// Get REST URL from localized data or construct it
-			var restUrl = typeof slosAcceptance !== 'undefined'
-				? slosAcceptance.restUrl
-				: '/wp-json/slos/v1/acceptance/check';
+			let restUrl =
+				typeof slosAcceptance !== 'undefined'
+					? slosAcceptance.restUrl
+					: '/wp-json/slos/v1/acceptance/check';
 
-			$.ajax(
-				{
-					url: restUrl,
-					method: 'GET',
-					success: function (response) {
+			$.ajax({
+				url: restUrl,
+				method: 'GET',
+				success (response) {
 						if (response.success && response.pending && response.pending.length > 0) {
 							self.renderAcceptanceUI( response.pending );
 						}
 					},
-					error: function (xhr, status, error) {
+				error (xhr, status, error) {
 						console.error( 'Failed to check pending acceptances:', error );
 					}
-				}
-			);
+				},
+			});
 		},
 
 		/**
 		 * Render acceptance UI
+		 *
+		 * @param documents
 		 */
-		renderAcceptanceUI: function (documents) {
+		renderAcceptanceUI(documents) {
 			// Create inline data for SlosLegalAcceptance
-			var data = {
-				documents: documents,
+			let data = {
+				documents,
 				displayType: 'modal',
 				restUrl: '/wp-json/slos/v1/acceptance',
-				nonce: typeof slosAcceptance !== 'undefined' ? slosAcceptance.nonce : '',
+				nonce:
+					typeof slosAcceptance !== 'undefined'
+						? slosAcceptance.nonce
+						: '',
 				strings: {
 					accepting: 'Recording acceptance...',
 					accepted: 'Thank you for accepting!',
 					error: 'An error occurred. Please try again.',
 					selectAll: 'Please accept all documents to continue',
-					confirmDismiss: 'You must accept these documents to continue. Are you sure?'
-				}
+					confirmDismiss:
+						'You must accept these documents to continue. Are you sure?',
+				},
 			};
 
 			// Inject data
-			$( 'body' ).append(
+			$('body').append(
 				'<script type="application/json" id="slos-acceptance-data">' +
-				JSON.stringify( data ) +
-				'</script>'
+					JSON.stringify(data) +
+					'</script>'
 			);
 
 			// Load template via AJAX or trigger event for dynamic loading
 			// For now, trigger event that theme/plugin can listen to
-			$( document ).trigger( 'slos:acceptance:render', [documents] );
-		}
+			$(document).trigger('slos:acceptance:render', [documents]);
+		},
 	};
 
 	/**
 	 * Initialize on document ready
 	 */
-	$( document ).ready(
-		function () {
-			// Initialize if acceptance data exists
-			if ($( '#slos-acceptance-data' ).length) {
-				SlosLegalAcceptance.init();
-			} else {
-				// Check for pending acceptances
-				SlosAcceptanceChecker.init();
-			}
+	$(document).ready(function () {
+		// Initialize if acceptance data exists
+		if ($('#slos-acceptance-data').length) {
+			SlosLegalAcceptance.init();
+		} else {
+			// Check for pending acceptances
+			SlosAcceptanceChecker.init();
 		}
-	);
+	});
 
 	// Expose to global scope
 	window.SlosLegalAcceptance = SlosLegalAcceptance;
-
-})( jQuery );
+})(jQuery);

@@ -1,0 +1,5 @@
+# Ignore minified CSS files and build artifacts
+**/*.min.css
+node_modules/
+vendor/
+assets/**/dist/**

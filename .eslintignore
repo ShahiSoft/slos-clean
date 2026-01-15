@@ -1,0 +1,5 @@
+# Ignore minified JS files and build artifacts
+**/*.min.js
+node_modules/
+vendor/
+assets/**/dist/**

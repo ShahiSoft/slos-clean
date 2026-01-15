@@ -4,7 +4,7 @@
  * JavaScript for interactive dark futuristic UI components.
  * Includes counter animations, notifications, tooltips, and modal handlers.
  *
- * @package    ShahiLegalFlowSuite
+ * @package
  * @subpackage Assets/JS
  * @since      1.0.0
  */
@@ -16,11 +16,10 @@
 	 * ShahiLegalFlowSuite Components Namespace
 	 */
 	window.ShahiComponents = {
-
 		/**
 		 * Initialize all components
 		 */
-		init: function () {
+		init() {
 			this.initCounters();
 			this.initTooltips();
 			this.initRippleEffect();
@@ -34,38 +33,36 @@
 		 * Animates numbers from 0 to target value
 		 * Usage: <span class="shahi-counter" data-target="1234">0</span>
 		 */
-		initCounters: function () {
-			$( '.shahi-counter' ).each(
-				function () {
-					var $counter  = $( this );
-					var target    = parseInt( $counter.data( 'target' ) || $counter.text() );
-					var duration  = parseInt( $counter.data( 'duration' ) || 2000 );
-					var current   = 0;
-					var increment = target / (duration / 16);
+		initCounters() {
+			$('.shahi-counter').each(function () {
+				const $counter = $(this);
+				const target = parseInt(
+					$counter.data('target') || $counter.text()
+				);
+				const duration = parseInt($counter.data('duration') || 2000);
+				let current = 0;
+				const increment = target / (duration / 16);
 
-					var updateCounter = function () {
-						current += increment;
-						if (current < target) {
-							$counter.text( Math.floor( current ).toLocaleString() );
-							requestAnimationFrame( updateCounter );
-						} else {
-							$counter.text( target.toLocaleString() );
-						}
-					};
+				const updateCounter = function () {
+					current += increment;
+					if (current < target) {
+						$counter.text(Math.floor(current).toLocaleString());
+						requestAnimationFrame(updateCounter);
+					} else {
+						$counter.text(target.toLocaleString());
+					}
+				};
 
-					// Start animation when element is visible
-					var observer = new IntersectionObserver(
-						function (entries) {
-							if (entries[0].isIntersecting) {
-								updateCounter();
-								observer.disconnect();
-							}
-						}
-					);
+				// Start animation when element is visible
+				var observer = new IntersectionObserver(function (entries) {
+					if (entries[0].isIntersecting) {
+						updateCounter();
+						observer.disconnect();
+					}
+				});
 
-					observer.observe( $counter[0] );
-				}
-			);
+				observer.observe($counter[0]);
+			});
 		},
 
 		/**
@@ -73,22 +70,24 @@
 		 *
 		 * Creates futuristic tooltips with positioning
 		 */
-		initTooltips: function () {
-			$( '[data-tooltip]' ).each(
-				function () {
-					var $element    = $( this );
-					var tooltipText = $element.data( 'tooltip' );
-					var position    = $element.data( 'tooltip-position' ) || 'top';
+		initTooltips() {
+			$('[data-tooltip]').each(function () {
+				const $element = $(this);
+				const tooltipText = $element.data('tooltip');
+				const position = $element.data('tooltip-position') || 'top';
 
-					if ( ! $element.hasClass( 'shahi-tooltip' )) {
-						$element.addClass( 'shahi-tooltip shahi-tooltip-' + position );
+				if (!$element.hasClass('shahi-tooltip')) {
+					$element.addClass(
+						'shahi-tooltip shahi-tooltip-' + position
+					);
 
-						var $tooltip = $( '<span class="shahi-tooltip-content"></span>' );
-						$tooltip.text( tooltipText );
-						$element.append( $tooltip );
-					}
+					const $tooltip = $(
+						'<span class="shahi-tooltip-content"></span>'
+					);
+					$tooltip.text(tooltipText);
+					$element.append($tooltip);
 				}
-			);
+			});
 		},
 
 		/**
@@ -96,42 +95,37 @@
 		 *
 		 * Material Design-style ripple effect
 		 */
-		initRippleEffect: function () {
-			$( document ).on(
+		initRippleEffect() {
+			$(document).on(
 				'click',
 				'.shahi-button, .shahi-ripple-container',
 				function (e) {
-					var $button = $( this );
+					const $button = $(this);
 
 					// Create ripple element
-					var $ripple = $( '<span class="shahi-ripple"></span>' );
+					const $ripple = $('<span class="shahi-ripple"></span>');
 
 					// Calculate position
-					var rect = this.getBoundingClientRect();
-					var size = Math.max( rect.width, rect.height );
-					var x    = e.clientX - rect.left - size / 2;
-					var y    = e.clientY - rect.top - size / 2;
+					const rect = this.getBoundingClientRect();
+					const size = Math.max(rect.width, rect.height);
+					const x = e.clientX - rect.left - size / 2;
+					const y = e.clientY - rect.top - size / 2;
 
 					// Set ripple styles
-					$ripple.css(
-						{
-							width: size,
-							height: size,
-							left: x,
-							top: y
-						}
-					);
+					$ripple.css({
+						width: size,
+						height: size,
+						left: x,
+						top: y,
+					});
 
 					// Add to button
-					$button.append( $ripple );
+					$button.append($ripple);
 
 					// Remove after animation
-					setTimeout(
-						function () {
-							$ripple.remove();
-						},
-						600
-					);
+					setTimeout(function () {
+						$ripple.remove();
+					}, 600);
 				}
 			);
 		},
@@ -141,27 +135,23 @@
 		 *
 		 * Reveals elements on scroll
 		 */
-		initScrollAnimations: function () {
-			var observer = new IntersectionObserver(
+		initScrollAnimations() {
+			const observer = new IntersectionObserver(
 				function (entries) {
-					entries.forEach(
-						function (entry) {
-							if (entry.isIntersecting) {
-								entry.target.classList.add( 'visible' );
-							}
+					entries.forEach(function (entry) {
+						if (entry.isIntersecting) {
+							entry.target.classList.add('visible');
 						}
-					);
+					});
 				},
 				{
-					threshold: 0.1
+					threshold: 0.1,
 				}
 			);
 
-			$( '.shahi-scroll-fade-in' ).each(
-				function () {
-					observer.observe( this );
-				}
-			);
+			$('.shahi-scroll-fade-in').each(function () {
+				observer.observe(this);
+			});
 		},
 
 		/**
@@ -173,34 +163,36 @@
 			/**
 			 * Initialize notification container
 			 */
-			init: function () {
-				if ( ! this.container) {
-					this.container = $( '<div class="shahi-notifications-container"></div>' );
-					$( 'body' ).append( this.container );
+			init() {
+				if (!this.container) {
+					this.container = $(
+						'<div class="shahi-notifications-container"></div>'
+					);
+					$('body').append(this.container);
 				}
 			},
 
 			/**
 			 * Show notification
 			 *
-			 * @param {string} message - Notification message
-			 * @param {string} type - Type: success, error, warning, info
+			 * @param {string} message  - Notification message
+			 * @param {string} type     - Type: success, error, warning, info
 			 * @param {number} duration - Duration in milliseconds
 			 */
-			show: function (message, type, duration) {
+			show(message, type, duration) {
 				this.init();
 
-				type     = type || 'info';
+				type = type || 'info';
 				duration = duration || 5000;
 
-				var icons = {
+				const icons = {
 					success: 'dashicons-yes-alt',
 					error: 'dashicons-dismiss',
 					warning: 'dashicons-warning',
-					info: 'dashicons-info'
+					info: 'dashicons-info',
 				};
 
-				var $notification        = $(
+				const $notification = $(
 					`
 					< div class          = "shahi-notification shahi-notification-${type} shahi-notification-enter" >
 						< div class      = "shahi-notification-icon" >
@@ -216,58 +208,48 @@
 					`
 				);
 
-				this.container.append( $notification );
+				this.container.append($notification);
 
 				// Auto-remove after duration
-				setTimeout(
-					function () {
-						$notification.addClass( 'shahi-notification-exit' );
-						setTimeout(
-							function () {
-								$notification.remove();
-							},
-							300
-						);
-					},
-					duration
-				);
+				setTimeout(function () {
+					$notification.addClass('shahi-notification-exit');
+					setTimeout(function () {
+						$notification.remove();
+					}, 300);
+				}, duration);
 
 				// Manual close
-				$notification.find( '.shahi-notification-close' ).on(
-					'click',
-					function () {
-						$notification.addClass( 'shahi-notification-exit' );
-						setTimeout(
-							function () {
-								$notification.remove();
-							},
-							300
-						);
-					}
-				);
+				$notification
+					.find('.shahi-notification-close')
+					.on('click', function () {
+						$notification.addClass('shahi-notification-exit');
+						setTimeout(function () {
+							$notification.remove();
+						}, 300);
+					});
 			},
 
-			success: function (message, duration) {
-				this.show( message, 'success', duration );
+			success(message, duration) {
+				this.show(message, 'success', duration);
 			},
 
-			error: function (message, duration) {
-				this.show( message, 'error', duration );
+			error(message, duration) {
+				this.show(message, 'error', duration);
 			},
 
-			warning: function (message, duration) {
-				this.show( message, 'warning', duration );
+			warning(message, duration) {
+				this.show(message, 'warning', duration);
 			},
 
-			info: function (message, duration) {
-				this.show( message, 'info', duration );
-			}
+			info(message, duration) {
+				this.show(message, 'info', duration);
+			},
 		},
 
 		/**
 		 * Initialize Notifications
 		 */
-		initNotifications: function () {
+		initNotifications() {
 			this.notifications.init();
 		},
 
@@ -275,21 +257,21 @@
 		 * Progress Bar Animation
 		 *
 		 * @param {jQuery} $progressBar - Progress bar element
-		 * @param {number} targetValue - Target percentage (0-100)
-		 * @param {number} duration - Animation duration in ms
+		 * @param {number} targetValue  - Target percentage (0-100)
+		 * @param {number} duration     - Animation duration in ms
 		 */
-		animateProgress: function ($progressBar, targetValue, duration) {
-			duration         = duration || 1000;
-			var currentValue = 0;
-			var increment    = targetValue / (duration / 16);
+		animateProgress($progressBar, targetValue, duration) {
+			duration = duration || 1000;
+			let currentValue = 0;
+			const increment = targetValue / (duration / 16);
 
-			var updateProgress = function () {
+			const updateProgress = function () {
 				currentValue += increment;
 				if (currentValue < targetValue) {
-					$progressBar.css( 'width', currentValue + '%' );
-					requestAnimationFrame( updateProgress );
+					$progressBar.css('width', currentValue + '%');
+					requestAnimationFrame(updateProgress);
 				} else {
-					$progressBar.css( 'width', targetValue + '%' );
+					$progressBar.css('width', targetValue + '%');
 				}
 			};
 
@@ -301,24 +283,20 @@
 		 *
 		 * Handles toggle switch interactions
 		 */
-		initToggles: function () {
-			$( document ).on(
-				'change',
-				'.shahi-toggle-input',
-				function () {
-					var $input  = $( this );
-					var $toggle = $input.closest( '.shahi-toggle' );
+		initToggles() {
+			$(document).on('change', '.shahi-toggle-input', function () {
+				const $input = $(this);
+				const $toggle = $input.closest('.shahi-toggle');
 
-					if ($input.is( ':checked' )) {
-						$toggle.addClass( 'shahi-toggle-active' );
-					} else {
-						$toggle.removeClass( 'shahi-toggle-active' );
-					}
-
-					// Trigger custom event
-					$toggle.trigger( 'shahi:toggle', [$input.is( ':checked' )] );
+				if ($input.is(':checked')) {
+					$toggle.addClass('shahi-toggle-active');
+				} else {
+					$toggle.removeClass('shahi-toggle-active');
 				}
-			);
+
+				// Trigger custom event
+				$toggle.trigger('shahi:toggle', [$input.is(':checked')]);
+			});
 		},
 
 		/**
@@ -327,35 +305,38 @@
 		 * Creates celebratory confetti effect
 		 *
 		 * @param {jQuery} $container - Container element
-		 * @param {number} count - Number of confetti pieces
+		 * @param {number} count      - Number of confetti pieces
 		 */
-		confetti: function ($container, count) {
+		confetti($container, count) {
 			count = count || 50;
 
-			var colors = ['#60a5fa', '#93c5fd', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6'];
+			const colors = [
+				'#60a5fa',
+				'#93c5fd',
+				'#10b981',
+				'#f59e0b',
+				'#ec4899',
+				'#8b5cf6',
+			];
 
-			for (var i = 0; i < count; i++) {
-				var $piece = $( '<div class="shahi-confetti-piece"></div>' );
+			for (let i = 0; i < count; i++) {
+				const $piece = $('<div class="shahi-confetti-piece"></div>');
 
-				$piece.css(
-					{
-						left: Math.random() * 100 + '%',
-						background: colors[Math.floor( Math.random() * colors.length )],
-						animationDelay: Math.random() * 2 + 's',
-						animationDuration: (Math.random() * 2 + 2) + 's'
-					}
-				);
+				$piece.css({
+					left: Math.random() * 100 + '%',
+					background:
+						colors[Math.floor(Math.random() * colors.length)],
+					animationDelay: Math.random() * 2 + 's',
+					animationDuration: Math.random() * 2 + 2 + 's',
+				});
 
-				$container.append( $piece );
+				$container.append($piece);
 			}
 
 			// Clean up after animation
-			setTimeout(
-				function () {
-					$container.find( '.shahi-confetti-piece' ).remove();
-				},
-				5000
-			);
+			setTimeout(function () {
+				$container.find('.shahi-confetti-piece').remove();
+			}, 5000);
 		},
 
 		/**
@@ -364,10 +345,10 @@
 		 * Shows/hides loading overlay
 		 */
 		loading: {
-			show: function (message) {
+			show(message) {
 				message = message || 'Loading...';
 
-				var $overlay        = $(
+				const $overlay = $(
 					`
 					< div class     = "shahi-loading-overlay" >
 						< div class = "shahi-spinner" > < / div >
@@ -376,17 +357,14 @@
 					`
 				);
 
-				$( 'body' ).append( $overlay );
+				$('body').append($overlay);
 			},
 
-			hide: function () {
-				$( '.shahi-loading-overlay' ).fadeOut(
-					300,
-					function () {
-						$( this ).remove();
-					}
-				);
-			}
+			hide() {
+				$('.shahi-loading-overlay').fadeOut(300, function () {
+					$(this).remove();
+				});
+			},
 		},
 
 		/**
@@ -395,13 +373,13 @@
 		 * Creates skeleton loading placeholders
 		 *
 		 * @param {jQuery} $container - Container to add skeletons
-		 * @param {number} count - Number of skeleton items
+		 * @param {number} count      - Number of skeleton items
 		 */
-		createSkeletons: function ($container, count) {
+		createSkeletons($container, count) {
 			count = count || 3;
 
-			for (var i = 0; i < count; i++) {
-				var $skeleton           = $(
+			for (let i = 0; i < count; i++) {
+				const $skeleton = $(
 					`
 					< div class         = "shahi-skeleton-item" >
 						< div class     = "shahi-skeleton shahi-skeleton-avatar" > < / div >
@@ -414,32 +392,32 @@
 					`
 				);
 
-				$container.append( $skeleton );
+				$container.append($skeleton);
 			}
 		},
 
 		/**
 		 * Copy to Clipboard
 		 *
-		 * @param {string} text - Text to copy
-		 * @param {function} callback - Success callback
+		 * @param {string}   text     - Text to copy
+		 * @param {Function} callback - Success callback
 		 */
-		copyToClipboard: function (text, callback) {
-			var $temp = $( '<textarea>' );
-			$( 'body' ).append( $temp );
-			$temp.val( text ).select();
+		copyToClipboard(text, callback) {
+			const $temp = $('<textarea>');
+			$('body').append($temp);
+			$temp.val(text).select();
 
 			try {
-				document.execCommand( 'copy' );
+				document.execCommand('copy');
 				if (callback) {
-					callback( true );
+					callback(true);
 				}
-				this.notifications.success( 'Copied to clipboard!' );
+				this.notifications.success('Copied to clipboard!');
 			} catch (err) {
 				if (callback) {
-					callback( false );
+					callback(false);
 				}
-				this.notifications.error( 'Failed to copy to clipboard' );
+				this.notifications.error('Failed to copy to clipboard');
 			}
 
 			$temp.remove();
@@ -448,46 +426,40 @@
 		/**
 		 * Debounce Function
 		 *
-		 * @param {function} func - Function to debounce
-		 * @param {number} wait - Wait time in ms
-		 * @returns {function} Debounced function
+		 * @param {Function} func - Function to debounce
+		 * @param {number}   wait - Wait time in ms
+		 * @return {Function} Debounced function
 		 */
-		debounce: function (func, wait) {
-			var timeout;
+		debounce(func, wait) {
+			let timeout;
 			return function () {
-				var context = this;
-				var args    = arguments;
-				clearTimeout( timeout );
-				timeout = setTimeout(
-					function () {
-						func.apply( context, args );
-					},
-					wait
-				);
+				const context = this;
+				const args = arguments;
+				clearTimeout(timeout);
+				timeout = setTimeout(function () {
+					func.apply(context, args);
+				}, wait);
 			};
 		},
 
 		/**
 		 * Throttle Function
 		 *
-		 * @param {function} func - Function to throttle
-		 * @param {number} limit - Time limit in ms
-		 * @returns {function} Throttled function
+		 * @param {Function} func  - Function to throttle
+		 * @param {number}   limit - Time limit in ms
+		 * @return {Function} Throttled function
 		 */
-		throttle: function (func, limit) {
-			var inThrottle;
+		throttle(func, limit) {
+			let inThrottle;
 			return function () {
-				var args    = arguments;
-				var context = this;
-				if ( ! inThrottle) {
-					func.apply( context, args );
+				const args = arguments;
+				const context = this;
+				if (!inThrottle) {
+					func.apply(context, args);
 					inThrottle = true;
-					setTimeout(
-						function () {
-							inThrottle = false;
-						},
-						limit
-					);
+					setTimeout(function () {
+						inThrottle = false;
+					}, limit);
 				}
 			};
 		},
@@ -495,62 +467,65 @@
 		/**
 		 * Format Number
 		 *
-		 * @param {number} num - Number to format
+		 * @param {number} num      - Number to format
 		 * @param {number} decimals - Decimal places
-		 * @returns {string} Formatted number
+		 * @return {string} Formatted number
 		 */
-		formatNumber: function (num, decimals) {
+		formatNumber(num, decimals) {
 			decimals = decimals || 0;
-			return num.toFixed( decimals ).replace( /\B(?=(\d{3})+(?!\d))/g, ',' );
+			return num.toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 		},
 
 		/**
 		 * Time Ago Format
 		 *
 		 * @param {Date|string} date - Date to format
-		 * @returns {string} Time ago string
+		 * @return {string} Time ago string
 		 */
-		timeAgo: function (date) {
-			var now     = new Date();
-			var past    = new Date( date );
-			var seconds = Math.floor( (now - past) / 1000 );
+		timeAgo(date) {
+			const now = new Date();
+			const past = new Date(date);
+			const seconds = Math.floor((now - past) / 1000);
 
-			var intervals = {
+			const intervals = {
 				year: 31536000,
 				month: 2592000,
 				week: 604800,
 				day: 86400,
 				hour: 3600,
 				minute: 60,
-				second: 1
+				second: 1,
 			};
 
-			for (var key in intervals) {
-				var interval = Math.floor( seconds / intervals[key] );
+			for (const key in intervals) {
+				const interval = Math.floor(seconds / intervals[key]);
 				if (interval >= 1) {
-					return interval + ' ' + key + (interval > 1 ? 's' : '') + ' ago';
+					return (
+						interval +
+						' ' +
+						key +
+						(interval > 1 ? 's' : '') +
+						' ago'
+					);
 				}
 			}
 
 			return 'just now';
-		}
+		},
 	};
 
 	/**
 	 * Initialize on document ready
 	 */
-	$( document ).ready(
-		function () {
-			ShahiComponents.init();
-		}
-	);
+	$(document).ready(function () {
+		ShahiComponents.init();
+	});
 
 	/**
 	 * Expose to global scope
 	 */
 	window.ShahiNotify = ShahiComponents.notifications;
-
-})( jQuery );
+})(jQuery);
 
 /**
  * Add custom CSS for notifications container
@@ -558,7 +533,7 @@
 (function () {
 	'use strict';
 
-	var styles     = `
+	const styles = `
 		< style id = "shahi-components-dynamic-styles" >
 			.shahi - notifications - container {
 				position: fixed;
@@ -589,6 +564,6 @@
 	`;
 
 	if (document.head) {
-		document.head.insertAdjacentHTML( 'beforeend', styles );
+		document.head.insertAdjacentHTML('beforeend', styles);
 	}
 })();

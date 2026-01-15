@@ -5,13 +5,13 @@
 	--slos-soft: var(--shahi-text-secondary, #cbd5e1);
 	--slos-plate: var(--shahi-bg-elevated, #353e35);
 	--slos-accent: var(--slos-accent-primary, #6b8e4e);
-	--slos-accent-soft: rgba(107, 142, 78, 0.15);
+	--slos-accent-soft: rgb(107 142 78 / 15%);
 	--slos-positive: var(--slos-success, #10b981);
-	--slos-positive-soft: rgba(16, 185, 129, 0.15);
+	--slos-positive-soft: rgb(16 185 129 / 15%);
 	--slos-warning: var(--slos-warning, #f59e0b);
-	--slos-warning-soft: rgba(245, 158, 11, 0.15);
+	--slos-warning-soft: rgb(245 158 11 / 15%);
 	--slos-neutral: var(--shahi-text-muted, #94a3b8);
-	--slos-border: var(--slos-border-default, rgba(107, 142, 78, 0.2));
+	--slos-border: var(--slos-border-default, rgb(107 142 78 / 20%));
 }
 
 .shahi-consent-page {
@@ -64,7 +64,7 @@
 	gap: 12px;
 	padding: 14px;
 	border-radius: 14px;
-	background: rgba(255, 255, 255, 0.03);
+	background: rgb(255 255 255 / 3%);
 	border: 1px solid var(--shahi-border-light);
 }
 
@@ -93,8 +93,8 @@
 	gap: 8px;
 	padding: 0 10px;
 	border-radius: 10px;
-	border: 1px solid rgba(255, 255, 255, 0.08);
-	background: rgba(255, 255, 255, 0.04);
+	border: 1px solid rgb(255 255 255 / 8%);
+	background: rgb(255 255 255 / 4%);
 }
 
 .slos-consent-filters .search-box input {
@@ -113,9 +113,9 @@
 .stat-card {
 	border-radius: 16px;
 	padding: 16px;
-	background: rgba(255, 255, 255, 0.04);
-	border: 1px solid rgba(255, 255, 255, 0.05);
-	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+	background: rgb(255 255 255 / 4%);
+	border: 1px solid rgb(255 255 255 / 5%);
+	box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%);
 }
 
 .stat-card .stat-label {
@@ -148,23 +148,23 @@
 }
 
 .stat-card.accent {
-	background: linear-gradient(135deg, rgba(107, 142, 78, 0.16), rgba(107, 142, 78, 0));
-	border-color: rgba(107, 142, 78, 0.4);
+	background: linear-gradient(135deg, rgb(107 142 78 / 16%), rgb(107 142 78 / 0%));
+	border-color: rgb(107 142 78 / 40%);
 }
 
 .stat-card.positive {
-	background: linear-gradient(135deg, rgba(16, 185, 129, 0.18), rgba(16, 185, 129, 0));
-	border-color: rgba(16, 185, 129, 0.4);
+	background: linear-gradient(135deg, rgb(16 185 129 / 18%), rgb(16 185 129 / 0%));
+	border-color: rgb(16 185 129 / 40%);
 }
 
 .stat-card.neutral {
-	background: linear-gradient(135deg, rgba(148, 163, 184, 0.2), rgba(148, 163, 184, 0));
-	border-color: rgba(148, 163, 184, 0.35);
+	background: linear-gradient(135deg, rgb(148 163 184 / 20%), rgb(148 163 184 / 0%));
+	border-color: rgb(148 163 184 / 35%);
 }
 
 .stat-card.warning {
-	background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0));
-	border-color: rgba(245, 158, 11, 0.35);
+	background: linear-gradient(135deg, rgb(245 158 11 / 20%), rgb(245 158 11 / 0%));
+	border-color: rgb(245 158 11 / 35%);
 }
 
 .stat-card .dot.live { background: var(--slos-success, #10b981); }
@@ -176,15 +176,15 @@
 }
 
 .slos-panel {
-	background: rgba(255, 255, 255, 0.02);
-	border: 1px solid rgba(255, 255, 255, 0.06);
+	background: rgb(255 255 255 / 2%);
+	border: 1px solid rgb(255 255 255 / 6%);
 	border-radius: 16px;
 	padding: 18px;
-	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+	box-shadow: 0 10px 30px rgb(0 0 0 / 25%);
 }
 
 .slos-panel.ghost {
-	background: rgba(255, 255, 255, 0.01);
+	background: rgb(255 255 255 / 1%);
 	border-style: dashed;
 }
 
@@ -215,8 +215,8 @@
 }
 
 .slos-panel .chip {
-	border: 1px solid rgba(255, 255, 255, 0.1);
-	background: rgba(255, 255, 255, 0.02);
+	border: 1px solid rgb(255 255 255 / 10%);
+	background: rgb(255 255 255 / 2%);
 	color: #e2e8f0;
 	padding: 6px 10px;
 	border-radius: 10px;
@@ -232,9 +232,9 @@
 
 .slos-consent-chart {
 	height: 260px;
-	background: radial-gradient(80% 80% at 50% 50%, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.01));
+	background: radial-gradient(80% 80% at 50% 50%, rgb(255 255 255 / 6%), rgb(255 255 255 / 1%));
 	border-radius: 12px;
-	border: 1px solid rgba(255, 255, 255, 0.04);
+	border: 1px solid rgb(255 255 255 / 4%);
 }
 
 .slos-consent-legend {
@@ -250,7 +250,7 @@
 	gap: 10px;
 	padding: 10px 12px;
 	border-radius: 10px;
-	background: rgba(255, 255, 255, 0.02);
+	background: rgb(255 255 255 / 2%);
 }
 
 .slos-consent-legend .swatch {
@@ -262,8 +262,8 @@
 .slos-table-wrapper {
 	overflow: auto;
 	border-radius: 14px;
-	border: 1px solid rgba(255, 255, 255, 0.08);
-	background: rgba(255, 255, 255, 0.01);
+	border: 1px solid rgb(255 255 255 / 8%);
+	background: rgb(255 255 255 / 1%);
 }
 
 .slos-table {
@@ -275,7 +275,7 @@
 .slos-table th,
 .slos-table td {
 	padding: 12px;
-	border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+	border-bottom: 1px solid rgb(255 255 255 / 5%);
 	color: #e2e8f0;
 }
 
@@ -285,11 +285,11 @@
 	text-transform: uppercase;
 	letter-spacing: 0.06em;
 	color: #cbd5e1;
-	background: rgba(255, 255, 255, 0.02);
+	background: rgb(255 255 255 / 2%);
 }
 
 .slos-table tbody tr:hover {
-	background: rgba(255, 255, 255, 0.02);
+	background: rgb(255 255 255 / 2%);
 }
 
 .slos-table .badge {
@@ -301,10 +301,10 @@
 	font-weight: 600;
 }
 
-.badge.neutral { background: rgba(148, 163, 184, 0.2); color: #e2e8f0; }
-.badge.state-accepted { background: rgba(16, 185, 129, 0.2); color: #34d399; }
-.badge.state-rejected { background: rgba(248, 113, 113, 0.2); color: #fca5a5; }
-.badge.state-withdrawn { background: rgba(245, 158, 11, 0.22); color: #fbbf24; }
+.badge.neutral { background: rgb(148 163 184 / 20%); color: #e2e8f0; }
+.badge.state-accepted { background: rgb(16 185 129 / 20%); color: #34d399; }
+.badge.state-rejected { background: rgb(248 113 113 / 20%); color: #fca5a5; }
+.badge.state-withdrawn { background: rgb(245 158 11 / 22%); color: #fbbf24; }
 
 .slos-table .link {
 	background: transparent;
@@ -330,7 +330,7 @@
 	justify-content: space-between;
 	align-items: center;
 	padding: 10px 0;
-	border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+	border-bottom: 1px dashed rgb(255 255 255 / 8%);
 }
 
 .slos-pill-list .dot { width: 10px; height: 10px; border-radius: 999px; margin-right: 8px; }
@@ -345,10 +345,10 @@
 	margin-top: 10px;
 	padding: 12px;
 	border-radius: 12px;
-	border: 1px dashed rgba(255, 255, 255, 0.12);
+	border: 1px dashed rgb(255 255 255 / 12%);
 	color: #cbd5e1;
 	font-size: 13px;
-	background: rgba(255, 255, 255, 0.02);
+	background: rgb(255 255 255 / 2%);
 }
 
 .shortcut-grid {
@@ -363,8 +363,8 @@
 	gap: 10px;
 	padding: 12px 14px;
 	border-radius: 12px;
-	background: rgba(255, 255, 255, 0.02);
-	border: 1px solid rgba(255, 255, 255, 0.06);
+	background: rgb(255 255 255 / 2%);
+	border: 1px solid rgb(255 255 255 / 6%);
 	color: #e2e8f0;
 	text-decoration: none;
 	transition: all 0.2s ease;
@@ -373,10 +373,10 @@
 .shortcut:hover {
 	border-color: var(--slos-accent);
 	color: #fff;
-	box-shadow: 0 10px 30px rgba(107, 142, 78, 0.15);
+	box-shadow: 0 10px 30px rgb(107 142 78 / 15%);
 }
 
-@media (max-width: 1024px) {
+@media (width <= 1024px) {
 	.slos-consent-grid {
 		grid-template-columns: 1fr;
 	}

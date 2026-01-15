@@ -37,12 +37,17 @@
 
 	function updateCounters() {
 		const byStatus = state.stats.by_status || {};
-		const total = Object.values(byStatus).reduce((acc, val) => acc + Number(val || 0), 0);
+		const total = Object.values(byStatus).reduce(
+			(acc, val) => acc + Number(val || 0),
+			0
+		);
 		$('[data-key="total"]').text(total);
 		$('[data-key="accepted"]').text(byStatus.accepted || 0);
 		$('[data-key="rejected"]').text(byStatus.rejected || 0);
 		$('[data-key="withdrawn"]').text(byStatus.withdrawn || 0);
-		$('[data-key="types"]').text(Object.keys(state.stats.by_type || {}).length);
+		$('[data-key="types"]').text(
+			Object.keys(state.stats.by_type || {}).length
+		);
 	}
 
 	function renderLegend(target, data, palette) {
@@ -50,26 +55,41 @@
 		container.empty();
 		const entries = Object.entries(data || {});
 		if (!entries.length) {
-			container.append(`<div class="legend-item">${cfg.i18n?.noData || 'No data'}</div>`);
+			container.append(
+				`<div class="legend-item">${
+					cfg.i18n?.noData || 'No data'
+				}</div>`
+			);
 			return;
 		}
 		entries.forEach(([label, value], idx) => {
 			const color = palette[idx % palette.length];
 			container.append(
-				`<div class="legend-item"><span class="swatch" style="background:${color}"></span><div><div>${label}</div><small>${value} ${cfg.i18n?.lastUpdated || ''}</small></div></div>`
+				`<div class="legend-item"><span class="swatch" style="background:${color}"></span><div><div>${label}</div><small>${value} ${
+					cfg.i18n?.lastUpdated || ''
+				}</small></div></div>`
 			);
 		});
 	}
 
 	function renderChart() {
-		const canvasTarget = document.getElementById('slos-consent-chart-types');
+		const canvasTarget = document.getElementById(
+			'slos-consent-chart-types'
+		);
 		if (!canvasTarget) {
 			return;
 		}
 
 		const labels = Object.keys(state.stats.by_type || {});
 		const values = Object.values(state.stats.by_type || {});
-		const colors = ['#93c5fd', '#10b981', '#f59e0b', '#38bdf8', '#ec4899', '#a3e635'];
+		const colors = [
+			'#93c5fd',
+			'#10b981',
+			'#f59e0b',
+			'#38bdf8',
+			'#ec4899',
+			'#a3e635',
+		];
 
 		if (state.chart) {
 			state.chart.destroy();
@@ -105,7 +125,9 @@
 			const matchesType = type ? item.type === type : true;
 			const matchesStatus = status ? item.status === status : true;
 			const matchesSearch = search
-				? `${item.user_id} ${item.type} ${item.status}`.toLowerCase().includes(search.toLowerCase())
+				? `${item.user_id} ${item.type} ${item.status}`
+						.toLowerCase()
+						.includes(search.toLowerCase())
 				: true;
 			return matchesType && matchesStatus && matchesSearch;
 		});
@@ -117,7 +139,10 @@
 
 		if (!consents.length) {
 			tbody.append(
-				`<tr class="empty"><td colspan="7"><div class="shahi-empty-state"><span class="dashicons dashicons-visibility"></span><p>${cfg.i18n?.noData || 'No consent data available for this view.'}</p></div></td></tr>`
+				`<tr class="empty"><td colspan="7"><div class="shahi-empty-state"><span class="dashicons dashicons-visibility"></span><p>${
+					cfg.i18n?.noData ||
+					'No consent data available for this view.'
+				}</p></div></td></tr>`
 			);
 			return;
 		}
@@ -125,14 +150,16 @@
 		consents.slice(0, state.limit).forEach((consent) => {
 			tbody.append(
 				`<tr data-id="${consent.id}">` +
-				`<td>#${consent.id}</td>` +
-				`<td>${consent.user_id}</td>` +
-				`<td><span class="badge neutral">${consent.type}</span></td>` +
-				`<td><span class="badge state-${consent.status}">${consent.status}</span></td>` +
-				`<td>${consent.created_at || ''}</td>` +
-				`<td>${consent.updated_at || ''}</td>` +
-				`<td><button class="link" data-action="view" data-id="${consent.id}">${cfg.i18n?.view || 'View'}</button></td>` +
-				`</tr>`
+					`<td>#${consent.id}</td>` +
+					`<td>${consent.user_id}</td>` +
+					`<td><span class="badge neutral">${consent.type}</span></td>` +
+					`<td><span class="badge state-${consent.status}">${consent.status}</span></td>` +
+					`<td>${consent.created_at || ''}</td>` +
+					`<td>${consent.updated_at || ''}</td>` +
+					`<td><button class="link" data-action="view" data-id="${
+						consent.id
+					}">${cfg.i18n?.view || 'View'}</button></td>` +
+					`</tr>`
 			);
 		});
 	}
@@ -156,7 +183,9 @@
 
 	async function loadConsents() {
 		try {
-			const json = await fetchJson(cfg.routes.consents, { per_page: 100 });
+			const json = await fetchJson(cfg.routes.consents, {
+				per_page: 100,
+			});
 			if (json?.success) {
 				state.consents = json.data.consents || [];
 			}
@@ -202,9 +231,18 @@
 		if (!rows.length) {
 			return;
 		}
-		const headers = ['id', 'user_id', 'type', 'status', 'created_at', 'updated_at'];
+		const headers = [
+			'id',
+			'user_id',
+			'type',
+			'status',
+			'created_at',
+			'updated_at',
+		];
 		const csv = [headers.join(',')]
-			.concat(rows.map((row) => headers.map((h) => (row[h] ?? '')).join(',')))
+			.concat(
+				rows.map((row) => headers.map((h) => row[h] ?? '').join(','))
+			)
 			.join('\n');
 		const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
 		const url = URL.createObjectURL(blob);

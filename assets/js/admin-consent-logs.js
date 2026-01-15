@@ -3,11 +3,11 @@
  *
  * Handles consent log viewing, filtering, and pagination.
  *
- * @package ShahiLegalFlowSuite
+ * @package
  * @since   3.0.1
  */
 
-(function($) {
+(function ($) {
 	'use strict';
 
 	/**
@@ -32,7 +32,7 @@
 		/**
 		 * Initialize
 		 */
-		init: function() {
+		init() {
 			this.bindEvents();
 			this.loadLogs();
 		},
@@ -40,7 +40,7 @@
 		/**
 		 * Bind events
 		 */
-		bindEvents: function() {
+		bindEvents() {
 			// Filter form submission
 			$('#slos-logs-filter-form').on('submit', (e) => {
 				e.preventDefault();
@@ -83,7 +83,7 @@
 		/**
 		 * Load logs with current filters
 		 */
-		loadLogs: function() {
+		loadLogs() {
 			const params = this.getFilterParams();
 			params.page = this.currentPage;
 			params.per_page = this.perPage;
@@ -94,26 +94,30 @@
 
 			wp.apiRequest({
 				path: '/slos/v1/consents/logs?' + $.param(params),
-				method: 'GET'
+				method: 'GET',
 			})
-			.done((data, status, xhr) => {
-				this.totalLogs = parseInt(xhr.getResponseHeader('X-WP-Total') || 0);
-				this.renderLogs(data);
-				this.renderPagination();
-			})
-			.fail((error) => {
-				console.error('Failed to load logs:', error);
-				this.showError('Failed to load consent logs. Please try again.');
-			})
-			.always(() => {
-				$('#slos-logs-loading').hide();
-			});
+				.done((data, status, xhr) => {
+					this.totalLogs = parseInt(
+						xhr.getResponseHeader('X-WP-Total') || 0
+					);
+					this.renderLogs(data);
+					this.renderPagination();
+				})
+				.fail((error) => {
+					console.error('Failed to load logs:', error);
+					this.showError(
+						'Failed to load consent logs. Please try again.'
+					);
+				})
+				.always(() => {
+					$('#slos-logs-loading').hide();
+				});
 		},
 
 		/**
 		 * Get filter parameters from form
 		 */
-		getFilterParams: function() {
+		getFilterParams() {
 			const params = {};
 
 			const dateFrom = $('#date_from').val();
@@ -133,8 +137,10 @@
 
 		/**
 		 * Render logs table
+		 *
+		 * @param logs
 		 */
-		renderLogs: function(logs) {
+		renderLogs(logs) {
 			const tbody = $('#slos-logs-tbody');
 			tbody.empty();
 
@@ -157,8 +163,10 @@
 
 		/**
 		 * Render single log row
+		 *
+		 * @param log
 		 */
-		renderLogRow: function(log) {
+		renderLogRow(log) {
 			const actionBadge = this.getActionBadge(log.action);
 			const dateTime = new Date(log.created_at).toLocaleString();
 
@@ -184,14 +192,16 @@
 
 		/**
 		 * Get action badge HTML
+		 *
+		 * @param action
 		 */
-		getActionBadge: function(action) {
+		getActionBadge(action) {
 			const labels = {
 				grant: slosLogsData.i18n.grant,
 				withdraw: slosLogsData.i18n.withdraw,
 				update: slosLogsData.i18n.update,
 				import: slosLogsData.i18n.import,
-				export: slosLogsData.i18n.export
+				export: slosLogsData.i18n.export,
 			};
 
 			const label = labels[action] || action;
@@ -201,7 +211,7 @@
 		/**
 		 * Render pagination
 		 */
-		renderPagination: function() {
+		renderPagination() {
 			const totalPages = Math.ceil(this.totalLogs / this.perPage);
 
 			if (totalPages <= 1) {
@@ -212,7 +222,9 @@
 
 			// Previous
 			if (this.currentPage > 1) {
-				html += `<a class="button slos-page-link" data-page="${this.currentPage - 1}">&laquo; ${slosLogsData.i18n.previous}</a> `;
+				html += `<a class="button slos-page-link" data-page="${
+					this.currentPage - 1
+				}">&laquo; ${slosLogsData.i18n.previous}</a> `;
 			}
 
 			// Page numbers
@@ -222,45 +234,57 @@
 					i === totalPages ||
 					(i >= this.currentPage - 2 && i <= this.currentPage + 2)
 				) {
-					const active = i === this.currentPage ? 'button-primary' : '';
+					const active =
+						i === this.currentPage ? 'button-primary' : '';
 					html += `<a class="button ${active} slos-page-link" data-page="${i}">${i}</a> `;
-				} else if (i === this.currentPage - 3 || i === this.currentPage + 3) {
+				} else if (
+					i === this.currentPage - 3 ||
+					i === this.currentPage + 3
+				) {
 					html += '<span>...</span> ';
 				}
 			}
 
 			// Next
 			if (this.currentPage < totalPages) {
-				html += `<a class="button slos-page-link" data-page="${this.currentPage + 1}">${slosLogsData.i18n.next} &raquo;</a>`;
+				html += `<a class="button slos-page-link" data-page="${
+					this.currentPage + 1
+				}">${slosLogsData.i18n.next} &raquo;</a>`;
 			}
 
 			$('#slos-logs-nav').html(html);
-			$('#slos-logs-count').text(`${this.totalLogs} ${slosLogsData.i18n.items}`);
+			$('#slos-logs-count').text(
+				`${this.totalLogs} ${slosLogsData.i18n.items}`
+			);
 			$('#slos-logs-pagination').show();
 		},
 
 		/**
 		 * View log details in modal
+		 *
+		 * @param logId
 		 */
-		viewLogDetails: function(logId) {
+		viewLogDetails(logId) {
 			wp.apiRequest({
 				path: `/slos/v1/consents/logs/${logId}`,
-				method: 'GET'
+				method: 'GET',
 			})
-			.done((log) => {
-				this.renderLogDetails(log);
-				$('#slos-log-details-modal').show();
-			})
-			.fail((error) => {
-				console.error('Failed to load log details:', error);
-				this.showError('Failed to load log details.');
-			});
+				.done((log) => {
+					this.renderLogDetails(log);
+					$('#slos-log-details-modal').show();
+				})
+				.fail((error) => {
+					console.error('Failed to load log details:', error);
+					this.showError('Failed to load log details.');
+				});
 		},
 
 		/**
 		 * Render log details in modal
+		 *
+		 * @param log
 		 */
-		renderLogDetails: function(log) {
+		renderLogDetails(log) {
 			const content = $('#slos-log-details-content');
 			const dateTime = new Date(log.created_at).toLocaleString();
 
@@ -337,8 +361,10 @@
 
 		/**
 		 * Show error message
+		 *
+		 * @param message
 		 */
-		showError: function(message) {
+		showError(message) {
 			const notice = $(`
 				<div class="notice notice-error is-dismissible">
 					<p>${message}</p>
@@ -354,17 +380,19 @@
 
 		/**
 		 * Escape HTML
+		 *
+		 * @param text
 		 */
-		escapeHtml: function(text) {
+		escapeHtml(text) {
 			const map = {
 				'&': '&amp;',
 				'<': '&lt;',
 				'>': '&gt;',
 				'"': '&quot;',
-				"'": '&#039;'
+				"'": '&#039;',
 			};
 			return String(text).replace(/[&<>"']/g, (m) => map[m]);
-		}
+		},
 	};
 
 	// Initialize on document ready
@@ -373,5 +401,4 @@
 			ConsentLogsAdmin.init();
 		}
 	});
-
 })(jQuery);

@@ -615,7 +615,6 @@
 	gap: 12px;
 	cursor: pointer;
 	user-select: none;
-	user-select: none;
 }
 
 .slos-widget-toggle-switch input[type="checkbox"] {

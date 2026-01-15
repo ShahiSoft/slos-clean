@@ -241,7 +241,6 @@
 	filter: blur(4px);
 	pointer-events: none;
 	user-select: none;
-	user-select: none;
 }
 
 .slos-gen-card__premium-overlay {

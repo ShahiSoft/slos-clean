@@ -4,12 +4,12 @@
  * Replaces iframes and embeds with consent placeholders until user grants permission.
  * Provides "Enable [Category]" buttons to prompt consent.
  *
- * @package    ShahiLegalFlowSuite
+ * @package
  * @subpackage Assets/Frontend
  * @since      3.1.1
  */
 
-(function() {
+(function () {
 	'use strict';
 
 	/**
@@ -33,7 +33,9 @@
 		init() {
 			// Wait for DOM ready
 			if (document.readyState === 'loading') {
-				document.addEventListener('DOMContentLoaded', () => this.scanAndReplace());
+				document.addEventListener('DOMContentLoaded', () =>
+					this.scanAndReplace()
+				);
 			} else {
 				this.scanAndReplace();
 			}
@@ -66,13 +68,16 @@
 		 */
 		scanAndReplace() {
 			// Find all placeholder containers
-			const placeholderEls = document.querySelectorAll('[data-slos-placeholder]');
-			
-			placeholderEls.forEach(el => {
+			const placeholderEls = document.querySelectorAll(
+				'[data-slos-placeholder]'
+			);
+
+			placeholderEls.forEach((el) => {
 				const category = el.getAttribute('data-slos-placeholder');
 				const embedUrl = el.getAttribute('data-slos-embed-url');
-				const embedType = el.getAttribute('data-slos-embed-type') || 'iframe';
-				
+				const embedType =
+					el.getAttribute('data-slos-embed-type') || 'iframe';
+
 				if (!category) return;
 
 				// Check if consent is granted
@@ -105,9 +110,11 @@
 				'doubleclick.net': 'marketing',
 			};
 
-			const iframes = document.querySelectorAll('iframe:not([data-slos-processed])');
-			
-			iframes.forEach(iframe => {
+			const iframes = document.querySelectorAll(
+				'iframe:not([data-slos-processed])'
+			);
+
+			iframes.forEach((iframe) => {
 				const src = iframe.src || '';
 				let category = null;
 
@@ -126,14 +133,27 @@
 					placeholder.setAttribute('data-slos-embed-url', src);
 					placeholder.setAttribute('data-slos-embed-type', 'iframe');
 					placeholder.className = iframe.className || '';
-					
+
 					// Copy dimensions if available
-					if (iframe.width) placeholder.style.width = iframe.width + (iframe.width.toString().includes('%') ? '' : 'px');
-					if (iframe.height) placeholder.style.height = iframe.height + (iframe.height.toString().includes('%') ? '' : 'px');
-					
+					if (iframe.width)
+						placeholder.style.width =
+							iframe.width +
+							(iframe.width.toString().includes('%') ? '' : 'px');
+					if (iframe.height)
+						placeholder.style.height =
+							iframe.height +
+							(iframe.height.toString().includes('%')
+								? ''
+								: 'px');
+
 					iframe.parentNode.replaceChild(placeholder, iframe);
-					
-					this.renderPlaceholder(placeholder, category, src, 'iframe');
+
+					this.renderPlaceholder(
+						placeholder,
+						category,
+						src,
+						'iframe'
+					);
 				}
 
 				iframe.setAttribute('data-slos-processed', 'true');
@@ -154,21 +174,23 @@
 		 * Render placeholder HTML
 		 *
 		 * @param {HTMLElement} container Container element
-		 * @param {string} category Category name
-		 * @param {string} embedUrl Embed URL
-		 * @param {string} embedType Embed type
+		 * @param {string}      category  Category name
+		 * @param {string}      embedUrl  Embed URL
+		 * @param {string}      embedType Embed type
 		 */
 		renderPlaceholder(container, category, embedUrl, embedType) {
 			const categoryLabels = {
-				'necessary': 'Essential',
-				'functional': 'Functional',
-				'analytics': 'Analytics',
-				'marketing': 'Marketing',
-				'preferences': 'Preferences'
+				necessary: 'Essential',
+				functional: 'Functional',
+				analytics: 'Analytics',
+				marketing: 'Marketing',
+				preferences: 'Preferences',
 			};
 
-			const label = categoryLabels[category] || category.charAt(0).toUpperCase() + category.slice(1);
-			
+			const label =
+				categoryLabels[category] ||
+				category.charAt(0).toUpperCase() + category.slice(1);
+
 			const html = `
 				<div class="slos-embed-placeholder" data-category="${category}">
 					<div class="slos-placeholder-content">
@@ -196,10 +218,10 @@
 
 			// Store reference
 			this.placeholders.push({
-				container: container,
-				category: category,
-				embedUrl: embedUrl,
-				embedType: embedType
+				container,
+				category,
+				embedUrl,
+				embedType,
 			});
 
 			// Bind enable button
@@ -214,18 +236,21 @@
 		/**
 		 * Prompt user for consent
 		 *
-		 * @param {string} category Category name
+		 * @param {string}      category  Category name
 		 * @param {HTMLElement} container Container element
 		 */
 		promptConsent(category, container) {
 			// Trigger consent banner to open with specific category
 			const event = new CustomEvent('slosRequestConsent', {
-				detail: { category: category }
+				detail: { category },
 			});
 			document.dispatchEvent(event);
 
 			// Alternatively, if banner API is available
-			if (window.slosConsentBanner && typeof window.slosConsentBanner.openPreferences === 'function') {
+			if (
+				window.slosConsentBanner &&
+				typeof window.slosConsentBanner.openPreferences === 'function'
+			) {
 				window.slosConsentBanner.openPreferences(category);
 			}
 		}
@@ -239,7 +264,7 @@
 			this.consentStatus = consents;
 
 			// Reload embeds that now have consent
-			this.placeholders.forEach(placeholder => {
+			this.placeholders.forEach((placeholder) => {
 				if (this.hasConsent(placeholder.category)) {
 					this.loadEmbed(
 						placeholder.container,
@@ -254,8 +279,8 @@
 		 * Load embed content
 		 *
 		 * @param {HTMLElement} container Container element
-		 * @param {string} embedUrl Embed URL
-		 * @param {string} embedType Embed type
+		 * @param {string}      embedUrl  Embed URL
+		 * @param {string}      embedType Embed type
 		 */
 		loadEmbed(container, embedUrl, embedType) {
 			if (!embedUrl) return;
@@ -266,17 +291,21 @@
 				iframe.frameBorder = '0';
 				iframe.allowFullscreen = true;
 				iframe.setAttribute('loading', 'lazy');
-				
+
 				// Copy dimensions from container
-				if (container.style.width) iframe.style.width = container.style.width;
-				if (container.style.height) iframe.style.height = container.style.height;
-				
+				if (container.style.width)
+					iframe.style.width = container.style.width;
+				if (container.style.height)
+					iframe.style.height = container.style.height;
+
 				// Copy classes
 				if (container.className) {
-					const classes = container.className.split(' ').filter(c => !c.startsWith('slos-'));
+					const classes = container.className
+						.split(' ')
+						.filter((c) => !c.startsWith('slos-'));
 					if (classes.length) iframe.className = classes.join(' ');
 				}
-				
+
 				container.innerHTML = '';
 				container.appendChild(iframe);
 			} else if (embedType === 'script') {
@@ -299,5 +328,4 @@
 	} else {
 		window.slosPlaceholders = new ConsentPlaceholders();
 	}
-
 })();

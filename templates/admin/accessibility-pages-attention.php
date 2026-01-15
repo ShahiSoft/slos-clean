@@ -16,8 +16,8 @@
  * Phase: Phase 1 - Critical Path
  * Priority: P0 - Blocking
  *
- * Template Variables:
- * @var array $pages_with_issues Array of pages with accessibility issues
+ * Template Variables.
+ * @var array $pages_with_issues Array of pages with accessibility issues.
  * Each page contains:
  *   - post_id: int
  *   - title: string
@@ -105,12 +105,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</thead>
 				<tbody>
 					<?php
-					foreach ( $pages_with_issues as $page ) :
-						$post_id         = isset( $page['post_id'] ) ? intval( $page['post_id'] ) : 0;
-						$issues          = isset( $page['issues_count'] ) ? intval( $page['issues_count'] ) : 0;
-						$critical        = isset( $page['critical_count'] ) ? intval( $page['critical_count'] ) : 0;
-						$score           = isset( $page['score'] ) ? intval( $page['score'] ) : 100;
-						$priority        = isset( $page['priority'] ) ? esc_attr( $page['priority'] ) : 'low';
+					foreach ( $pages_with_issues as $page_item ) :
+						$post_id         = isset( $page_item['post_id'] ) ? intval( $page_item['post_id'] ) : 0;
+						$issues          = isset( $page_item['issues_count'] ) ? intval( $page_item['issues_count'] ) : 0;
+						$critical        = isset( $page_item['critical_count'] ) ? intval( $page_item['critical_count'] ) : 0;
+						$score           = isset( $page_item['score'] ) ? intval( $page_item['score'] ) : 100;
+						$priority        = isset( $page_item['priority'] ) ? esc_attr( $page_item['priority'] ) : 'low';
 						$priority_label  = array(
 							'high'   => 'High',
 							'medium' => 'Medium',
@@ -118,20 +118,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 						)[ $priority ] ?? 'Low';
 						$has_backup      = get_post_meta( $post_id, '_slos_backup_exists', true );
 						$autofix_enabled = get_post_meta( $post_id, '_slos_autofix_enabled', true );
-						$title           = isset( $page['title'] ) ? $page['title'] : 'Untitled';
-						$post_type       = isset( $page['post_type'] ) ? $page['post_type'] : 'post';
+						$page_title      = isset( $page_item['title'] ) ? $page_item['title'] : 'Untitled';
+						$page_post_type  = isset( $page_item['post_type'] ) ? $page_item['post_type'] : 'post';
 						$issues_bg       = $issues > 15 ? 'rgba(239, 68, 68, 0.15)' : 'rgba(251, 191, 36, 0.15)';
 						$issues_color    = $issues > 15 ? 'var(--slos-error)' : 'var(--slos-warning)';
 						$score_bg        = $score >= 80 ? 'rgba(34, 197, 94, 0.15)' : ( $score >= 60 ? 'rgba(251, 191, 36, 0.15)' : 'rgba(239, 68, 68, 0.15)' );
 						$score_bar_color = $score >= 80 ? 'var(--slos-success)' : ( $score >= 60 ? 'var(--slos-warning)' : 'var(--slos-error)' );
 						$score_value     = max( 0, min( 100, $score ) );
 						$priority_style  = 'background: rgba(59, 130, 246, 0.15); color: var(--slos-accent); border: 1px solid rgba(59, 130, 246, 0.3);';
-						if ( $priority === 'high' ) {
+						if ( 'high' === $priority ) {
 							$priority_style = 'background: rgba(239, 68, 68, 0.15); color: var(--slos-error); border: 1px solid rgba(239, 68, 68, 0.3);';
-						} elseif ( $priority === 'medium' ) {
+						} elseif ( 'medium' === $priority ) {
 							$priority_style = 'background: rgba(251, 191, 36, 0.15); color: var(--slos-warning); border: 1px solid rgba(251, 191, 36, 0.3);';
 						}
-						$priority_icon = $priority === 'high' ? 'arrow-up-alt' : ( $priority === 'medium' ? 'minus' : 'arrow-down-alt' );
+						$priority_icon = 'high' === $priority ? 'arrow-up-alt' : ( 'medium' === $priority ? 'minus' : 'arrow-down-alt' );
 						?>
 					<tr class="slos-page-row" data-page-id="<?php echo esc_attr( $post_id ); ?>" data-priority="<?php echo esc_attr( $priority ); ?>" style="border-bottom: 1px solid var(--slos-border); transition: background-color 0.2s ease;">
 						<td style="padding: 16px; text-align: center;">
@@ -143,10 +143,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 									<span class="dashicons dashicons-admin-post" style="font-size: 18px; color: var(--slos-accent);"></span>
 								</div>
 								<div style="flex: 1; min-width: 0;">
-									<div style="font-weight: 600; color: var(--slos-text-primary); font-size: 14px; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?php echo esc_html( $title ); ?></div>
+									<div style="font-weight: 600; color: var(--slos-text-primary); font-size: 14px; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?php echo esc_html( $page_title ); ?></div>
 									<div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--slos-text-muted);">
 										<span class="dashicons dashicons-category" style="font-size: 12px;"></span>
-										<span><?php echo esc_html( ucfirst( $post_type ) ); ?></span>
+										<span><?php echo esc_html( ucfirst( $page_post_type ) ); ?></span>
 									</div>
 								</div>
 							</div>
