@@ -151,75 +151,75 @@
 				return;
 			}
 
-			const modalHTML                          = `
-				< div id                             = "slos-autofix-progress-overlay" class = "slos-autofix-overlay" role = "dialog" aria - modal = "true" aria - labelledby = "slos-autofix-title" aria - describedby = "slos-autofix-desc" >
-					< div class                      = "slos-autofix-modal" >
-						< ! --Header-- >
-						< div class                  = "slos-autofix-header" >
-							< div class              = "slos-autofix-header-title" >
-								< div class          = "slos-autofix-icon" >
-									< span class     = "dashicons dashicons-admin-tools" > < / span >
-								< / div >
-								< div >
-									< h2 id          = "slos-autofix-title" > Auto - Fix Progress < / h2 >
-									< div class      = "slos-autofix-header-subtitle" id = "slos-autofix-desc" > Fixing accessibility issues automatically < / div >
-								< / div >
-							< / div >
-							< button type            = "button" class = "slos-autofix-close" aria - label = "Close dialog" >
-								< span aria - hidden = "true" > × < / span >
-							< / button >
-						< / div >
+			const modalHTML = `
+				<div id="slos-autofix-progress-overlay" class="slos-autofix-overlay" role="dialog" aria-modal="true" aria-labelledby="slos-autofix-title" aria-describedby="slos-autofix-desc">
+					<div class="slos-autofix-modal">
+						<!--Header-->
+						<div class="slos-autofix-header">
+							<div class="slos-autofix-header-title">
+								<div class="slos-autofix-icon">
+									<span class="dashicons dashicons-admin-tools"></span>
+								</div>
+								<div>
+									<h2 id="slos-autofix-title">Auto-Fix Progress</h2>
+									<div class="slos-autofix-header-subtitle" id="slos-autofix-desc">Fixing accessibility issues automatically</div>
+								</div>
+							</div>
+							<button type="button" class="slos-autofix-close" aria-label="Close dialog">
+								<span aria-hidden="true">×</span>
+							</button>
+						</div>
 
-						< ! --Progress Section-- >
-						< div class          = "slos-autofix-progress-section" >
-							< div class      = "slos-autofix-progress-wrap processing" >
-								< div class  = "slos-autofix-progress-bar" style = "width: 0%" > < / div >
-							< / div >
-							< div class      = "slos-autofix-progress-text" >
-								< span class = "slos-autofix-progress-percent" > 0 % < / span >
-								< span class = "slos-autofix-progress-status" > Initializing... < / span >
-							< / div >
-						< / div >
+						<!--Progress Section-->
+						<div class="slos-autofix-progress-section">
+							<div class="slos-autofix-progress-wrap processing">
+								<div class="slos-autofix-progress-bar" style="width: 0%"></div>
+							</div>
+							<div class="slos-autofix-progress-text">
+								<span class="slos-autofix-progress-percent">0%</span>
+								<span class="slos-autofix-progress-status">Initializing...</span>
+							</div>
+						</div>
 
-						< ! --Fixer List Section-- >
-						< div class     = "slos-autofix-fixer-section" >
-							< div class = "slos-autofix-fixer-header" > Fixer Status < / div >
-							< div class = "slos-autofix-fixer-list" role = "list" aria - label = "List of fixers and their status" > < / div >
-						< / div >
+						<!--Fixer List Section-->
+						<div class="slos-autofix-fixer-section">
+							<div class="slos-autofix-fixer-header">Fixer Status</div>
+							<div class="slos-autofix-fixer-list" role="list" aria-label="List of fixers and their status"></div>
+						</div>
 
-						< ! --Summary Section-- >
-						< div class             = "slos-autofix-summary" >
-							< div class         = "slos-autofix-summary-grid" >
-								< div class     = "slos-autofix-stat fixed" >
-									< div class = "slos-autofix-stat-value" data - stat = "fixed" > 0 < / div >
-									< div class = "slos-autofix-stat-label" > Fixed < / div >
-								< / div >
-								< div class     = "slos-autofix-stat errors" >
-									< div class = "slos-autofix-stat-value" data - stat = "errors" > 0 < / div >
-									< div class = "slos-autofix-stat-label" > Errors < / div >
-								< / div >
-								< div class     = "slos-autofix-stat skipped" >
-									< div class = "slos-autofix-stat-value" data - stat = "skipped" > 0 < / div >
-									< div class = "slos-autofix-stat-label" > Skipped < / div >
-								< / div >
-								< div class     = "slos-autofix-stat pending" >
-									< div class = "slos-autofix-stat-value" data - stat = "pending" > 0 < / div >
-									< div class = "slos-autofix-stat-label" > Pending < / div >
-								< / div >
-							< / div >
-						< / div >
+						<!--Summary Section-->
+						<div class="slos-autofix-summary">
+							<div class="slos-autofix-summary-grid">
+								<div class="slos-autofix-stat fixed">
+									<div class="slos-autofix-stat-value" data-stat="fixed">0</div>
+									<div class="slos-autofix-stat-label">Fixed</div>
+								</div>
+								<div class="slos-autofix-stat errors">
+									<div class="slos-autofix-stat-value" data-stat="errors">0</div>
+									<div class="slos-autofix-stat-label">Errors</div>
+								</div>
+								<div class="slos-autofix-stat skipped">
+									<div class="slos-autofix-stat-value" data-stat="skipped">0</div>
+									<div class="slos-autofix-stat-label">Skipped</div>
+								</div>
+								<div class="slos-autofix-stat pending">
+									<div class="slos-autofix-stat-value" data-stat="pending">0</div>
+									<div class="slos-autofix-stat-label">Pending</div>
+								</div>
+							</div>
+						</div>
 
-						< ! --Actions Section-- >
-						< div class       = "slos-autofix-actions" >
-							< button type = "button" class = "slos-autofix-btn slos-autofix-btn-cancel" style = "display: none;" >
+						<!--Actions Section-->
+						<div class="slos-autofix-actions">
+							<button type="button" class="slos-autofix-btn slos-autofix-btn-cancel" style="display: none;">
 								Cancel
-							< / button >
-							< button type = "button" class = "slos-autofix-btn slos-autofix-btn-secondary slos-autofix-close-action" style = "display: none;" >
+							</button>
+							<button type="button" class="slos-autofix-btn slos-autofix-btn-secondary slos-autofix-close-action" style="display: none;">
 								Close
-							< / button >
-						< / div >
-					< / div >
-				< / div >
+							</button>
+						</div>
+					</div>
+				</div>
 			`;
 
 			document.body.insertAdjacentHTML( 'beforeend', modalHTML );

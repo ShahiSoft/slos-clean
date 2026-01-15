@@ -1,0 +1,456 @@
+Please ensure that your plugin adheres to best practices, including the following: 
+🔴 Proper sanitization of inputs
+
+ℹ️ Why it matters: Sanitizing inputs is crucial for protecting against security vulnerabilities like SQL injection, handling invalid data, and ensuring that only safe, expected data is processed. 
+Please check the official WordPress docs on sanitizing for details — this is a quick summary.
+
+🔍 Identify unsanitized inputs: Check any input coming from sources such as: $_GET , $_POST , $_REQUEST , $_COOKIE , $_SERVER , $_SESSION 
+If these inputs aren’t sanitized first, that’s a potential risk! 🕵️ 
+
+🛠 Fix it: Always wrap any input with the right sanitization function, like: 
+Content	Function
+Plain text	sanitize_text_field() 
+Email	sanitize_email() 
+URL	esc_url_raw() 
+Key	sanitize_key() 
+Integer	absint() 
+
+Refer to the official WordPress documentation for a complete list of sanitization functions.
+👉 Use the most restrictive function that fits the expected content.
+👉 Sanitize as early as possible — ideally as soon as the data is received.
+👉 Only trust what you’ve cleaned yourself. 
+
+Example:
+$post_id = (int) $_GET['post_id']; // Sanitized as an integer
+$email = sanitize_email( $_GET['email'] ); // Sanitized as an email
+Your data is now sanitized! 🧼🍏 
+
+
+Note: $_SERVER, $_COOKIE and $_SESSION inputs must be sanitized as well. 
+
+Although this might be counterintuitive, some or all of its included data can be manipulated by the sender of the request. So it needs to be sanitized just like any other input. 
+
+Example(s) from your plugin: 
+includes/Ajax/DashboardAjax.php:184 'ip_address' => $_SERVER['REMOTE_ADDR'] ?? '',
+includes/Database/Repositories/DSR_Repository.php:75 $ua_hash      = hash( 'sha256', $_SERVER['HTTP_USER_AGENT'] ?? '' );
+includes/Ajax/OnboardingAjax.php:141 'ip_address' => $_SERVER['REMOTE_ADDR'] ?? '',
+includes/Ajax/ModuleAjax.php:148 'ip_address' => $_SERVER['REMOTE_ADDR'] ?? '',
+... out of a total of 17 incidences.
+
+
+Note: escape functions cannot be used to sanitize. They serve different purposes. Even if they seem to be perfect for this purpose, most of the functions are filterable and people expect to use them to escape. Therefore, another plugin may change what they do and make yours at risk and exploitable. 
+
+If you are trying to echo the variable, you have to first sanitize it and then escape it, as for example: 
+echo esc_html(sanitize_text_field($_POST['example']));
+Example(s) from your plugin: 
+includes/Admin/DSRRequests.php:398 <input type="hidden" name="tab" value="<?php echo esc_attr( $_GET['tab'] ); ?>" />
+ -----> esc_attr($_GET['tab'])
+templates/admin/consent-logs.php:16 value="<?php echo esc_attr( $_GET['date_from'] ?? '' ); ?>">
+templates/admin/consent-logs.php:24 value="<?php echo esc_attr( $_GET['date_to'] ?? '' ); ?>">
+includes/Admin/DSRRequests.php:405 value="<?php echo isset( $_GET['search'] ) ? esc_attr( $_GET['search'] ) : ''; ?>" />
+ -----> esc_attr($_GET['search'])
+... out of a total of 5 incidences.
+
+
+Note: When checking a nonce using wp_verify_nonce you will need to sanitize the input using wp_unslash AND sanitize_text_field , this is because this function is pluggable, and extenders should not trust its input values. 
+
+Example:
+if ( ! isset( $_POST['shahle_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash ( $_POST['shahle_nonce'] ) ) , 'shahle_nonce' ) )
+
+Example(s) from your plugin: 
+includes/Admin/Modules.php:404 if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'shahi_toggle_module' ) ) {
+includes/PostTypes/Metaboxes.php:332 if ( isset( $_POST['shahi_item_settings_nonce'] ) && wp_verify_nonce( $_POST['shahi_item_settings_nonce'], 'shahi_item_settings_nonce' ) ) {
+includes/Admin/Modules.php:221 if ( ! isset( $_POST['shahi_modules_nonce'] ) || ! wp_verify_nonce( $_POST['shahi_modules_nonce'], 'shahi_save_modules' ) ) {
+includes/Ajax/AjaxHandler.php:140 if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], $nonce_action ) ) {
+... out of a total of 7 incidences.
+
+
+Note: While the json_decode() function in PHP is useful for decoding JSON strings, it does not sanitize the input. Sanitization refers to the process of cleaning or filtering the input data to ensure that it is safe and secure to use. 
+
+The json_decode() function simply transforms a JSON string into a PHP array or object. Any potentially malicious data or scripts may persist after json_decode(). 
+Example(s) from your plugin: 
+includes/Admin/Document_Hub_Controller.php:898 $overrides     = isset( $_POST['overrides'] ) ? json_decode( stripslashes( $_POST['overrides'] ), true ) : array();
+ -----> json_decode(stripslashes($_POST['overrides']), true)
+includes/Admin/Document_Hub_Controller.php:855 $overrides = isset( $_POST['overrides'] ) ? json_decode( stripslashes( $_POST['overrides'] ), true ) : array();
+ -----> json_decode(stripslashes($_POST['overrides']), true)
+
+
+✔️ You can check this using Plugin Check.
+🔴 Proper escaping of outputs
+
+ℹ️ Why it matters: Escaping prevents common security issues like XSS (Cross-Site Scripting) and avoids breaking the HTML structure. 
+Please check the official WordPress docs on escaping for details — this is a quick summary.
+
+🔍 Identify unescaped outputs: Check any output ( echo , print , printf , etc. ) outputting a variable (like $title , $key ) or function result (like get_url() ) 
+If the value is output without escaping, that’s a potential risk! 🕵️ 
+
+🛠 Fix it: Always wrap any output with the proper escaping function depending on the context, like: 
+Context	Function
+URLs	esc_url() 
+HTML attributes	esc_attr() 
+Text inside HTML tags	esc_html() 
+Raw HTML (careful!)	wp_kses() , wp_kses_post() 
+
+Refer to the official WordPress documentation for a complete list of escaping functions.
+👉 Use the most restrictive function that fits the context.
+👉 Escaping should be applied as late as possible, ideally right before output. 
+
+Example:
+echo '<a href="' . esc_url( $profile_link ) . '" class="' . esc_attr( $username ) . '">' . esc_html( $display_name ) . '</a>';
+Your output is now escaped! 
+
+
+Note: when you need to echo a JSON, it's better to make use of the function wp_json_encode , also, make sure you are not avoiding escaping with the options passed on the second parameter. 
+    echo wp_json_encode($array_or_object);
+Example(s) from your plugin: 
+templates/admin/accessibility-dashboard.php:2380 var scanHistoryData = <?php echo json_encode( array_values( $scan_history ) ); ?>;
+ -----> json_encode(array_values($scan_history))
+templates/admin/accessibility-dashboard.php:2578 var scanHistory = <?php echo json_encode( $scan_history ); ?>;
+
+
+
+Note: The functions _e and _ex outputs the translation without escaping, please use an alternative function that escapes the output. 
+•	An alternative to _e would be esc_html_e , esc_attr_e or simply using __ wrapped by a escaping function and inside an echo .
+•	An alternative to _ex would be using _x wrapped by a escaping function and inside an echo .
+Examples:
+<h2><?php esc_html_e('Settings page', 'shahi-legalflowsuite'); ?></h2>
+
+<h2><?php echo esc_html(__('Settings page', 'shahi-legalflowsuite')); ?></h2>
+
+<h2><?php echo esc_html(_x('Settings page', 'Settings page title', 'shahi-legalflowsuite')); ?></h2>
+
+Example(s) from your plugin: 
+includes/PostTypes/TemplateItem.php:313 <option value="1"><?php _e( 'Yes', 'shahi-legalflowsuite' ); ?></option>
+includes/PostTypes/TemplateItem.php:312 <option value="">— <?php _e( 'No Change', 'shahi-legalflowsuite' ); ?> —</option>
+ -----> _e('No Change', 'shahi-legalflowsuite')
+includes/PostTypes/TemplateItem.php:324 <option value="pending"><?php _e( 'Pending', 'shahi-legalflowsuite' ); ?></option>
+ -----> _e('Pending', 'shahi-legalflowsuite')
+includes/Core/I18n.php:155 _e( $text, self::TEXT_DOMAIN );
+... out of a total of 11 incidences.
+
+✔️ You can check this using Plugin Check.
+🔴 Nonces and User Permissions Before Processing Requests
+
+ℹ️ Why it matters: Nonces and permissions checks ensure that the request comes from a trusted source, protecting against security threats like CSRF (Cross-Site Request Forgery) attacks. 
+Please check the official WordPress docs on nonces and this article for details — this is a quick summary.
+
+🔍 Spot it: Look for functions that interact with $_GET , $_POST , $_REQUEST and perform actions triggered by the user/browser that modify data or perform sensitive actions (e.g., privileged actions or data manipulation). For such actions, you should always check for a nonce. 
+Additionally, verify user permissions if the action is restricted to certain roles (e.g., admin, editor). 
+When in doubt, play it safe: always check. 
+
+🛠 Fix it
+1.	Create a nonce ( wp_nonce_field() , wp_nonce_url() , wp_create_nonce() ). If you need to pass the nonce to JavaScript you can make use of wp_localize_script() 
+2.	Pass it with the request.
+3.	Check the nonce ( check_admin_referer() , check_ajax_referer() , wp_verify_nonce() ) , and permissions if applicable ( current_user_can() ) .
+
+Example (nonce check):
+function shahle_save_email(){
+    if ( !isset( $_POST['shahle_nonce'] ) || !wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['shahle_nonce'] ) ), 'shahle_save_email_action' ) ) {
+        wp_send_json_error( 'Invalid nonce.' );
+    }
+
+    if ( !current_user_can( 'edit_posts' ) ) {
+        wp_send_json_error( 'Insufficient permissions.' );
+    }
+
+    if ( isset( $_POST['post_id'] ) && isset( $_POST['price'] ) ) {
+        update_post_meta( absint( $_POST['post_id'] ), 'price', floatval( $_POST['price'] ) );
+    }
+}
+add_action( 'wp_ajax_shahle_save_email', 'shahle_save_email' );
+⚠️ Without nonce and permissions checks, anyone could call this AJAX endpoint and change the price data for any post - risky! 
+🔴 Use wp_enqueue commands
+
+ℹ️ Why it matters: Because of performance and compatibility, please make use of the built in functions for including static and dynamic JS and/or CSS. 
+
+🔍 Identify JS and CSS outputs: Look for any <script> or <style> HTML tags in your plugin. In the majority of cases you could enqueue them. 
+
+🛠 Fix it: Make use of the specific function for enqueue them: 
+Type of code	Functions
+Static JS	wp_register_script() , wp_enqueue_script() , admin_enqueue_scripts() 
+Inline JS	wp_add_inline_script() 
+Static CSS	wp_register_style() , wp_enqueue_style() 
+Inline CSS	wp_add_inline_style() 
+
+👉 In the public pages you can enqueue them using the hook wp_enqueue_scripts() .
+👉 In the admin pages you can enqueue them using the hook admin_enqueue_scripts() . You can also use admin_print_scripts() and admin_print_styles() .
+👉 As of WordPress 6.3, you can easily pass attributes like defer or async, as of WordPress 5.7, you can pass other attributes by using functions and filters. 
+
+Example:
+function shahle_enqueue_script() {
+    wp_enqueue_script( 'shahle_js', plugins_url( 'inc/main.js', __FILE__ ), array(), SHAHLE_VERSION, true );
+}
+add_action( 'wp_enqueue_scripts', 'shahle_enqueue_script' );
+Your JS/CSS is now enqueued! 
+
+Possible cases from your plugin include: 
+includes/Modules/AccessibilityScanner/Admin/AccessibilitySettings.php:94 <style>
+includes/Admin/DSRRequestDetail.php:492 <script>
+templates/admin/compliance/tabs/banner-config.php:35 <style>
+includes/Services/Script_Blocker_Service.php:118 <script id="slos-script-blocker" type="text/javascript">
+templates/admin/compliance/main.php:1050 <script>
+includes/Modules/AccessibilityScanner/Admin/AccessibilitySettings.php:368 <script>
+includes/Modules/AccessibilityScanner/Fixes/AccessibilityFixer.php:101 <script>
+templates/admin/accessibility-dashboard.php:2228 <script>
+... out of a total of 37 incidences.
+
+Other details
+
+We've detected some other details that you may want to check.
+
+## Internationalization: Don't use variables or defines as text, context or text domain parameters.
+
+In order to make a string translatable in your plugin you are using a set of special functions. These functions collectively are known as "gettext". 
+
+There is a dedicated team in the WordPress community to translate and help other translating strings of WordPress core, plugins and themes to other languages. 
+
+To make them be able to translate this plugin, please do not use variables or function calls for the text, context or text domain parameters of any gettext function, all of them NEED to be strings. Note that the translation parser reads the code without executing it, so it won't be able to read anything that is not a string within these functions. 
+
+For example, if your gettext function looks like this... 
+esc_html__( $greetings , 'shahi-legalflowsuite' ); 
+...the translator won't be able to see anything to be translated as $greetings is not a string, it is not something that can be translated. 
+You need to give them the string to be translated, so they can see it in the translation system and can translate it, the correct would be as follows... 
+esc_html__( 'Hello, how are you?' , 'shahi-legalflowsuite' ); 
+
+This also applies to the translation domain, this is a bad call: 
+esc_html__( 'Hello, how are you?' , $plugin_slug ); 
+The fix here would be like this 
+esc_html__( 'Hello, how are you?' , 'shahi-legalflowsuite' ); 
+Also note that the translation domain needs to be the same as your plugin slug. 
+
+What if we want to include a dynamic value inside the translation? Easy, you need to add a placeholder which will be part of the string and change it after the gettext function does its magic, you can use printf to do so, like this: 
+printf(
+
+      /* translators: %s: First name of the user */
+      esc_html__( 'Hello %s, how are you?', 'shahi-legalflowsuite' ),
+      esc_html( $user_firstname )
+);
+
+You can read https://developer.wordpress.org/plugins/internationalization/how-to-internationalize-your-plugin/#text-domains for more information. 
+
+Example(s) from your plugin: 
+includes/Core/I18n.php:155 _e($text, self::TEXT_DOMAIN);
+includes/Core/Multilingual_Integration.php:173 __($default_value, 'shahi-legalflowsuite');
+includes/Core/I18n.php:228 _nx($single, $plural, $number, $context, self::TEXT_DOMAIN);
+includes/Services/Profile_Validator.php:479 __($this->field_labels[$field], 'shahi-legalflowsuite');
+includes/Core/I18n.php:183 _x($text, $context, self::TEXT_DOMAIN);
+includes/Core/I18n.php:129 __($text, self::TEXT_DOMAIN);
+includes/Core/I18n.php:212 _n($single, $plural, $number, self::TEXT_DOMAIN);
+includes/Core/I18n.php:168 esc_html_e($text, self::TEXT_DOMAIN);
+... out of a total of 10 incidences.
+
+
+## Calling files remotely
+
+Offloading images, js, css, and other scripts to your servers or any remote service (like Google, MaxCDN, jQuery.com etc) is disallowed. When you call remote data you introduce an unnecessary dependency on another site. If the file you're calling isn't a part of WordPress Core, then you should include it -locally- in your plugin, not remotely. If the file IS included in WordPress core, please call that instead. 
+
+An exception to this rule is if your plugin is performing a service. We will permit this on a case by case basis. Since this can be confusing we have some examples of what are not permitted: 
+•	Offloading jquery CSS files to Google - You should include the CSS in your plugin.
+•	Inserting an iframe with a help doc - A link, or including the docs in your plugin is preferred.
+•	Calling images from your own domain - They should be included in your plugin.
+Here are some examples of what we would permit: 
+•	Calling font families from Google or their approved CDN (if GPL compatible)
+•	API calls back to your server to process possible spam comments (like Akismet)
+•	Offloading comments to your own servers (like Disqus)
+•	oEmbed calls to a service provider (like Twitter or YouTube)
+Please remove external dependencies from your plugin and, if possible, include all files within the plugin (that is not called remotely). If instead you feel you are providing a service, please re-write your readme.txt in a manner that explains the service, the servers being called, and if any account is needed to connect. 
+
+Example(s) from your plugin: 
+shahi-legalflowsuite.php:384 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js',
+includes/Services/Script_Blocker_Service.php:38 'cdn.jsdelivr.net/npm/heap-js',
+
+
+
+## Undocumented use of a 3rd Party / external service
+
+Plugins are permitted to require the use of third party/external services as long as they are clearly documented. 
+
+When your plugin reach out to external services, you must disclose it. This is true even if you are the one providing that service. 
+
+You are required to document it in a clear and plain language, so users are aware of: what data is sent, why, where and under which conditions. 
+
+To do this, you must update your readme file to clearly explain that your plugin relies on third party/external services, and include at least the following information for each third party/external service that this plugin uses: 
+•	What the service is and what it is used for.
+•	What data is sent and when.
+•	Provide links to the service's terms of service and privacy policy.
+Remember, this is for your own legal protection. Use of services must be upfront and well documented. This allows users to ensure that any legal issues with data transmissions are covered. 
+
+Example: 
+== External services ==
+
+This plugin connects to an API to obtain weather information, it's needed to show the weather information and forecasts in the included widget.
+
+It sends the user's location every time the widget is loaded (If the location isn't available and/or the user hasn't given their consent, it displays a configurable default location).
+This service is provided by "PRT Weather INC": terms of use, privacy policy.
+
+
+Example(s) from your plugin: 
+includes/Services/Script_Blocker_Service.php:148 blockedPatterns.functional = ['widget.intercom.io','js.intercomcdn.com','js.driftt.com'];
+includes/Services/Template_Manager.php:781 stripos( $header_scripts, 'googletagmanager.com' ) !== false ||
+includes/Services/Script_Blocker_Service.php:29 'googletagmanager.com',
+includes/Services/Script_Blocker_Service.php:45 'connect.facebook.net',
+assets/js/consent-placeholders.js:104 'googletagmanager.com': 'analytics',
+includes/Services/Template_Manager.php:782 stripos( $footer_scripts, 'googletagmanager.com' ) !== false );
+... out of a total of 11 incidences.
+
+
+## Tested Up To Value is Out of Date, Invalid, or Missing
+
+The tested up to value in your plugin is not set to the current version of WordPress. This means your plugin will not show up in searches, as we require plugins to be compatible and documented as tested up to the most recent version of WordPress. 
+
+Please update your readme to show that it is tested up to the most recent stable major version of WordPress. For example if WordPress said that version 99.3.2 was the current release, you would be able to set your value to 99.3 as that's the major release. 
+
+The following links will assist you in understanding WordPress's versioning and the latest version: 
+
+https://wordpress.org/download/
+https://make.wordpress.org/core/handbook/about/release-cycle/version-numbering/
+
+You cannot set it beyond the current version, as that will cause your plugin not to be available on searches. Also remember that WordPress has made late changes in releases, so claiming compatibility with an incomplete version is likely to land you in trouble. 
+
+From your readme file: 
+ERROR: Tested up to: "6.7" that version is bellow currently accepted WordPress versions (It's expected to be at least "6.8").
+
+## Sanitization for register_setting()
+
+Fields registered through register_setting() should be sanitized properly. 
+
+Fortunately, in this case, it is very easy to indicate which function should be used to sanitize the input. 🧼 
+
+The third argument of this function accepts an array() in which you can add your sanitizing function in the sanitize_callback key. 
+
+Just like this: 
+register_setting(
+    'shahle_group',
+    'shahle_option_name',
+    array(
+        'type'              => 'string',
+        'sanitize_callback' => 'sanitize_text_field',
+    )
+);
+
+Make sure you use a proper sanitization function (WordPress has plenty of them!) and add other options as needed. 
+
+Please, check out the register_setting() documentation for more information and code examples. 
+
+Example(s) from your plugin: 
+includes/Modules/AccessibilityScanner/Admin/AccessibilitySettings.php:25 register_setting('slos_accessibility_settings', 'slos_widget_features');
+includes/Modules/AccessibilityScanner/Admin/AccessibilitySettings.php:26 register_setting('slos_accessibility_settings', 'slos_widget_position');
+includes/Modules/AccessibilityScanner/Admin/AccessibilitySettings.php:27 register_setting('slos_accessibility_settings', 'slos_widget_color');
+includes/Modules/AccessibilityScanner/Admin/AccessibilitySettings.php:24 register_setting('slos_accessibility_settings', 'slos_active_fixes');
+includes/Modules/AccessibilityScanner/Admin/AccessibilitySettings.php:23 register_setting('slos_accessibility_settings', 'slos_active_checkers');
+
+
+
+## Review: Missing permission_callback in REST API Route
+
+When using register_rest_route() or wp_register_ability() to define custom REST API endpoints, it is crucial to include a proper permission_callback . 
+
+🔒 This callback function ensures that only authorized users can access or modify data through your endpoint. 
+
+Code example, checking that the user can change options: 
+register_rest_route( 'shahi-legalflowsuite/v1', '/my-endpoint', array(
+    'methods' => 'GET',
+    'callback' => 'shahi-legalflowsuite_callback_function',
+    'permission_callback' => function() {
+        return current_user_can( 'manage_options' );
+    }
+) );
+
+Please check the register_rest_route() documentation and the current_user_can() documentation. 
+
+✅ When a permission_callback is NOT Required: 
+
+There are valid use cases for public endpoints, such as publicly available data (e.g., posts, public metadata) or endpoints designed for unauthenticated access (e.g., fetching public stats or information). 
+
+In these cases, you should use __return_true as the permission_callback to indicate that the endpoint is intentionally public. 
+
+🔒 When a permission_callback IS Required: 
+
+For endpoints that involve sensitive data or actions (e.g., getting not public data, creating, updating, or deleting content). 
+
+In these cases, you should always implement proper permission checks. 
+
+Possible cases found on this plugin's code: 
+includes/API/Geo_REST_Controller.php:39 register_rest_route($this->namespace, '/' . $this->rest_base . '/region', array(array('methods' => 'GET', 'callback' => array($this, 'get_region'), 'permission_callback' => '__return_true')));
+
+includes/API/DSR_Controller.php:136 register_rest_route($this->namespace, '/' . $this->rest_base . '/verify', array('methods' => 'GET', 'callback' => array($this, 'verify_email'), 'permission_callback' => '__return_true', 'args' => array('token' => array('description' => __('Email verification token', 'shahi-legalflowsuite'), 'type' => 'string', 'required' => true, 'sanitize_callback' => 'sanitize_text_field'))));
+includes/API/Consent_REST_Controller.php:175 register_rest_route($this->namespace, '/' . $this->rest_base . '/grant', array(
+    'methods' => 'POST',
+    'callback' => array($this, 'grant_consent_simple'),
+    'permission_callback' => '__return_true',
+    // Public for anonymous users
+    'args' => array('user_id' => array('description' => __('User ID (0 for anonymous)', 'shahi-legalflowsuite'), 'type' => 'integer', 'default' => 0), 'session_id' => array('description' => __('Session ID for anonymous users', 'shahi-legalflowsuite'), 'type' => 'string', 'default' => ''), 'purpose' => array('description' => __('Consent purpose/type', 'shahi-legalflowsuite'), 'type' => 'string', 'required' => true)),
+));
+includes/API/DSR_Controller.php:92 register_rest_route($this->namespace, '/' . $this->rest_base . '/submit', array('methods' => 'POST', 'callback' => array($this, 'submit_request'), 'permission_callback' => '__return_true', 'args' => array('email' => array('description' => __('Email address for verification', 'shahi-legalflowsuite'), 'type' => 'string', 'format' => 'email', 'required' => true, 'validate_callback' => array($this, 'validate_email_param'), 'sanitize_callback' => 'sanitize_email'), 'request_type' => array('description' => __('Type of DSR (access, rectification, erasure, etc.)', 'shahi-legalflowsuite'), 'type' => 'string', 'required' => true, 'enum' => array('access', 'rectification', 'erasure', 'portability', 'restriction', 'object', 'automated_decision')), 'regulation' => array('description' => __('Regulation under which request is made', 'shahi-legalflowsuite'), 'type' => 'string', 'default' => 'GDPR', 'enum' => array('GDPR', 'CCPA', 'LGPD', 'UK-GDPR', 'PIPEDA', 'POPIA')), 'details' => array('description' => __('Additional details about the request', 'shahi-legalflowsuite'), 'type' => 'string', 'default' => '', 'sanitize_callback' => 'sanitize_textarea_field'), 'user_id' => array('description' => __('WordPress user ID (if logged in)', 'shahi-legalflowsuite'), 'type' => 'integer', 'default' => 0))));
+includes/API/Consent_REST_Controller.php:294 register_rest_route($this->namespace, '/' . $this->rest_base . '/purposes', array('methods' => 'GET', 'callback' => array($this, 'get_purposes'), 'permission_callback' => '__return_true'));
+includes/API/DSR_Controller.php:155 register_rest_route($this->namespace, '/' . $this->rest_base . '/status', array('methods' => 'GET', 'callback' => array($this, 'check_status'), 'permission_callback' => '__return_true', 'args' => array('token' => array('description' => __('Request tracking token', 'shahi-legalflowsuite'), 'type' => 'string', 'required' => true, 'sanitize_callback' => 'sanitize_text_field'))));
+includes/API/Consent_REST_Controller.php:231 register_rest_route($this->namespace, '/' . $this->rest_base . '/withdraw', array(
+    'methods' => 'POST',
+    'callback' => array($this, 'withdraw_consent_simple'),
+    'permission_callback' => '__return_true',
+    // Public for anonymous users
+    'args' => array('user_id' => array('description' => __('User ID (0 for anonymous)', 'shahi-legalflowsuite'), 'type' => 'integer', 'default' => 0), 'session_id' => array('description' => __('Session ID for anonymous users', 'shahi-legalflowsuite'), 'type' => 'string', 'default' => ''), 'purpose' => array('description' => __('Consent purpose/type', 'shahi-legalflowsuite'), 'type' => 'string', 'required' => true)),
+));
+includes/API/Consent_REST_Controller.php:203 register_rest_route($this->namespace, '/' . $this->rest_base . '/reject', array(
+    'methods' => 'POST',
+    'callback' => array($this, 'reject_consent_simple'),
+    'permission_callback' => '__return_true',
+    // Public for anonymous users
+    'args' => array('user_id' => array('description' => __('User ID (0 for anonymous)', 'shahi-legalflowsuite'), 'type' => 'integer', 'default' => 0), 'purpose' => array('description' => __('Consent purpose/type', 'shahi-legalflowsuite'), 'type' => 'string', 'required' => true), 'source' => array('description' => __('Source of consent', 'shahi-legalflowsuite'), 'type' => 'string', 'default' => 'banner')),
+));
+
+
+
+## Check your plugin files for sensitive information.
+
+We know that some types of files are uncommon in plugins and could contain sensitive information. 
+
+By default, files such as database dumps, log files and backup files are accessible to any user. 
+
+They may have ended up there by mistake. Please check it just in case. 
+
+Example(s) from your plugin: 
+shahi-legalflowsuite/templates/admin/accessibility-dashboard.php.bak
+shahi-legalflowsuite/assets/js/admin-modules.js.backup
+
+
+
+## Out of Date Libraries
+
+At least one of the 3rd party libraries you're using is out of date. Please upgrade to the latest stable version for better support and security. We do not recommend you use beta releases. 
+
+From your plugin: 
+assets/js/vendor/chart.js-LICENSE.txt:1 🔴  Version: 4.4.1
+   # ↳ Possible URL: https://github.com/chartjs/Chart.js
+assets/js/vendor/chart.umd.min.js:1 🔴  Chart.js v4.4.1
+   # ↳ Possible URL: https://github.com/chartjs/Chart.js
+
+
+
+## Using Deprecated Code/Functions
+
+We ask developers not use deprecated code as it will cause their plugin to break down the line. It's better to use functions you know are not going to be problematic later. 
+
+Example(s) from your plugin: 
+includes/Modules/AccessibilityScanner/Compliance/AccessibilityStatementGenerator.php:37 $existing_page = get_page_by_title( 'Accessibility Statement' );
+   # ↳ get_page_by_title() has been deprecated since WordPress version 6.2.0. Use WP_Query instead.
+
+
+
+
+
+## Allowing direct file access to plugin files
+
+Direct file access occurs when someone directly queries a PHP file. This can be done by entering the complete path to the file in the browser's URL bar or by sending a POST request directly to the file. 
+
+For files that only contain class or function definitions, the risk of something funky happening when accessed directly is minimal. However, for files that contain executable code (e.g., function calls, class instance creation, class method calls, or inclusion of other PHP files), the risk of security issues is hard to predict because it depends on the specific case, but it can exist and it can be high. 
+
+You can easily prevent this by adding the following code at the beginning of all PHP files that could potentially execute code if accessed directly: 
+    if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+Add it after the <?php opening tag and after the namespace declaration, if any, but before any other code. 
+
+Example(s) from your plugin: 
+includes/CLI/MigrationCommand.php:13 
+includes/Core/validate-hooks.php:11 
+includes/Core/test-hooks.php:12 
+templates/admin/consent-logs.php:16 

@@ -2,8 +2,8 @@
 	"php.validate.executablePath": "php",
 	"php.validate.run": "onType",
 	"phpcs.enable": true,
-	"phpcs.standard": "WordPress",
-	"phpcs.executablePath": "./vendor/bin/phpcs",
+	"phpcs.standard": "./phpcs.xml",
+	"phpcs.executablePath": "./vendor/bin/phpcs.bat",
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.formatOnSave": true,
 	"editor.codeActionsOnSave": {

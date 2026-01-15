@@ -8,6 +8,7 @@
  * @subpackage Modules\AccessibilityScanner
  * @version     3.0.1
  */
+/* stylelint-disable no-descending-specificity */
 
 /* ========================================
 	Dashboard Container
@@ -60,7 +61,10 @@
 	left: 0;
 	right: 0;
 	height: 3px;
-	background: var(--shahi-accent-gradient, linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%));
+	background: var(
+		--shahi-accent-gradient,
+		linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%)
+	);
 }
 
 .shahi-a11y-stat-card:hover {
@@ -141,7 +145,10 @@
 }
 
 .shahi-a11y-scan-button {
-	background: var(--shahi-accent-gradient, linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%));
+	background: var(
+		--shahi-accent-gradient,
+		linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%)
+	);
 	border: none;
 	border-radius: 8px;
 	padding: 12px 32px;
@@ -441,7 +448,7 @@
 
 .shahi-toggle-slider::before {
 	position: absolute;
-	content: "";
+	content: '';
 	height: 18px;
 	width: 18px;
 	left: 3px;
@@ -452,7 +459,10 @@
 }
 
 .shahi-toggle-switch input:checked + .shahi-toggle-slider {
-	background: var(--shahi-accent-gradient, linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%));
+	background: var(
+		--shahi-accent-gradient,
+		linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%)
+	);
 	border-color: var(--shahi-accent-primary, #60a5fa);
 }
 
@@ -507,7 +517,9 @@
 }
 
 @keyframes shahi-spin {
-	to { transform: rotate(360deg); }
+	to {
+		transform: rotate(360deg);
+	}
 }
 
 /* ========================================
@@ -525,7 +537,10 @@
 
 .shahi-a11y-progress-fill {
 	height: 100%;
-	background: var(--shahi-accent-gradient, linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%));
+	background: var(
+		--shahi-accent-gradient,
+		linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%)
+	);
 	transition: width 0.3s ease;
 	box-shadow: 0 0 10px rgb(96 165 250 / 50%);
 }
@@ -622,5 +637,297 @@
 
 	.shahi-a11y-stat-card {
 		break-inside: avoid;
+	}
+}
+
+/* ========================================
+	Pages Requiring Attention Table
+	======================================== */
+
+.slos-pages-attention-card {
+	margin-top: 24px;
+}
+
+.slos-pages-attention-card .slos-tool-content {
+	padding: 0;
+}
+
+.slos-empty-state {
+	text-align: center;
+	padding: 60px 20px;
+}
+
+.slos-empty-state p {
+	color: var(--shahi-text-muted, #94a3b8);
+	font-size: 14px;
+	margin: 0 0 20px;
+}
+
+.slos-pages-table-wrapper {
+	overflow-x: auto;
+}
+
+.slos-pages-table {
+	width: 100%;
+	border-collapse: collapse;
+	background: var(--shahi-bg-secondary, #1e293b);
+}
+
+.slos-pages-table thead {
+	background: var(--shahi-bg-primary, #0f172a);
+	border-bottom: 2px solid var(--shahi-border, #334155);
+}
+
+.slos-pages-table th {
+	padding: 16px;
+	text-align: left;
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--shahi-text-muted, #94a3b8);
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.slos-pages-table td {
+	padding: 16px;
+	border-bottom: 1px solid var(--shahi-border, #334155);
+	color: var(--shahi-text-secondary, #cbd5e1);
+}
+
+.slos-pages-table tbody tr {
+	transition: background-color 0.2s;
+}
+
+.slos-pages-table tbody tr:hover {
+	background: color(59 130 246 / 5%);
+}
+
+.slos-col-page {
+	width: 40%;
+}
+
+.slos-col-score {
+	width: 100px;
+}
+
+.slos-col-issues {
+	width: 180px;
+}
+
+.slos-col-status {
+	width: 120px;
+}
+
+.slos-col-actions {
+	width: 200px;
+}
+
+.slos-page-title {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.slos-page-title a {
+	color: var(--shahi-text-primary, #f8fafc);
+	font-weight: 500;
+	text-decoration: none;
+	transition: color 0.2s;
+}
+
+.slos-page-title a:hover {
+	color: var(--shahi-accent, #3b82f6);
+}
+
+.slos-page-type {
+	display: inline-block;
+	padding: 2px 8px;
+	background: var(--shahi-bg-primary, #0f172a);
+	border: 1px solid var(--shahi-border, #334155);
+	border-radius: 4px;
+	font-size: 11px;
+	color: var(--shahi-text-muted, #94a3b8);
+	text-transform: uppercase;
+}
+
+.slos-score-badge {
+	display: inline-block;
+	padding: 4px 12px;
+	border-radius: 6px;
+	font-weight: 600;
+	font-size: 13px;
+}
+
+.slos-score-badge.excellent {
+	background: color(34 197 94 / 15%);
+	color: var(--shahi-success, #22c55e);
+	/* stylelint-disable-next-line color-function-notation, alpha-value-notation */
+	border: 1px solid rgba(34, 197, 94, 0.3);
+	border: 1px solid color(34 197 94 / 30%);
+}
+
+.slos-score-badge.good {
+	background: color(59 130 246 / 15%);
+	color: var(--shahi-accent, #3b82f6);
+	/* stylelint-disable-next-line color-function-notation, alpha-value-notation */
+	border: 1px solid rgba(59, 130, 246, 0.3);
+	border: 1px solid color(59 130 246 / 30%);
+}
+
+.slos-score-badge.fair {
+	background: color(245 158 11 / 15%);
+	color: var(--shahi-warning, #f59e0b);
+	/* stylelint-disable-next-line color-function-notation, alpha-value-notation */
+	border: 1px solid rgba(245, 158, 11, 0.3);
+	border: 1px solid color(245 158 11 / 30%);
+}
+
+.slos-score-badge.poor {
+	background: color(239 68 68 / 15%);
+	color: var(--shahi-error, #ef4444);
+	/* stylelint-disable-next-line color-function-notation, alpha-value-notation */
+	/* stylelint-disable-next-line color-function-notation, alpha-value-notation */
+	border: 1px solid rgba(239, 68, 68, 0.3);
+	border: 1px solid color(239 68 68 / 30%);
+}
+
+.slos-issues-summary {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.slos-total-issues {
+	color: var(--shahi-text-primary, #f8fafc);
+	font-weight: 500;
+	font-size: 14px;
+}
+
+.slos-critical-badge {
+	display: inline-block;
+	padding: 2px 8px;
+	background: color(239 68 68 / 15%);
+	color: var(--shahi-error, #ef4444);
+	/* stylelint-disable-next-line color-function-notation, alpha-value-notation */
+	border: 1px solid rgba(239, 68, 68, 0.3);
+	border: 1px solid color(239 68 68 / 30%);
+	border-radius: 4px;
+	font-size: 11px;
+	font-weight: 600;
+}
+
+.slos-autofix-badge {
+	display: inline-block;
+	padding: 2px 8px;
+	background: color(34 197 94 / 15%);
+	color: var(--shahi-success, #22c55e);
+	/* stylelint-disable-next-line color-function-notation, alpha-value-notation */
+	border: 1px solid rgba(34, 197, 94, 0.3);
+	border: 1px solid color(34 197 94 / 30%);
+	border-radius: 4px;
+	font-size: 11px;
+	font-weight: 600;
+}
+
+.slos-status-badge {
+	display: inline-block;
+	padding: 6px 12px;
+	border-radius: 6px;
+	font-weight: 600;
+	font-size: 12px;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.slos-status-badge.critical {
+	background: color(239 68 68 / 15%);
+	color: var(--shahi-error, #ef4444);
+	border: 1px solid color(239 68 68 / 30%);
+}
+
+.slos-status-badge.warning {
+	background: color(245 158 11 / 15%);
+	color: var(--shahi-warning, #f59e0b);
+	/* stylelint-disable-next-line color-function-notation, alpha-value-notation */
+	border: 1px solid rgba(245, 158, 11, 0.3);
+	border: 1px solid color(245 158 11 / 30%);
+}
+
+.slos-status-badge.info {
+	background: color(6 182 212 / 15%);
+	color: #06b6d4;
+	/* stylelint-disable-next-line color-function-notation, alpha-value-notation */
+	border: 1px solid rgba(6, 182, 212, 0.3);
+	border: 1px solid color(6 182 212 / 30%);
+}
+
+.slos-page-actions {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+
+.slos-page-actions .button {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 8px 12px;
+	font-size: 13px;
+}
+
+.slos-page-actions .dashicons {
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
+}
+
+.slos-pages-footer {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 20px 24px;
+	background: var(--shahi-bg-primary, #0f172a);
+	border-top: 1px solid var(--shahi-border, #334155);
+}
+
+.slos-pages-summary {
+	color: var(--shahi-text-muted, #94a3b8);
+	font-size: 14px;
+}
+
+.slos-no-issues {
+	padding: 40px 20px !important;
+}
+
+@media (width <= 1024px) {
+	.slos-pages-table {
+		font-size: 13px;
+	}
+
+	.slos-pages-table th,
+	.slos-pages-table td {
+		padding: 12px;
+	}
+
+	.slos-page-actions {
+		flex-direction: column;
+		gap: 6px;
+	}
+
+	.slos-page-actions .button {
+		width: 100%;
+		justify-content: center;
+	}
+}
+
+@media (width <= 768px) {
+	.slos-pages-footer {
+		flex-direction: column;
+		gap: 16px;
+		text-align: center;
+	}
+
+	.slos-pages-footer button {
+		width: 100%;
 	}
 }

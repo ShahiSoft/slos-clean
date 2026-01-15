@@ -1,8 +1,7 @@
 {
-  "extends": ["stylelint-config-standard"],
-  "rules": {
-    "at-rule-no-unknown": null,
-    "function-url-quotes": "always",
-    // Codecanyon: Ensure no external URLs without proper licensing
-  }
+	"extends": ["stylelint-config-standard"],
+	"rules": {
+		"at-rule-no-unknown": null,
+		"function-url-quotes": "always"
+	}
 }

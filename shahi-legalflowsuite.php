@@ -433,6 +433,7 @@ function init_slos_script_blocker() {
 	} catch ( \Throwable $e ) {
 		// Fail-safe: do not break site if blocker fails.
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			error_log( 'SLOS Script Blocker init error: ' . $e->getMessage() );
 		}
 	}
