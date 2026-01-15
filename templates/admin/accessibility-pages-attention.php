@@ -17,7 +17,7 @@
  * Priority: P0 - Blocking
  *
  * Template Variables.
- * @var array $pages_with_issues Array of pages with accessibility issues.
+ * @var array $pages_with_issues Array of pages with accessibility issues!.
  * Each page contains:
  *   - post_id: int
  *   - title: string
@@ -106,7 +106,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<tbody>
 					<?php
 					foreach ( $pages_with_issues as $page_item ) :
-						$post_id         = isset( $page_item['post_id'] ) ? intval( $page_item['post_id'] ) : 0;
+						$page_post_id   = isset( $page_item['post_id'] ) ? intval( $page_item['post_id'] ) : 0;
 						$issues          = isset( $page_item['issues_count'] ) ? intval( $page_item['issues_count'] ) : 0;
 						$critical        = isset( $page_item['critical_count'] ) ? intval( $page_item['critical_count'] ) : 0;
 						$score           = isset( $page_item['score'] ) ? intval( $page_item['score'] ) : 100;
@@ -116,8 +116,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 							'medium' => 'Medium',
 							'low'    => 'Low',
 						)[ $priority ] ?? 'Low';
-						$has_backup      = get_post_meta( $post_id, '_slos_backup_exists', true );
-						$autofix_enabled = get_post_meta( $post_id, '_slos_autofix_enabled', true );
+						$has_backup      = get_post_meta( $page_post_id, '_slos_backup_exists', true );
+						$autofix_enabled = get_post_meta( $page_post_id, '_slos_autofix_enabled', true );
 						$page_title      = isset( $page_item['title'] ) ? $page_item['title'] : 'Untitled';
 						$page_post_type  = isset( $page_item['post_type'] ) ? $page_item['post_type'] : 'post';
 						$issues_bg       = $issues > 15 ? 'rgba(239, 68, 68, 0.15)' : 'rgba(251, 191, 36, 0.15)';
