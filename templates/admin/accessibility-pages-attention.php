@@ -106,7 +106,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<tbody>
 					<?php
 					foreach ( $pages_with_issues as $page_item ) :
-						$page_post_id   = isset( $page_item['post_id'] ) ? intval( $page_item['post_id'] ) : 0;
+						$page_post_id    = isset( $page_item['post_id'] ) ? intval( $page_item['post_id'] ) : 0;
 						$issues          = isset( $page_item['issues_count'] ) ? intval( $page_item['issues_count'] ) : 0;
 						$critical        = isset( $page_item['critical_count'] ) ? intval( $page_item['critical_count'] ) : 0;
 						$score           = isset( $page_item['score'] ) ? intval( $page_item['score'] ) : 100;
