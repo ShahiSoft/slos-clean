@@ -59,50 +59,7 @@ class Profile_Validator extends Base_Service {
 	 *
 	 * @var array
 	 */
-	protected $field_labels = array(
-		'company.legal_name'                  => 'Company Legal Name',
-		'company.trading_name'                => 'Trading Name',
-		'company.registration_number'         => 'Registration Number',
-		'company.vat_number'                  => 'VAT Number',
-		'company.address.street'              => 'Street Address',
-		'company.address.city'                => 'City',
-		'company.address.state'               => 'State/Province',
-		'company.address.postal_code'         => 'Postal Code',
-		'company.address.country'             => 'Country',
-		'company.business_type'               => 'Business Type',
-		'company.industry'                    => 'Industry',
-		'contacts.legal_email'                => 'Legal Contact Email',
-		'contacts.support_email'              => 'Support Email',
-		'contacts.phone'                      => 'Phone Number',
-		'contacts.dpo.name'                   => 'DPO Name',
-		'contacts.dpo.email'                  => 'DPO Email',
-		'contacts.dpo.phone'                  => 'DPO Phone',
-		'contacts.dpo.address'                => 'DPO Address',
-		'website.url'                         => 'Website URL',
-		'website.app_name'                    => 'Application Name',
-		'website.service_description'         => 'Service Description',
-		'website.target_audience'             => 'Target Audience',
-		'data_collection.personal_data_types' => 'Personal Data Types Collected',
-		'data_collection.purposes'            => 'Data Processing Purposes',
-		'data_collection.lawful_bases'        => 'Lawful Bases for Processing',
-		'data_collection.special_categories'  => 'Special Category Data',
-		'data_collection.children_data'       => 'Children\'s Data',
-		'data_collection.minimum_age'         => 'Minimum Age',
-		'third_parties.processors'            => 'Third-Party Processors',
-		'third_parties.partners'              => 'Partners',
-		'cookies.essential'                   => 'Essential Cookies',
-		'cookies.analytics'                   => 'Analytics Cookies',
-		'cookies.marketing'                   => 'Marketing Cookies',
-		'cookies.functional'                  => 'Functional Cookies',
-		'legal.primary_jurisdiction'          => 'Primary Jurisdiction',
-		'legal.gdpr_applies'                  => 'GDPR Applicability',
-		'legal.ccpa_applies'                  => 'CCPA Applicability',
-		'legal.lgpd_applies'                  => 'LGPD Applicability',
-		'legal.supervisory_authority'         => 'Supervisory Authority',
-		'retention.default_period'            => 'Default Retention Period',
-		'retention.deletion_policy'           => 'Deletion Policy',
-		'retention.backup_retention'          => 'Backup Retention',
-	);
+	protected $field_labels = array();
 
 	/**
 	 * Field to wizard step mapping
@@ -140,6 +97,52 @@ class Profile_Validator extends Base_Service {
 	public function __construct() {
 		parent::__construct();
 		$this->repository = Company_Profile_Repository::get_instance();
+
+		// Initialize field labels with translations
+		$this->field_labels = array(
+			'company.legal_name'                  => __( 'Company Legal Name', 'shahi-legalflowsuite' ),
+			'company.trading_name'                => __( 'Trading Name', 'shahi-legalflowsuite' ),
+			'company.registration_number'         => __( 'Registration Number', 'shahi-legalflowsuite' ),
+			'company.vat_number'                  => __( 'VAT Number', 'shahi-legalflowsuite' ),
+			'company.address.street'              => __( 'Street Address', 'shahi-legalflowsuite' ),
+			'company.address.city'                => __( 'City', 'shahi-legalflowsuite' ),
+			'company.address.state'               => __( 'State/Province', 'shahi-legalflowsuite' ),
+			'company.address.postal_code'         => __( 'Postal Code', 'shahi-legalflowsuite' ),
+			'company.address.country'             => __( 'Country', 'shahi-legalflowsuite' ),
+			'company.business_type'               => __( 'Business Type', 'shahi-legalflowsuite' ),
+			'company.industry'                    => __( 'Industry', 'shahi-legalflowsuite' ),
+			'contacts.legal_email'                => __( 'Legal Contact Email', 'shahi-legalflowsuite' ),
+			'contacts.support_email'              => __( 'Support Email', 'shahi-legalflowsuite' ),
+			'contacts.phone'                      => __( 'Phone Number', 'shahi-legalflowsuite' ),
+			'contacts.dpo.name'                   => __( 'DPO Name', 'shahi-legalflowsuite' ),
+			'contacts.dpo.email'                  => __( 'DPO Email', 'shahi-legalflowsuite' ),
+			'contacts.dpo.phone'                  => __( 'DPO Phone', 'shahi-legalflowsuite' ),
+			'contacts.dpo.address'                => __( 'DPO Address', 'shahi-legalflowsuite' ),
+			'website.url'                         => __( 'Website URL', 'shahi-legalflowsuite' ),
+			'website.app_name'                    => __( 'Application Name', 'shahi-legalflowsuite' ),
+			'website.service_description'         => __( 'Service Description', 'shahi-legalflowsuite' ),
+			'website.target_audience'             => __( 'Target Audience', 'shahi-legalflowsuite' ),
+			'data_collection.personal_data_types' => __( 'Personal Data Types Collected', 'shahi-legalflowsuite' ),
+			'data_collection.purposes'            => __( 'Data Processing Purposes', 'shahi-legalflowsuite' ),
+			'data_collection.lawful_bases'        => __( 'Lawful Bases for Processing', 'shahi-legalflowsuite' ),
+			'data_collection.special_categories'  => __( 'Special Category Data', 'shahi-legalflowsuite' ),
+			'data_collection.children_data'       => __( 'Children\'s Data', 'shahi-legalflowsuite' ),
+			'data_collection.minimum_age'         => __( 'Minimum Age', 'shahi-legalflowsuite' ),
+			'third_parties.processors'            => __( 'Third-Party Processors', 'shahi-legalflowsuite' ),
+			'third_parties.partners'              => __( 'Partners', 'shahi-legalflowsuite' ),
+			'cookies.essential'                   => __( 'Essential Cookies', 'shahi-legalflowsuite' ),
+			'cookies.analytics'                   => __( 'Analytics Cookies', 'shahi-legalflowsuite' ),
+			'cookies.marketing'                   => __( 'Marketing Cookies', 'shahi-legalflowsuite' ),
+			'cookies.functional'                  => __( 'Functional Cookies', 'shahi-legalflowsuite' ),
+			'legal.primary_jurisdiction'          => __( 'Primary Jurisdiction', 'shahi-legalflowsuite' ),
+			'legal.gdpr_applies'                  => __( 'GDPR Applicability', 'shahi-legalflowsuite' ),
+			'legal.ccpa_applies'                  => __( 'CCPA Applicability', 'shahi-legalflowsuite' ),
+			'legal.lgpd_applies'                  => __( 'LGPD Applicability', 'shahi-legalflowsuite' ),
+			'legal.supervisory_authority'         => __( 'Supervisory Authority', 'shahi-legalflowsuite' ),
+			'retention.default_period'            => __( 'Default Retention Period', 'shahi-legalflowsuite' ),
+			'retention.deletion_policy'           => __( 'Deletion Policy', 'shahi-legalflowsuite' ),
+			'retention.backup_retention'          => __( 'Backup Retention', 'shahi-legalflowsuite' ),
+		);
 	}
 
 	/**
@@ -476,7 +479,7 @@ class Profile_Validator extends Base_Service {
 	 */
 	public function get_field_label( string $field ): string {
 		if ( isset( $this->field_labels[ $field ] ) ) {
-			return __( $this->field_labels[ $field ], 'shahi-legalflowsuite' );
+			return $this->field_labels[ $field ];
 		}
 
 		// Generate label from field name..
