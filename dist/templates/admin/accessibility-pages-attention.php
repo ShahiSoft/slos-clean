@@ -16,8 +16,8 @@
  * Phase: Phase 1 - Critical Path
  * Priority: P0 - Blocking
  *
- * Template Variables:
- * @var array $pages_with_issues Array of pages with accessibility issues
+ * Template Variables.
+ * @var array $pages_with_issues Array of pages with accessibility issues!.
  * Each page contains:
  *   - post_id: int
  *   - title: string
@@ -28,7 +28,7 @@
  *   - priority: string (high/medium/low)
  */
 
-// Prevent direct access
+// Prevent direct access.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -105,37 +105,37 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</thead>
 				<tbody>
 					<?php
-					foreach ( $pages_with_issues as $page ) :
-						$post_id         = isset( $page['post_id'] ) ? intval( $page['post_id'] ) : 0;
-						$issues          = isset( $page['issues_count'] ) ? intval( $page['issues_count'] ) : 0;
-						$critical        = isset( $page['critical_count'] ) ? intval( $page['critical_count'] ) : 0;
-						$score           = isset( $page['score'] ) ? intval( $page['score'] ) : 100;
-						$priority        = isset( $page['priority'] ) ? esc_attr( $page['priority'] ) : 'low';
+					foreach ( $pages_with_issues as $page_item ) :
+						$page_post_id    = isset( $page_item['post_id'] ) ? intval( $page_item['post_id'] ) : 0;
+						$issues          = isset( $page_item['issues_count'] ) ? intval( $page_item['issues_count'] ) : 0;
+						$critical        = isset( $page_item['critical_count'] ) ? intval( $page_item['critical_count'] ) : 0;
+						$score           = isset( $page_item['score'] ) ? intval( $page_item['score'] ) : 100;
+						$priority        = isset( $page_item['priority'] ) ? esc_attr( $page_item['priority'] ) : 'low';
 						$priority_label  = array(
 							'high'   => 'High',
 							'medium' => 'Medium',
 							'low'    => 'Low',
 						)[ $priority ] ?? 'Low';
-						$has_backup      = get_post_meta( $post_id, '_slos_backup_exists', true );
-						$autofix_enabled = get_post_meta( $post_id, '_slos_autofix_enabled', true );
-						$title           = isset( $page['title'] ) ? $page['title'] : 'Untitled';
-						$post_type       = isset( $page['post_type'] ) ? $page['post_type'] : 'post';
+						$has_backup      = get_post_meta( $page_post_id, '_slos_backup_exists', true );
+						$autofix_enabled = get_post_meta( $page_post_id, '_slos_autofix_enabled', true );
+						$page_title      = isset( $page_item['title'] ) ? $page_item['title'] : 'Untitled';
+						$page_post_type  = isset( $page_item['post_type'] ) ? $page_item['post_type'] : 'post';
 						$issues_bg       = $issues > 15 ? 'rgba(239, 68, 68, 0.15)' : 'rgba(251, 191, 36, 0.15)';
 						$issues_color    = $issues > 15 ? 'var(--slos-error)' : 'var(--slos-warning)';
 						$score_bg        = $score >= 80 ? 'rgba(34, 197, 94, 0.15)' : ( $score >= 60 ? 'rgba(251, 191, 36, 0.15)' : 'rgba(239, 68, 68, 0.15)' );
 						$score_bar_color = $score >= 80 ? 'var(--slos-success)' : ( $score >= 60 ? 'var(--slos-warning)' : 'var(--slos-error)' );
 						$score_value     = max( 0, min( 100, $score ) );
 						$priority_style  = 'background: rgba(59, 130, 246, 0.15); color: var(--slos-accent); border: 1px solid rgba(59, 130, 246, 0.3);';
-						if ( $priority === 'high' ) {
+						if ( 'high' === $priority ) {
 							$priority_style = 'background: rgba(239, 68, 68, 0.15); color: var(--slos-error); border: 1px solid rgba(239, 68, 68, 0.3);';
-						} elseif ( $priority === 'medium' ) {
+						} elseif ( 'medium' === $priority ) {
 							$priority_style = 'background: rgba(251, 191, 36, 0.15); color: var(--slos-warning); border: 1px solid rgba(251, 191, 36, 0.3);';
 						}
-						$priority_icon = $priority === 'high' ? 'arrow-up-alt' : ( $priority === 'medium' ? 'minus' : 'arrow-down-alt' );
+						$priority_icon = 'high' === $priority ? 'arrow-up-alt' : ( 'medium' === $priority ? 'minus' : 'arrow-down-alt' );
 						?>
-					<tr class="slos-page-row" data-page-id="<?php echo esc_attr( $post_id ); ?>" data-priority="<?php echo esc_attr( $priority ); ?>" style="border-bottom: 1px solid var(--slos-border); transition: background-color 0.2s ease;">
+					<tr class="slos-page-row" data-page-id="<?php echo esc_attr( $page_post_id ); ?>" data-priority="<?php echo esc_attr( $priority ); ?>" style="border-bottom: 1px solid var(--slos-border); transition: background-color 0.2s ease;">
 						<td style="padding: 16px; text-align: center;">
-							<input type="checkbox" class="slos-page-select" value="<?php echo esc_attr( $post_id ); ?>" style="cursor: pointer; width: 16px; height: 16px;">
+							<input type="checkbox" class="slos-page-select" value="<?php echo esc_attr( $page_post_id ); ?>" style="cursor: pointer; width: 16px; height: 16px;">
 						</td>
 						<td class="page-title" style="padding: 16px;">
 							<div style="display: flex; align-items: center; gap: 12px;">
@@ -143,10 +143,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 									<span class="dashicons dashicons-admin-post" style="font-size: 18px; color: var(--slos-accent);"></span>
 								</div>
 								<div style="flex: 1; min-width: 0;">
-									<div style="font-weight: 600; color: var(--slos-text-primary); font-size: 14px; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?php echo esc_html( $title ); ?></div>
+									<div style="font-weight: 600; color: var(--slos-text-primary); font-size: 14px; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?php echo esc_html( $page_title ); ?></div>
 									<div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--slos-text-muted);">
 										<span class="dashicons dashicons-category" style="font-size: 12px;"></span>
-										<span><?php echo esc_html( ucfirst( $post_type ) ); ?></span>
+										<span><?php echo esc_html( ucfirst( $page_post_type ) ); ?></span>
 									</div>
 								</div>
 							</div>
@@ -183,27 +183,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 						</td>
 						<td class="autofix-cell" style="padding: 16px; text-align: center;">
 							<label class="slos-autofix-toggle" style="display: inline-block; position: relative; width: 48px; height: 24px; cursor: pointer;">
-								<input type="checkbox" class="slos-autofix-checkbox" data-post-id="<?php echo esc_attr( $post_id ); ?>" <?php checked( $autofix_enabled ); ?> style="position: absolute; opacity: 0; width: 0; height: 0;">
+								<input type="checkbox" class="slos-autofix-checkbox" data-post-id="<?php echo esc_attr( $page_post_id ); ?>" <?php checked( $autofix_enabled ); ?> style="position: absolute; opacity: 0; width: 0; height: 0;">
 								<span class="slos-autofix-slider" style="position: absolute; inset: 0; background: var(--slos-bg-input); border: 2px solid var(--slos-border); border-radius: 24px; transition: all 0.3s ease;"></span>
 							</label>
 						</td>
 						<td class="actions-cell" style="padding: 16px; text-align: right;">
 							<div class="slos-page-actions" style="display: flex; align-items: center; justify-content: flex-end; gap: 6px; flex-wrap: wrap;">
-								<button type="button" class="slos-view-details-btn" data-post-id="<?php echo esc_attr( $post_id ); ?>" title="<?php esc_attr_e( 'View Details', 'shahi-legalflowsuite' ); ?>" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: var(--slos-bg-input); border: 1px solid var(--slos-border); border-radius: 6px; color: var(--slos-text-primary); font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s ease; white-space: nowrap;">
+								<button type="button" class="slos-view-details-btn" data-post-id="<?php echo esc_attr( $page_post_id ); ?>" title="<?php esc_attr_e( 'View Details', 'shahi-legalflowsuite' ); ?>" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: var(--slos-bg-input); border: 1px solid var(--slos-border); border-radius: 6px; color: var(--slos-text-primary); font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s ease; white-space: nowrap;">
 									<span class="dashicons dashicons-visibility" style="font-size: 14px;"></span>
 									<span><?php esc_html_e( 'Details', 'shahi-legalflowsuite' ); ?></span>
 								</button>
-								<button type="button" class="slos-fix-all-btn" data-page-id="<?php echo esc_attr( $post_id ); ?>" title="<?php esc_attr_e( 'Fix All Issues', 'shahi-legalflowsuite' ); ?>" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 6px; color: var(--slos-accent); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; white-space: nowrap;">
+								<button type="button" class="slos-fix-all-btn" data-page-id="<?php echo esc_attr( $page_post_id ); ?>" title="<?php esc_attr_e( 'Fix All Issues', 'shahi-legalflowsuite' ); ?>" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 6px; color: var(--slos-accent); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; white-space: nowrap;">
 									<span class="dashicons dashicons-admin-tools" style="font-size: 14px;"></span>
 									<span><?php esc_html_e( 'Fix All', 'shahi-legalflowsuite' ); ?></span>
 								</button>
 								<?php if ( $has_backup ) : ?>
-								<button type="button" class="slos-rollback-btn" data-post-id="<?php echo esc_attr( $post_id ); ?>" title="<?php esc_attr_e( 'Rollback Fixes', 'shahi-legalflowsuite' ); ?>" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: rgba(251, 191, 36, 0.15); border: 1px solid rgba(251, 191, 36, 0.3); border-radius: 6px; color: var(--slos-warning); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; white-space: nowrap;">
+								<button type="button" class="slos-rollback-btn" data-post-id="<?php echo esc_attr( $page_post_id ); ?>" title="<?php esc_attr_e( 'Rollback Fixes', 'shahi-legalflowsuite' ); ?>" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: rgba(251, 191, 36, 0.15); border: 1px solid rgba(251, 191, 36, 0.3); border-radius: 6px; color: var(--slos-warning); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; white-space: nowrap;">
 									<span class="dashicons dashicons-undo" style="font-size: 14px;"></span>
 									<span><?php esc_html_e( 'Rollback', 'shahi-legalflowsuite' ); ?></span>
 								</button>
 								<?php endif; ?>
-								<a href="<?php echo esc_url( get_edit_post_link( $post_id ) ); ?>" class="slos-edit-link" target="_blank" title="<?php esc_attr_e( 'Edit in WordPress', 'shahi-legalflowsuite' ); ?>" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: var(--slos-bg-input); border: 1px solid var(--slos-border); border-radius: 6px; color: var(--slos-text-primary); font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s ease; text-decoration: none; white-space: nowrap;">
+								<a href="<?php echo esc_url( get_edit_post_link( $page_post_id ) ); ?>" class="slos-edit-link" target="_blank" title="<?php esc_attr_e( 'Edit in WordPress', 'shahi-legalflowsuite' ); ?>" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: var(--slos-bg-input); border: 1px solid var(--slos-border); border-radius: 6px; color: var(--slos-text-primary); font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s ease; text-decoration: none; white-space: nowrap;">
 									<span class="dashicons dashicons-edit" style="font-size: 14px;"></span>
 									<span><?php esc_html_e( 'Edit', 'shahi-legalflowsuite' ); ?></span>
 								</a>

@@ -10,7 +10,7 @@
 
 namespace ShahiLegalFlowSuite\Database\Migrations;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }

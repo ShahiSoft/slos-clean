@@ -42,17 +42,17 @@ class AnalyticsTracker {
 		global $wpdb;
 		$table = $wpdb->prefix . 'shahi_analytics';
 
-		// Check if table exists (cached for performance)
+		// Check if table exists (cached for performance)..
 		if ( ! QueryOptimizer::table_exists_cached( $table ) ) {
 			return false;
 		}
 
-		// Get user ID
+		// Get user ID..
 		if ( $user_id === null ) {
 			$user_id = get_current_user_id();
 		}
 
-		// Prepare data
+		// Prepare data..
 		$data = array(
 			'event_type' => sanitize_text_field( $event_type ),
 			'event_data' => wp_json_encode( $event_data ),
@@ -62,7 +62,7 @@ class AnalyticsTracker {
 			'created_at' => current_time( 'mysql' ),
 		);
 
-		// Insert event
+		// Insert event..
 		$result = $wpdb->insert( $table, $data );
 
 		if ( $result === false ) {
@@ -288,12 +288,12 @@ class AnalyticsTracker {
 		global $wpdb;
 		$table = $wpdb->prefix . 'shahi_analytics';
 
-		// Check if table exists (cached for performance)
+		// Check if table exists (cached for performance)..
 		if ( ! QueryOptimizer::table_exists_cached( $table ) ) {
 			return array();
 		}
 
-		// Total events
+		// Total events..
 		$total_events = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(*) FROM $table WHERE created_at BETWEEN %s AND %s",
@@ -302,7 +302,7 @@ class AnalyticsTracker {
 			)
 		);
 
-		// Unique users
+		// Unique users..
 		$unique_users = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(DISTINCT user_id) FROM $table WHERE created_at BETWEEN %s AND %s AND user_id IS NOT NULL",
@@ -311,7 +311,7 @@ class AnalyticsTracker {
 			)
 		);
 
-		// Event types breakdown
+		// Event types breakdown..
 		$event_types = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT event_type, COUNT(*) as count FROM $table WHERE created_at BETWEEN %s AND %s GROUP BY event_type ORDER BY count DESC",
@@ -340,12 +340,12 @@ class AnalyticsTracker {
 		global $wpdb;
 		$table = $wpdb->prefix . 'shahi_analytics';
 
-		// Check if table exists (cached for performance)
+		// Check if table exists (cached for performance)..
 		if ( ! QueryOptimizer::table_exists_cached( $table ) ) {
 			return 0;
 		}
 
-		$cutoff_date = date( 'Y-m-d H:i:s', strtotime( "-$days days" ) );
+		$cutoff_date = gmdate( 'Y-m-d H:i:s', strtotime( "-$days days" ) );
 
 		$deleted = $wpdb->query(
 			$wpdb->prepare(

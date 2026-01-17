@@ -43,7 +43,7 @@ final class MissingAltFixer extends AbstractFixer {
 	}
 
 	public function can_fix( string $content ): bool {
-		// Check for img tags without alt attribute
+		// Check for img tags without alt attribute..
 		return (bool) preg_match( '/<img(?![^>]*\balt\s*=)[^>]*>/i', $content );
 	}
 
@@ -95,25 +95,25 @@ final class MissingAltFixer extends AbstractFixer {
 	 * @return string
 	 */
 	private function generate_alt_text( string $src, array $options = array() ): string {
-		// Try to get alt from WordPress media library
+		// Try to get alt from WordPress media library..
 		$attachment_id = $this->get_attachment_id_from_url( $src );
 
 		if ( $attachment_id ) {
-			// Check for existing alt text in media library
+			// Check for existing alt text in media library..
 			$alt = get_post_meta( $attachment_id, '_wp_attachment_image_alt', true );
 			if ( ! empty( $alt ) ) {
 				return $alt;
 			}
 
-			// Fall back to attachment title
+			// Fall back to attachment title..
 			$attachment = get_post( $attachment_id );
 			if ( $attachment && ! empty( $attachment->post_title ) ) {
 				return $this->humanize_filename( $attachment->post_title );
 			}
 		}
 
-		// Generate from filename
-		$filename = basename( parse_url( $src, PHP_URL_PATH ) ?: '' );
+		// Generate from filename..
+		$filename = basename( wp_parse_url( $src, PHP_URL_PATH ) ?: '' );
 
 		if ( empty( $filename ) ) {
 			return '';
@@ -131,24 +131,22 @@ final class MissingAltFixer extends AbstractFixer {
 	private function get_attachment_id_from_url( string $url ): int {
 		global $wpdb;
 
-		// Remove image size suffix for lookup
+		// Remove image size suffix for lookup..
 		$url = preg_replace( '/-\d+x\d+\.(jpg|jpeg|png|gif|webp)$/i', '.$1', $url );
 
 		$attachment_id = $wpdb->get_var(
 			$wpdb->prepare(
-				'SELECT ID FROM %i WHERE guid = %s',
-				$wpdb->posts,
+				'SELECT ID FROM ' . $wpdb->posts . ' WHERE guid = %s',
 				$url
 			)
 		);
 
 		if ( ! $attachment_id ) {
-			// Try by filename
+			// Try by filename..
 			$filename      = basename( $url );
 			$attachment_id = $wpdb->get_var(
 				$wpdb->prepare(
-					"SELECT post_id FROM %i WHERE meta_key = '_wp_attached_file' AND meta_value LIKE %s",
-					$wpdb->postmeta,
+					'SELECT post_id FROM ' . $wpdb->postmeta . " WHERE meta_key = '_wp_attached_file' AND meta_value LIKE %s",
 					'%' . $wpdb->esc_like( $filename )
 				)
 			);
@@ -164,25 +162,25 @@ final class MissingAltFixer extends AbstractFixer {
 	 * @return string
 	 */
 	private function humanize_filename( string $filename ): string {
-		// Remove extension
+		// Remove extension..
 		$name = preg_replace( '/\.[^.]+$/', '', $filename );
 
-		// Replace separators with spaces
+		// Replace separators with spaces..
 		$name = str_replace( array( '-', '_' ), ' ', $name );
 
-		// Remove common prefixes like IMG_, DSC_, etc.
+		// Remove common prefixes like IMG_, DSC_, etc...
 		$name = preg_replace( '/^(IMG|DSC|DCIM|Photo|Image|Picture|Screen Shot|Screenshot)[\s_-]*/i', '', $name );
 
-		// Remove size suffixes
+		// Remove size suffixes..
 		$name = preg_replace( '/-?\d+x\d+$/', '', $name );
 
-		// Remove trailing numbers
+		// Remove trailing numbers..
 		$name = preg_replace( '/[\s_-]+\d+$/', '', $name );
 
-		// Clean up multiple spaces
+		// Clean up multiple spaces..
 		$name = preg_replace( '/\s+/', ' ', trim( $name ) );
 
-		// Capitalize words
+		// Capitalize words..
 		$name = ucwords( strtolower( $name ) );
 
 		return $name;

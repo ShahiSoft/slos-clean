@@ -52,7 +52,7 @@ final class DownloadLinkFixer extends AbstractFixer {
 			// Also check for download attribute..
 			if ( ! $is_download && $link->hasAttribute( 'download' ) ) {
 				$is_download = true;
-				$path        = parse_url( $href, PHP_URL_PATH );
+				$path        = wp_parse_url( $href, PHP_URL_PATH );
 				if ( $path ) {
 					$path_ext = pathinfo( $path, PATHINFO_EXTENSION );
 					$file_ext = $path_ext ? strtoupper( $path_ext ) : 'FILE';

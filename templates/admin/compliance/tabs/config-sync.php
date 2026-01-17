@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Get available exports
+// Get available exports.
 $exports = array();
 if ( class_exists( '\ShahiLegalFlowSuite\Services\Config_Sync_Service' ) ) {
 	$sync_service = new \ShahiLegalFlowSuite\Services\Config_Sync_Service();
@@ -323,7 +323,7 @@ if ( class_exists( '\ShahiLegalFlowSuite\Services\Config_Sync_Service' ) ) {
 									<td>
 										<span class="slos-date"><?php echo esc_html( $export['exported_at'] ?? '—' ); ?></span>
 										<br>
-										<small><?php echo esc_html( sprintf( __( 'by %s', 'shahi-legalflowsuite' ), $export['exported_by'] ?? 'Unknown' ) ); ?></small>
+										<small><?php /* translators: %s: exported by (username or site) */ echo esc_html( sprintf( __( 'by %s', 'shahi-legalflowsuite' ), $export['exported_by'] ?? 'Unknown' ) ); ?></small>
 									</td>
 									<td>
 										<small><?php echo esc_html( $export['site_url'] ?? '—' ); ?></small>

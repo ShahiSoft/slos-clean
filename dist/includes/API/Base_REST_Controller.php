@@ -18,7 +18,7 @@ use WP_REST_Request;
 use WP_REST_Response;
 use WP_Error;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -57,14 +57,14 @@ abstract class Base_REST_Controller extends WP_REST_Controller {
 	 * @return void
 	 */
 	public function register_routes() {
-		// Intentionally empty; concrete in subclasses.
+		// Intentionally empty; concrete in subclasses...
 	}
 
 	/**
 	 * Check if user is authenticated
 	 *
 	 * @since 3.0.1
-	 * @param WP_REST_Request $request Request object
+	 * @param WP_REST_Request $request Request object.
 	 * @return bool|WP_Error True if authenticated, WP_Error otherwise
 	 */
 	public function check_authentication( WP_REST_Request $request ) {
@@ -83,8 +83,8 @@ abstract class Base_REST_Controller extends WP_REST_Controller {
 	 * Check if user has required capability
 	 *
 	 * @since 3.0.1
-	 * @param WP_REST_Request $request Request object
-	 * @param string          $capability Required capability
+	 * @param WP_REST_Request $request Request object.
+	 * @param string          $capability Required capability.
 	 * @return bool|WP_Error True if authorized, WP_Error otherwise
 	 */
 	protected function check_permission( WP_REST_Request $request, string $capability = 'read' ) {
@@ -108,7 +108,7 @@ abstract class Base_REST_Controller extends WP_REST_Controller {
 	 * Check if user can read resource
 	 *
 	 * @since 3.0.1
-	 * @param WP_REST_Request $request Request object
+	 * @param WP_REST_Request $request Request object.
 	 * @return bool|WP_Error True if authorized, WP_Error otherwise
 	 */
 	public function check_read_permission( WP_REST_Request $request ) {
@@ -119,7 +119,7 @@ abstract class Base_REST_Controller extends WP_REST_Controller {
 	 * Check if user can create resource
 	 *
 	 * @since 3.0.1
-	 * @param WP_REST_Request $request Request object
+	 * @param WP_REST_Request $request Request object.
 	 * @return bool|WP_Error True if authorized, WP_Error otherwise
 	 */
 	public function check_create_permission( WP_REST_Request $request ) {
@@ -130,7 +130,7 @@ abstract class Base_REST_Controller extends WP_REST_Controller {
 	 * Check if user can update resource
 	 *
 	 * @since 3.0.1
-	 * @param WP_REST_Request $request Request object
+	 * @param WP_REST_Request $request Request object.
 	 * @return bool|WP_Error True if authorized, WP_Error otherwise
 	 */
 	public function check_update_permission( WP_REST_Request $request ) {
@@ -141,7 +141,7 @@ abstract class Base_REST_Controller extends WP_REST_Controller {
 	 * Check if user can delete resource
 	 *
 	 * @since 3.0.1
-	 * @param WP_REST_Request $request Request object
+	 * @param WP_REST_Request $request Request object.
 	 * @return bool|WP_Error True if authorized, WP_Error otherwise
 	 */
 	public function check_delete_permission( WP_REST_Request $request ) {
@@ -152,7 +152,7 @@ abstract class Base_REST_Controller extends WP_REST_Controller {
 	 * Check if user is admin
 	 *
 	 * @since 3.0.1
-	 * @param WP_REST_Request $request Request object
+	 * @param WP_REST_Request $request Request object.
 	 * @return bool|WP_Error True if admin, WP_Error otherwise
 	 */
 	public function check_admin_permission( WP_REST_Request $request ) {
@@ -163,9 +163,9 @@ abstract class Base_REST_Controller extends WP_REST_Controller {
 	 * Send success response
 	 *
 	 * @since 3.0.1
-	 * @param mixed  $data Response data
-	 * @param string $message Success message
-	 * @param int    $status HTTP status code
+	 * @param mixed  $data Response data.
+	 * @param string $message Success message.
+	 * @param int    $status HTTP status code.
 	 * @return WP_REST_Response Response object
 	 */
 	protected function success_response( $data = null, string $message = '', int $status = 200 ): WP_REST_Response {
@@ -188,10 +188,10 @@ abstract class Base_REST_Controller extends WP_REST_Controller {
 	 * Send error response
 	 *
 	 * @since 3.0.1
-	 * @param string $code Error code
-	 * @param string $message Error message
-	 * @param int    $status HTTP status code
-	 * @param array  $data Additional error data
+	 * @param string $code Error code.
+	 * @param string $message Error message.
+	 * @param int    $status HTTP status code.
+	 * @param array  $data Additional error data.
 	 * @return WP_Error Error object
 	 */
 	protected function error_response( string $code, string $message, int $status = 400, array $data = array() ): WP_Error {
@@ -203,8 +203,8 @@ abstract class Base_REST_Controller extends WP_REST_Controller {
 	 * Validate required parameter
 	 *
 	 * @since 3.0.1
-	 * @param WP_REST_Request $request Request object
-	 * @param string          $param Parameter name
+	 * @param WP_REST_Request $request Request object.
+	 * @param string          $param Parameter name.
 	 * @return bool|WP_Error True if valid, WP_Error otherwise
 	 */
 	protected function validate_required_param( WP_REST_Request $request, string $param ) {
@@ -226,12 +226,12 @@ abstract class Base_REST_Controller extends WP_REST_Controller {
 	 * Validate integer parameter
 	 *
 	 * @since 3.0.1
-	 * @param mixed  $value Parameter value
-	 * @param string $param Parameter name
+	 * @param mixed  $value Parameter value.
+	 * @param string $param Parameter name.
 	 * @return bool|WP_Error True if valid, WP_Error otherwise
 	 */
 	protected function validate_integer_param( $value, string $param ) {
-		if ( ! is_numeric( $value ) || $value != (int) $value ) {
+		if ( ! is_numeric( $value ) || $value !== (int) $value ) {
 			return $this->error_response(
 				'invalid_param',
 				/* translators: %s: parameter name */
@@ -247,8 +247,8 @@ abstract class Base_REST_Controller extends WP_REST_Controller {
 	 * Validate email parameter
 	 *
 	 * @since 3.0.1
-	 * @param string $value Email value
-	 * @param string $param Parameter name
+	 * @param string $value Email value.
+	 * @param string $param Parameter name.
 	 * @return bool|WP_Error True if valid, WP_Error otherwise
 	 */
 	protected function validate_email_param( string $value, string $param ) {
@@ -268,7 +268,7 @@ abstract class Base_REST_Controller extends WP_REST_Controller {
 	 * Sanitize text parameter
 	 *
 	 * @since 3.0.1
-	 * @param string $value Parameter value
+	 * @param string $value Parameter value.
 	 * @return string Sanitized value
 	 */
 	protected function sanitize_text_param( string $value ): string {
@@ -279,7 +279,7 @@ abstract class Base_REST_Controller extends WP_REST_Controller {
 	 * Sanitize textarea parameter
 	 *
 	 * @since 3.0.1
-	 * @param string $value Parameter value
+	 * @param string $value Parameter value.
 	 * @return string Sanitized value
 	 */
 	protected function sanitize_textarea_param( string $value ): string {
@@ -290,16 +290,19 @@ abstract class Base_REST_Controller extends WP_REST_Controller {
 	 * Prepare pagination parameters
 	 *
 	 * @since 3.0.1
-	 * @param WP_REST_Request $request Request object
+	 * @param WP_REST_Request $request Request object.
 	 * @return array Pagination parameters
 	 */
 	protected function prepare_pagination_params( WP_REST_Request $request ): array {
-		$page     = absint( $request->get_param( 'page' ) ) ?: 1;
-		$per_page = absint( $request->get_param( 'per_page' ) ) ?: 25;
-		$per_page = min( $per_page, 100 ); // Cap at 100
+		$page_param     = $request->get_param( 'page' );
+		$page           = $page_param ? absint( $page_param ) : 1;
+		$per_page_param = $request->get_param( 'per_page' );
+		$per_page       = $per_page_param ? absint( $per_page_param ) : 25;
+		$per_page       = min( $per_page, 100 ); // Cap at 100.
 
-		$order_by = sanitize_text_field( $request->get_param( 'orderby' ) ) ?: 'created_at';
-		$order    = strtoupper( sanitize_text_field( $request->get_param( 'order' ) ) ) === 'ASC' ? 'ASC' : 'DESC';
+		$orderby_param = $request->get_param( 'orderby' );
+		$order_by      = $orderby_param ? sanitize_text_field( $orderby_param ) : 'created_at';
+		$order         = strtoupper( sanitize_text_field( $request->get_param( 'order' ) ) ) === 'ASC' ? 'ASC' : 'DESC';
 
 		return array(
 			'page'     => $page,
@@ -314,15 +317,16 @@ abstract class Base_REST_Controller extends WP_REST_Controller {
 	 * Prepare pagination links
 	 *
 	 * @since 3.0.1
-	 * @param WP_REST_Request $request Request object
-	 * @param int             $total Total items
-	 * @param int             $per_page Items per page
+	 * @param WP_REST_Request $request Request object.
+	 * @param int             $total Total items.
+	 * @param int             $per_page Items per page.
 	 * @return array Pagination links
 	 */
 	protected function prepare_pagination_links( WP_REST_Request $request, int $total, int $per_page ): array {
-		$total_pages = ceil( $total / $per_page );
-		$current     = absint( $request->get_param( 'page' ) ) ?: 1;
-		$base        = add_query_arg( $request->get_query_params(), rest_url( sprintf( '%s/%s', $this->namespace, $this->rest_base ) ) );
+		$total_pages   = ceil( $total / $per_page );
+		$current_param = $request->get_param( 'page' );
+		$current       = $current_param ? absint( $current_param ) : 1;
+		$base          = add_query_arg( $request->get_query_params(), rest_url( sprintf( '%s/%s', $this->namespace, $this->rest_base ) ) );
 
 		$links = array();
 
@@ -341,9 +345,9 @@ abstract class Base_REST_Controller extends WP_REST_Controller {
 	 * Add pagination headers to response
 	 *
 	 * @since 3.0.1
-	 * @param WP_REST_Response $response Response object
-	 * @param int              $total Total items
-	 * @param int              $per_page Items per page
+	 * @param WP_REST_Response $response Response object.
+	 * @param int              $total Total items.
+	 * @param int              $per_page Items per page.
 	 * @return WP_REST_Response Modified response
 	 */
 	protected function add_pagination_headers( WP_REST_Response $response, int $total, int $per_page ): WP_REST_Response {
@@ -388,12 +392,12 @@ abstract class Base_REST_Controller extends WP_REST_Controller {
 	 * Log API request
 	 *
 	 * @since 3.0.1
-	 * @param WP_REST_Request $request Request object
-	 * @param string          $action Action performed
+	 * @param WP_REST_Request $request Request object.
+	 * @param string          $action Action performed.
 	 * @return void
 	 */
 	protected function log_request( WP_REST_Request $request, string $action ): void {
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
 			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Debug logging only when WP_DEBUG is enabled
 			error_log(
 				sprintf(

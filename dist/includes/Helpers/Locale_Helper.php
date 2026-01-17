@@ -179,7 +179,7 @@ class Locale_Helper {
 	 * @return string Locale code
 	 */
 	public static function get_current_locale() {
-		// Check for explicit locale in query string (admin context)
+		// Check for explicit locale in query string (admin context)..
 		if ( isset( $_GET['locale'] ) ) {
 			$locale = sanitize_text_field( wp_unslash( $_GET['locale'] ) );
 			if ( self::is_supported( $locale ) ) {
@@ -187,15 +187,15 @@ class Locale_Helper {
 			}
 		}
 
-		// Use WordPress locale
+		// Use WordPress locale..
 		$wp_locale = get_locale();
 
-		// If WordPress locale is supported, use it
+		// If WordPress locale is supported, use it..
 		if ( self::is_supported( $wp_locale ) ) {
 			return $wp_locale;
 		}
 
-		// Default to en_US
+		// Default to en_US..
 		return 'en_US';
 	}
 
@@ -235,11 +235,11 @@ class Locale_Helper {
 	 * @return string Fallback locale code
 	 */
 	public static function get_fallback_locale( $locale ) {
-		// If it's a regional variant, try base language
+		// If it's a regional variant, try base language..
 		if ( strpos( $locale, '_' ) !== false ) {
 			list( $lang, $region ) = explode( '_', $locale, 2 );
 
-			// Try base language with different region
+			// Try base language with different region..
 			$base_variants = array(
 				'pt_BR' => 'pt_PT',
 				'pt_PT' => 'en_US',
@@ -253,7 +253,7 @@ class Locale_Helper {
 			}
 		}
 
-		// Default fallback to en_US
+		// Default fallback to en_US..
 		return 'en_US';
 	}
 

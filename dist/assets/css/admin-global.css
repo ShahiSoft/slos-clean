@@ -191,7 +191,6 @@
 .shahi-legalflowsuite-admin h1 {
 	font-size: 32px;
 	background: var(--shahi-gradient-primary);
-	background-clip: text;
 	-webkit-text-fill-color: transparent;
 	background-clip: text;
 }

@@ -405,10 +405,10 @@
 	USER SELECT UTILITIES
 	=================================== */
 
-.shahi-select-none { user-select: none; user-select: none; }
-.shahi-select-text { user-select: text; user-select: text; }
-.shahi-select-all { user-select: all; user-select: all; }
-.shahi-select-auto { user-select: auto; user-select: auto; }
+.shahi-select-none { user-select: none; }
+.shahi-select-text { user-select: text; }
+.shahi-select-all { user-select: all; }
+.shahi-select-auto { user-select: auto; }
 
 /* ===================================
 	POINTER EVENTS UTILITIES

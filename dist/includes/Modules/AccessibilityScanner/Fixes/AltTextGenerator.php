@@ -33,7 +33,7 @@ class AltTextGenerator {
 			return $alt_text;
 		}
 
-		// Update the attachment metadata
+		// Update the attachment metadata..
 		update_post_meta( $attachment_id, '_wp_attachment_image_alt', $alt_text );
 
 		return array(

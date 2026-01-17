@@ -30,16 +30,16 @@ class HeadingVisualCheck extends AbstractCheck {
 		$dom    = $this->get_dom( $content );
 		$xpath  = new \DOMXPath( $dom );
 
-		// Find elements with class names suggesting headings but are not headings
+		// Find elements with class names suggesting headings but are not headings..
 		$elements = $xpath->query( '//*[contains(@class, "heading") or contains(@class, "title") or contains(@class, "h1") or contains(@class, "h2") or contains(@class, "h3")]' );
 
 		foreach ( $elements as $element ) {
-			// Skip if it is actually a heading
+			// Skip if it is actually a heading..
 			if ( preg_match( '/^h[1-6]$/', $element->tagName ) ) {
 				continue;
 			}
 
-			// Skip if it has role="heading"
+			// Skip if it has role="heading"..
 			if ( $element->getAttribute( 'role' ) === 'heading' ) {
 				continue;
 			}
@@ -51,13 +51,13 @@ class HeadingVisualCheck extends AbstractCheck {
 			);
 		}
 
-		// Check for <p><b>...</b></p> pattern which is often a fake heading
+		// Check for <p><b>...</b></p> pattern which is often a fake heading..
 		$paras = $dom->getElementsByTagName( 'p' );
 		foreach ( $paras as $p ) {
 			if ( $p->childNodes->length === 1 ) {
 				$child = $p->firstChild;
 				if ( $child->nodeType === XML_ELEMENT_NODE && ( $child->tagName === 'b' || $child->tagName === 'strong' ) ) {
-					// Check if text length is short enough to be a heading (< 100 chars)
+					// Check if text length is short enough to be a heading (< 100 chars)..
 					if ( strlen( trim( $child->textContent ) ) < 100 && strlen( trim( $child->textContent ) ) > 0 ) {
 						$issues[] = array(
 							'element' => 'p',

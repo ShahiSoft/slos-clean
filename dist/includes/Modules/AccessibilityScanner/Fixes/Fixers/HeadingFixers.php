@@ -30,7 +30,7 @@ class SkippedHeadingLevelFixer extends BaseFixer {
 			$level = intval( $heading->tagName[1] );
 
 			if ( $last_level > 0 && $level > $last_level + 1 ) {
-				// Skipped level, convert to appropriate level
+				// Skipped level, convert to appropriate level..
 				$new_level = $last_level + 1;
 				$new_tag   = "h$new_level";
 
@@ -61,7 +61,7 @@ class HeadingNestingFixer extends BaseFixer {
 		return 'Fix heading structure'; }
 
 	public function fix( $content ) {
-		// This is complex structural fix - delegate to content modification
+		// This is complex structural fix - delegate to content modification..
 		return array(
 			'fixed_count' => 0,
 			'content'     => $content,
@@ -87,7 +87,7 @@ class HeadingLengthFixer extends BaseFixer {
 		foreach ( $headings as $heading ) {
 			$text = $heading->textContent;
 			if ( strlen( $text ) > 100 ) {
-				// Truncate with ellipsis
+				// Truncate with ellipsis..
 				$heading->textContent = substr( $text, 0, 97 ) . '...';
 				++$fixed_count;
 			}
@@ -119,7 +119,7 @@ class HeadingUniquenessFixer extends BaseFixer {
 		foreach ( $headings as $heading ) {
 			$text = trim( $heading->textContent );
 			if ( isset( $seen_texts[ $text ] ) ) {
-				// Add number to make unique
+				// Add number to make unique..
 				$heading->textContent = $text . ' (' . ( $seen_texts[ $text ] + 1 ) . ')';
 				++$fixed_count;
 			}
@@ -148,7 +148,7 @@ class HeadingVisualFixer extends BaseFixer {
 		$spans       = $dom->getElementsByTagName( 'span' );
 		$fixed_count = 0;
 
-		// Find large styled text that might be headings
+		// Find large styled text that might be headings..
 		foreach ( $divs as $div ) {
 			$class = $div->getAttribute( 'class' );
 			$style = $div->getAttribute( 'style' );

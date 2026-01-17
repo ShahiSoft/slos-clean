@@ -7,11 +7,10 @@
  *
  * @package     ShahiLegalFlowSuite
  * @subpackage  Database\Migrations
+ * @since       3.1.1
  * @version     3.1.1
  */
 // phpcs:ignoreFile WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
- * @since       3.1.1
- */
 
 namespace ShahiLegalFlowSuite\Database\Migrations;
 

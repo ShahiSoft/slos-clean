@@ -20,7 +20,7 @@ namespace ShahiLegalFlowSuite\Shortcodes;
 
 use ShahiLegalFlowSuite\Core\I18n;
 
-// Exit if accessed directly
+// Exit if accessed directly...
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -58,11 +58,11 @@ class Consent_Preferences_Shortcode {
 	 * Enqueues necessary assets and returns container div for JS app.
 	 *
 	 * @since 3.0.1
-	 * @param array $atts Shortcode attributes
+	 * @param array $atts Shortcode attributes.
 	 * @return string HTML output
 	 */
 	public function render( $atts = array() ) {
-		// Load plugin settings for defaults
+		// Load plugin settings for defaults...
 		$settings_defaults = array(
 			'preferences_show_history'  => true,
 			'preferences_show_download' => true,
@@ -74,7 +74,7 @@ class Consent_Preferences_Shortcode {
 			$settings_defaults['preferences_show_download'] = ! empty( $plugin_settings['preferences_show_download'] );
 		}
 
-		// Parse attributes with settings-aware defaults
+		// Parse attributes with settings-aware defaults...
 		$atts = shortcode_atts(
 			array(
 				'show_history'  => $settings_defaults['preferences_show_history'] ? 'true' : 'false',
@@ -86,20 +86,20 @@ class Consent_Preferences_Shortcode {
 			'slos_consent_preferences'
 		);
 
-		// Enqueue assets
+		// Enqueue assets...
 		$this->enqueue_assets( $atts );
 
-		// Get current user
+		// Get current user...
 		$user_id = get_current_user_id();
 		if ( ! $user_id ) {
-			// Use session ID for non-logged-in users
+			// Use session ID for non-logged-in users...
 			if ( ! session_id() ) {
 				session_start();
 			}
 			$session_id = session_id();
 		}
 
-		// Build container classes
+		// Build container classes...
 		$classes = array( 'slos-consent-preferences-wrapper' );
 		if ( 'dark' === $atts['theme'] ) {
 			$classes[] = 'slos-theme-dark';
@@ -108,7 +108,7 @@ class Consent_Preferences_Shortcode {
 			$classes[] = 'slos-compact';
 		}
 
-		// Build data attributes for JS app
+		// Build data attributes for JS app...
 		$data_attrs = array(
 			'data-user-id'       => $user_id ? $user_id : 0,
 			'data-session-id'    => $user_id ? '' : ( $session_id ?? '' ),
@@ -133,13 +133,15 @@ class Consent_Preferences_Shortcode {
 	 * Enqueue shortcode assets
 	 *
 	 * @since 3.0.1
-	 * @param array $atts Shortcode attributes
+	 * @param array $atts Shortcode attributes.
 	 * @return void
 	 */
 	private function enqueue_assets( $atts ) {
+		// Avoid unused parameter warning...
+		unset( $atts );
 		$version = defined( 'SLOS_VERSION' ) ? SLOS_VERSION : '3.0.1';
 
-		// Enqueue scripts
+		// Enqueue scripts...
 		wp_enqueue_script(
 			'slos-consent-preferences',
 			plugins_url( 'assets/js/consent-preferences.js', dirname( __DIR__ ) ),
@@ -148,7 +150,7 @@ class Consent_Preferences_Shortcode {
 			true
 		);
 
-		// Enqueue styles
+		// Enqueue styles...
 		wp_enqueue_style(
 			'slos-consent-preferences',
 			plugins_url( 'assets/css/consent-preferences.css', dirname( __DIR__ ) ),
@@ -156,7 +158,7 @@ class Consent_Preferences_Shortcode {
 			$version
 		);
 
-		// Enqueue RTL styles if needed
+		// Enqueue RTL styles if needed...
 		if ( is_rtl() ) {
 			wp_enqueue_style(
 				'slos-consent-preferences-rtl',
@@ -166,7 +168,7 @@ class Consent_Preferences_Shortcode {
 			);
 		}
 
-		// Localize script
+		// Localize script...
 		$this->localize_script( $atts );
 	}
 
@@ -174,7 +176,7 @@ class Consent_Preferences_Shortcode {
 	 * Localize script with translations and config
 	 *
 	 * @since 3.0.1
-	 * @param array $atts Shortcode attributes
+	 * @param array $atts Shortcode attributes.
 	 * @return void
 	 */
 	private function localize_script( $atts ) {
@@ -203,16 +205,16 @@ class Consent_Preferences_Shortcode {
 	 * Get translation strings
 	 *
 	 * @since 3.0.1
-	 * @return array Translation strings
+	 * @return array Translation strings.
 	 */
 	private function get_translations() {
 		return array(
-			// Headers
+			// Headers...
 			'privacyChoices'      => __( 'Your Privacy Choices', 'shahi-legalflowsuite' ),
 			'manageConsent'       => __( 'Manage your consent preferences below.', 'shahi-legalflowsuite' ),
 			'consentHistory'      => __( 'Consent History', 'shahi-legalflowsuite' ),
 
-			// Purpose labels
+			// Purpose labels...
 			'functional'          => __( 'Functional', 'shahi-legalflowsuite' ),
 			'analytics'           => __( 'Analytics', 'shahi-legalflowsuite' ),
 			'marketing'           => __( 'Marketing', 'shahi-legalflowsuite' ),
@@ -220,7 +222,7 @@ class Consent_Preferences_Shortcode {
 			'personalization'     => __( 'Personalization', 'shahi-legalflowsuite' ),
 			'necessary'           => __( 'Necessary', 'shahi-legalflowsuite' ),
 
-			// Purpose descriptions
+			// Purpose descriptions...
 			'functionalDesc'      => __( 'Required for site operation', 'shahi-legalflowsuite' ),
 			'analyticsDesc'       => __( 'Helps us improve the site', 'shahi-legalflowsuite' ),
 			'marketingDesc'       => __( 'Used for marketing communications', 'shahi-legalflowsuite' ),
@@ -228,12 +230,12 @@ class Consent_Preferences_Shortcode {
 			'personalizationDesc' => __( 'Remembers your preferences', 'shahi-legalflowsuite' ),
 			'necessaryDesc'       => __( 'Essential cookies for basic functionality', 'shahi-legalflowsuite' ),
 
-			// Status labels
+			// Status labels...
 			'required'            => __( 'Required', 'shahi-legalflowsuite' ),
 			'enabled'             => __( 'Enabled', 'shahi-legalflowsuite' ),
 			'disabled'            => __( 'Disabled', 'shahi-legalflowsuite' ),
 
-			// Actions
+			// Actions...
 			'savePreferences'     => __( 'Save Preferences', 'shahi-legalflowsuite' ),
 			'downloadData'        => __( 'Download My Data', 'shahi-legalflowsuite' ),
 			'viewHistory'         => __( 'View History', 'shahi-legalflowsuite' ),
@@ -241,7 +243,7 @@ class Consent_Preferences_Shortcode {
 			'acceptAll'           => __( 'Accept All', 'shahi-legalflowsuite' ),
 			'rejectAll'           => __( 'Reject All', 'shahi-legalflowsuite' ),
 
-			// Messages
+			// Messages...
 			'loading'             => __( 'Loading your privacy preferences...', 'shahi-legalflowsuite' ),
 			'saving'              => __( 'Saving preferences...', 'shahi-legalflowsuite' ),
 			'saved'               => __( 'Preferences saved successfully!', 'shahi-legalflowsuite' ),
@@ -249,13 +251,13 @@ class Consent_Preferences_Shortcode {
 			'noHistory'           => __( 'No consent history found.', 'shahi-legalflowsuite' ),
 			'loginRequired'       => __( 'Please log in to view your consent history.', 'shahi-legalflowsuite' ),
 
-			// Errors
+			// Errors...
 			'errorLoading'        => __( 'Failed to load preferences. Please try again.', 'shahi-legalflowsuite' ),
 			'errorSaving'         => __( 'Failed to save preferences. Please try again.', 'shahi-legalflowsuite' ),
 			'errorDownload'       => __( 'Failed to download data. Please try again.', 'shahi-legalflowsuite' ),
 			'errorNetwork'        => __( 'Network error. Please check your connection.', 'shahi-legalflowsuite' ),
 
-			// History
+			// History...
 			'historyGranted'      => __( 'Granted', 'shahi-legalflowsuite' ),
 			'historyWithdrawn'    => __( 'Withdrawn', 'shahi-legalflowsuite' ),
 			'historyUpdated'      => __( 'Updated', 'shahi-legalflowsuite' ),
@@ -263,7 +265,7 @@ class Consent_Preferences_Shortcode {
 			'historyAction'       => __( 'Action', 'shahi-legalflowsuite' ),
 			'historyPurpose'      => __( 'Purpose', 'shahi-legalflowsuite' ),
 
-			// GDPR
+			// GDPR...
 			'gdprNotice'          => __( 'You have the right to access, modify, and delete your personal data under GDPR.', 'shahi-legalflowsuite' ),
 			'dataPortability'     => __( 'Download your consent data in machine-readable format.', 'shahi-legalflowsuite' ),
 		);
@@ -273,8 +275,8 @@ class Consent_Preferences_Shortcode {
 	 * Render data attributes
 	 *
 	 * @since 3.0.1
-	 * @param array $data_attrs Data attributes array
-	 * @return string Rendered attributes
+	 * @param array $data_attrs Data attributes array.
+	 * @return string Rendered attributes.
 	 */
 	private function render_data_attributes( $data_attrs ) {
 		$output = '';

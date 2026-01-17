@@ -5,6 +5,8 @@
  * Analyzes fixer performance and identifies bottlenecks
  */
 
+// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- CLI profiling output
+
 namespace ShahiLegalFlowSuite\Modules\AccessibilityScanner\FixEngine;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -173,7 +175,7 @@ class PerformanceProfiler {
 	 */
 	public function generate_report( $profiles ) {
 		$report  = "# Phase 5: Performance Profile Report\n\n";
-		$report .= '**Generated:** ' . date( 'Y-m-d H:i:s' ) . "\n\n";
+		$report .= '**Generated:** ' . gmdate( 'Y-m-d H:i:s' ) . "\n\n";
 
 		// Summary..
 		$by_rating = array(
@@ -246,7 +248,7 @@ class PerformanceProfiler {
 		$docs_dir = dirname( dirname( dirname( __DIR__ ) ) ) . '/docs/autofix';
 
 		if ( ! is_dir( $docs_dir ) ) {
-			mkdir( $docs_dir, 0755, true );
+			wp_mkdir_p( $docs_dir );
 		}
 
 		$filepath = $docs_dir . '/' . $filename;

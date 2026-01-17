@@ -16,7 +16,7 @@ namespace ShahiLegalFlowSuite\API;
 
 use ShahiLegalFlowSuite\Admin\Settings;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -54,7 +54,7 @@ class SettingsController {
 	 * @return void
 	 */
 	public function register_routes() {
-		// Get all settings
+		// Get all settings..
 		register_rest_route(
 			RestAPI::get_namespace(),
 			'/settings',
@@ -65,7 +65,7 @@ class SettingsController {
 			)
 		);
 
-		// Update settings
+		// Update settings..
 		register_rest_route(
 			RestAPI::get_namespace(),
 			'/settings',
@@ -82,7 +82,7 @@ class SettingsController {
 			)
 		);
 
-		// Export settings
+		// Export settings..
 		register_rest_route(
 			RestAPI::get_namespace(),
 			'/settings/export',
@@ -93,7 +93,7 @@ class SettingsController {
 			)
 		);
 
-		// Import settings
+		// Import settings..
 		register_rest_route(
 			RestAPI::get_namespace(),
 			'/settings/import',
@@ -138,16 +138,16 @@ class SettingsController {
 			return RestAPI::error( 'Invalid settings format', 400 );
 		}
 
-		// Get current settings
+		// Get current settings..
 		$current_settings = $this->settings->get_settings();
 
-		// Merge and sanitize
+		// Merge and sanitize..
 		$updated_settings = array_merge(
 			$current_settings,
 			RestAPI::sanitize_request( $new_settings )
 		);
 
-		// Update
+		// Update..
 		$result = update_option( Settings::OPTION_NAME, $updated_settings );
 
 		if ( $result === false ) {

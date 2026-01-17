@@ -154,8 +154,8 @@ class I18n {
 	 * @return void
 	 */
 	public static function echo_translate( $text ) {
-		// phpcs:ignore WordPress.Security.EscapeOutput.UnsafePrintingFunction, WordPress.WP.I18n.NonSingularStringLiteralText, WordPress.WP.I18n.NonSingularStringLiteralDomain -- Wrapper method with variable parameters
-		_e( $text, self::TEXT_DOMAIN );
+		// phpcs:ignore WordPress.Security.EscapeOutput.UnsafePrintingFunction, WordPress.Security.EscapeOutput.OutputNotEscaped, WordPress.WP.I18n.NonSingularStringLiteralText, WordPress.WP.I18n.NonSingularStringLiteralDomain -- Wrapper method with variable parameters
+		esc_html_e( $text, self::TEXT_DOMAIN );
 	}
 
 	/**

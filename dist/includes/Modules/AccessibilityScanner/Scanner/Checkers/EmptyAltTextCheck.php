@@ -34,7 +34,7 @@ class EmptyAltTextCheck extends AbstractCheck {
 			if ( $img->hasAttribute( 'alt' ) ) {
 				$alt = $img->getAttribute( 'alt' );
 				if ( trim( $alt ) === '' ) {
-					// Check if it's marked as decorative (role="presentation" or aria-hidden="true")
+					// Check if it's marked as decorative (role="presentation" or aria-hidden="true")..
 					$role       = $img->getAttribute( 'role' );
 					$ariaHidden = $img->getAttribute( 'aria-hidden' );
 

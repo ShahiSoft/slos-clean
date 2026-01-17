@@ -1299,6 +1299,7 @@ class Assets {
 	 * @return string Modified link tag.
 	 */
 	public function add_nocache_to_styles( $tag, $handle, $href, $media ) {
+		// phpcs:disable WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet
 		// Only apply to our plugin's styles..
 		if ( strpos( $handle, 'shahi-' ) === 0 ) {
 			// Add unique timestamp to force refresh..
@@ -1306,7 +1307,6 @@ class Assets {
 			$href      = $href . $separator . 't=' . time();
 
 			// Rebuild tag with no-cache headers..
-			// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- Filter callback modifying enqueued stylesheet
 			$tag = sprintf(
 				'<link rel="stylesheet" id="%s-css" href="%s" type="text/css" media="%s" />' . "\n",
 				esc_attr( $handle ),
@@ -1316,6 +1316,7 @@ class Assets {
 		}
 
 		return $tag;
+		// phpcs:enable WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet
 	}
 
 	/**

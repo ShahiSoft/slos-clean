@@ -58,14 +58,14 @@ class MissingAltTextFixer extends BaseFixer {
 		$dom   = $this->get_dom( $content );
 		$xpath = new \DOMXPath( $dom );
 
-		// Find all img elements without alt attribute
+		// Find all img elements without alt attribute..
 		$images        = $xpath->query( '//img[not(@alt)]' );
 		$fixes_applied = 0;
 
 		foreach ( $images as $img ) {
 			$src = $img->getAttribute( 'src' );
 
-			// Try to get meaningful alt text from various sources
+			// Try to get meaningful alt text from various sources..
 			$alt_text = $this->generate_alt_from_context( $img, $src );
 
 			$img->setAttribute( 'alt', $alt_text );
@@ -83,19 +83,19 @@ class MissingAltTextFixer extends BaseFixer {
 	 * @return string Generated alt text
 	 */
 	private function generate_alt_from_context( $img, $src ) {
-		// Check for title attribute
+		// Check for title attribute..
 		if ( $img->hasAttribute( 'title' ) && ! empty( trim( $img->getAttribute( 'title' ) ) ) ) {
 			return trim( $img->getAttribute( 'title' ) );
 		}
 
-		// Check for data-alt or similar attributes
+		// Check for data-alt or similar attributes..
 		foreach ( array( 'data-alt', 'data-caption', 'data-description' ) as $attr ) {
 			if ( $img->hasAttribute( $attr ) && ! empty( trim( $img->getAttribute( $attr ) ) ) ) {
 				return trim( $img->getAttribute( $attr ) );
 			}
 		}
 
-		// Check parent figure caption
+		// Check parent figure caption..
 		$parent = $img->parentNode;
 		while ( $parent && $parent->nodeType === XML_ELEMENT_NODE ) {
 			if ( $parent->nodeName === 'figure' ) {
@@ -110,7 +110,7 @@ class MissingAltTextFixer extends BaseFixer {
 			$parent = $parent->parentNode;
 		}
 
-		// Generate from filename as last resort
+		// Generate from filename as last resort..
 		return $this->generate_alt_text( $src );
 	}
 }

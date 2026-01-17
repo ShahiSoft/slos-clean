@@ -30,13 +30,13 @@ class ComplexContrastCheck extends AbstractCheck {
 		$dom    = $this->get_dom( $content );
 		$xpath  = new \DOMXPath( $dom );
 
-		// Check for background images or gradients in inline styles
+		// Check for background images or gradients in inline styles..
 		$elements = $xpath->query( '//*[@style]' );
 
 		foreach ( $elements as $element ) {
 			$style = $element->getAttribute( 'style' );
 
-			// Check for gradients
+			// Check for gradients..
 			if ( preg_match( '/gradient\(/i', $style ) ) {
 				$issues[] = array(
 					'element' => $element->tagName,
@@ -45,9 +45,9 @@ class ComplexContrastCheck extends AbstractCheck {
 				);
 			}
 
-			// Check for background images
+			// Check for background images..
 			if ( preg_match( '/background-image\s*:/i', $style ) || preg_match( '/url\(/i', $style ) ) {
-				// Only flag if there is text content inside
+				// Only flag if there is text content inside..
 				if ( trim( $element->textContent ) !== '' ) {
 					$issues[] = array(
 						'element' => $element->tagName,

@@ -80,7 +80,7 @@ class Cookie_Scanner_Service extends Base_Service {
 	 */
 	public function get_default_patterns(): array {
 		return array(
-			// Necessary
+			// Necessary..
 			array(
 				'pattern'     => '/^PHPSESSID$/',
 				'category'    => 'necessary',
@@ -106,7 +106,7 @@ class Cookie_Scanner_Service extends Base_Service {
 				'description' => 'Cart/session',
 			),
 
-			// Analytics
+			// Analytics..
 			array(
 				'pattern'     => '/^_ga$/',
 				'category'    => 'analytics',
@@ -138,7 +138,7 @@ class Cookie_Scanner_Service extends Base_Service {
 				'description' => 'Segment analytics',
 			),
 
-			// Marketing
+			// Marketing..
 			array(
 				'pattern'     => '/^_fbp$/',
 				'category'    => 'marketing',
@@ -170,7 +170,7 @@ class Cookie_Scanner_Service extends Base_Service {
 				'description' => 'Ad click',
 			),
 
-			// Functional / Preferences
+			// Functional / Preferences..
 			array(
 				'pattern'     => '/^intercom.*/',
 				'category'    => 'functional',
@@ -216,7 +216,7 @@ class Cookie_Scanner_Service extends Base_Service {
 				);
 			}
 		}
-		// Fallback heuristics
+		// Fallback heuristics..
 		if ( stripos( $name, 'lang' ) !== false ) {
 			return array(
 				'category'    => 'preferences',
@@ -313,13 +313,13 @@ class Cookie_Scanner_Service extends Base_Service {
 			);
 		}
 
-		// Attach environment metadata
+		// Attach environment metadata..
 		$inventory['environment'] = array(
 			'userAgent' => $user_agent,
 			'ipHash'    => $this->hash_ip( $this->get_user_ip() ),
 		);
 
-		// Persist last inventory in option for admin review
+		// Persist last inventory in option for admin review..
 		update_option( $this->option_key_inventory, wp_json_encode( $inventory ), false );
 
 		return $inventory;
@@ -392,12 +392,12 @@ class Cookie_Scanner_Service extends Base_Service {
 		$metadata['errors']        = $results['errors'] ?? array();
 		$metadata['results']       = $results;
 
-		// Update scan time option for backward compatibility
+		// Update scan time option for backward compatibility..
 		update_option( 'slos_cookie_scan_time', $completed_at, false );
 
 		$success = update_option( $this->option_key_scan_meta, $metadata, false );
 
-		// Fire action for document staleness detection
+		// Fire action for document staleness detection..
 		if ( $success ) {
 			$cookies = get_option( 'slos_cookie_inventory', array() );
 			do_action( 'slos_cookies_updated', $cookies );

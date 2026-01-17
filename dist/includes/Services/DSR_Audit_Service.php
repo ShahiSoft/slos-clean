@@ -15,7 +15,7 @@ namespace ShahiLegalFlowSuite\Services;
 
 use ShahiLegalFlowSuite\Database\Repositories\DSR_Audit_Log_Repository;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -41,13 +41,13 @@ class DSR_Audit_Service extends Base_Service {
 	 * Constructor
 	 *
 	 * @since 3.0.1
-	 * @param DSR_Audit_Log_Repository $repository Audit log repository instance
+	 * @param DSR_Audit_Log_Repository $repository Audit log repository instance.
 	 */
 	public function __construct( DSR_Audit_Log_Repository $repository ) {
 		parent::__construct();
 		$this->repository = $repository;
 
-		// Hook into existing DSR action hooks to auto-log
+		// Hook into existing DSR action hooks to auto-log..
 		add_action( 'slos_dsr_audit_log', array( $this, 'handle_audit_hook' ), 10, 3 );
 	}
 
@@ -55,21 +55,21 @@ class DSR_Audit_Service extends Base_Service {
 	 * Log DSR action with automatic environment capture
 	 *
 	 * @since 3.0.1
-	 * @param int    $request_id DSR request ID
-	 * @param string $action     Action type (e.g., 'submit', 'verify', 'status_change')
-	 * @param array  $data       Additional data {
-	 *     @type int    $actor_id  User ID performing action (null for system/requester)
-	 *     @type string $note      Human-readable note
-	 *     @type array  $metadata  Additional structured data
+	 * @param int    $request_id DSR request ID.
+	 * @param string $action     Action type (e.g., 'submit', 'verify', 'status_change').
+	 * @param array  $data       Additional data. {
+	 *     @type int    $actor_id  User ID performing action (null for system/requester).
+	 *     @type string $note      Human-readable note.
+	 *     @type array  $metadata  Additional structured data.
 	 * }
 	 * @return int|false Log ID or false on failure
 	 */
 	public function log( int $request_id, string $action, array $data = array() ): int|false {
-		// Automatically capture IP and user agent
+		// Automatically capture IP and user agent..
 		$data['ip_address'] = $this->get_client_ip();
-		$data['user_agent'] = $_SERVER['HTTP_USER_AGENT'] ?? '';
+		$data['user_agent'] = isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '';
 
-		// Set actor_id to current user if not specified
+		// Set actor_id to current user if not specified..
 		if ( ! isset( $data['actor_id'] ) && is_user_logged_in() ) {
 			$data['actor_id'] = get_current_user_id();
 		}
@@ -96,9 +96,9 @@ class DSR_Audit_Service extends Base_Service {
 	 * Handle legacy audit hook for backward compatibility
 	 *
 	 * @since 3.0.1
-	 * @param int    $request_id DSR request ID
-	 * @param string $action     Action type
-	 * @param array  $data       Additional data
+	 * @param int    $request_id DSR request ID.
+	 * @param string $action     Action type.
+	 * @param array  $data       Additional data.
 	 * @return void
 	 */
 	public function handle_audit_hook( int $request_id, string $action, array $data = array() ): void {
@@ -109,9 +109,9 @@ class DSR_Audit_Service extends Base_Service {
 	 * Log request submission
 	 *
 	 * @since 3.0.1
-	 * @param int    $request_id DSR request ID
-	 * @param string $email      Requester email
-	 * @param string $type       Request type
+	 * @param int    $request_id DSR request ID.
+	 * @param string $email      Requester email.
+	 * @param string $type       Request type.
 	 * @return int|false Log ID or false on failure
 	 */
 	public function log_submission( int $request_id, string $email, string $type ): int|false {
@@ -132,7 +132,7 @@ class DSR_Audit_Service extends Base_Service {
 	 * Log email verification
 	 *
 	 * @since 3.0.1
-	 * @param int $request_id DSR request ID
+	 * @param int $request_id DSR request ID.
 	 * @return int|false Log ID or false on failure
 	 */
 	public function log_verification( int $request_id ): int|false {
@@ -149,11 +149,11 @@ class DSR_Audit_Service extends Base_Service {
 	 * Log status change
 	 *
 	 * @since 3.0.1
-	 * @param int    $request_id  DSR request ID
-	 * @param string $old_status  Previous status
-	 * @param string $new_status  New status
-	 * @param int    $actor_id    User ID making change
-	 * @param string $note        Optional note
+	 * @param int    $request_id  DSR request ID.
+	 * @param string $old_status  Previous status.
+	 * @param string $new_status  New status.
+	 * @param int    $actor_id    User ID making change.
+	 * @param string $note        Optional note.
 	 * @return int|false Log ID or false on failure
 	 */
 	public function log_status_change( int $request_id, string $old_status, string $new_status, int $actor_id = 0, string $note = '' ): int|false {
@@ -163,7 +163,7 @@ class DSR_Audit_Service extends Base_Service {
 			$request_id,
 			'status_change',
 			array(
-				'actor_id' => $actor_id ?: null,
+				'actor_id' => $actor_id ? $actor_id : null,
 				'note'     => ! empty( $note ) ? $note : $default_note,
 				'metadata' => array(
 					'old_status' => $old_status,
@@ -177,9 +177,9 @@ class DSR_Audit_Service extends Base_Service {
 	 * Log request assignment
 	 *
 	 * @since 3.0.1
-	 * @param int $request_id   DSR request ID
-	 * @param int $assigned_to  User ID assigned to
-	 * @param int $assigned_by  User ID who assigned
+	 * @param int $request_id   DSR request ID.
+	 * @param int $assigned_to  User ID assigned to.
+	 * @param int $assigned_by  User ID who assigned.
 	 * @return int|false Log ID or false on failure
 	 */
 	public function log_assignment( int $request_id, int $assigned_to, int $assigned_by = 0 ): int|false {
@@ -196,7 +196,7 @@ class DSR_Audit_Service extends Base_Service {
 			$request_id,
 			'assign',
 			array(
-				'actor_id' => $assigned_by ?: null,
+				'actor_id' => $assigned_by ? $assigned_by : null,
 				'note'     => $note,
 				'metadata' => array(
 					'assigned_to' => $assigned_to,
@@ -210,9 +210,9 @@ class DSR_Audit_Service extends Base_Service {
 	 * Log note addition
 	 *
 	 * @since 3.0.1
-	 * @param int    $request_id DSR request ID
-	 * @param string $note       Note text
-	 * @param int    $actor_id   User ID adding note
+	 * @param int    $request_id DSR request ID.
+	 * @param string $note       Note text.
+	 * @param int    $actor_id   User ID adding note.
 	 * @return int|false Log ID or false on failure
 	 */
 	public function log_note( int $request_id, string $note, int $actor_id = 0 ): int|false {
@@ -220,7 +220,7 @@ class DSR_Audit_Service extends Base_Service {
 			$request_id,
 			'note_added',
 			array(
-				'actor_id' => $actor_id ?: null,
+				'actor_id' => $actor_id ? $actor_id : null,
 				'note'     => $note,
 			)
 		);
@@ -230,9 +230,9 @@ class DSR_Audit_Service extends Base_Service {
 	 * Log export generation
 	 *
 	 * @since 3.0.1
-	 * @param int    $request_id DSR request ID
-	 * @param string $format     Export format (json, xml, csv, pdf, html)
-	 * @param int    $actor_id   User ID generating export
+	 * @param int    $request_id DSR request ID.
+	 * @param string $format     Export format (json, xml, csv, pdf, html).
+	 * @param int    $actor_id   User ID generating export.
 	 * @return int|false Log ID or false on failure
 	 */
 	public function log_export_generated( int $request_id, string $format, int $actor_id = 0 ): int|false {
@@ -240,7 +240,7 @@ class DSR_Audit_Service extends Base_Service {
 			$request_id,
 			'export_generated',
 			array(
-				'actor_id' => $actor_id ?: null,
+				'actor_id' => $actor_id ? $actor_id : null,
 				'note'     => sprintf( 'Data export generated in %s format', strtoupper( $format ) ),
 				'metadata' => array(
 					'format'    => $format,
@@ -254,9 +254,9 @@ class DSR_Audit_Service extends Base_Service {
 	 * Log export download
 	 *
 	 * @since 3.0.1
-	 * @param int    $request_id DSR request ID
-	 * @param string $token      Download token
-	 * @param string $format     Export format
+	 * @param int    $request_id DSR request ID.
+	 * @param string $token      Download token.
+	 * @param string $format     Export format.
 	 * @return int|false Log ID or false on failure
 	 */
 	public function log_export_download( int $request_id, string $token, string $format ): int|false {
@@ -266,7 +266,7 @@ class DSR_Audit_Service extends Base_Service {
 			array(
 				'note'     => sprintf( 'Export file downloaded (%s format)', strtoupper( $format ) ),
 				'metadata' => array(
-					'token'     => substr( $token, 0, 8 ) . '...', // Only log partial token
+					'token'     => substr( $token, 0, 8 ) . '...', // Only log partial token.
 					'format'    => $format,
 					'timestamp' => current_time( 'mysql' ),
 				),
@@ -278,14 +278,14 @@ class DSR_Audit_Service extends Base_Service {
 	 * Log erasure execution
 	 *
 	 * @since 3.0.1
-	 * @param int   $request_id  DSR request ID
-	 * @param array $summary     Erasure summary {
-	 *     @type int $items_deleted Total items deleted
-	 *     @type int $items_failed  Total items failed
-	 *     @type int $items_skipped Total items skipped
+	 * @param int   $request_id  DSR request ID.
+	 * @param array $summary     Erasure summary. {
+	 *     @type int $items_deleted Total items deleted.
+	 *     @type int $items_failed  Total items failed.
+	 *     @type int $items_skipped Total items skipped.
 	 * }
-	 * @param int   $actor_id    User ID executing erasure
-	 * @return int|false Log ID or false on failure
+	 * @param int   $actor_id    User ID executing erasure.
+	 * @return int|false Log ID or failure on failure
 	 */
 	public function log_erasure_executed( int $request_id, array $summary, int $actor_id = 0 ): int|false {
 		$note = sprintf(
@@ -299,7 +299,7 @@ class DSR_Audit_Service extends Base_Service {
 			$request_id,
 			'erasure_executed',
 			array(
-				'actor_id' => $actor_id ?: null,
+				'actor_id' => $actor_id ? $actor_id : null,
 				'note'     => $note,
 				'metadata' => $summary,
 			)
@@ -310,9 +310,9 @@ class DSR_Audit_Service extends Base_Service {
 	 * Log dry-run erasure preview
 	 *
 	 * @since 3.0.1
-	 * @param int   $request_id DSR request ID
-	 * @param array $preview    Preview summary
-	 * @param int   $actor_id   User ID running preview
+	 * @param int   $request_id DSR request ID.
+	 * @param array $preview    Preview summary.
+	 * @param int   $actor_id   User ID running preview.
 	 * @return int|false Log ID or false on failure
 	 */
 	public function log_erasure_preview( int $request_id, array $preview, int $actor_id = 0 ): int|false {
@@ -325,7 +325,7 @@ class DSR_Audit_Service extends Base_Service {
 			$request_id,
 			'erasure_preview',
 			array(
-				'actor_id' => $actor_id ?: null,
+				'actor_id' => $actor_id ? $actor_id : null,
 				'note'     => $note,
 				'metadata' => $preview,
 			)
@@ -336,14 +336,14 @@ class DSR_Audit_Service extends Base_Service {
 	 * Get timeline for a request
 	 *
 	 * @since 3.0.1
-	 * @param int   $request_id DSR request ID
-	 * @param array $args       Query arguments
+	 * @param int   $request_id DSR request ID.
+	 * @param array $args       Query arguments.
 	 * @return array Array of log entries with formatted data
 	 */
 	public function get_timeline( int $request_id, array $args = array() ): array {
 		$logs = $this->repository->get_logs_by_request( $request_id, $args );
 
-		// Enhance logs with user data
+		// Enhance logs with user data..
 		foreach ( $logs as &$log ) {
 			if ( ! empty( $log['actor_id'] ) ) {
 				$user              = get_userdata( $log['actor_id'] );
@@ -352,7 +352,7 @@ class DSR_Audit_Service extends Base_Service {
 				$log['actor_name'] = 'System';
 			}
 
-			// Format action label
+			// Format action label..
 			$log['action_label'] = $this->get_action_label( $log['action'] );
 		}
 
@@ -363,13 +363,13 @@ class DSR_Audit_Service extends Base_Service {
 	 * Get logs with filters (admin)
 	 *
 	 * @since 3.0.1
-	 * @param array $filters Filter parameters
+	 * @param array $filters Filter parameters.
 	 * @return array Array with 'logs' and 'total' keys
 	 */
 	public function get_logs( array $filters = array() ): array {
 		$result = $this->repository->get_logs( $filters );
 
-		// Enhance logs with user data
+		// Enhance logs with user data..
 		foreach ( $result['logs'] as &$log ) {
 			if ( ! empty( $log['actor_id'] ) ) {
 				$user              = get_userdata( $log['actor_id'] );
@@ -378,7 +378,7 @@ class DSR_Audit_Service extends Base_Service {
 				$log['actor_name'] = 'System';
 			}
 
-			// Format action label
+			// Format action label..
 			$log['action_label'] = $this->get_action_label( $log['action'] );
 		}
 
@@ -389,8 +389,8 @@ class DSR_Audit_Service extends Base_Service {
 	 * Get action statistics for reporting
 	 *
 	 * @since 3.0.1
-	 * @param string $start_date Start date (YYYY-MM-DD)
-	 * @param string $end_date   End date (YYYY-MM-DD)
+	 * @param string $start_date Start date (YYYY-MM-DD).
+	 * @param string $end_date   End date (YYYY-MM-DD).
 	 * @return array Action statistics
 	 */
 	public function get_action_statistics( string $start_date, string $end_date ): array {
@@ -401,13 +401,13 @@ class DSR_Audit_Service extends Base_Service {
 	 * Get recent activity for dashboard
 	 *
 	 * @since 3.0.1
-	 * @param int $limit Number of recent actions
+	 * @param int $limit Number of recent actions.
 	 * @return array Recent log entries
 	 */
 	public function get_recent_activity( int $limit = 10 ): array {
 		$logs = $this->repository->get_recent_actions( $limit );
 
-		// Enhance with user data
+		// Enhance with user data..
 		foreach ( $logs as &$log ) {
 			if ( ! empty( $log['actor_id'] ) ) {
 				$user              = get_userdata( $log['actor_id'] );
@@ -426,7 +426,7 @@ class DSR_Audit_Service extends Base_Service {
 	 * Delete logs for a request (GDPR erasure)
 	 *
 	 * @since 3.0.1
-	 * @param int $request_id DSR request ID
+	 * @param int $request_id DSR request ID.
 	 * @return int|false Number of logs deleted or false on failure
 	 */
 	public function delete_logs( int $request_id ): int|false {
@@ -437,7 +437,7 @@ class DSR_Audit_Service extends Base_Service {
 	 * Get human-readable action label
 	 *
 	 * @since 3.0.1
-	 * @param string $action Action type
+	 * @param string $action Action type.
 	 * @return string Formatted label
 	 */
 	private function get_action_label( string $action ): string {
@@ -464,16 +464,16 @@ class DSR_Audit_Service extends Base_Service {
 	 */
 	private function get_client_ip(): string {
 		$ip_keys = array(
-			'HTTP_CF_CONNECTING_IP', // CloudFlare
-			'HTTP_X_REAL_IP',        // Nginx proxy
-			'HTTP_X_FORWARDED_FOR',  // Standard proxy
-			'REMOTE_ADDR',           // Direct connection
+			'HTTP_CF_CONNECTING_IP', // CloudFlare.
+			'HTTP_X_REAL_IP',        // Nginx proxy.
+			'HTTP_X_FORWARDED_FOR',  // Standard proxy.
+			'REMOTE_ADDR',           // Direct connection.
 		);
 
 		foreach ( $ip_keys as $key ) {
 			if ( ! empty( $_SERVER[ $key ] ) ) {
-				$ip = $_SERVER[ $key ];
-				// Handle comma-separated IPs (take first)
+				$ip = sanitize_text_field( wp_unslash( $_SERVER[ $key ] ) );
+				// Handle comma-separated IPs (take first)..
 				if ( strpos( $ip, ',' ) !== false ) {
 					$ip = explode( ',', $ip )[0];
 				}

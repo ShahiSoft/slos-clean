@@ -48,7 +48,7 @@ class TouchTargetCheck extends AbstractCheck {
 		$dom    = $this->get_dom( $content );
 		$xpath  = new \DOMXPath( $dom );
 
-		// Check all interactive elements (expanded query)
+		// Check all interactive elements (expanded query)..
 		$elements = $xpath->query( '//a[@style] | //button[@style] | //input[@style] | //*[@onclick and @style] | //*[@role="button" and @style] | //*[@role="link" and @style]' );
 
 		foreach ( $elements as $element ) {
@@ -58,11 +58,11 @@ class TouchTargetCheck extends AbstractCheck {
 				$width  = $size['width'];
 				$height = $size['height'];
 
-				// Check against AAA standard (44px)
+				// Check against AAA standard (44px)..
 				if ( $width < $this->min_size_aaa || $height < $this->min_size_aaa ) {
-					// Determine severity based on size
+					// Determine severity based on size..
 					if ( $width < $this->min_size_aa || $height < $this->min_size_aa ) {
-						// Below AA minimum - more severe
+						// Below AA minimum - more severe..
 						$issues[] = array(
 							'element'    => $element->tagName,
 							'context'    => $this->get_element_html( $element ),
@@ -75,7 +75,7 @@ class TouchTargetCheck extends AbstractCheck {
 							'confidence' => 'high',
 						);
 					} else {
-						// Between AA and AAA
+						// Between AA and AAA..
 						$issues[] = array(
 							'element'    => $element->tagName,
 							'context'    => $this->get_element_html( $element ),
@@ -92,7 +92,7 @@ class TouchTargetCheck extends AbstractCheck {
 			}
 		}
 
-		// Check for small icon buttons without explicit size
+		// Check for small icon buttons without explicit size..
 		$this->check_icon_buttons( $xpath, $issues );
 
 		return $issues;
@@ -113,11 +113,11 @@ class TouchTargetCheck extends AbstractCheck {
 		$min_height = $this->extract_dimension( $style, 'min-height' );
 		$padding    = $this->extract_padding( $style );
 
-		// Use the larger of width or min-width
+		// Use the larger of width or min-width..
 		$effective_width  = max( $width ?? 0, $min_width ?? 0 );
 		$effective_height = max( $height ?? 0, $min_height ?? 0 );
 
-		// Add padding to effective size (padding expands clickable area)
+		// Add padding to effective size (padding expands clickable area)..
 		if ( $padding !== null ) {
 			$effective_width  += $padding['left'] + $padding['right'];
 			$effective_height += $padding['top'] + $padding['bottom'];
@@ -137,12 +137,12 @@ class TouchTargetCheck extends AbstractCheck {
 	 * Extract dimension from style string (supports px, em, rem)
 	 */
 	private function extract_dimension( $style, $prop ) {
-		// Match property with various units
+		// Match property with various units..
 		if ( preg_match( '/' . preg_quote( $prop, '/' ) . '\s*:\s*([\d.]+)(px|em|rem|pt)/i', $style, $matches ) ) {
 			$value = (float) $matches[1];
 			$unit  = strtolower( $matches[2] );
 
-			// Convert to pixels (approximate)
+			// Convert to pixels (approximate)..
 			switch ( $unit ) {
 				case 'em':
 				case 'rem':
@@ -160,7 +160,7 @@ class TouchTargetCheck extends AbstractCheck {
 	 * Extract padding values from style string
 	 */
 	private function extract_padding( $style ) {
-		// Simple padding extraction (shorthand or individual)
+		// Simple padding extraction (shorthand or individual)..
 		$padding = array(
 			'top'    => 0,
 			'right'  => 0,
@@ -168,7 +168,7 @@ class TouchTargetCheck extends AbstractCheck {
 			'left'   => 0,
 		);
 
-		// Check individual padding properties
+		// Check individual padding properties..
 		foreach ( array( 'top', 'right', 'bottom', 'left' ) as $side ) {
 			$value = $this->extract_dimension( $style, "padding-{$side}" );
 			if ( $value !== null ) {
@@ -176,7 +176,7 @@ class TouchTargetCheck extends AbstractCheck {
 			}
 		}
 
-		// Check shorthand padding (simplified - single value only)
+		// Check shorthand padding (simplified - single value only)..
 		if ( preg_match( '/padding\s*:\s*([\d.]+)(px|em|rem)/i', $style, $matches ) ) {
 			$value   = $this->convert_to_pixels( (float) $matches[1], $matches[2] );
 			$padding = array(
@@ -187,7 +187,7 @@ class TouchTargetCheck extends AbstractCheck {
 			);
 		}
 
-		// Return null if all zeros
+		// Return null if all zeros..
 		if ( array_sum( $padding ) === 0 ) {
 			return null;
 		}
@@ -214,15 +214,15 @@ class TouchTargetCheck extends AbstractCheck {
 	 * Check for icon buttons that might be too small
 	 */
 	private function check_icon_buttons( $xpath, &$issues ) {
-		// Find buttons with only icon content (no text)
+		// Find buttons with only icon content (no text)..
 		$icon_buttons = $xpath->query( '//button[.//i or .//svg or .//img] | //a[.//i or .//svg]' );
 
 		foreach ( $icon_buttons as $button ) {
-			// Check if button has meaningful text content
+			// Check if button has meaningful text content..
 			$text = trim( preg_replace( '/\s+/', ' ', $button->textContent ) );
 
 			if ( strlen( $text ) <= 2 ) {
-				// Icon-only button - check for aria-label
+				// Icon-only button - check for aria-label..
 				$has_label = $button->hasAttribute( 'aria-label' ) || $button->hasAttribute( 'title' );
 
 				if ( ! $has_label ) {

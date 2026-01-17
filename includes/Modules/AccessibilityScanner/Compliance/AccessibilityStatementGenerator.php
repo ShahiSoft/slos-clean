@@ -18,7 +18,7 @@ class AccessibilityStatementGenerator {
 			'site_name'     => get_bloginfo( 'name' ),
 			'contact_email' => get_option( 'admin_email' ),
 			'standard'      => 'WCAG 2.1 Level AA',
-			'date'          => date( 'F j, Y' ),
+			'date'          => gmdate( 'F j, Y' ),
 		);
 
 		$data = wp_parse_args( $data, $defaults );
@@ -50,8 +50,7 @@ class AccessibilityStatementGenerator {
 	 * @return string HTML Content
 	 */
 	private function get_template( $data ) {
-		return <<<HTML
-<!-- wp:heading -->
+		return "<!-- wp:heading -->
 <h2>Accessibility Statement for {$data['site_name']}</h2>
 <!-- /wp:heading -->
 
@@ -59,7 +58,7 @@ class AccessibilityStatementGenerator {
 <p>This is an accessibility statement from {$data['site_name']}.</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading {"level":3} -->
+<!-- wp:heading {\"level\":3} -->
 <h3>Measures to support accessibility</h3>
 <!-- /wp:heading -->
 
@@ -77,15 +76,15 @@ class AccessibilityStatementGenerator {
 </ul>
 <!-- /wp:list -->
 
-<!-- wp:heading {"level":3} -->
+<!-- wp:heading {\"level\":3} -->
 <h3>Conformance status</h3>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>The <a href="https://www.w3.org/WAI/standards-guidelines/wcag/">Web Content Accessibility Guidelines (WCAG)</a> defines requirements for designers and developers to improve accessibility for people with disabilities. It defines three levels of conformance: Level A, Level AA, and Level AAA. {$data['site_name']} is partially conformant with {$data['standard']}. Partially conformant means that some parts of the content do not fully conform to the accessibility standard.</p>
+<p>The <a href=\"https://www.w3.org/WAI/standards-guidelines/wcag/\">Web Content Accessibility Guidelines (WCAG)</a> defines requirements for designers and developers to improve accessibility for people with disabilities. It defines three levels of conformance: Level A, Level AA, and Level AAA. {$data['site_name']} is partially conformant with {$data['standard']}. Partially conformant means that some parts of the content do not fully conform to the accessibility standard.</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading {"level":3} -->
+<!-- wp:heading {\"level\":3} -->
 <h3>Feedback</h3>
 <!-- /wp:heading -->
 
@@ -95,7 +94,7 @@ class AccessibilityStatementGenerator {
 
 <!-- wp:list -->
 <ul>
-<li>E-mail: <a href="mailto:{$data['contact_email']}">{$data['contact_email']}</a></li>
+<li>E-mail: <a href=\"mailto:{$data['contact_email']}\">{$data['contact_email']}</a></li>
 </ul>
 <!-- /wp:list -->
 
@@ -105,7 +104,6 @@ class AccessibilityStatementGenerator {
 
 <!-- wp:paragraph -->
 <p>This statement was created on {$data['date']} using the Shahi LegalFlowSuite Accessibility Scanner.</p>
-<!-- /wp:paragraph -->
-HTML;
+<!-- /wp:paragraph -->";
 	}
 }

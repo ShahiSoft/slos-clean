@@ -161,7 +161,7 @@ use ShahiLegalFlowSuite\Admin\Network_Compliance_Dashboard;
 							<td>
 								<strong><?php echo esc_html( $site['name'] ); ?></strong>
 								<br>
-								<small class="slos-muted"><?php echo esc_html( sprintf( __( 'Site ID: %d', 'shahi-legalflowsuite' ), $site['blog_id'] ) ); ?></small>
+								<small class="slos-muted"><?php /* translators: %d: site ID (blog_id) */ echo esc_html( sprintf( __( 'Site ID: %d', 'shahi-legalflowsuite' ), $site['blog_id'] ) ); ?></small>
 							</td>
 							<td>
 								<a href="<?php echo esc_url( $site['url'] ); ?>" target="_blank" rel="noopener">
@@ -184,7 +184,7 @@ use ShahiLegalFlowSuite\Admin\Network_Compliance_Dashboard;
 							<td>
 								<?php if ( $site['issues_count'] > 0 ) : ?>
 									<span class="slos-issues-badge slos-badge-warning">
-										<?php echo esc_html( sprintf( _n( '%d issue', '%d issues', $site['issues_count'], 'shahi-legalflowsuite' ), $site['issues_count'] ) ); ?>
+									<?php echo esc_html( sprintf( /* translators: %d: number of issues found */ _n( '%d issue', '%d issues', $site['issues_count'], 'shahi-legalflowsuite' ), $site['issues_count'] ) ); ?>
 									</span>
 								<?php else : ?>
 									<span class="slos-issues-badge slos-badge-success">

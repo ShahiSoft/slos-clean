@@ -20,11 +20,44 @@ class AccessibilitySettings {
 	}
 
 	public function register_settings() {
-		register_setting( 'slos_accessibility_settings', 'slos_active_checkers' );
-		register_setting( 'slos_accessibility_settings', 'slos_active_fixes' );
-		register_setting( 'slos_accessibility_settings', 'slos_widget_features' );
-		register_setting( 'slos_accessibility_settings', 'slos_widget_position' );
-		register_setting( 'slos_accessibility_settings', 'slos_widget_color' );
+		register_setting(
+			'slos_accessibility_settings',
+			'slos_active_checkers',
+			array( 'sanitize_callback' => array( $this, 'sanitize_accessibility_settings' ) )
+		);
+		register_setting(
+			'slos_accessibility_settings',
+			'slos_active_fixes',
+			array( 'sanitize_callback' => array( $this, 'sanitize_accessibility_settings' ) )
+		);
+		register_setting(
+			'slos_accessibility_settings',
+			'slos_widget_features',
+			array( 'sanitize_callback' => array( $this, 'sanitize_accessibility_settings' ) )
+		);
+		register_setting(
+			'slos_accessibility_settings',
+			'slos_widget_position',
+			array( 'sanitize_callback' => array( $this, 'sanitize_accessibility_settings' ) )
+		);
+		register_setting(
+			'slos_accessibility_settings',
+			'slos_widget_color',
+			array( 'sanitize_callback' => array( $this, 'sanitize_accessibility_settings' ) )
+		);
+	}
+
+	/**
+	 * Sanitize accessibility settings.
+	 *
+	 * @param mixed $input The input value to sanitize.
+	 * @return mixed The sanitized value.
+	 */
+	public function sanitize_accessibility_settings( $input ) {
+		if ( is_array( $input ) ) {
+			return array_map( 'sanitize_text_field', $input );
+		}
+		return sanitize_text_field( $input );
 	}
 
 	public function render() {
@@ -32,19 +65,19 @@ class AccessibilitySettings {
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'shahi-legalflowsuite' ) );
 		}
 
-		// Check if module is enabled
+		// Check if module is enabled..
 		$module_manager       = \ShahiLegalFlowSuite\Modules\ModuleManager::get_instance();
 		$accessibility_module = $module_manager->get_module( 'accessibility-scanner' );
 
 		if ( ! $accessibility_module || ! $accessibility_module->is_enabled() ) {
 			wp_die(
-				__( 'The Accessibility Scanner module is currently disabled. Please enable it from the Module Dashboard.', 'shahi-legalflowsuite' ),
-				__( 'Module Disabled', 'shahi-legalflowsuite' ),
+				esc_html__( 'The Accessibility Scanner module is currently disabled. Please enable it from the Module Dashboard.', 'shahi-legalflowsuite' ),
+				esc_html__( 'Module Disabled', 'shahi-legalflowsuite' ),
 				array( 'back_link' => true )
 			);
 		}
 
-		// Get available checkers and fixes
+		// Get available checkers and fixes..
 		$checkers = $this->get_available_checkers();
 		$fixes    = $this->get_available_fixes();
 
@@ -61,14 +94,14 @@ class AccessibilitySettings {
 	 * @return void
 	 */
 	public function render_content() {
-		// Get available checkers and fixes
+		// Get available checkers and fixes..
 		$checkers = $this->get_available_checkers();
 		$fixes    = $this->get_available_fixes();
 
 		$active_checkers = get_option( 'slos_active_checkers', array() );
 		$active_fixes    = get_option( 'slos_active_fixes', array() );
 
-		// Render inline settings (embedded in tab)
+		// Render inline settings (embedded in tab)..
 		$this->render_settings_content( $checkers, $fixes, $active_checkers, $active_fixes );
 	}
 
@@ -382,7 +415,7 @@ class AccessibilitySettings {
 	}
 
 	private function get_available_checkers() {
-		// This should ideally come from the ScannerEngine, but hardcoding for now based on implementation
+		// This should ideally come from the ScannerEngine, but hardcoding for now based on implementation..
 		return array(
 			'missing-alt-text'     => 'Missing Alt Text',
 			'empty-alt-text'       => 'Empty Alt Text',
@@ -452,7 +485,7 @@ class AccessibilitySettings {
 			'viewport'             => 'Viewport Configuration',
 			'touch-target'         => 'Touch Targets',
 			'touch-gesture'        => 'Touch Gestures',
-			// Phase 3: New Checkers (WCAG Coverage Enhancement)
+			// Phase 3: New Checkers (WCAG Coverage Enhancement)..
 			'language-change'      => 'Language Changes',
 			'animation-pause'      => 'Animation Pause Controls',
 			'timing-control'       => 'Timing Controls',
@@ -460,9 +493,9 @@ class AccessibilitySettings {
 			'error-identification' => 'Error Identification',
 		);
 
-		// Filter out dormant checkers
+		// Filter out dormant checkers..
 		if ( defined( 'SLOS_DORMANT_CHECKERS' ) && is_array( SLOS_DORMANT_CHECKERS ) ) {
-			// Map settings keys to checker IDs
+			// Map settings keys to checker IDs..
 			$key_to_id_map = array(
 				'complex-image'       => 'complex-image',
 				'logo-image'          => 'logo-image',
@@ -539,7 +572,7 @@ class AccessibilitySettings {
 			'add_live_regions'         => 'Add Live Regions',
 			'fix_modal_dialogs'        => 'Fix Modal Dialogs',
 			'generate_transcripts'     => 'Generate Transcripts',
-			// Phase 3: New Auto-Fixers (WCAG Coverage Enhancement)
+			// Phase 3: New Auto-Fixers (WCAG Coverage Enhancement)..
 			'fix_language_changes'     => 'Fix Language Changes',
 			'fix_animation_controls'   => 'Fix Animation Controls',
 			'fix_timing_controls'      => 'Fix Timing Controls',

@@ -33,15 +33,15 @@ class NewWindowLinkCheck extends AbstractCheck {
 		foreach ( $links as $link ) {
 			if ( $link->hasAttribute( 'target' ) && $link->getAttribute( 'target' ) === '_blank' ) {
 				$text = $link->textContent;
-				// Check for warning text or aria-label
+				// Check for warning text or aria-label..
 				$hasWarning = false;
 
-				// Check text content for keywords
+				// Check text content for keywords..
 				if ( stripos( $text, 'new window' ) !== false || stripos( $text, 'new tab' ) !== false || stripos( $text, 'external' ) !== false ) {
 					$hasWarning = true;
 				}
 
-				// Check aria-label
+				// Check aria-label..
 				if ( $link->hasAttribute( 'aria-label' ) ) {
 					$ariaLabel = $link->getAttribute( 'aria-label' );
 					if ( stripos( $ariaLabel, 'new window' ) !== false || stripos( $ariaLabel, 'new tab' ) !== false ) {
@@ -49,9 +49,9 @@ class NewWindowLinkCheck extends AbstractCheck {
 					}
 				}
 
-				// Check for screen reader text span
-				// This is a bit heuristic, looking for a child span with "screen-reader-text" or similar class
-				// For now, we'll stick to the basic text/aria check to avoid false positives on complex structures
+				// Check for screen reader text span..
+				// This is a bit heuristic, looking for a child span with "screen-reader-text" or similar class..
+				// For now, we'll stick to the basic text/aria check to avoid false positives on complex structures..
 
 				if ( ! $hasWarning ) {
 					$issues[] = array(

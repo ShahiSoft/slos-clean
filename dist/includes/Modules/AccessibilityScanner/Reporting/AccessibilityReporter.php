@@ -1,4 +1,9 @@
 <?php
+// Prevent direct access.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 namespace ShahiLegalFlowSuite\Modules\AccessibilityScanner\Reporting;
 
 use Dompdf\Dompdf;
@@ -152,7 +157,7 @@ class AccessibilityReporter {
 	}
 
 	private function export_csv( $data ) {
-		$filename = 'accessibility-report-' . date( 'Y-m-d' ) . '.csv';
+		$filename = 'accessibility-report-' . gmdate( 'Y-m-d' ) . '.csv';
 		header( 'Content-Type: text/csv' );
 		header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
 
@@ -195,6 +200,7 @@ class AccessibilityReporter {
 			}
 		}
 
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Required for CSV output streaming
 		fclose( $output );
 		exit;
 	}
@@ -225,7 +231,7 @@ class AccessibilityReporter {
 	 */
 	private function export_pdf( $template = 'executive' ) {
 		if ( ! class_exists( 'Dompdf\Dompdf' ) ) {
-			throw new \Exception( __( 'PDF library not available.', 'shahi-legalflowsuite' ) );
+			throw new \Exception( esc_html__( 'PDF library not available.', 'shahi-legalflowsuite' ) );
 		}
 
 		$data  = $this->get_all_scan_results();
@@ -549,7 +555,7 @@ class AccessibilityReporter {
 		</div>
 		<div class="footer">
 			<p>&copy; ' . date( 'Y' ) . ' ' . esc_html( $site_name ) . ' | <a href="' . esc_url( $site_url ) . '">' . esc_url( $site_url ) . '</a></p>
-			<p>This is an automated report from Shahi LegalOps Suite Accessibility Scanner.</p>
+			<p>This is an automated report from Shahi LegalFlowSuite Accessibility Scanner.</p>
 		</div>
 	</div>
 </body>
@@ -567,7 +573,7 @@ class AccessibilityReporter {
 		<!DOCTYPE html>
 		<html>
 		<head>
-			<title>Accessibility Report - <?php echo date( 'Y-m-d' ); ?></title>
+			<title>Accessibility Report - <?php echo esc_html( date( 'Y-m-d' ) ); ?></title>
 			<style>
 				body { font-family: sans-serif; line-height: 1.6; color: #333; max-width: 1200px; margin: 0 auto; padding: 20px; }
 				h1 { border-bottom: 2px solid #2271b1; padding-bottom: 10px; }
@@ -582,7 +588,7 @@ class AccessibilityReporter {
 		</head>
 		<body>
 			<h1>Accessibility Compliance Report</h1>
-			<p>Generated on: <?php echo date( 'Y-m-d H:i:s' ); ?></p>
+			<p>Generated on: <?php echo esc_html( date( 'Y-m-d H:i:s' ) ); ?></p>
 			<p>Total Pages Scanned: <?php echo count( $data ); ?></p>
 
 			<?php foreach ( $data as $row ) : ?>

@@ -23,9 +23,9 @@ final class RedundantAltTextFixer extends AbstractFixer {
 		foreach ( $images as $img ) {
 			if ( $img->hasAttribute( 'alt' ) ) {
 				$alt = trim( $img->getAttribute( 'alt' ) );
-				// Remove "image of", "picture of", "photo of" prefix
+				// Remove "image of", "picture of", "photo of" prefix..
 				$alt = preg_replace( '/^(image|picture|photo) of /i', '', $alt );
-				// Remove redundant image extensions
+				// Remove redundant image extensions..
 				$alt = preg_replace( '/\.(jpg|jpeg|png|gif|webp)$/i', '', $alt );
 				$img->setAttribute( 'alt', $alt );
 				++$fixed_count;

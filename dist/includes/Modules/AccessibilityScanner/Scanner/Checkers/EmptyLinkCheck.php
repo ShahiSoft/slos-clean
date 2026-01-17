@@ -31,12 +31,12 @@ class EmptyLinkCheck extends AbstractCheck {
 		$links  = $dom->getElementsByTagName( 'a' );
 
 		foreach ( $links as $link ) {
-			// Check for aria-label
+			// Check for aria-label..
 			if ( $link->hasAttribute( 'aria-label' ) && trim( $link->getAttribute( 'aria-label' ) ) !== '' ) {
 				continue;
 			}
 
-			// Check for aria-labelledby
+			// Check for aria-labelledby..
 			if ( $link->hasAttribute( 'aria-labelledby' ) && trim( $link->getAttribute( 'aria-labelledby' ) ) !== '' ) {
 				continue;
 			}
@@ -44,7 +44,7 @@ class EmptyLinkCheck extends AbstractCheck {
 			$text = trim( $link->textContent );
 
 			if ( $text === '' ) {
-				// Check for images with alt text
+				// Check for images with alt text..
 				$hasAccessibleImage = false;
 				$images             = $link->getElementsByTagName( 'img' );
 				foreach ( $images as $img ) {

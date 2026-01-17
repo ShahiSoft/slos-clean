@@ -29,13 +29,13 @@
 			);
 
 			// Check if Chart.js is loaded
-			if (typeof Chart === 'undefined') {
-				console.error(
-					'Chart.js is not loaded. Charts cannot be rendered.'
-				);
-				this.showChartError();
-				return;
-			}
+		if (typeof Chart === 'undefined') {
+			console.error(
+				'Chart.js is not loaded. Charts cannot be rendered.'
+			);
+			this.showChartError();
+			return;
+		}
 
 			this.initEventsChart();
 			this.initHourlyChart();
@@ -51,21 +51,23 @@
 		 * Initialize Events Over Time line chart
 		 */
 		initEventsChart() {
-			let canvas = document.getElementById('shahi-events-chart');
-			if (!canvas) {
+			let canvas = document.getElementById( 'shahi-events-chart' );
+			if ( ! canvas) {
 				return;
 			}
 
-			let labels = JSON.parse(canvas.getAttribute('data-labels') || '[]');
-			let values = JSON.parse(canvas.getAttribute('data-values') || '[]');
+			let labels = JSON.parse( canvas.getAttribute( 'data-labels' ) || '[]' );
+			let values = JSON.parse( canvas.getAttribute( 'data-values' ) || '[]' );
 
-			let ctx = canvas.getContext('2d');
+			let ctx = canvas.getContext( '2d' );
 
-			this.charts.events = new Chart(ctx, {
-				type: 'line',
-				data: {
-					labels,
-					datasets: [
+			this.charts.events = new Chart(
+				ctx,
+				{
+					type: 'line',
+					data: {
+						labels,
+						datasets: [
 						{
 							label: 'Events',
 							data: values,
@@ -83,25 +85,25 @@
 							pointHoverBorderColor: '#ffffff',
 							pointHoverBorderWidth: 3,
 						},
-					],
-				},
-				options: {
-					responsive: true,
-					maintainAspectRatio: false,
-					plugins: {
-						legend: {
-							display: false,
-						},
-						tooltip: {
-							backgroundColor: 'rgba(10, 14, 39, 0.95)',
-							titleColor: '#60a5fa',
-							bodyColor: '#ffffff',
-							borderColor: '#60a5fa',
-							borderWidth: 1,
-							padding: 12,
-							displayColors: false,
-							callbacks: {
-								label (context) {
+						],
+					},
+					options: {
+						responsive: true,
+						maintainAspectRatio: false,
+						plugins: {
+							legend: {
+								display: false,
+							},
+							tooltip: {
+								backgroundColor: 'rgba(10, 14, 39, 0.95)',
+								titleColor: '#60a5fa',
+								bodyColor: '#ffffff',
+								borderColor: '#60a5fa',
+								borderWidth: 1,
+								padding: 12,
+								displayColors: false,
+								callbacks: {
+									label( context ) {
 										return 'Events: ' + context.parsed.y.toLocaleString();
 									}
 								},
@@ -143,28 +145,31 @@
 						mode: 'index',
 					},
 				},
-			});
-		},
+				}
+			);
+	},
 
 		/**
 		 * Initialize Hourly Distribution bar chart
 		 */
 		initHourlyChart() {
-			let canvas = document.getElementById('shahi-hourly-chart');
-			if (!canvas) {
+			let canvas = document.getElementById( 'shahi-hourly-chart' );
+			if ( ! canvas) {
 				return;
 			}
 
-			let labels = JSON.parse(canvas.getAttribute('data-labels') || '[]');
-			let values = JSON.parse(canvas.getAttribute('data-values') || '[]');
+			let labels = JSON.parse( canvas.getAttribute( 'data-labels' ) || '[]' );
+			let values = JSON.parse( canvas.getAttribute( 'data-values' ) || '[]' );
 
-			let ctx = canvas.getContext('2d');
+			let ctx = canvas.getContext( '2d' );
 
-			this.charts.hourly = new Chart(ctx, {
-				type: 'bar',
-				data: {
-					labels: labels,
-					datasets: [
+			this.charts.hourly = new Chart(
+				ctx,
+				{
+					type: 'bar',
+					data: {
+						labels: labels,
+						datasets: [
 						{
 							label: 'Events',
 							data: values,
@@ -175,25 +180,25 @@
 							hoverBackgroundColor: 'rgba(147, 197, 253, 1)',
 							hoverBorderColor: '#a855f7',
 						},
-					],
-				},
-				options: {
-					responsive: true,
-					maintainAspectRatio: false,
-					plugins: {
-						legend: {
-							display: false,
-						},
-						tooltip: {
-							backgroundColor: 'rgba(10, 14, 39, 0.95)',
-							titleColor: '#93c5fd',
-							bodyColor: '#ffffff',
-							borderColor: '#93c5fd',
-							borderWidth: 1,
-							padding: 12,
-							displayColors: false,
-							callbacks: {
-								label (context) {
+						],
+					},
+					options: {
+						responsive: true,
+						maintainAspectRatio: false,
+						plugins: {
+							legend: {
+								display: false,
+							},
+							tooltip: {
+								backgroundColor: 'rgba(10, 14, 39, 0.95)',
+								titleColor: '#93c5fd',
+								bodyColor: '#ffffff',
+								borderColor: '#93c5fd',
+								borderWidth: 1,
+								padding: 12,
+								displayColors: false,
+								callbacks: {
+									label( context ) {
 										return 'Events: ' + context.parsed.y.toLocaleString();
 									}
 								},
@@ -226,35 +231,38 @@
 								font: {
 									size: 12,
 								},
-								callback (value) {
-										return value.toLocaleString();
-									}
+								callback( value ) {
+									return value.toLocaleString();
+								}
 							},
 						},
 					},
 				},
-			});
-		},
+				}
+			);
+},
 
 		/**
 		 * Initialize User Activity pie chart
 		 */
 		initUserActivityChart() {
-			let canvas = document.getElementById('shahi-user-activity-chart');
-			if (!canvas) {
+			let canvas = document.getElementById( 'shahi-user-activity-chart' );
+			if ( ! canvas) {
 				return;
 			}
 
-			let labels = JSON.parse(canvas.getAttribute('data-labels') || '[]');
-			let values = JSON.parse(canvas.getAttribute('data-values') || '[]');
+			let labels = JSON.parse( canvas.getAttribute( 'data-labels' ) || '[]' );
+			let values = JSON.parse( canvas.getAttribute( 'data-values' ) || '[]' );
 
-			let ctx = canvas.getContext('2d');
+			let ctx = canvas.getContext( '2d' );
 
-			this.charts.userActivity = new Chart(ctx, {
-				type: 'doughnut',
-				data: {
-					labels,
-					datasets: [
+			this.charts.userActivity = new Chart(
+				ctx,
+				{
+					type: 'doughnut',
+					data: {
+						labels,
+						datasets: [
 						{
 							data: values,
 							backgroundColor: [
@@ -265,34 +273,34 @@
 							borderWidth: 3,
 							hoverOffset: 10,
 						},
-					],
-				},
-				options: {
-					responsive: true,
-					maintainAspectRatio: false,
-					plugins: {
-						legend: {
-							position: 'bottom',
-							labels: {
-								color: '#a8b2d1',
-								font: {
-									size: 13,
-									weight: '600',
+						],
+					},
+					options: {
+						responsive: true,
+						maintainAspectRatio: false,
+						plugins: {
+							legend: {
+								position: 'bottom',
+								labels: {
+									color: '#a8b2d1',
+									font: {
+										size: 13,
+										weight: '600',
+									},
+									padding: 20,
+									usePointStyle: true,
+									pointStyle: 'circle',
 								},
-								padding: 20,
-								usePointStyle: true,
-								pointStyle: 'circle',
 							},
-						},
-						tooltip: {
-							backgroundColor: 'rgba(10, 14, 39, 0.95)',
-							titleColor: '#60a5fa',
-							bodyColor: '#ffffff',
-							borderColor: '#60a5fa',
-							borderWidth: 1,
-							padding: 12,
-							callbacks: {
-								label (context) {
+							tooltip: {
+								backgroundColor: 'rgba(10, 14, 39, 0.95)',
+								titleColor: '#60a5fa',
+								bodyColor: '#ffffff',
+								borderColor: '#60a5fa',
+								borderWidth: 1,
+								padding: 12,
+								callbacks: {
+									label( context ) {
 										var label      = context.label || '';
 										var value      = context.parsed || 0;
 										var total      = context.dataset.data.reduce(
@@ -309,7 +317,8 @@
 						},
 					},
 				},
-			});
+				}
+			);
 		},
 
 		/**
@@ -318,11 +327,14 @@
 		initExportButton() {
 			let self = this;
 
-			$('.shahi-export-btn').on('click', function (e) {
-				e.preventDefault();
-				var format = $(this).data('format') || 'csv';
-				self.exportData(format, $(this));
-			});
+			$( '.shahi-export-btn' ).on(
+				'click',
+				function (e) {
+					e.preventDefault();
+					var format = $( this ).data( 'format' ) || 'csv';
+					self.exportData( format, $( this ) );
+				}
+			);
 		},
 
 		/**
@@ -332,28 +344,31 @@
 		 * @param format
 		 * @param $button
 		 */
-		exportData(format, $button) {
+		exportData( format, $button ) {
 			// Add loading state
-			$button.addClass('shahi-loading');
-			$button.prop('disabled', true);
+			$button.addClass( 'shahi-loading' );
+			$button.prop( 'disabled', true );
 
 			// Simulate export (replace with actual AJAX call)
-			setTimeout(function () {
-				// Remove loading state
-				$button.removeClass('shahi-loading');
-				$button.prop('disabled', false);
+			setTimeout(
+				function () {
+					// Remove loading state
+					$button.removeClass( 'shahi-loading' );
+					$button.prop( 'disabled', false );
 
-				// Show success notification
-				if (typeof window.ShahiNotify !== 'undefined') {
-					window.ShahiNotify.success(
-						'Export feature is currently a placeholder. CSV export will be implemented in production.'
-					);
-				} else {
-					alert(
-						'Export feature is currently a placeholder. CSV export will be implemented in production.'
-					);
-				}
-			}, 1000);
+					// Show success notification
+					if (typeof window.ShahiNotify !== 'undefined') {
+						window.ShahiNotify.success(
+							'Export feature is currently a placeholder. CSV export will be implemented in production.'
+						);
+					} else {
+						alert(
+							'Export feature is currently a placeholder. CSV export will be implemented in production.'
+						);
+					}
+				},
+				1000
+			);
 
 			/* Actual AJAX implementation (uncomment when endpoint is ready)
 			var range = new URLSearchParams(window.location.search).get('range') || '7days';
@@ -394,27 +409,29 @@
 		 * Show error message when Chart.js is not loaded
 		 */
 		showChartError() {
-			$('.shahi-chart-container').each(function () {
-				$(this).html(
-					'<div class="shahi-chart-error" style="text-align: center; padding: 40px; color: #ff4081;">' +
+			$( '.shahi-chart-container' ).each(
+				function () {
+					$( this ).html(
+						'<div class="shahi-chart-error" style="text-align: center; padding: 40px; color: #ff4081;">' +
 						'<span class="dashicons dashicons-warning" style="font-size: 48px; display: block; margin-bottom: 16px;"></span>' +
 						'<p style="margin: 0; font-size: 14px;">Chart.js library not loaded. Charts cannot be rendered.</p>' +
 						'<p style="margin: 8px 0 0 0; font-size: 12px; color: #a8b2d1;">Please ensure Chart.js is enqueued properly.</p>' +
 						'</div>'
-				);
-			});
+					);
+				}
+			);
 		},
 
 		/**
 		 * Destroy all charts (cleanup)
 		 */
 		destroy() {
-			Object.keys(this.charts).forEach(
+			Object.keys( this.charts ).forEach(
 				function (key) {
 					if (this.charts[key]) {
 						this.charts[key].destroy();
 					}
-				}.bind(this)
+				}.bind( this )
 			);
 
 			this.charts = {};
@@ -424,12 +441,14 @@
 	/**
 	 * Initialize on document ready
 	 */
-	$(document).ready(function () {
-		if ($('.shahi-analytics-page').length > 0) {
-			ShahiAnalyticsCharts.init();
+	$( document ).ready(
+		function () {
+			if ($( '.shahi-analytics-page' ).length > 0) {
+				ShahiAnalyticsCharts.init();
+			}
 		}
-	});
+	);
 
 	// Expose to global scope for external access
 	window.ShahiAnalyticsCharts = ShahiAnalyticsCharts;
-})(jQuery);
+})( jQuery );

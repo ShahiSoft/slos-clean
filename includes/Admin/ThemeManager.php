@@ -240,6 +240,7 @@ class ThemeManager {
 			</div>
 		</div>
 		
+		<?php $theme_nonce = wp_create_nonce( 'shahi_theme_switch' ); ?>
 		<script>
 		jQuery(document).ready(function($) {
 			$('.shahi-theme-switch-btn').on('click', function() {
@@ -254,7 +255,7 @@ class ThemeManager {
 					data: {
 						action: 'shahi_switch_theme',
 						theme: theme,
-						nonce: '<?php echo wp_create_nonce( 'shahi_theme_switch' ); ?>'
+						nonce: '<?php echo esc_js( $theme_nonce ); ?>'
 					},
 					success: function(response) {
 						if (response.success) {

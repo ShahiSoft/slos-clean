@@ -13,7 +13,7 @@
 
 namespace ShahiLegalFlowSuite\Services;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -60,12 +60,12 @@ abstract class Base_Service {
 	protected $messages = array();
 
 	/**
-	 * Add error message
+	 * Add error message.
 	 *
 	 * @since 3.0.1
-	 * @param string $code Error code
-	 * @param string $message Error message
-	 * @param mixed  $data Optional error data
+	 * @param string $code    Error code.
+	 * @param string $message Error message.
+	 * @param mixed  $data    Optional error data.
 	 * @return void
 	 */
 	protected function add_error( string $code, string $message, $data = null ): void {
@@ -75,15 +75,18 @@ abstract class Base_Service {
 			'data'    => $data,
 		);
 
-		error_log( sprintf( 'Service Error [%s]: %s', $code, $message ) );
+		if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+			error_log( sprintf( 'Service Error [%s]: %s', $code, $message ) );
+		}
 	}
 
 	/**
-	 * Add validation error
+	 * Add validation error.
 	 *
 	 * @since 3.0.1
-	 * @param string $field Field name
-	 * @param string $message Error message
+	 * @param string $field   Field name.
+	 * @param string $message Error message.
 	 * @return void
 	 */
 	protected function add_validation_error( string $field, string $message ): void {
@@ -91,10 +94,10 @@ abstract class Base_Service {
 	}
 
 	/**
-	 * Add success message
+	 * Add success message.
 	 *
 	 * @since 3.0.1
-	 * @param string $message Success message
+	 * @param string $message Success message.
 	 * @return void
 	 */
 	protected function add_message( string $message ): void {
@@ -154,56 +157,56 @@ abstract class Base_Service {
 	}
 
 	/**
-	 * Sanitize string input
+	 * Sanitize string input.
 	 *
 	 * @since 3.0.1
-	 * @param string $value Input value
-	 * @return string Sanitized value
+	 * @param string $value Input value.
+	 * @return string Sanitized value.
 	 */
 	protected function sanitize_string( string $value ): string {
 		return sanitize_text_field( $value );
 	}
 
 	/**
-	 * Sanitize email input
+	 * Sanitize email input.
 	 *
 	 * @since 3.0.1
-	 * @param string $email Email address
-	 * @return string Sanitized email
+	 * @param string $email Email address.
+	 * @return string Sanitized email.
 	 */
 	protected function sanitize_email( string $email ): string {
 		return sanitize_email( $email );
 	}
 
 	/**
-	 * Sanitize textarea input
+	 * Sanitize textarea input.
 	 *
 	 * @since 3.0.1
-	 * @param string $value Input value
-	 * @return string Sanitized value
+	 * @param string $value Input value.
+	 * @return string Sanitized value.
 	 */
 	protected function sanitize_textarea( string $value ): string {
 		return sanitize_textarea_field( $value );
 	}
 
 	/**
-	 * Sanitize URL input
+	 * Sanitize URL input.
 	 *
 	 * @since 3.0.1
-	 * @param string $url URL value
-	 * @return string Sanitized URL
+	 * @param string $url URL value.
+	 * @return string Sanitized URL.
 	 */
 	protected function sanitize_url( string $url ): string {
 		return esc_url_raw( $url );
 	}
 
 	/**
-	 * Validate required field
+	 * Validate required field.
 	 *
 	 * @since 3.0.1
-	 * @param mixed  $value Field value
-	 * @param string $field_name Field name for error message
-	 * @return bool True if valid
+	 * @param mixed  $value      Field value.
+	 * @param string $field_name Field name for error message.
+	 * @return bool True if valid.
 	 */
 	protected function validate_required( $value, string $field_name ): bool {
 		if ( empty( $value ) && '0' !== $value ) {
@@ -217,9 +220,9 @@ abstract class Base_Service {
 	 * Validate email format
 	 *
 	 * @since 3.0.1
-	 * @param string $email Email address
-	 * @param string $field_name Field name for error message
-	 * @return bool True if valid
+	 * @param string $email      Email address.
+	 * @param string $field_name Field name for error message.
+	 * @return bool True if valid.
 	 */
 	protected function validate_email( string $email, string $field_name = 'email' ): bool {
 		if ( ! is_email( $email ) ) {
@@ -230,14 +233,14 @@ abstract class Base_Service {
 	}
 
 	/**
-	 * Validate string length
+	 * Validate string length.
 	 *
 	 * @since 3.0.1
-	 * @param string $value String value
-	 * @param int    $min Minimum length
-	 * @param int    $max Maximum length
-	 * @param string $field_name Field name for error message
-	 * @return bool True if valid
+	 * @param string $value      String value.
+	 * @param int    $min        Minimum length.
+	 * @param int    $max        Maximum length.
+	 * @param string $field_name Field name for error message.
+	 * @return bool True if valid.
 	 */
 	protected function validate_length( string $value, int $min, int $max, string $field_name ): bool {
 		$length = strlen( $value );
@@ -256,12 +259,12 @@ abstract class Base_Service {
 	}
 
 	/**
-	 * Validate numeric value
+	 * Validate numeric value.
 	 *
 	 * @since 3.0.1
-	 * @param mixed  $value Numeric value
-	 * @param string $field_name Field name for error message
-	 * @return bool True if valid
+	 * @param mixed  $value      Numeric value.
+	 * @param string $field_name Field name for error message.
+	 * @return bool True if valid.
 	 */
 	protected function validate_numeric( $value, string $field_name ): bool {
 		if ( ! is_numeric( $value ) ) {
@@ -272,13 +275,13 @@ abstract class Base_Service {
 	}
 
 	/**
-	 * Validate value is in allowed list
+	 * Validate value is in allowed list.
 	 *
 	 * @since 3.0.1
-	 * @param mixed  $value Value to check
-	 * @param array  $allowed Allowed values
-	 * @param string $field_name Field name for error message
-	 * @return bool True if valid
+	 * @param mixed  $value      Value to check.
+	 * @param array  $allowed    Allowed values.
+	 * @param string $field_name Field name for error message.
+	 * @return bool True if valid.
 	 */
 	protected function validate_in_list( $value, array $allowed, string $field_name ): bool {
 		if ( ! in_array( $value, $allowed, true ) ) {
@@ -289,12 +292,12 @@ abstract class Base_Service {
 	}
 
 	/**
-	 * Validate user capability
+	 * Validate user capability.
 	 *
 	 * @since 3.0.1
-	 * @param string $capability Required capability
-	 * @param int    $user_id Optional user ID (defaults to current user)
-	 * @return bool True if user has capability
+	 * @param string $capability Required capability.
+	 * @param int    $user_id    Optional user ID (defaults to current user).
+	 * @return bool True if user has capability.
 	 */
 	protected function validate_capability( string $capability, int $user_id = 0 ): bool {
 		if ( ! $user_id ) {
@@ -312,10 +315,10 @@ abstract class Base_Service {
 	}
 
 	/**
-	 * Validate user is logged in
+	 * Validate user is logged in.
 	 *
 	 * @since 3.0.1
-	 * @return bool True if user is logged in
+	 * @return bool True if user is logged in.
 	 */
 	protected function validate_logged_in(): bool {
 		if ( ! is_user_logged_in() ) {
@@ -326,63 +329,63 @@ abstract class Base_Service {
 	}
 
 	/**
-	 * Hash IP address for privacy compliance
+	 * Hash IP address for privacy compliance.
 	 *
 	 * @since 3.0.1
-	 * @param string $ip_address IP address
-	 * @return string Hashed IP address
+	 * @param string $ip_address IP address.
+	 * @return string Hashed IP address.
 	 */
 	protected function hash_ip( string $ip_address ): string {
 		return hash( 'sha256', $ip_address );
 	}
 
 	/**
-	 * Get current user IP address
+	 * Get current user IP address.
 	 *
 	 * @since 3.0.1
-	 * @return string IP address
+	 * @return string IP address.
 	 */
 	protected function get_user_ip(): string {
 		$ip = '';
 
 		if ( ! empty( $_SERVER['HTTP_CLIENT_IP'] ) ) {
-			$ip = $_SERVER['HTTP_CLIENT_IP'];
+			$ip = sanitize_text_field( wp_unslash( $_SERVER['HTTP_CLIENT_IP'] ) );
 		} elseif ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
-			$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+			$ip = sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ) );
 		} elseif ( ! empty( $_SERVER['REMOTE_ADDR'] ) ) {
-			$ip = $_SERVER['REMOTE_ADDR'];
+			$ip = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) );
 		}
 
 		return sanitize_text_field( $ip );
 	}
 
 	/**
-	 * Get current user agent
+	 * Get current user agent.
 	 *
 	 * @since 3.0.1
-	 * @return string User agent string
+	 * @return string User agent string.
 	 */
 	protected function get_user_agent(): string {
-		return isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( $_SERVER['HTTP_USER_AGENT'] ) : '';
+		return isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '';
 	}
 
 	/**
-	 * Prepare metadata array for storage
+	 * Prepare metadata array for storage.
 	 *
 	 * @since 3.0.1
-	 * @param array $metadata Metadata array
-	 * @return string JSON encoded metadata
+	 * @param array $metadata Metadata array.
+	 * @return string JSON encoded metadata.
 	 */
 	protected function prepare_metadata( array $metadata ): string {
 		return wp_json_encode( $metadata );
 	}
 
 	/**
-	 * Parse stored metadata
+	 * Parse stored metadata.
 	 *
 	 * @since 3.0.1
-	 * @param string $metadata_json JSON encoded metadata
-	 * @return array Parsed metadata array
+	 * @param string $metadata_json JSON encoded metadata.
+	 * @return array Parsed metadata array.
 	 */
 	protected function parse_metadata( string $metadata_json ): array {
 		$metadata = json_decode( $metadata_json, true );

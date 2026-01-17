@@ -56,10 +56,10 @@ class DSR_Erasure_Service {
 	public function __construct() {
 		$this->repository = new DSR_Repository();
 
-		// Register default erasure handlers
+		// Register default erasure handlers..
 		add_filter( 'slos_dsr_erasure_handlers', array( $this, 'register_core_handlers' ), 10 );
 
-		// Hook into erasure execution action
+		// Hook into erasure execution action..
 		add_action( 'slos_dsr_erasure_execute', array( $this, 'process_erasure' ), 10, 2 );
 	}
 
@@ -67,34 +67,34 @@ class DSR_Erasure_Service {
 	 * Register core WordPress erasure handlers
 	 *
 	 * @since 3.0.1
-	 * @param array $handlers Existing handlers
-	 * @return array Updated handlers
+	 * @param array $handlers Existing handlers.
+	 * @return array Updated handlers.
 	 */
 	public function register_core_handlers( array $handlers ): array {
 		$handlers['wordpress_user'] = array(
 			'label'       => __( 'WordPress User Account', 'shahi-legalflowsuite' ),
-			'description' => __( 'Anonymize or delete user account and profile data', 'shahi-legalflowsuite' ),
+			'description' => __( 'Anonymize or delete user account and profile data.', 'shahi-legalflowsuite' ),
 			'callback'    => array( $this, 'erase_wordpress_user' ),
-			'priority'    => 100, // High priority - handle last
+			'priority'    => 100, // High priority - handle last.
 		);
 
 		$handlers['comments'] = array(
 			'label'       => __( 'Comments', 'shahi-legalflowsuite' ),
-			'description' => __( 'Anonymize comment author information', 'shahi-legalflowsuite' ),
+			'description' => __( 'Anonymize comment author information.', 'shahi-legalflowsuite' ),
 			'callback'    => array( $this, 'erase_comments' ),
 			'priority'    => 20,
 		);
 
 		$handlers['consent_records'] = array(
 			'label'       => __( 'Consent Records', 'shahi-legalflowsuite' ),
-			'description' => __( 'Anonymize consent logs while preserving audit trail', 'shahi-legalflowsuite' ),
+			'description' => __( 'Anonymize consent logs while preserving audit trail.', 'shahi-legalflowsuite' ),
 			'callback'    => array( $this, 'erase_consent_records' ),
 			'priority'    => 30,
 		);
 
 		$handlers['user_meta'] = array(
 			'label'       => __( 'User Metadata', 'shahi-legalflowsuite' ),
-			'description' => __( 'Remove non-essential user metadata', 'shahi-legalflowsuite' ),
+			'description' => __( 'Remove non-essential user metadata.', 'shahi-legalflowsuite' ),
 			'callback'    => array( $this, 'erase_user_meta' ),
 			'priority'    => 40,
 		);
@@ -106,17 +106,15 @@ class DSR_Erasure_Service {
 	 * Process erasure request
 	 *
 	 * @since 3.0.1
-	 * @param int    $request_id Request ID
-	 * @param object $request    Request object
-	 * @return bool True on success
+	 * @param int    $request_id Request ID.
+	 * @param object $request    Request object.
+	 * @return bool True on success.
 	 */
 	public function process_erasure( int $request_id, $request ): bool {
 		$this->audit_log = array();
 
-		// Get all registered handlers
 		$handlers = apply_filters( 'slos_dsr_erasure_handlers', array() );
 
-		// Sort by priority
 		uasort(
 			$handlers,
 			function ( $a, $b ) {
@@ -135,7 +133,6 @@ class DSR_Erasure_Service {
 			)
 		);
 
-		// Execute each handler
 		$success_count = 0;
 		$failure_count = 0;
 
@@ -180,7 +177,10 @@ class DSR_Erasure_Service {
 						'error'   => $e->getMessage(),
 					)
 				);
-				error_log( sprintf( 'DSR Erasure: Handler "%s" failed: %s', $key, $e->getMessage() ) );
+				if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+					error_log( sprintf( 'DSR Erasure: Handler "%s" failed: %s', $key, $e->getMessage() ) );
+				}
 			}
 		}
 
@@ -195,7 +195,6 @@ class DSR_Erasure_Service {
 			)
 		);
 
-		// Update request status if not dry-run
 		if ( ! $this->dry_run ) {
 			$this->repository->update_status(
 				$request_id,
@@ -207,10 +206,10 @@ class DSR_Erasure_Service {
 						$success_count,
 						$failure_count
 					),
-				)
+				),
 			);
 
-			// Fire completion hook
+			// Fire completion hook..
 			do_action( 'slos_dsr_erasure_completed', $request_id, $request, $this->audit_log );
 		}
 
@@ -218,11 +217,11 @@ class DSR_Erasure_Service {
 	}
 
 	/**
-	 * Get erasure preview (dry-run)
+	 * Get erasure preview (dry-run).
 	 *
 	 * @since 3.0.1
-	 * @param int $request_id Request ID
-	 * @return array Preview data
+	 * @param int $request_id Request ID.
+	 * @return array Preview data.
 	 */
 	public function get_erasure_preview( int $request_id ): array {
 		$request = $this->repository->find( $request_id );
@@ -233,13 +232,8 @@ class DSR_Erasure_Service {
 			);
 		}
 
-		// Enable dry-run mode
 		$this->dry_run = true;
-
-		// Process erasure in dry-run mode
 		$this->process_erasure( $request_id, $request );
-
-		// Disable dry-run mode
 		$this->dry_run = false;
 
 		return array(
@@ -251,10 +245,10 @@ class DSR_Erasure_Service {
 	}
 
 	/**
-	 * Generate preview summary from audit log
+	 * Generate preview summary from audit log.
 	 *
 	 * @since 3.0.1
-	 * @return array Summary data
+	 * @return array Summary data.
 	 */
 	private function generate_preview_summary(): array {
 		$summary = array(
@@ -264,7 +258,7 @@ class DSR_Erasure_Service {
 		);
 
 		foreach ( $this->audit_log as $entry ) {
-			if ( $entry['action'] === 'handler_success' ) {
+			if ( 'handler_success' === $entry['action'] ) {
 				++$summary['total_handlers'];
 				$summary['items_affected'] += $entry['data']['items'] ?? 0;
 				$summary['handlers'][]      = $entry['data']['label'] ?? 'Unknown';
@@ -275,12 +269,12 @@ class DSR_Erasure_Service {
 	}
 
 	/**
-	 * Erase WordPress user data
+	 * Erase WordPress user data.
 	 *
 	 * @since 3.0.1
-	 * @param object $request Request object
-	 * @param bool   $dry_run Dry-run mode
-	 * @return array|false Affected items or false
+	 * @param object $request Request object.
+	 * @param bool   $dry_run Dry-run mode.
+	 * @return array|false Affected items or false.
 	 */
 	public function erase_wordpress_user( $request, bool $dry_run = false ) {
 		if ( empty( $request->user_id ) ) {
@@ -303,7 +297,6 @@ class DSR_Erasure_Service {
 			return array( $items );
 		}
 
-		// Anonymize user data
 		$anon_email = sprintf( 'deleted-%d@anonymized.local', $user->ID );
 		$anon_login = sprintf( 'deleted_user_%d', $user->ID );
 
@@ -324,17 +317,16 @@ class DSR_Erasure_Service {
 	}
 
 	/**
-	 * Erase comments data
+	 * Erase comments data.
 	 *
 	 * @since 3.0.1
-	 * @param object $request Request object
-	 * @param bool   $dry_run Dry-run mode
-	 * @return array|false Affected items or false
+	 * @param object $request Request object.
+	 * @param bool   $dry_run Dry-run mode.
+	 * @return array|false Affected items or false.
 	 */
 	public function erase_comments( $request, bool $dry_run = false ) {
 		$comments = array();
 
-		// Get comments by user ID or email
 		if ( ! empty( $request->user_id ) ) {
 			$comments = get_comments(
 				array(
@@ -380,27 +372,26 @@ class DSR_Erasure_Service {
 	}
 
 	/**
-	 * Erase consent records
+	 * Erase consent records.
 	 *
 	 * @since 3.0.1
-	 * @param object $request Request object
-	 * @param bool   $dry_run Dry-run mode
-	 * @return array|false Affected items or false
+	 * @param object $request Request object.
+	 * @param bool   $dry_run Dry-run mode.
+	 * @return array|false Affected items or false.
 	 */
 	public function erase_consent_records( $request, bool $dry_run = false ) {
 		global $wpdb;
 
 		$table = $wpdb->prefix . 'slos_consent_logs';
 
-		// Check if table exists.
-		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) !== $table ) {
+		// Check if table exists...
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) !== $table ) { // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 			return false;
 		}
 
 		$user_id = $request->user_id ?? null;
 		$email   = $request->requester_email ?? '';
 
-		// Query consent logs
 		$where  = array();
 		$values = array();
 
@@ -421,8 +412,8 @@ class DSR_Erasure_Service {
 		$where_sql = implode( ' OR ', $where );
 		$sql       = "SELECT * FROM $table WHERE $where_sql";
 
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-		$records = $wpdb->get_results( $wpdb->prepare( $sql, $values ) );
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		$records = $wpdb->get_results( $wpdb->prepare( $sql, ...$values ) );
 
 		if ( empty( $records ) ) {
 			return false;
@@ -437,7 +428,8 @@ class DSR_Erasure_Service {
 			);
 
 			if ( ! $dry_run ) {
-				// Anonymize consent record (preserve audit but remove PII)
+				// Anonymize consent record (preserve audit but remove PII)..
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 				$wpdb->update(
 					$table,
 					array(
@@ -448,7 +440,7 @@ class DSR_Erasure_Service {
 					array( 'id' => $record->id ),
 					array( '%d', '%s', '%s' ),
 					array( '%d' )
-				);
+				); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 			}
 		}
 
@@ -456,12 +448,12 @@ class DSR_Erasure_Service {
 	}
 
 	/**
-	 * Erase user metadata
+	 * Erase user metadata.
 	 *
 	 * @since 3.0.1
-	 * @param object $request Request object
-	 * @param bool   $dry_run Dry-run mode
-	 * @return array|false Affected items or false
+	 * @param object $request Request object.
+	 * @param bool   $dry_run Dry-run mode.
+	 * @return array|false Affected items or false.
 	 */
 	public function erase_user_meta( $request, bool $dry_run = false ) {
 		if ( empty( $request->user_id ) ) {
@@ -473,10 +465,8 @@ class DSR_Erasure_Service {
 			return false;
 		}
 
-		// Get all user meta
 		$all_meta = get_user_meta( $request->user_id );
 
-		// Exclude essential WordPress meta
 		$preserve = array(
 			'wp_capabilities',
 			'wp_user_level',
@@ -490,14 +480,13 @@ class DSR_Erasure_Service {
 
 		$items = array();
 		foreach ( $all_meta as $key => $values ) {
-			// Skip WordPress internal meta and preserved keys
 			if ( str_starts_with( $key, 'wp_' ) || in_array( $key, $preserve, true ) ) {
 				continue;
 			}
 
 			$items[] = array(
-				'meta_key'   => $key,
-				'meta_value' => maybe_serialize( $values[0] ),
+				'meta_key'   => $key, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+				'meta_value' => maybe_serialize( $values[0] ), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 			);
 
 			if ( ! $dry_run ) {
@@ -509,12 +498,12 @@ class DSR_Erasure_Service {
 	}
 
 	/**
-	 * Log audit entry
+	 * Log audit entry.
 	 *
 	 * @since 3.0.1
-	 * @param int    $request_id Request ID
-	 * @param string $action     Action name
-	 * @param array  $data       Additional data
+	 * @param int    $request_id Request ID.
+	 * @param string $action     Action name.
+	 * @param array  $data       Additional data.
 	 * @return void
 	 */
 	private function log_audit( int $request_id, string $action, array $data = array() ): void {
@@ -528,25 +517,24 @@ class DSR_Erasure_Service {
 
 		$this->audit_log[] = $entry;
 
-		// Fire audit log hook for external storage
 		do_action( 'slos_dsr_audit_log', $request_id, $action, $data );
 	}
 
 	/**
-	 * Get audit log
+	 * Get audit log.
 	 *
 	 * @since 3.0.1
-	 * @return array Audit log entries
+	 * @return array Audit log entries.
 	 */
 	public function get_audit_log(): array {
 		return $this->audit_log;
 	}
 
 	/**
-	 * Set dry-run mode
+	 * Set dry-run mode.
 	 *
 	 * @since 3.0.1
-	 * @param bool $enabled Enable dry-run
+	 * @param bool $enabled Enable dry-run.
 	 * @return void
 	 */
 	public function set_dry_run( bool $enabled ): void {
@@ -554,10 +542,10 @@ class DSR_Erasure_Service {
 	}
 
 	/**
-	 * Check if in dry-run mode
+	 * Check if in dry-run mode.
 	 *
 	 * @since 3.0.1
-	 * @return bool True if dry-run enabled
+	 * @return bool True if dry-run enabled.
 	 */
 	public function is_dry_run(): bool {
 		return $this->dry_run;

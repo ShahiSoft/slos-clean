@@ -14,7 +14,7 @@
 
 namespace ShahiLegalFlowSuite\PostTypes;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -62,7 +62,7 @@ class PostTypeManager {
 	 * @return void
 	 */
 	private function init_post_types() {
-		// Initialize Template Item post type
+		// Initialize Template Item post type..
 		$this->post_types['template_item'] = new TemplateItem();
 	}
 
@@ -73,13 +73,13 @@ class PostTypeManager {
 	 * @return void
 	 */
 	private function register_hooks() {
-		// Register post types
+		// Register post types..
 		add_action( 'init', array( $this, 'register_post_types' ) );
 
-		// Register taxonomies
+		// Register taxonomies..
 		add_action( 'init', array( $this, 'register_taxonomies' ) );
 
-		// Admin columns
+		// Admin columns..
 		foreach ( $this->post_types as $post_type ) {
 			if ( method_exists( $post_type, 'get_post_type_key' ) ) {
 				$post_type_key = $post_type->get_post_type_key();
@@ -90,11 +90,11 @@ class PostTypeManager {
 			}
 		}
 
-		// Quick edit support
+		// Quick edit support..
 		add_action( 'quick_edit_custom_box', array( $this, 'quick_edit_fields' ), 10, 2 );
 		add_action( 'save_post', array( $this, 'save_quick_edit' ), 10, 2 );
 
-		// Bulk actions
+		// Bulk actions..
 		add_filter( 'bulk_actions-edit-shahi_legalflowsuite_item', array( $this, 'register_bulk_actions' ) );
 		add_filter( 'handle_bulk_actions-edit-shahi_legalflowsuite_item', array( $this, 'handle_bulk_actions' ), 10, 3 );
 		add_action( 'admin_notices', array( $this, 'bulk_action_notices' ) );
@@ -142,14 +142,14 @@ class PostTypeManager {
 			return $columns;
 		}
 
-		// Get the post type object
+		// Get the post type object..
 		$post_type_key = $screen->post_type;
 		$post_type     = $this->get_post_type_by_key( $post_type_key );
 
 		if ( $post_type && method_exists( $post_type, 'get_admin_columns' ) ) {
 			$custom_columns = $post_type->get_admin_columns();
 
-			// Insert custom columns before date
+			// Insert custom columns before date..
 			$new_columns = array();
 			foreach ( $columns as $key => $label ) {
 				if ( $key === 'date' ) {
@@ -231,12 +231,12 @@ class PostTypeManager {
 	 * @return void
 	 */
 	public function save_quick_edit( $post_id, $post ) {
-		// Skip autosave
+		// Skip autosave..
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 			return;
 		}
 
-		// Check permissions
+		// Check permissions..
 		if ( ! current_user_can( 'edit_post', $post_id ) ) {
 			return;
 		}
@@ -324,9 +324,9 @@ class PostTypeManager {
 		$count  = intval( $_REQUEST['bulk_count'] );
 
 		$messages = array(
-			'mark_featured'   => sprintf( _n( '%d item marked as featured.', '%d items marked as featured.', $count, 'shahi-legalflowsuite' ), $count ),
-			'unmark_featured' => sprintf( _n( '%d item unmarked as featured.', '%d items unmarked as featured.', $count, 'shahi-legalflowsuite' ), $count ),
-			'duplicate'       => sprintf( _n( '%d item duplicated.', '%d items duplicated.', $count, 'shahi-legalflowsuite' ), $count ),
+			'mark_featured'   => sprintf( /* translators: %d: number of items */ _n( '%d item marked as featured.', '%d items marked as featured.', $count, 'shahi-legalflowsuite' ), $count ),
+			'unmark_featured' => sprintf( /* translators: %d: number of items */ _n( '%d item unmarked as featured.', '%d items unmarked as featured.', $count, 'shahi-legalflowsuite' ), $count ),
+			'duplicate'       => sprintf( /* translators: %d: number of items */ _n( '%d item duplicated.', '%d items duplicated.', $count, 'shahi-legalflowsuite' ), $count ),
 		);
 
 		if ( isset( $messages[ $action ] ) ) {
@@ -348,7 +348,7 @@ class PostTypeManager {
 			return new \WP_Error( 'invalid_post', 'Invalid post ID' );
 		}
 
-		// Create new post
+		// Create new post..
 		$new_post = array(
 			'post_title'   => $post->post_title . ' (Copy)',
 			'post_content' => $post->post_content,
@@ -364,7 +364,7 @@ class PostTypeManager {
 			return $new_post_id;
 		}
 
-		// Copy post meta
+		// Copy post meta..
 		$post_meta = get_post_meta( $post_id );
 		foreach ( $post_meta as $key => $values ) {
 			foreach ( $values as $value ) {
@@ -372,7 +372,7 @@ class PostTypeManager {
 			}
 		}
 
-		// Copy taxonomies
+		// Copy taxonomies..
 		$taxonomies = get_object_taxonomies( $post->post_type );
 		foreach ( $taxonomies as $taxonomy ) {
 			$terms = wp_get_post_terms( $post_id, $taxonomy, array( 'fields' => 'ids' ) );

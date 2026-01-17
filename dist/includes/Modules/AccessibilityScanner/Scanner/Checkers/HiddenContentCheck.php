@@ -30,7 +30,7 @@ class HiddenContentCheck extends AbstractCheck {
 		$dom    = $this->get_dom( $content );
 		$xpath  = new \DOMXPath( $dom );
 
-		// Check for aria-hidden="true"
+		// Check for aria-hidden="true"..
 		$hiddenElements = $xpath->query( '//*[@aria-hidden="true"]' );
 
 		$focusableTags = array( 'a', 'button', 'input', 'select', 'textarea' );

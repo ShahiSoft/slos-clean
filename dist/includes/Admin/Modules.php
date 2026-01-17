@@ -54,7 +54,7 @@ class Modules {
 		$this->security       = new Security();
 		$this->module_manager = ModuleManager::get_instance();
 
-		// Add AJAX handlers
+		// Add AJAX handlers.
 		add_action( 'wp_ajax_shahi_toggle_module', array( $this, 'ajax_toggle_module' ) );
 	}
 
@@ -65,17 +65,17 @@ class Modules {
 	 * @return void
 	 */
 	public function render() {
-		// Verify user capabilities
+		// Verify user capabilities.
 		if ( ! current_user_can( 'manage_shahi_modules' ) ) {
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'shahi-legalflowsuite' ) );
 		}
 
-		// Handle form submission
-		if ( isset( $_POST['shahi_save_modules'] ) ) {
+		// Handle form submission.
+		if ( isset( $_POST['shahi_save_modules'] ) && isset( $_POST['shahi_modules_nonce'] ) && wp_verify_nonce( wp_unslash( $_POST['shahi_modules_nonce'] ), 'shahi_save_modules' ) ) {
 			$this->save_modules();
 		}
 
-		// Get modules data
+		// Get modules data.
 		$modules      = $this->get_available_modules();
 		$active_count = count(
 			array_filter(
@@ -86,7 +86,7 @@ class Modules {
 			)
 		);
 
-		// Load template
+		// Load template.
 		include SHAHI_LEGALFLOWSUITE_PATH . 'templates/admin/modules.php';
 	}
 
@@ -100,7 +100,7 @@ class Modules {
 	 * @return array Available modules
 	 */
 	private function get_available_modules() {
-		// Get modules from ModuleManager
+		// Get modules from ModuleManager.
 		$modules = $this->module_manager->get_modules();
 
 		$available_modules = array();
@@ -108,7 +108,7 @@ class Modules {
 			$available_modules[ $module->get_key() ] = $module->to_array();
 		}
 
-		// Fallback: Keep original static modules if no modules registered
+		// Fallback: Keep original static modules if no modules registered.
 		if ( empty( $available_modules ) ) {
 			$available_modules = array(
 				'analytics'     => array(
@@ -169,10 +169,10 @@ class Modules {
 				),
 			);
 
-			// Get enabled modules from database for fallback
+			// Get enabled modules from database for fallback.
 			$enabled_modules = $this->get_enabled_modules();
 
-			// Merge enabled state with available modules
+			// Merge enabled state with available modules.
 			foreach ( $available_modules as $key => &$module ) {
 				$module['enabled'] = in_array( $key, $enabled_modules, true );
 			}
@@ -191,13 +191,16 @@ class Modules {
 		global $wpdb;
 		$table = $wpdb->prefix . 'shahi_modules';
 
-		// Check if table exists
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) !== $table ) {
+		// Check if table exists.
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) !== $table ) {
 			return array();
 		}
 
 		$results = $wpdb->get_results(
-			"SELECT module_key FROM $table WHERE is_enabled = 1",
+			$wpdb->prepare(
+				'SELECT module_key FROM %i WHERE is_enabled = 1',
+				$table
+			),
 			ARRAY_A
 		);
 
@@ -217,8 +220,8 @@ class Modules {
 	 * @return void
 	 */
 	private function save_modules() {
-		// Verify nonce
-		if ( ! isset( $_POST['shahi_modules_nonce'] ) || ! wp_verify_nonce( $_POST['shahi_modules_nonce'], 'shahi_save_modules' ) ) {
+		// Verify nonce.
+		if ( ! isset( $_POST['shahi_modules_nonce'] ) || ! wp_verify_nonce( wp_unslash( $_POST['shahi_modules_nonce'] ), 'shahi_save_modules' ) ) {
 			add_settings_error(
 				'shahi_modules',
 				'invalid_nonce',
@@ -228,7 +231,7 @@ class Modules {
 			return;
 		}
 
-		// Check user capabilities
+		// Check user capabilities.
 		if ( ! current_user_can( 'manage_shahi_modules' ) ) {
 			add_settings_error(
 				'shahi_modules',
@@ -242,8 +245,8 @@ class Modules {
 		global $wpdb;
 		$table = $wpdb->prefix . 'shahi_modules';
 
-		// Check if table exists
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) !== $table ) {
+		// Check if table exists.
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) !== $table ) {
 			add_settings_error(
 				'shahi_modules',
 				'table_not_found',
@@ -253,29 +256,30 @@ class Modules {
 			return;
 		}
 
-		// Get enabled modules from POST
+		// Get enabled modules from POST.
 		$enabled_modules = isset( $_POST['enabled_modules'] ) && is_array( $_POST['enabled_modules'] )
-			? array_map( 'sanitize_text_field', $_POST['enabled_modules'] )
+			? array_map( 'sanitize_text_field', wp_unslash( $_POST['enabled_modules'] ) )
 			: array();
 
-		// Get all available modules
+		// Get all available modules.
 		$available_modules = $this->get_available_modules();
 
-		// Update each module's status
+		// Update each module's status.
 		$updated = 0;
 		foreach ( $available_modules as $module ) {
 			$is_enabled = in_array( $module['key'], $enabled_modules, true ) ? 1 : 0;
 
-			// Check if module exists in database
+			// Check if module exists in database.
 			$exists = $wpdb->get_var(
 				$wpdb->prepare(
-					"SELECT COUNT(*) FROM $table WHERE module_key = %s",
+					'SELECT COUNT(*) FROM %i WHERE module_key = %s',
+					$table,
 					$module['key']
 				)
 			);
 
 			if ( $exists ) {
-				// Update existing module
+				// Update existing module.
 				$result = $wpdb->update(
 					$table,
 					array(
@@ -287,7 +291,7 @@ class Modules {
 					array( '%s' )
 				);
 			} else {
-				// Insert new module
+				// Insert new module.
 				$result = $wpdb->insert(
 					$table,
 					array(
@@ -303,12 +307,12 @@ class Modules {
 			if ( $result !== false ) {
 				++$updated;
 
-				// Track analytics event
+				// Track analytics event.
 				$this->track_module_event( $module['key'], $is_enabled );
 			}
 		}
 
-		// Add success message
+		// Add success message.
 		add_settings_error(
 			'shahi_modules',
 			'modules_saved',
@@ -330,13 +334,13 @@ class Modules {
 		global $wpdb;
 		$analytics_table = $wpdb->prefix . 'shahi_analytics';
 
-		// Check if analytics table exists
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '$analytics_table'" ) !== $analytics_table ) {
+		// Check if analytics table exists.
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $analytics_table ) ) !== $analytics_table ) {
 			return;
 		}
 
 		$event_type = $is_enabled ? 'module_enabled' : 'module_disabled';
-		$event_data = json_encode(
+		$event_data = wp_json_encode(
 			array(
 				'module_key'  => $module_key,
 				'module_name' => $this->get_module_name( $module_key ),
@@ -350,7 +354,7 @@ class Modules {
 				'event_data' => $event_data,
 				'user_id'    => get_current_user_id(),
 				'ip_address' => $this->security->get_client_ip(),
-				'user_agent' => isset( $_SERVER['HTTP_USER_AGENT'] ) ? substr( $_SERVER['HTTP_USER_AGENT'], 0, 255 ) : '',
+				'user_agent' => isset( $_SERVER['HTTP_USER_AGENT'] ) ? substr( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ), 0, 255 ) : '',
 				'created_at' => current_time( 'mysql' ),
 			),
 			array( '%s', '%s', '%d', '%s', '%s', '%s' )
@@ -400,8 +404,8 @@ class Modules {
 	 * @return void
 	 */
 	public function ajax_toggle_module() {
-		// Verify nonce
-		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'shahi_toggle_module' ) ) {
+		// Verify nonce.
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( wp_unslash( $_POST['nonce'] ), 'shahi_toggle_module' ) ) {
 			wp_send_json_error(
 				array(
 					'message' => __( 'Security check failed. Please refresh the page.', 'shahi-legalflowsuite' ),
@@ -409,7 +413,7 @@ class Modules {
 			);
 		}
 
-		// Check user capabilities
+		// Check user capabilities.
 		if ( ! current_user_can( 'manage_shahi_modules' ) ) {
 			wp_send_json_error(
 				array(
@@ -418,19 +422,30 @@ class Modules {
 			);
 		}
 
-		// Get module key and enabled state
-		$module_key = isset( $_POST['module_key'] ) ? sanitize_text_field( $_POST['module_key'] ) : '';
-		$enabled    = isset( $_POST['enabled'] ) && $_POST['enabled'] === 'true';
+		// Get module key and enabled state.
+		$module_key = isset( $_POST['module_key'] ) ? sanitize_text_field( wp_unslash( $_POST['module_key'] ) ) : '';
+		$enabled    = isset( $_POST['enabled'] ) ? (bool) $_POST['enabled'] : false;
 
+		// Validate module key.
 		if ( empty( $module_key ) ) {
 			wp_send_json_error(
 				array(
-					'message' => __( 'Module key is required.', 'shahi-legalflowsuite' ),
+					'message' => __( 'Invalid module key.', 'shahi-legalflowsuite' ),
 				)
 			);
 		}
 
-		// Toggle module via ModuleManager
+		// Check if module exists.
+		$module = $this->module_manager->get_module( $module_key );
+		if ( ! $module ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'Module not found.', 'shahi-legalflowsuite' ),
+				)
+			);
+		}
+
+		// Toggle module via ModuleManager.
 		if ( $enabled ) {
 			$result = $this->module_manager->enable_module( $module_key );
 		} else {
@@ -438,7 +453,7 @@ class Modules {
 		}
 
 		if ( $result ) {
-			// Track analytics event
+			// Track analytics event.
 			$this->track_module_event( $module_key, $enabled ? 1 : 0 );
 
 			wp_send_json_success(
@@ -451,14 +466,13 @@ class Modules {
 				)
 			);
 		} else {
-			// Check if failure was due to dependencies
-			$module = $this->module_manager->get_module( $module_key );
+			// Check if failure was due to dependencies.
 			if ( $module && ! $module->dependencies_met() ) {
 				$dependencies = $module->get_dependencies();
 				wp_send_json_error(
 					array(
-						/* translators: %s: comma-separated list of required module names */
 						'message' => sprintf(
+							/* translators: %s: comma-separated list of required module names */
 							__( 'Cannot enable module. Required dependencies: %s', 'shahi-legalflowsuite' ),
 							implode( ', ', $dependencies )
 						),
@@ -466,13 +480,13 @@ class Modules {
 				);
 			}
 
-			// Check if failure was due to dependents
+			// Check if failure was due to dependents.
 			$dependents = $this->module_manager->get_dependent_modules( $module_key );
 			if ( ! empty( $dependents ) ) {
 				wp_send_json_error(
 					array(
-						/* translators: %s: comma-separated list of dependent module names */
 						'message' => sprintf(
+							/* translators: %s: comma-separated list of dependent module names */
 							__( 'Cannot disable module. Other modules depend on it: %s', 'shahi-legalflowsuite' ),
 							implode( ', ', $dependents )
 						),

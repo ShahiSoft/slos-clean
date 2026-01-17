@@ -11,7 +11,7 @@
  * Text Domain: shahi-legalflowsuite
  * Domain Path: /languages
  * Requires at least: 6.0
- * Tested up to: 6.7
+ * Tested up to: 6.9
  * Requires PHP: 7.4
  *
  * @package    ShahiLegalFlowSuite
@@ -64,7 +64,8 @@ if ( file_exists( SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'vendor/autoload.php' ) ) {
 require_once SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'includes/Core/Autoloader.php';
 ShahiLegalFlowSuite\Core\Autoloader::register();
 
-// Load translations at init hook to avoid just-in-time load notices
+// Load translations at init hook to avoid just-in-time load notices.
+// phpcs:ignore PluginCheck.CodeAnalysis.DiscouragedFunctions.load_plugin_textdomainFound
 add_action(
 	'init',
 	function () {
@@ -100,7 +101,7 @@ function run_shahi_template() {
 	$plugin = new ShahiLegalFlowSuite\Core\Plugin();
 	$plugin->run();
 }
-// Wait for plugins_loaded at priority 10 to ensure WordPress is fully initialized
+// Wait for plugins_loaded at priority 10 to ensure WordPress is fully initialized.
 add_action( 'plugins_loaded', 'run_shahi_template', 10 );
 
 /**
@@ -114,20 +115,20 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
  * Enqueue Consent Banner Scripts and Styles
  */
 function enqueue_slos_consent_banner() {
-	// Get current user ID
+	// Get current user ID.
 	$user_id = get_current_user_id();
 
-	// Geolocation: detect region and suggest template
+	// Geolocation: detect region and suggest template.
 	$geo_service  = new ShahiLegalFlowSuite\Services\Geo_Service();
 	$rule_matcher = new ShahiLegalFlowSuite\Services\Geo_Rule_Matcher();
 	$geo          = array();
 
-	// Respect admin settings
+	// Respect admin settings.
 	$settings    = get_option( 'shahi_legalflowsuite_settings', array() );
 	$enabled_geo = isset( $settings['enable_geolocation_detection'] ) ? (bool) $settings['enable_geolocation_detection'] : true;
 	$override    = isset( $settings['geolocation_override_region'] ) ? (string) $settings['geolocation_override_region'] : '';
 
-	// Initialize geo data and matching rule
+	// Initialize geo data and matching rule.
 	$matching_rule = null;
 	$country_code  = '';
 	$state_code    = '';
@@ -143,7 +144,7 @@ function enqueue_slos_consent_banner() {
 			$country_code = $geo['country_code'] ?? '';
 			$state_code   = $geo['state'] ?? '';
 
-			// Find matching geo rule for this visitor
+			// Find matching geo rule for this visitor.
 			if ( ! empty( $country_code ) ) {
 				$matching_rule = $rule_matcher->find_matching_rule( $country_code, $state_code );
 			}
@@ -162,7 +163,7 @@ function enqueue_slos_consent_banner() {
 
 	$detected_region = isset( $geo['region'] ) ? $geo['region'] : 'GLOBAL';
 
-	// Get banner config from matching rule, or fall back to region-based template
+	// Get banner config from matching rule, or fall back to region-based template.
 	if ( $matching_rule ) {
 		$banner_config = $rule_matcher->get_banner_config_from_rule( $matching_rule );
 		$suggested_tpl = $banner_config['template'];
@@ -174,7 +175,7 @@ function enqueue_slos_consent_banner() {
 		$geo_rule_id   = null;
 	}
 
-	// Enqueue consent banner stylesheet
+	// Enqueue consent banner stylesheet.
 	wp_enqueue_style(
 		'slos-consent-banner',
 		SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/css/consent-banner.css',
@@ -183,7 +184,7 @@ function enqueue_slos_consent_banner() {
 		'all'
 	);
 
-	// Enqueue Phase 1.4 UI enhancements stylesheet
+	// Enqueue Phase 1.4 UI enhancements stylesheet.
 	wp_enqueue_style(
 		'slos-consent-ui-enhancements',
 		SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/css/consent-ui-enhancements.css',
@@ -192,12 +193,12 @@ function enqueue_slos_consent_banner() {
 		'all'
 	);
 
-	// Phase 2.5.3: Export admin-configured colors as CSS variables in frontend
+	// Phase 2.5.3: Export admin-configured colors as CSS variables in frontend.
 	$primary_color = $banner_settings['primary_color'] ?? '#10b981';
 	$bg_color      = $banner_settings['bg_color'] ?? '#ffffff';
 	$text_color    = $banner_settings['text_color'] ?? '#111827';
 
-	// Generate inline CSS with custom color variables
+	// Generate inline CSS with custom color variables.
 	$custom_colors_css = "
 		/* Phase 2.5.3: Admin-configured banner colors */
 		:root {
@@ -222,10 +223,10 @@ function enqueue_slos_consent_banner() {
 		}
 	";
 
-	// Add inline styles to override default CSS variables
+	// Add inline styles to override default CSS variables.
 	wp_add_inline_style( 'slos-consent-banner', $custom_colors_css );
 
-	// Enqueue consent banner script
+	// Enqueue consent banner script.
 	wp_enqueue_script(
 		'slos-consent-banner',
 		SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/js/consent-banner.js',
@@ -234,7 +235,7 @@ function enqueue_slos_consent_banner() {
 		true
 	);
 
-	// Enqueue Phase 1.4 placeholder blocking script
+	// Enqueue Phase 1.4 placeholder blocking script.
 	wp_enqueue_script(
 		'slos-consent-placeholders',
 		SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/js/consent-placeholders.js',
@@ -243,27 +244,27 @@ function enqueue_slos_consent_banner() {
 		true
 	);
 
-	// Get privacy policy URL from legal pages option (0.4.3)
+	// Get privacy policy URL from legal pages option (0.4.3).
 	$legal_pages = get_option( 'slos_legal_pages', array() );
 	$privacy_url = '';
 	if ( isset( $legal_pages['privacy_policy']['page_id'] ) ) {
 		$privacy_url = get_permalink( $legal_pages['privacy_policy']['page_id'] );
-		// Fallback if permalink fails
+		// Fallback if permalink fails.
 		if ( ! $privacy_url ) {
 			$privacy_url = home_url( '/privacy-policy' );
 		}
 	} else {
-		// Fallback to common privacy policy URL
+		// Fallback to common privacy policy URL.
 		$privacy_url = home_url( '/privacy-policy' );
 	}
 
-	// Phase 1.4.3, 2.1.3, 2.5.3: Get banner settings for icon position, template, and colors
+	// Phase 1.4.3, 2.1.3, 2.5.3: Get banner settings for icon position, template, and colors.
 	$banner_settings = get_option( 'slos_banner_settings', array() );
 
-	// Phase 2.1.3: Admin-configured template takes precedence over geo-suggested template
+	// Phase 2.1.3: Admin-configured template takes precedence over geo-suggested template.
 	$selected_template = $banner_settings['template'] ?? $suggested_tpl;
 
-	// Localize banner configuration
+	// Localize banner configuration.
 	wp_localize_script(
 		'slos-consent-banner',
 		'slosConsentConfig',
@@ -276,19 +277,19 @@ function enqueue_slos_consent_banner() {
 			'region'            => $detected_region,
 			'countryCode'       => $country_code,
 			'geoRuleId'         => $geo_rule_id,
-			'consentMode'       => apply_filters( 'slos_consent_mode', $consent_mode ), // Options: 'opt-in', 'opt-out', 'notice'
-			'template'          => apply_filters( 'slos_consent_template', $selected_template ), // Phase 2.1.3: Options: 'eu', 'ccpa', 'simple', 'advanced'
-			'position'          => apply_filters( 'slos_consent_position', 'bottom' ), // Options: 'top', 'bottom'
-			'theme'             => apply_filters( 'slos_consent_theme', 'light' ), // Options: 'light', 'dark'
+			'consentMode'       => apply_filters( 'slos_consent_mode', $consent_mode ),
+			'template'          => apply_filters( 'slos_consent_template', $selected_template ),
+			'position'          => apply_filters( 'slos_consent_position', 'bottom' ),
+			'theme'             => apply_filters( 'slos_consent_theme', 'light' ),
 			'reloadOnConsent'   => apply_filters( 'slos_reload_on_consent', false ),
-			'privacyUrl'        => apply_filters( 'slos_privacy_policy_url', $banner_settings['privacy_url'] ?? $privacy_url ), // Phase 2.3.1: Admin-configured privacy URL
-			'privacyLink'       => apply_filters( 'slos_privacy_policy_url', $banner_settings['privacy_url'] ?? $privacy_url ), // Backward compatibility
-			'learnMoreText'     => $banner_settings['learn_more_text'] ?? __( 'Learn more', 'shahi-legalflowsuite' ), // Phase 2.3.2: Learn more text
-			'consentExpiryDays' => absint( $banner_settings['consent_expiry_days'] ?? 30 ), // Phase 2.3.3: Consent expiry days
-			'gracePeriodDays'   => absint( $banner_settings['grace_period_days'] ?? 0 ), // Phase 3.4.1: Grace period days
-			'iconPosition'      => $banner_settings['icon_position'] ?? 'left', // Phase 1.4.3: Floating icon position
-			'policyVersion'     => apply_filters( 'slos_policy_version', get_option( 'slos_policy_version', '1.0' ) ), // Phase 3.1.1: Policy version for re-consent
-			'bannerVersion'     => null, // Phase 3.1.2: Will be auto-generated by JS from config hash
+			'privacyUrl'        => apply_filters( 'slos_privacy_policy_url', $banner_settings['privacy_url'] ?? $privacy_url ),
+			'privacyLink'       => apply_filters( 'slos_privacy_policy_url', $banner_settings['privacy_url'] ?? $privacy_url ),
+			'learnMoreText'     => $banner_settings['learn_more_text'] ?? __( 'Learn more', 'shahi-legalflowsuite' ),
+			'consentExpiryDays' => absint( $banner_settings['consent_expiry_days'] ?? 30 ),
+			'gracePeriodDays'   => absint( $banner_settings['grace_period_days'] ?? 0 ),
+			'iconPosition'      => $banner_settings['icon_position'] ?? 'left',
+			'policyVersion'     => apply_filters( 'slos_policy_version', get_option( 'slos_policy_version', '1.0' ) ),
+			'bannerVersion'     => null,
 			'matchingRule'      => $matching_rule ? array(
 				'id'        => $matching_rule['id'] ?? null,
 				'name'      => $matching_rule['name'] ?? '',
@@ -297,18 +298,18 @@ function enqueue_slos_consent_banner() {
 		)
 	);
 
-	// Localize translations
+	// Localize translations.
 	wp_localize_script(
 		'slos-consent-banner',
 		'slosConsentI18n',
 		array(
-			// Banner titles
+			// Banner titles.
 			'euTitle'                => __( 'Your Consent Preferences', 'shahi-legalflowsuite' ),
 			'euMessage'              => __( 'We use cookies and similar tracking technologies to enhance your experience. Please select your preferences below.', 'shahi-legalflowsuite' ),
 			'ccpaMessage'            => __( 'We respect your privacy. You have the right to opt-out of the sale or sharing of your personal information.', 'shahi-legalflowsuite' ),
 			'simpleMessage'          => __( 'We use cookies to enhance your experience. Do you accept?', 'shahi-legalflowsuite' ),
 
-			// Buttons
+			// Buttons.
 			'acceptAll'              => __( 'Accept All', 'shahi-legalflowsuite' ),
 			'acceptSelected'         => __( 'Accept Selected', 'shahi-legalflowsuite' ),
 			'rejectAll'              => __( 'Reject All', 'shahi-legalflowsuite' ),
@@ -318,11 +319,11 @@ function enqueue_slos_consent_banner() {
 			'doNotSell'              => __( 'Do Not Sell My Info', 'shahi-legalflowsuite' ),
 			'save'                   => __( 'Save Preferences', 'shahi-legalflowsuite' ),
 
-			// Links
+			// Links.
 			'privacyPolicy'          => __( 'Privacy Policy', 'shahi-legalflowsuite' ),
 			'learnMore'              => __( 'Learn More', 'shahi-legalflowsuite' ),
 
-			// Purpose labels
+			// Purpose labels.
 			'purposeNecessary'       => __( 'Necessary Cookies', 'shahi-legalflowsuite' ),
 			'purposeFunctional'      => __( 'Functional Cookies', 'shahi-legalflowsuite' ),
 			'purposeAnalytics'       => __( 'Analytics', 'shahi-legalflowsuite' ),
@@ -330,7 +331,7 @@ function enqueue_slos_consent_banner() {
 			'purposePreferences'     => __( 'Preference Management', 'shahi-legalflowsuite' ),
 			'purposePersonalization' => __( 'Personalization', 'shahi-legalflowsuite' ),
 
-			// Purpose descriptions
+			// Purpose descriptions.
 			'descNecessary'          => __( 'Essential for basic functionality and security.', 'shahi-legalflowsuite' ),
 			'descFunctional'         => __( 'Enables enhanced features and user experience.', 'shahi-legalflowsuite' ),
 			'descAnalytics'          => __( 'Helps us understand how you use our site.', 'shahi-legalflowsuite' ),
@@ -338,7 +339,7 @@ function enqueue_slos_consent_banner() {
 			'descPreferences'        => __( 'Remembers your user preferences.', 'shahi-legalflowsuite' ),
 			'descPersonalization'    => __( 'Personalizes content for better experience.', 'shahi-legalflowsuite' ),
 
-			// Other
+			// Other.
 			'required'               => __( 'Required', 'shahi-legalflowsuite' ),
 			'bannerTitle'            => __( 'Manage Consent', 'shahi-legalflowsuite' ),
 		)
@@ -362,14 +363,16 @@ add_action( 'wp_enqueue_scripts', 'enqueue_slos_cookie_scanner', 110 );
 
 /**
  * Enqueue Compliance Dashboard Assets (Admin)
+ *
+ * @param string $hook The current admin page hook.
  */
 function enqueue_slos_compliance_dashboard_assets( $hook ) {
-	// Only load on compliance page
+	// Only load on compliance page.
 	if ( 'toplevel_page_slos-compliance' !== $hook && 'shahi-legalflowsuite_page_slos-compliance' !== $hook ) {
 		return;
 	}
 
-	// Enqueue Operations Dashboard CSS (Phase 2.1)
+	// Enqueue Operations Dashboard CSS (Phase 2.1).
 	wp_enqueue_style(
 		'slos-compliance-ops-dashboard',
 		SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/css/compliance-ops-dashboard.css',
@@ -378,16 +381,16 @@ function enqueue_slos_compliance_dashboard_assets( $hook ) {
 		'all'
 	);
 
-	// Enqueue Chart.js for time-series visualization
+	// Enqueue Chart.js for time-series visualization.
 	wp_enqueue_script(
 		'chartjs',
-		'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js',
+		SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/js/chart.umd.min.js',
 		array(),
 		'4.4.1',
 		true
 	);
 
-	// Enqueue compliance charts script
+	// Enqueue compliance charts script.
 	wp_enqueue_script(
 		'slos-compliance-charts',
 		SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/js/compliance-charts.js',
@@ -396,7 +399,7 @@ function enqueue_slos_compliance_dashboard_assets( $hook ) {
 		true
 	);
 
-	// Localize script with export endpoints
+	// Localize script with export endpoints.
 	wp_localize_script(
 		'slos-compliance-charts',
 		'slosExport',
@@ -429,8 +432,11 @@ function init_slos_script_blocker() {
 		$blocker = new ShahiLegalFlowSuite\Services\Script_Blocker_Service();
 		$blocker->init();
 	} catch ( \Throwable $e ) {
-		// Fail-safe: do not break site if blocker fails
-		error_log( 'SLOS Script Blocker init error: ' . $e->getMessage() );
+		// Fail-safe: do not break site if blocker fails.
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+			error_log( 'SLOS Script Blocker init error: ' . $e->getMessage() );
+		}
 	}
 }
 add_action( 'init', 'init_slos_script_blocker', 0 );

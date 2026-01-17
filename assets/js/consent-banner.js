@@ -1314,7 +1314,7 @@
 				// Metadata
 				websiteUrl: window.location.origin,
 				pageUrl: window.location.href,
-				platform: 'Shahi LegalOps Suite',
+				platform: 'Shahi LegalFlowSuite',
 				pluginVersion: this.config.pluginVersion || '3.1.1',
 			};
 		}

@@ -395,7 +395,7 @@ class DSR_Export_Service {
 				$sql       = "SELECT * FROM $table WHERE $where_sql ORDER BY created_at DESC";
 
 				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared -- Controlled export lookup with dynamic filters.
-				$results = $wpdb->get_results( $wpdb->prepare( $sql, $values ) );
+				$results = $wpdb->get_results( $wpdb->prepare( $sql, ...$values ) );
 
 				if ( ! empty( $results ) ) {
 					$data['consent_logs'] = array_map(

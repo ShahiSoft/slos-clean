@@ -5,6 +5,8 @@
  * End-to-end testing of FixEngine with real-world scenarios
  */
 
+// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- CLI test output
+
 namespace ShahiLegalFlowSuite\Tests\FixEngine;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -188,7 +190,7 @@ class IntegrationTestSuite {
 		$result = $this->engine->fix_with_fixer( $content, 'empty-alt-text' );
 		$fixed  = $result->get_content();
 
-		// Should preserve Unicode
+		// Should preserve Unicode..
 		$passed = strpos( $fixed, '日本語' ) !== false
 			&& strpos( $fixed, 'العربية' ) !== false;
 
@@ -202,7 +204,7 @@ class IntegrationTestSuite {
 	 * Test large content performance
 	 */
 	private function test_large_content() {
-		// Generate large HTML
+		// Generate large HTML..
 		$content = str_repeat( '<p><img src="test.jpg"></p>', 100 );
 
 		$start   = microtime( true );
@@ -225,7 +227,7 @@ class IntegrationTestSuite {
 	 * Test WordPress post integration
 	 */
 	private function test_post_integration() {
-		// Create test post
+		// Create test post..
 		$post_id = wp_insert_post(
 			array(
 				'post_title'   => 'Test Post',
@@ -241,7 +243,7 @@ class IntegrationTestSuite {
 			);
 		}
 
-		// Fix post content
+		// Fix post content..
 		$post    = get_post( $post_id );
 		$session = $this->engine->fix_content(
 			$post->post_content,
@@ -249,7 +251,7 @@ class IntegrationTestSuite {
 			array( 'post_id' => $post_id )
 		);
 
-		// Cleanup
+		// Cleanup..
 		wp_delete_post( $post_id, true );
 
 		$passed = $session->get_total_changes() > 0;
@@ -289,8 +291,8 @@ class IntegrationTestSuite {
 	 * Test rollback functionality
 	 */
 	private function test_rollback() {
-		// This is a placeholder - full rollback testing requires
-		// database integration
+		// This is a placeholder - full rollback testing requires..
+		// database integration..
 		return array(
 			'passed'  => true,
 			'reason'  => '',
@@ -307,7 +309,7 @@ class IntegrationTestSuite {
 		$r = $this->results;
 
 		$report  = "# Phase 6: Integration Test Report\n\n";
-		$report .= '**Generated:** ' . date( 'Y-m-d H:i:s' ) . "\n\n";
+		$report .= '**Generated:** ' . gmdate( 'Y-m-d H:i:s' ) . "\n\n";
 
 		$report .= "## Summary\n\n";
 		$report .= "- Total Tests: {$r['total']}\n";
@@ -320,7 +322,7 @@ class IntegrationTestSuite {
 			: 0;
 		$report   .= "**Pass Rate:** {$pass_rate}%\n\n";
 
-		// Failed tests
+		// Failed tests..
 		if ( $r['failed'] > 0 ) {
 			$report .= "## Failed Tests\n\n";
 			foreach ( $r['tests'] as $name => $test ) {
@@ -331,7 +333,7 @@ class IntegrationTestSuite {
 			}
 		}
 
-		// Detailed results
+		// Detailed results..
 		$report .= "## All Tests\n\n";
 		foreach ( $r['tests'] as $name => $test ) {
 			$status  = $test['passed'] ? '✓ PASS' : '✗ FAIL';
@@ -349,7 +351,7 @@ class IntegrationTestSuite {
 		$docs_dir = dirname( dirname( dirname( __DIR__ ) ) ) . '/docs/autofix';
 
 		if ( ! is_dir( $docs_dir ) ) {
-			mkdir( $docs_dir, 0755, true );
+			wp_mkdir_p( $docs_dir );
 		}
 
 		$filepath = $docs_dir . '/' . $filename;
@@ -359,7 +361,7 @@ class IntegrationTestSuite {
 	}
 }
 
-// CLI execution
+// CLI execution..
 if ( php_sapi_name() === 'cli' && basename( __FILE__ ) === basename( $_SERVER['SCRIPT_FILENAME'] ) ) {
 	require_once __DIR__ . '/../../../vendor/autoload.php';
 

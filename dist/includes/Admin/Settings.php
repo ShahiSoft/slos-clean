@@ -151,12 +151,12 @@ class Settings {
 				'icon'  => 'dashicons-shield',
 			),
 			// 'privacy'       => array(
-			// 	'title' => __( 'Privacy', 'shahi-legalflowsuite' ),
-			// 	'icon'  => 'dashicons-lock',
+			// 'title' => __( 'Privacy', 'shahi-legalflowsuite' ),
+			// 'icon'  => 'dashicons-lock',
 			// ),
 			// 'advanced'      => array(
-			// 	'title' => __( 'Advanced', 'shahi-legalflowsuite' ),
-			// 	'icon'  => 'dashicons-admin-tools',
+			// 'title' => __( 'Advanced', 'shahi-legalflowsuite' ),
+			// 'icon'  => 'dashicons-admin-tools',
 			// ),
 			'import_export' => array(
 				'title' => __( 'Import/Export', 'shahi-legalflowsuite' ),
@@ -334,13 +334,13 @@ class Settings {
 
 		// Get current settings to preserve values from other tabs
 		$settings = $this->get_settings();
-		
+
 		// Get active tab being saved
 		$active_tab = isset( $_POST['active_tab'] ) ? sanitize_text_field( $_POST['active_tab'] ) : 'general';
 
 		// Update settings based on active tab only
 		// This prevents checkboxes from other tabs from being reset to false
-		
+
 		if ( $active_tab === 'privacy' ) {
 			// Update privacy settings
 			$settings['enable_geolocation_detection'] = isset( $_POST['enable_geolocation_detection'] );
@@ -538,7 +538,7 @@ class Settings {
 			$settings['preserve_settings']          = isset( $_POST['preserve_settings'] );
 			$settings['preserve_user_capabilities'] = isset( $_POST['preserve_user_capabilities'] );
 			$settings['complete_cleanup']           = isset( $_POST['complete_cleanup'] );
-			
+
 			// Update license settings
 			if ( isset( $_POST['license_key'] ) ) {
 				$settings['license_key'] = sanitize_text_field( $_POST['license_key'] );

@@ -30,11 +30,11 @@ class ModalAccessibilityCheck extends AbstractCheck {
 		$dom    = $this->get_dom( $content );
 		$xpath  = new \DOMXPath( $dom );
 
-		// Find elements with role="dialog" or role="alertdialog"
+		// Find elements with role="dialog" or role="alertdialog"..
 		$modals = $xpath->query( '//*[@role="dialog"] | //*[@role="alertdialog"]' );
 
 		foreach ( $modals as $modal ) {
-			// Check for aria-modal="true"
+			// Check for aria-modal="true"..
 			if ( ! $modal->hasAttribute( 'aria-modal' ) || $modal->getAttribute( 'aria-modal' ) !== 'true' ) {
 				$issues[] = array(
 					'element' => $modal->tagName,
@@ -43,7 +43,7 @@ class ModalAccessibilityCheck extends AbstractCheck {
 				);
 			}
 
-			// Check for accessible name
+			// Check for accessible name..
 			$hasName = $modal->hasAttribute( 'aria-label' ) || $modal->hasAttribute( 'aria-labelledby' );
 			if ( ! $hasName ) {
 				$issues[] = array(

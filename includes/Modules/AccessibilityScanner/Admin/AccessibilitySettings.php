@@ -20,11 +20,44 @@ class AccessibilitySettings {
 	}
 
 	public function register_settings() {
-		register_setting( 'slos_accessibility_settings', 'slos_active_checkers' );
-		register_setting( 'slos_accessibility_settings', 'slos_active_fixes' );
-		register_setting( 'slos_accessibility_settings', 'slos_widget_features' );
-		register_setting( 'slos_accessibility_settings', 'slos_widget_position' );
-		register_setting( 'slos_accessibility_settings', 'slos_widget_color' );
+		register_setting(
+			'slos_accessibility_settings',
+			'slos_active_checkers',
+			array( 'sanitize_callback' => array( $this, 'sanitize_accessibility_settings' ) )
+		);
+		register_setting(
+			'slos_accessibility_settings',
+			'slos_active_fixes',
+			array( 'sanitize_callback' => array( $this, 'sanitize_accessibility_settings' ) )
+		);
+		register_setting(
+			'slos_accessibility_settings',
+			'slos_widget_features',
+			array( 'sanitize_callback' => array( $this, 'sanitize_accessibility_settings' ) )
+		);
+		register_setting(
+			'slos_accessibility_settings',
+			'slos_widget_position',
+			array( 'sanitize_callback' => array( $this, 'sanitize_accessibility_settings' ) )
+		);
+		register_setting(
+			'slos_accessibility_settings',
+			'slos_widget_color',
+			array( 'sanitize_callback' => array( $this, 'sanitize_accessibility_settings' ) )
+		);
+	}
+
+	/**
+	 * Sanitize accessibility settings.
+	 *
+	 * @param mixed $input The input value to sanitize.
+	 * @return mixed The sanitized value.
+	 */
+	public function sanitize_accessibility_settings( $input ) {
+		if ( is_array( $input ) ) {
+			return array_map( 'sanitize_text_field', $input );
+		}
+		return sanitize_text_field( $input );
 	}
 
 	public function render() {
@@ -38,8 +71,8 @@ class AccessibilitySettings {
 
 		if ( ! $accessibility_module || ! $accessibility_module->is_enabled() ) {
 			wp_die(
-				__( 'The Accessibility Scanner module is currently disabled. Please enable it from the Module Dashboard.', 'shahi-legalflowsuite' ),
-				__( 'Module Disabled', 'shahi-legalflowsuite' ),
+				esc_html__( 'The Accessibility Scanner module is currently disabled. Please enable it from the Module Dashboard.', 'shahi-legalflowsuite' ),
+				esc_html__( 'Module Disabled', 'shahi-legalflowsuite' ),
 				array( 'back_link' => true )
 			);
 		}

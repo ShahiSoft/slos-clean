@@ -307,26 +307,26 @@ class TemplateItem {
 		<fieldset class="inline-edit-col-right">
 			<div class="inline-edit-col">
 				<label>
-					<span class="title"><?php _e( 'Featured', 'shahi-legalflowsuite' ); ?></span>
+					<span class="title"><?php esc_html_e( 'Featured', 'shahi-legalflowsuite' ); ?></span>
 					<select name="shahi_featured">
-						<option value="">— <?php _e( 'No Change', 'shahi-legalflowsuite' ); ?> —</option>
-						<option value="1"><?php _e( 'Yes', 'shahi-legalflowsuite' ); ?></option>
-						<option value="0"><?php _e( 'No', 'shahi-legalflowsuite' ); ?></option>
+						<option value="">— <?php esc_html_e( 'No Change', 'shahi-legalflowsuite' ); ?> —</option>
+						<option value="1"><?php esc_html_e( 'Yes', 'shahi-legalflowsuite' ); ?></option>
+						<option value="0"><?php esc_html_e( 'No', 'shahi-legalflowsuite' ); ?></option>
 					</select>
 				</label>
 				
 				<label>
-					<span class="title"><?php _e( 'Status', 'shahi-legalflowsuite' ); ?></span>
+					<span class="title"><?php esc_html_e( 'Status', 'shahi-legalflowsuite' ); ?></span>
 					<select name="shahi_status">
-						<option value="">— <?php _e( 'No Change', 'shahi-legalflowsuite' ); ?> —</option>
-						<option value="active"><?php _e( 'Active', 'shahi-legalflowsuite' ); ?></option>
-						<option value="inactive"><?php _e( 'Inactive', 'shahi-legalflowsuite' ); ?></option>
-						<option value="pending"><?php _e( 'Pending', 'shahi-legalflowsuite' ); ?></option>
+						<option value="">— <?php esc_html_e( 'No Change', 'shahi-legalflowsuite' ); ?> —</option>
+						<option value="active"><?php esc_html_e( 'Active', 'shahi-legalflowsuite' ); ?></option>
+						<option value="inactive"><?php esc_html_e( 'Inactive', 'shahi-legalflowsuite' ); ?></option>
+						<option value="pending"><?php esc_html_e( 'Pending', 'shahi-legalflowsuite' ); ?></option>
 					</select>
 				</label>
 				
 				<label>
-					<span class="title"><?php _e( 'Item Type', 'shahi-legalflowsuite' ); ?></span>
+					<span class="title"><?php esc_html_e( 'Item Type', 'shahi-legalflowsuite' ); ?></span>
 					<input type="text" name="shahi_item_type" value="" placeholder="<?php esc_attr_e( 'Enter type...', 'shahi-legalflowsuite' ); ?>">
 				</label>
 			</div>

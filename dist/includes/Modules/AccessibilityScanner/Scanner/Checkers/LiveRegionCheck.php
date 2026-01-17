@@ -30,7 +30,7 @@ class LiveRegionCheck extends AbstractCheck {
 		$dom    = $this->get_dom( $content );
 		$xpath  = new \DOMXPath( $dom );
 
-		// Check for aria-live usage
+		// Check for aria-live usage..
 		$elements = $xpath->query( '//*[@aria-live]' );
 
 		foreach ( $elements as $element ) {
@@ -43,8 +43,8 @@ class LiveRegionCheck extends AbstractCheck {
 				);
 			}
 
-			// Check if it has relevant roles (status, alert, log, marquee, timer)
-			// This is just informational/best practice check
+			// Check if it has relevant roles (status, alert, log, marquee, timer)..
+			// This is just informational/best practice check..
 		}
 
 		return $issues;

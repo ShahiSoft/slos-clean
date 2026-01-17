@@ -14,7 +14,7 @@
 
 namespace ShahiLegalFlowSuite\API;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -43,7 +43,7 @@ class OnboardingController {
 	 * @return void
 	 */
 	public function register_routes() {
-		// Get onboarding status
+		// Get onboarding status..
 		register_rest_route(
 			RestAPI::get_namespace(),
 			'/onboarding/status',
@@ -54,7 +54,7 @@ class OnboardingController {
 			)
 		);
 
-		// Complete onboarding step
+		// Complete onboarding step..
 		register_rest_route(
 			RestAPI::get_namespace(),
 			'/onboarding/complete',
@@ -74,7 +74,7 @@ class OnboardingController {
 			)
 		);
 
-		// Reset onboarding
+		// Reset onboarding..
 		register_rest_route(
 			RestAPI::get_namespace(),
 			'/onboarding/reset',
@@ -127,17 +127,17 @@ class OnboardingController {
 			)
 		);
 
-		// Add step to completed steps
+		// Add step to completed steps..
 		if ( ! in_array( $step, $status['steps_completed'] ) ) {
 			$status['steps_completed'][] = $step;
 		}
 
-		// Update current step
+		// Update current step..
 		if ( $step >= $status['current_step'] ) {
 			$status['current_step'] = $step + 1;
 		}
 
-		// Check if all steps completed
+		// Check if all steps completed..
 		if ( count( $status['steps_completed'] ) >= 5 ) {
 			$status['completed'] = true;
 		}

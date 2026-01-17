@@ -17,7 +17,7 @@ use WP_REST_Request;
 use WP_REST_Response;
 use WP_Error;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -63,7 +63,7 @@ class Consent_Export_Controller extends Base_REST_Controller {
 	 * @return void
 	 */
 	public function register_routes() {
-		// Export endpoint
+		// Export endpoint..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base,
@@ -77,7 +77,7 @@ class Consent_Export_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Import endpoint
+		// Import endpoint..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/import',
@@ -90,7 +90,7 @@ class Consent_Export_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Download endpoint (triggers file download)
+		// Download endpoint (triggers file download)..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/download',
@@ -123,7 +123,7 @@ class Consent_Export_Controller extends Base_REST_Controller {
 			'limit'     => $request->get_param( 'limit' ),
 		);
 
-		// Remove null values
+		// Remove null values..
 		$args = array_filter( $args, fn( $value ) => ! is_null( $value ) );
 
 		try {
@@ -164,13 +164,13 @@ class Consent_Export_Controller extends Base_REST_Controller {
 			'limit'     => $request->get_param( 'limit' ),
 		);
 
-		// Remove null values
+		// Remove null values..
 		$args = array_filter( $args, fn( $value ) => ! is_null( $value ) );
 
 		$data   = $this->service->export( $args );
 		$format = $args['format'] ?? 'csv';
 
-		// Set appropriate content type
+		// Set appropriate content type..
 		$content_types = array(
 			'csv'  => 'text/csv',
 			'json' => 'application/json',
@@ -179,12 +179,14 @@ class Consent_Export_Controller extends Base_REST_Controller {
 
 		$content_type = $content_types[ $format ] ?? 'text/plain';
 
-		// Set download headers
+		// Set download headers..
 		header( 'Content-Type: ' . $content_type );
 		header( 'Content-Disposition: attachment; filename="consent-export-' . gmdate( 'Y-m-d-His' ) . '.' . $format . '"' );
 		header( 'Pragma: no-cache' );
 
+		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo $data;
+		// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
 		exit;
 	}
 

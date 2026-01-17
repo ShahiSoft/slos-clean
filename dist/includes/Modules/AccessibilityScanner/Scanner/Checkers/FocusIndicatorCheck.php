@@ -42,13 +42,13 @@ class FocusIndicatorCheck extends AbstractCheck {
 		$dom    = $this->get_dom( $content );
 		$xpath  = new \DOMXPath( $dom );
 
-		// 1. Check inline styles for outline removal
+		// 1. Check inline styles for outline removal..
 		$this->check_inline_focus_removal( $xpath, $issues );
 
-		// 2. Check <style> tags for focus removal patterns
+		// 2. Check <style> tags for focus removal patterns..
 		$this->check_style_tags_for_focus_removal( $dom, $issues );
 
-		// 3. Check custom focusable elements (tabindex)
+		// 3. Check custom focusable elements (tabindex)..
 		$this->check_custom_focusable_elements( $xpath, $issues );
 
 		return $issues;
@@ -64,7 +64,7 @@ class FocusIndicatorCheck extends AbstractCheck {
 			$style = $element->getAttribute( 'style' );
 
 			if ( preg_match( '/outline\s*:\s*(0|none)/i', $style ) ) {
-				// Check if there is a replacement style
+				// Check if there is a replacement style..
 				$has_replacement = preg_match( '/(border|background|box-shadow)/i', $style );
 
 				if ( ! $has_replacement ) {
@@ -88,7 +88,7 @@ class FocusIndicatorCheck extends AbstractCheck {
 		foreach ( $styles as $style ) {
 			$css = $style->textContent;
 
-			// Detect *:focus (global focus removal) - most severe
+			// Detect *:focus (global focus removal) - most severe..
 			if ( preg_match( '/\*\s*:focus\s*\{[^}]*outline\s*:\s*(none|0)/i', $css ) ) {
 				$issues[] = array(
 					'element'    => 'style',
@@ -100,15 +100,15 @@ class FocusIndicatorCheck extends AbstractCheck {
 				continue; // Don't double-report for global
 			}
 
-			// Detect :focus { outline: none/0 } patterns
+			// Detect :focus { outline: none/0 } patterns..
 			if ( preg_match_all( '/([^{,]+):focus\s*\{([^}]+)\}/i', $css, $matches, PREG_SET_ORDER ) ) {
 				foreach ( $matches as $match ) {
 					$selector = trim( $match[1] );
 					$rules    = $match[2];
 
-					// Check if outline is removed
+					// Check if outline is removed..
 					if ( preg_match( '/outline\s*:\s*(none|0)/i', $rules ) ) {
-						// Check if there's a replacement style
+						// Check if there's a replacement style..
 						$has_replacement = preg_match( '/(box-shadow|border|background)/i', $rules );
 
 						if ( ! $has_replacement ) {
@@ -123,7 +123,7 @@ class FocusIndicatorCheck extends AbstractCheck {
 				}
 			}
 
-			// Detect :focus-visible removal (modern browsers)
+			// Detect :focus-visible removal (modern browsers)..
 			if ( preg_match( '/:focus-visible\s*\{[^}]*outline\s*:\s*(none|0)/i', $css ) ) {
 				if ( ! preg_match( '/:focus-visible\s*\{[^}]*(box-shadow|border|background)/i', $css ) ) {
 					$issues[] = array(
@@ -141,25 +141,25 @@ class FocusIndicatorCheck extends AbstractCheck {
 	 * Check custom focusable elements (tabindex) for focus visibility
 	 */
 	private function check_custom_focusable_elements( $xpath, &$issues ) {
-		// Elements with positive tabindex that might need custom focus styles
+		// Elements with positive tabindex that might need custom focus styles..
 		$elements = $xpath->query( '//*[@tabindex]' );
 
 		foreach ( $elements as $element ) {
 			$tabindex = $element->getAttribute( 'tabindex' );
 
-			// Skip tabindex="-1" (programmatically focusable only)
+			// Skip tabindex="-1" (programmatically focusable only)..
 			if ( $tabindex === '-1' ) {
 				continue;
 			}
 
 			$tag = strtolower( $element->tagName );
 
-			// Skip natively focusable elements (they have browser default focus)
+			// Skip natively focusable elements (they have browser default focus)..
 			if ( in_array( $tag, array( 'a', 'button', 'input', 'select', 'textarea', 'area' ), true ) ) {
 				continue;
 			}
 
-			// Custom focusable element - warn about focus visibility
+			// Custom focusable element - warn about focus visibility..
 			$issues[] = array(
 				'element'    => $tag,
 				'context'    => $this->get_element_html( $element ),

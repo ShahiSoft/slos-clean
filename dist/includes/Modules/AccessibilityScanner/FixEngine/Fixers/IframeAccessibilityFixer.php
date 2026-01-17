@@ -53,7 +53,7 @@ final class IframeAccessibilityFixer extends AbstractFixer {
 			return FixResult::error( $this->get_id(), 'Failed to parse HTML', $content );
 		}
 
-		// Find iframes without title
+		// Find iframes without title..
 		$iframes       = $this->query( '//iframe[not(@title) or @title=""]' );
 		$fixes_applied = 0;
 		$details       = array();
@@ -64,7 +64,7 @@ final class IframeAccessibilityFixer extends AbstractFixer {
 
 			$iframe->setAttribute( 'title', $title );
 
-			// Also add lazy loading if not present
+			// Also add lazy loading if not present..
 			if ( ! $iframe->hasAttribute( 'loading' ) ) {
 				$iframe->setAttribute( 'loading', 'lazy' );
 			}
@@ -93,7 +93,7 @@ final class IframeAccessibilityFixer extends AbstractFixer {
 	 * Generate a descriptive title based on iframe source
 	 */
 	private function generate_iframe_title( string $src ): string {
-		// Common embed patterns
+		// Common embed patterns..
 		$patterns = array(
 			'youtube.com'     => __( 'YouTube video player', 'shahi-legalflowsuite' ),
 			'youtu.be'        => __( 'YouTube video player', 'shahi-legalflowsuite' ),
@@ -124,11 +124,15 @@ final class IframeAccessibilityFixer extends AbstractFixer {
 			}
 		}
 
-		// Try to extract domain name for generic title
+		// Try to extract domain name for generic title..
 		$parsed = wp_parse_url( $src );
 		if ( ! empty( $parsed['host'] ) ) {
 			$host = preg_replace( '/^www\./', '', $parsed['host'] );
-			return sprintf( __( 'Embedded content from %s', 'shahi-legalflowsuite' ), $host );
+			return sprintf(
+				/* translators: %s: host or domain name (e.g. example.com) */
+				__( 'Embedded content from %s', 'shahi-legalflowsuite' ),
+				$host
+			);
 		}
 
 		return __( 'Embedded content', 'shahi-legalflowsuite' );

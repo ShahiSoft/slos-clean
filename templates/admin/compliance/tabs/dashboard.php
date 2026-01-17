@@ -13,19 +13,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Calculate percentages for consent breakdown
+// Calculate percentages for consent breakdown.
 $type_percentages = array();
 $total_by_type    = array_sum( $stats['by_type'] );
+// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- $type is a local variable in foreach loop
 foreach ( $stats['by_type'] as $type => $count ) {
 	$type_percentages[ $type ] = $total_by_type > 0 ? round( ( $count / $total_by_type ) * 100 ) : 0;
 }
 
-// Prepare grade class
+// Prepare grade class.
 $grade_class   = $stats['grade_class'] ?? 'grade-' . strtolower( $stats['grade'] );
 $circumference = 2 * M_PI * 65;
 $offset        = $circumference - ( $stats['compliance_score'] / 100 ) * $circumference;
 
-// Get dimension labels and icons
+// Get dimension labels and icons.
 require_once SHAHI_LEGALFLOWSUITE_PATH . 'config/compliance-constants.php';
 $dimension_labels = slos_get_dimension_labels();
 $dimension_icons  = slos_get_dimension_icons();
@@ -63,12 +64,15 @@ $dimension_icons  = slos_get_dimension_icons();
 						</div>
 						<div style="font-size: 13px; color: rgba(255,255,255,0.8);">
 							<?php
-							/* translators: %s: Grade letter and label */
+							// translators: %1$s: grade letter, %2$s: grade label.
+							// phpcs:ignore WordPress.WP.I18n.MissingTranslatorsComment -- Translators comment provided above.
 							printf(
+								// translators: %1$s: grade letter, %2$s: grade label.
 								esc_html__( 'Grade: %1$s - %2$s', 'shahi-legalflowsuite' ),
 								'<strong>' . esc_html( $ops_stats['ops_grade'] ) . '</strong>',
 								esc_html( $ops_stats['ops_label'] )
 							);
+							?>
 							?>
 						</div>
 					</div>
@@ -286,7 +290,7 @@ $dimension_icons  = slos_get_dimension_icons();
 									<span class="dashicons dashicons-warning" style="font-size: 14px;"></span>
 									<?php
 									/* translators: %d: Number of critical issues */
-									printf( esc_html__( '%d Critical Issues', 'shahi-legalflowsuite' ), $critical_issues );
+									printf( esc_html__( '%d Critical Issues', 'shahi-legalflowsuite' ), intval( $critical_issues ) );
 									?>
 								</div>
 							<?php else : ?>
@@ -356,7 +360,7 @@ $dimension_icons  = slos_get_dimension_icons();
 									<span class="dashicons dashicons-warning" style="font-size: 14px;"></span>
 									<?php
 									/* translators: %d: Number of critical UX issues */
-									printf( esc_html__( '%d Critical UX Issues', 'shahi-legalflowsuite' ), $ux_critical );
+									printf( esc_html__( '%d Critical UX Issues', 'shahi-legalflowsuite' ), intval( $ux_critical ) );
 									?>
 								</div>
 							<?php else : ?>
@@ -364,7 +368,7 @@ $dimension_icons  = slos_get_dimension_icons();
 									<span class="dashicons dashicons-yes-alt" style="font-size: 14px;"></span>
 									<?php
 									/* translators: %d: Number of pages scanned */
-									printf( esc_html__( '%d Pages Scanned', 'shahi-legalflowsuite' ), $ux_pages );
+									printf( esc_html__( '%d Pages Scanned', 'shahi-legalflowsuite' ), intval( $ux_pages ) );
 									?>
 								</div>
 							<?php endif; ?>
@@ -508,7 +512,7 @@ $dimension_icons  = slos_get_dimension_icons();
 							$dimension_label = $dimension_labels[ $dimension_key ] ?? $dimension_key;
 							$dimension_icon  = $dimension_icons[ $dimension_key ] ?? 'dashicons-admin-generic';
 
-							// Color based on score
+							// Color based on score.
 							if ( $dimension_score >= 80 ) {
 								$dim_color = 'var(--slos-success)';
 							} elseif ( $dimension_score >= 60 ) {
@@ -597,7 +601,7 @@ $dimension_icons  = slos_get_dimension_icons();
 
 		<!-- Recent Activity -->
 		<?php
-		// Check if consent records feature is dormant
+		// Check if consent records feature is dormant.
 		$show_recent_activity = ! ( defined( 'SLOS_DORMANT_COMPLIANCE_FEATURES' ) &&
 			is_array( SLOS_DORMANT_COMPLIANCE_FEATURES ) &&
 			in_array( 'records', SLOS_DORMANT_COMPLIANCE_FEATURES, true ) );
@@ -685,9 +689,10 @@ $dimension_icons  = slos_get_dimension_icons();
 			<?php endif; ?>
 		</div>
 	</div>
-	<?php endif; // End Recent Activity dormant check ?>
+	<?php endif; // End Recent Activity dormant check. ?>
 	</div>
-	<!-- End Main Column -->
+	<!-- End Main Column. -->
+
 
 	<!-- Sidebar Column -->
 	<div class="slos-sidebar-column">
@@ -725,7 +730,7 @@ $dimension_icons  = slos_get_dimension_icons();
 						<span class="dashicons dashicons-arrow-right-alt2 arrow"></span>
 					</button>
 					<?php
-					// Check if audit logs feature is dormant
+					// Check if audit logs feature is dormant.
 					if ( ! ( defined( 'SLOS_DORMANT_COMPLIANCE_FEATURES' ) &&
 						is_array( SLOS_DORMANT_COMPLIANCE_FEATURES ) &&
 						in_array( 'audit', SLOS_DORMANT_COMPLIANCE_FEATURES, true ) ) ) :
@@ -787,23 +792,23 @@ $dimension_icons  = slos_get_dimension_icons();
 
 		<!-- Active Geo Rules -->
 		<?php
-		// Check if geo rules feature is dormant
+		// Check if geo rules feature is dormant.
 		$show_geo_rules = ! ( defined( 'SLOS_DORMANT_COMPLIANCE_FEATURES' ) &&
 			is_array( SLOS_DORMANT_COMPLIANCE_FEATURES ) &&
 			in_array( 'geo', SLOS_DORMANT_COMPLIANCE_FEATURES, true ) );
 		if ( $show_geo_rules ) :
-			// Get geo rules from database
+			// Get geo rules from database.
 			$geo_rules    = get_option( 'slos_geo_rules', array() );
 			$active_rules = array_filter(
 				$geo_rules,
 				function ( $rule ) {
-					// Support both 'active' field and 'status' field
-					$is_active = ! empty( $rule['active'] ) || ( isset( $rule['status'] ) && $rule['status'] === 'active' );
+					// Support both 'active' field and 'status' field.
+					$is_active = ! empty( $rule['active'] ) || ( isset( $rule['status'] ) && 'active' === $rule['status'] );
 					return $is_active;
 				}
 			);
 
-			// Flag mapping for regions
+			// Flag mapping for regions.
 			$region_flags = array(
 				'EU'      => '🇪🇺',
 				'DE'      => '🇩🇪',
@@ -848,7 +853,7 @@ $dimension_icons  = slos_get_dimension_icons();
 					foreach ( array_slice( $active_rules, 0, 4 ) as $rule ) :
 						$rule_name = $rule['name'] ?? $rule['region'] ?? 'Unknown';
 						$framework = $rule['framework'] ?? $rule['regulation'] ?? '';
-						// Determine flag from countries or name
+						// Determine flag from countries or name.
 						$countries     = $rule['countries'] ?? array();
 						$first_country = ! empty( $countries ) ? $countries[0] : strtoupper( substr( $rule_name, 0, 2 ) );
 						$flag          = $region_flags[ $first_country ] ?? $region_flags['GLOBAL'];
@@ -880,7 +885,7 @@ $dimension_icons  = slos_get_dimension_icons();
 				<?php endif; ?>
 			</div>
 		</div>
-		<?php endif; // End Geo Rules dormant check ?>
+		<?php endif; // End Geo Rules dormant check. ?>
 
 		<!-- Legal Documents Status -->
 		<?php
@@ -888,7 +893,7 @@ $dimension_icons  = slos_get_dimension_icons();
 			$legal_docs     = $stats['legal_docs'];
 			$doc_percentage = $legal_docs['percentage'] ?? 0;
 
-			// Determine status color
+			// Determine status color.
 			if ( $doc_percentage >= 100 ) {
 				$doc_status_color = 'var(--slos-success)';
 				$doc_status_text  = __( 'Complete', 'shahi-legalflowsuite' );
@@ -921,10 +926,12 @@ $dimension_icons  = slos_get_dimension_icons();
 						<span style="font-size: 13px; color: var(--slos-text-secondary);">
 							<?php
 							printf(
+								// translators: %1$d: number of published documents, %2$d: total documents.
 								esc_html__( '%1$d of %2$d documents published', 'shahi-legalflowsuite' ),
-								$legal_docs['published'] ?? 0,
-								$legal_docs['total'] ?? 3
+								intval( $legal_docs['published'] ?? 0 ),
+								intval( $legal_docs['total'] ?? 3 )
 							);
+							?>
 							?>
 						</span>
 						<span style="font-weight: 600; color: <?php echo esc_attr( $doc_status_color ); ?>;">
@@ -982,9 +989,11 @@ $dimension_icons  = slos_get_dimension_icons();
 							<div style="flex: 1; font-size: 12px; color: var(--slos-text-secondary);">
 								<?php
 								printf(
+									// translators: %d: number of stale documents.
 									esc_html__( '%d document(s) need regeneration because cookie data has changed.', 'shahi-legalflowsuite' ),
-									$legal_docs['stale']
+									intval( $legal_docs['stale'] )
 								);
+								?>
 								?>
 							</div>
 						</div>
@@ -1013,22 +1022,24 @@ $dimension_icons  = slos_get_dimension_icons();
 							<span class="slos-alert-text">
 								<?php
 								printf(
+									// translators: %d: number of withdrawn consents.
 									esc_html__( '%d withdrawn consents require follow-up action.', 'shahi-legalflowsuite' ),
-									$stats['withdrawn']
+									intval( $stats['withdrawn'] )
 								);
+								?>
 								?>
 							</span>
 						</div>
 					<?php endif; ?>
 					
 					<?php
-					// Check for uncategorized cookies from actual data
+					// Check for uncategorized cookies from actual data.
 					$detected_cookies    = get_option( 'slos_detected_cookies', array() );
 					$uncategorized       = array_filter(
 						$detected_cookies,
 						function ( $cookie ) {
 							$category = $cookie['category'] ?? $cookie['type'] ?? '';
-							return empty( $category ) || $category === 'unknown' || $category === 'uncategorized';
+							return empty( $category ) || 'unknown' === $category || 'uncategorized' === $category;
 						}
 					);
 					$uncategorized_count = count( $uncategorized );
@@ -1039,8 +1050,9 @@ $dimension_icons  = slos_get_dimension_icons();
 						<span class="slos-alert-text">
 							<?php
 							printf(
+								// translators: %d: number of uncategorized cookies.
 								esc_html__( 'Cookie scanner detected %d cookies that need categorization.', 'shahi-legalflowsuite' ),
-								$uncategorized_count
+								intval( $uncategorized_count )
 							);
 							?>
 						</span>

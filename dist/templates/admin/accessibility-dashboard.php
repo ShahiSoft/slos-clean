@@ -15,31 +15,31 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Get real scan results from database
+// Get real scan results from database.
 $scan_results = get_option( 'slos_last_scan_results', array() );
 $stats        = get_option( 'slos_scan_statistics', array() );
 
-// If no scan results exist yet, prepare empty state
+// If no scan results exist yet, prepare empty state.
 if ( empty( $scan_results ) ) {
 	$scan_results = array();
 }
 
-// Prepare statistics with defaults
+// Prepare statistics with defaults.
 $total_pages    = isset( $stats['total_pages_scanned'] ) ? $stats['total_pages_scanned'] : 0;
 $total_issues   = isset( $stats['total_issues'] ) ? $stats['total_issues'] : 0;
 $total_critical = isset( $stats['total_critical'] ) ? $stats['total_critical'] : 0;
 $average_score  = isset( $stats['average_score'] ) ? $stats['average_score'] : 100;
 
-// Get grade from score
+// Get grade from score.
 $grade = $average_score >= 90 ? 'A' : ( $average_score >= 80 ? 'B' : ( $average_score >= 70 ? 'C' : ( $average_score >= 60 ? 'D' : 'F' ) ) );
 
-// Get scan history
+// Get scan history.
 $scan_history = get_option( 'slos_accessibility_scan_history', array() );
 
-// Get top issues by type
+// Get top issues by type.
 $issues_by_type = get_option( 'slos_issues_by_type', array() );
 
-// Get widget settings
+// Get widget settings.
 $widget_enabled = get_option( 'slos_widget_enabled', true );
 ?>
 
@@ -1683,14 +1683,14 @@ $widget_enabled = get_option( 'slos_widget_enabled', true );
 					<svg width="160" height="160" viewBox="0 0 160 160" class="slos-score-circle">
 						<circle cx="80" cy="80" r="70" fill="none" stroke="#334155" stroke-width="12"/>
 						<circle cx="80" cy="80" r="70" fill="none" 
-								stroke="<?php echo esc_attr( $grade === 'A' ? '#22c55e' : ( $grade === 'B' ? '#3b82f6' : ( $grade === 'C' ? '#f59e0b' : '#ef4444' ) ) ); ?>" 
+								stroke="<?php echo esc_attr( 'A' === $grade ? '#22c55e' : ( 'B' === $grade ? '#3b82f6' : ( 'C' === $grade ? '#f59e0b' : '#ef4444' ) ) ); ?>" 
 								stroke-width="12" 
 								stroke-dasharray="<?php echo esc_attr( ( 440 * max( 0, min( 100, (int) $average_score ) ) / 100 ) . ' 440' ); ?>" 
 								stroke-linecap="round"
 								transform="rotate(-90 80 80)"
 								style="transition: stroke-dasharray 1s ease;"/>
 						<text x="80" y="70" text-anchor="middle" 
-								fill="<?php echo esc_attr( $grade === 'A' ? '#22c55e' : ( $grade === 'B' ? '#3b82f6' : ( $grade === 'C' ? '#f59e0b' : '#ef4444' ) ) ); ?>" 
+								fill="<?php echo esc_attr( 'A' === $grade ? '#22c55e' : ( 'B' === $grade ? '#3b82f6' : ( 'C' === $grade ? '#f59e0b' : '#ef4444' ) ) ); ?>" 
 								font-size="48" font-weight="700"><?php echo esc_html( $average_score ); ?>%</text>
 						<text x="80" y="95" text-anchor="middle" fill="#94a3b8" font-size="18" font-weight="600">
 							<?php echo esc_html__( 'Grade:', 'shahi-legalflowsuite' ) . ' ' . esc_html( $grade ); ?>
@@ -1811,7 +1811,7 @@ $widget_enabled = get_option( 'slos_widget_enabled', true );
 			</div>
 			<div class="slos-card-body">
 				<?php
-				// Calculate issue percentages
+				// Calculate issue percentages.
 				$max_issues     = max( $total_issues, 1 );
 				$critical_pct   = ( $total_critical / $max_issues ) * 100;
 				$serious_count  = isset( $stats['total_serious'] ) ? $stats['total_serious'] : round( $total_issues * 0.3 );
@@ -1891,7 +1891,7 @@ $widget_enabled = get_option( 'slos_widget_enabled', true );
 						<?php
 						foreach ( array_slice( $issues_by_type, 0, 5 ) as $issue ) :
 							$severity       = isset( $issue['severity'] ) ? $issue['severity'] : 'warning';
-							$severity_class = $severity === 'critical' ? 'error' : ( $severity === 'warning' ? 'warning' : 'info' );
+							$severity_class = 'critical' === $severity ? 'error' : ( 'warning' === $severity ? 'warning' : 'info' );
 							?>
 						<tr>
 							<td class="issue-name">
@@ -1999,14 +1999,14 @@ $widget_enabled = get_option( 'slos_widget_enabled', true );
 							<tbody id="slos-history-tbody">
 								<?php
 								foreach ( array_slice( $scan_history, 0, 10 ) as $index => $scan ) :
-									$score       = isset( $scan['score'] ) ? intval( $scan['score'] ) : 0;
-									$score_class = $score >= 90 ? 'excellent' : ( $score >= 70 ? 'good' : ( $score >= 50 ? 'fair' : 'poor' ) );
-									$issues      = isset( $scan['issues'] ) ? intval( $scan['issues'] ) : 0;
-									$critical    = isset( $scan['critical'] ) ? intval( $scan['critical'] ) : 0;
-									$pages       = isset( $scan['pages_scanned'] ) ? intval( $scan['pages_scanned'] ) : 0;
-									$wcag        = isset( $scan['wcag_level'] ) ? $scan['wcag_level'] : 'AA';
-									$date        = isset( $scan['date'] ) ? $scan['date'] : '';
-									$scan_id     = isset( $scan['id'] ) ? $scan['id'] : $index;
+									$score         = isset( $scan['score'] ) ? intval( $scan['score'] ) : 0;
+									$score_class   = $score >= 90 ? 'excellent' : ( $score >= 70 ? 'good' : ( $score >= 50 ? 'fair' : 'poor' ) );
+									$issues        = isset( $scan['issues'] ) ? intval( $scan['issues'] ) : 0;
+									$critical      = isset( $scan['critical'] ) ? intval( $scan['critical'] ) : 0;
+									$scanned_pages = isset( $scan['pages_scanned'] ) ? intval( $scan['pages_scanned'] ) : 0;
+									$wcag          = isset( $scan['wcag_level'] ) ? $scan['wcag_level'] : 'AA';
+									$date          = isset( $scan['date'] ) ? $scan['date'] : '';
+									$scan_id       = isset( $scan['id'] ) ? $scan['id'] : $index;
 									?>
 								<tr data-scan-id="<?php echo esc_attr( $scan_id ); ?>">
 									<td class="slos-history-date">
@@ -2028,7 +2028,7 @@ $widget_enabled = get_option( 'slos_widget_enabled', true );
 											<span class="slos-none-badge">—</span>
 										<?php endif; ?>
 									</td>
-									<td><?php echo esc_html( $pages ); ?></td>
+									<td><?php echo esc_html( $scanned_pages ); ?></td>
 									<td>
 										<span class="slos-wcag-badge"><?php echo esc_html( $wcag ); ?></span>
 									</td>
@@ -2230,26 +2230,26 @@ const slosExportNonce = <?php echo wp_json_encode( wp_create_nonce( 'slos_export
 const slosScannerNonce = <?php echo wp_json_encode( wp_create_nonce( 'slos_scanner_nonce' ) ); ?>;
 
 jQuery(document).ready(function($) {
-	// Export buttons
+	// Export buttons.
 	$('.slos-export-btn').on('click', function() {
 		var format = $(this).data('format');
 		window.location.href = ajaxurl + '?action=slos_export_report&format=' + format + '&nonce=' + encodeURIComponent( slosExportNonce );
 	});
 	
-	// =============================================
-	// FIX FUNCTIONALITY
-	// =============================================
+	// =============================================.
+	// FIX FUNCTIONALITY.
+	// =============================================.
 	
-	// Fix All Issues button - Now handled by slos-scanner-admin.js with progress modal
-	// The handler in slos-scanner-admin.js listens for .slos-fix-all-btn clicks
-	// and triggers the SLOSAutoFixProgress modal
+	// Fix All Issues button - Now handled by slos-scanner-admin.js with progress modal.
+	// The handler in slos-scanner-admin.js listens for .slos-fix-all-btn clicks.
+	// and triggers the SLOSAutoFixProgress modal.
 	
 	/**
 	 * Show Fix Results Modal - Centered popup with full details
 	 * Still used for displaying detailed results after fixes
 	 */
 	function showFixNotification(type, message, guidance, fixedDetails, failedDetails) {
-		// Remove any existing modals
+		// Remove any existing modals.
 		$('.slos-fix-results-modal-overlay').remove();
 		
 		var iconClass = type === 'success' ? 'yes-alt' : (type === 'error' ? 'dismiss' : (type === 'warning' ? 'warning' : 'info-outline'));
@@ -2259,7 +2259,7 @@ jQuery(document).ready(function($) {
 		var html = '<div class="slos-fix-results-modal-overlay" style="position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100002; display: flex; align-items: center; justify-content: center; padding: 20px;">';
 		html += '<div class="slos-fix-results-modal" style="background: #334155; border: 1px solid #475569; border-radius: 16px; width: 100%; max-width: 600px; max-height: 80vh; display: flex; flex-direction: column; box-shadow: 0 25px 50px rgba(0,0,0,0.6); overflow: hidden;">';
 		
-		// Modal Header
+		// Modal Header.
 		html += '<div style="background: ' + headerBg + '; padding: 20px 24px; display: flex; align-items: center; gap: 16px;">';
 		html += '<span class="dashicons dashicons-' + iconClass + '" style="color: white; font-size: 32px; width: 32px; height: 32px;"></span>';
 		html += '<div style="flex: 1;"><h2 style="margin: 0; color: white; font-size: 20px; font-weight: 600;">' + headerTitle + '</h2>';
@@ -2267,10 +2267,10 @@ jQuery(document).ready(function($) {
 		html += '<button type="button" class="slos-close-fix-modal" style="background: rgba(255,255,255,0.2); border: none; color: white; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 20px; line-height: 1; transition: background 0.2s;">&times;</button>';
 		html += '</div>';
 		
-		// Modal Body - Scrollable
+		// Modal Body - Scrollable.
 		html += '<div style="flex: 1; overflow-y: auto; padding: 24px; background: #334155;">';
 		
-		// Fixed Issues Section
+		// Fixed Issues Section.
 		if (fixedDetails && fixedDetails.length > 0) {
 			html += '<div style="margin-bottom: 24px;">';
 			html += '<h3 style="margin: 0 0 12px; color: #22c55e; font-size: 16px; display: flex; align-items: center; gap: 8px;"><span class="dashicons dashicons-yes-alt"></span> <?php echo esc_js( __( 'Automatically Fixed', 'shahi-legalflowsuite' ) ); ?> (' + fixedDetails.length + ')</h3>';
@@ -2286,7 +2286,7 @@ jQuery(document).ready(function($) {
 			html += '</div></div>';
 		}
 		
-		// Failed Issues Section
+		// Failed Issues Section.
 		if (failedDetails && failedDetails.length > 0) {
 			html += '<div style="margin-bottom: 24px;">';
 			html += '<h3 style="margin: 0 0 12px; color: #ef4444; font-size: 16px; display: flex; align-items: center; gap: 8px;"><span class="dashicons dashicons-dismiss"></span> <?php echo esc_js( __( 'Could Not Fix', 'shahi-legalflowsuite' ) ); ?> (' + failedDetails.length + ')</h3>';
@@ -2302,7 +2302,7 @@ jQuery(document).ready(function($) {
 			html += '</div></div>';
 		}
 		
-		// Manual Fix Guidance Section
+		// Manual Fix Guidance Section.
 		if (guidance && guidance.length > 0) {
 			html += '<div>';
 			html += '<h3 style="margin: 0 0 12px; color: #f59e0b; font-size: 16px; display: flex; align-items: center; gap: 8px;"><span class="dashicons dashicons-edit"></span> <?php echo esc_js( __( 'Manual Fixes Required', 'shahi-legalflowsuite' ) ); ?> (' + guidance.length + ')</h3>';
@@ -2333,7 +2333,7 @@ jQuery(document).ready(function($) {
 			html += '</div>';
 		}
 		
-		// No details case - just show message
+		// No details case - just show message.
 		if ((!guidance || guidance.length === 0) && (!fixedDetails || fixedDetails.length === 0) && (!failedDetails || failedDetails.length === 0)) {
 			html += '<div style="text-align: center; padding: 40px 20px;">';
 			html += '<span class="dashicons dashicons-' + iconClass + '" style="font-size: 48px; width: 48px; height: 48px; color: ' + (type === 'success' ? '#22c55e' : (type === 'error' ? '#ef4444' : '#f59e0b')) + '; display: block; margin: 0 auto 16px;"></span>';
@@ -2343,7 +2343,7 @@ jQuery(document).ready(function($) {
 		
 		html += '</div>';
 		
-		// Modal Footer
+		// Modal Footer.
 		html += '<div style="padding: 16px 24px; border-top: 1px solid #64748b; background: #334155; display: flex; justify-content: flex-end; gap: 12px;">';
 		html += '<button type="button" class="slos-close-fix-modal" style="padding: 10px 24px; background: #475569; border: 1px solid #64748b; border-radius: 8px; color: #f1f5f9; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.2s;"><?php echo esc_js( __( 'Close', 'shahi-legalflowsuite' ) ); ?></button>';
 		html += '</div>';
@@ -2353,7 +2353,7 @@ jQuery(document).ready(function($) {
 		var $modal = $(html);
 		$('body').append($modal);
 		
-		// Close handlers
+		// Close handlers.
 		$modal.find('.slos-close-fix-modal').on('click', function() {
 			$modal.fadeOut(200, function() { $(this).remove(); });
 		});
@@ -2364,7 +2364,7 @@ jQuery(document).ready(function($) {
 			}
 		});
 		
-		// ESC key to close
+		// ESC key to close.
 		$(document).on('keydown.fixModal', function(e) {
 			if (e.key === 'Escape') {
 				$modal.fadeOut(200, function() { $(this).remove(); });
@@ -2372,15 +2372,15 @@ jQuery(document).ready(function($) {
 			}
 		});
 	}
-	// =============================================
-	// SCAN HISTORY & TRENDS CHART
-	// =============================================
+	// =============================================.
+	// SCAN HISTORY & TRENDS CHART.
+	// =============================================.
 	
-	// Store scan history data
-	var scanHistoryData = <?php echo json_encode( array_values( $scan_history ) ); ?>;
+	// Store scan history data.
+	var scanHistoryData = <?php echo wp_json_encode( array_values( $scan_history ) ); ?>;
 	var trendsChart = null;
 	
-	// Initialize chart if we have data
+	// Initialize chart if we have data.
 	if (scanHistoryData.length > 0 && document.getElementById('slos-trends-chart')) {
 		initTrendsChart();
 	}
@@ -2392,7 +2392,7 @@ jQuery(document).ready(function($) {
 		var ctx = document.getElementById('slos-trends-chart');
 		if (!ctx) return;
 
-		// If Chart.js failed to load for any reason, skip chart
+		// If Chart.js failed to load for any reason, skip chart.
 		if (typeof Chart === 'undefined') {
 			if (window.console && console.warn) {
 				console.warn('Chart.js is not available; skipping trends chart initialization.');
@@ -2403,7 +2403,7 @@ jQuery(document).ready(function($) {
 		var range = $('#slos-chart-range').val();
 		var chartData = getChartData(range);
 
-		// Destroy existing chart if any
+		// Destroy existing chart if any.
 		if (trendsChart) {
 			trendsChart.destroy();
 		}
@@ -2567,17 +2567,17 @@ jQuery(document).ready(function($) {
 		};
 	}
 	
-	// Update chart when range changes
+	// Update chart when range changes.
 	$('#slos-chart-range').on('change', function() {
 		initTrendsChart();
 	});
 	
-	// Initialize Score Trend Chart for Comparative Analytics
+	// Initialize Score Trend Chart for Comparative Analytics.
 	if (typeof Chart !== 'undefined' && $('#slos-score-trend-chart').length) {
 		var trendCtx = document.getElementById('slos-score-trend-chart').getContext('2d');
-		var scanHistory = <?php echo json_encode( $scan_history ); ?>;
+		var scanHistory = <?php echo wp_json_encode( $scan_history ); ?>;
 		
-		// Process data - get last 30 scans
+		// Process data - get last 30 scans.
 		var processedData = scanHistory.slice(-30).map(function(h, index) { 
 			return {
 				score: h.score || 0,
@@ -2592,7 +2592,7 @@ jQuery(document).ready(function($) {
 			return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 		});
 		
-		// Calculate statistics
+		// Calculate statistics.
 		var avgScore = lastScores.length > 0 ? 
 			Math.round(lastScores.reduce(function(a, b) { return a + b; }, 0) / lastScores.length) : 0;
 		var firstScore = lastScores[0] || 0;
@@ -2600,14 +2600,14 @@ jQuery(document).ready(function($) {
 		var changeScore = lastScore - firstScore;
 		var peakScore = lastScores.length > 0 ? Math.max.apply(null, lastScores) : 0;
 		
-		// Update stat boxes
+		// Update stat boxes.
 		$('#slos-trend-avg .value').text(avgScore + '%');
 		$('#slos-trend-change .value')
 			.text((changeScore >= 0 ? '+' : '') + changeScore + '%')
 			.css('color', changeScore >= 0 ? '#22c55e' : '#ef4444');
 		$('#slos-trend-peak .value').text(peakScore + '%');
 		
-		// If no history, use sample data to demonstrate capability
+		// If no history, use sample data to demonstrate capability.
 		if (!lastScores.length) {
 			lastScores = [65, 68, 70, 72, 75, 76, 78, 80, 81, 83, 84, 85, 86, 87, 88, 89];
 			labels = lastScores.map(function(_, i) { return 'Scan ' + (i + 1); });
@@ -2616,7 +2616,7 @@ jQuery(document).ready(function($) {
 			$('#slos-trend-peak .value').text('89%');
 		}
 		
-		// Create gradient for fill
+		// Create gradient for fill.
 		var gradient = trendCtx.createLinearGradient(0, 0, 0, 400);
 		gradient.addColorStop(0, 'rgba(34, 197, 94, 0.3)');
 		gradient.addColorStop(1, 'rgba(34, 197, 94, 0.01)');
@@ -2759,28 +2759,28 @@ jQuery(document).ready(function($) {
 		});
 	}
 	
-	// =============================================
-	// SCAN DETAILS MODAL
-	// =============================================
+	// =============================================.
+	// SCAN DETAILS MODAL.
+	// =============================================.
 	
-	// View scan details
+	// View scan details.
 	$('.slos-view-scan-btn').on('click', function() {
 		var scanId = $(this).data('scan-id');
 		showScanDetails(scanId);
 	});
 	
-	// Compare with previous
+	// Compare with previous.
 	$('.slos-compare-scan-btn').on('click', function() {
 		var scanId = $(this).data('scan-id');
 		showScanComparison(scanId);
 	});
 	
-	// Close modal
+	// Close modal.
 	$('.slos-modal-close, .slos-modal-overlay').on('click', function() {
 		$('#slos-scan-modal').hide();
 	});
 	
-	// Close modal on ESC
+	// Close modal on ESC.
 	$(document).on('keydown', function(e) {
 		if (e.key === 'Escape') {
 			$('#slos-scan-modal').hide();
@@ -2919,11 +2919,11 @@ jQuery(document).ready(function($) {
 		return -1;
 	}
 	
-	// =============================================
-	// EXPORT FUNCTIONALITY
-	// =============================================
+	// =============================================.
+	// EXPORT FUNCTIONALITY.
+	// =============================================.
 	
-	// Export buttons for scan history
+	// Export buttons for scan history.
 	$('.slos-export-btn').on('click', function() {
 		var format = $(this).data('format');
 		exportScanHistory(format);
@@ -2966,9 +2966,9 @@ jQuery(document).ready(function($) {
 		URL.revokeObjectURL(url);
 	}
 	
-	// =============================================
-	// LOAD MORE HISTORY
-	// =============================================
+	// =============================================.
+	// LOAD MORE HISTORY.
+	// =============================================.
 	
 	var historyPage = 1;
 	var historyPerPage = 10;
@@ -3020,7 +3020,7 @@ jQuery(document).ready(function($) {
 			$tbody.append(row);
 		});
 		
-		// Rebind event handlers for new buttons
+		// Rebind event handlers for new buttons.
 		$tbody.find('.slos-view-scan-btn').off('click').on('click', function() {
 			showScanDetails($(this).data('scan-id'));
 		});
@@ -3028,7 +3028,7 @@ jQuery(document).ready(function($) {
 			showScanComparison($(this).data('scan-id'));
 		});
 		
-		// Update remaining count or hide button
+		// Update remaining count or hide button.
 		var remaining = scanHistoryData.length - end;
 		if (remaining <= 0) {
 			$(this).hide();
@@ -3038,7 +3038,7 @@ jQuery(document).ready(function($) {
 	});
 });
 
-// Spinning animation
+// Spinning animation.
 var style = document.createElement('style');
 style.textContent = '.slos-spin { animation: slos-spin 1s linear infinite; } @keyframes slos-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }';
 document.head.appendChild(style);
@@ -3062,18 +3062,18 @@ document.head.appendChild(style);
 
 <script>
 jQuery(document).ready(function($) {
-	// View Details button handler
+	// View Details button handler.
 	$(document).on('click', '.slos-view-details-btn', function() {
 		var postId = $(this).data('post-id');
 		showDetailedScanReport(postId);
 	});
 	
-	// Close modal
+	// Close modal.
 	$('#slos-close-details-modal').on('click', function() {
 		$('#slos-scan-details-modal').fadeOut(200);
 	});
 	
-	// Close on background click
+	// Close on background click.
 	$('#slos-scan-details-modal').on('click', function(e) {
 		if (e.target === this) {
 			$(this).fadeOut(200);
@@ -3122,7 +3122,7 @@ jQuery(document).ready(function($) {
 	function displayDetailedReport(data) {
 		var html = '';
 		
-		// Page header
+		// Page header.
 		html += '<div style="background:#0f172a; border-radius:8px; padding:20px; margin-bottom:24px;">';
 		html += '<h3 style="color:#f8fafc; margin:0 0 8px 0; font-size:18px;">' + escapeHtml(data.page_title) + '</h3>';
 		html += '<div style="display:flex; gap:24px; margin-top:16px;">';
@@ -3132,7 +3132,7 @@ jQuery(document).ready(function($) {
 		html += '</div>';
 		html += '</div>';
 		
-		// Issues by category
+		// Issues by category.
 		if (data.issues && data.issues.length > 0) {
 			html += '<h4 style="color:#f8fafc; font-size:16px; margin:0 0 16px 0;">🔍 Issues Found</h4>';
 			

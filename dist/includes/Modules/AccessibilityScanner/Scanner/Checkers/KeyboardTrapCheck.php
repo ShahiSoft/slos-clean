@@ -42,19 +42,19 @@ class KeyboardTrapCheck extends AbstractCheck {
 		$dom    = $this->get_dom( $content );
 		$xpath  = new \DOMXPath( $dom );
 
-		// 1. Check for event handlers on non-interactive elements
+		// 1. Check for event handlers on non-interactive elements..
 		$this->check_event_handlers( $xpath, $issues );
 
-		// 2. Check for tabindex patterns that may cause traps
+		// 2. Check for tabindex patterns that may cause traps..
 		$this->check_tabindex_patterns( $xpath, $issues );
 
-		// 3. Check for modals/dialogs with limited focusable elements
+		// 3. Check for modals/dialogs with limited focusable elements..
 		$this->check_single_focusable_containers( $xpath, $issues );
 
-		// 4. Check for inert attribute usage
+		// 4. Check for inert attribute usage..
 		$this->check_inert_attribute( $xpath, $issues );
 
-		// 5. Check for focus management attributes
+		// 5. Check for focus management attributes..
 		$this->check_focus_management( $xpath, $issues );
 
 		return $issues;
@@ -69,12 +69,12 @@ class KeyboardTrapCheck extends AbstractCheck {
 		foreach ( $elements as $element ) {
 			$tag = strtolower( $element->tagName );
 
-			// Standard interactive elements are usually fine
+			// Standard interactive elements are usually fine..
 			if ( in_array( $tag, array( 'input', 'select', 'textarea', 'button', 'a' ), true ) ) {
 				continue;
 			}
 
-			// Check if it has tabindex (intentionally focusable)
+			// Check if it has tabindex (intentionally focusable)..
 			$tabindex = $element->getAttribute( 'tabindex' );
 
 			$issues[] = array(
@@ -90,17 +90,17 @@ class KeyboardTrapCheck extends AbstractCheck {
 	 * Check tabindex patterns that may indicate traps
 	 */
 	private function check_tabindex_patterns( $xpath, &$issues ) {
-		// Containers with tabindex=-1 containing focusable elements
+		// Containers with tabindex=-1 containing focusable elements..
 		$containers = $xpath->query( '//*[@tabindex="-1"]' );
 
 		foreach ( $containers as $container ) {
-			// Skip if it's a simple element
+			// Skip if it's a simple element..
 			$tag = strtolower( $container->tagName );
 			if ( in_array( $tag, array( 'input', 'button', 'a', 'select', 'textarea' ), true ) ) {
 				continue;
 			}
 
-			// Check if it contains focusable children
+			// Check if it contains focusable children..
 			$focusable = $xpath->query(
 				'.//a[@href] | .//button | .//input[not(@type="hidden")] | .//select | .//textarea | .//*[@tabindex and @tabindex != "-1"]',
 				$container
@@ -120,7 +120,7 @@ class KeyboardTrapCheck extends AbstractCheck {
 			}
 		}
 
-		// Check for positive tabindex (creates unexpected tab order)
+		// Check for positive tabindex (creates unexpected tab order)..
 		$positive_tabindex = $xpath->query( '//*[@tabindex > 0]' );
 
 		if ( $positive_tabindex->length > 0 ) {
@@ -138,11 +138,11 @@ class KeyboardTrapCheck extends AbstractCheck {
 	 * Check modals/dialogs with single or no focusable elements
 	 */
 	private function check_single_focusable_containers( $xpath, &$issues ) {
-		// Find modal/dialog patterns
+		// Find modal/dialog patterns..
 		$modals = $xpath->query( '//*[@role="dialog"] | //*[@role="alertdialog"] | //*[contains(@class, "modal")] | //*[contains(@class, "dialog")] | //*[contains(@class, "popup")]' );
 
 		foreach ( $modals as $modal ) {
-			// Count focusable elements within
+			// Count focusable elements within..
 			$focusable = $xpath->query(
 				'.//a[@href] | .//button | .//input[not(@type="hidden")] | .//select | .//textarea | .//*[@tabindex="0"]',
 				$modal
@@ -157,7 +157,7 @@ class KeyboardTrapCheck extends AbstractCheck {
 					'confidence' => 'high',
 				);
 			} elseif ( $focusable->length === 1 ) {
-				// Check if the single element is a close button
+				// Check if the single element is a close button..
 				$single          = $focusable->item( 0 );
 				$is_close_button = $this->is_close_button( $single );
 
@@ -172,7 +172,7 @@ class KeyboardTrapCheck extends AbstractCheck {
 				}
 			}
 
-			// Check for close button in modal
+			// Check for close button in modal..
 			$close_buttons = $xpath->query(
 				'.//button[contains(@class, "close")] | .//button[contains(@aria-label, "close")] | .//*[@aria-label="Close"] | .//*[@aria-label="close"]',
 				$modal
@@ -222,7 +222,7 @@ class KeyboardTrapCheck extends AbstractCheck {
 		foreach ( $inert_elements as $element ) {
 			$tag = $element->tagName;
 
-			// Count children to assess impact
+			// Count children to assess impact..
 			$child_count = $element->childNodes->length;
 
 			$issues[] = array(
@@ -239,11 +239,11 @@ class KeyboardTrapCheck extends AbstractCheck {
 	 * Check for focus management patterns
 	 */
 	private function check_focus_management( $xpath, &$issues ) {
-		// Check for aria-hidden on potentially interactive containers
+		// Check for aria-hidden on potentially interactive containers..
 		$aria_hidden = $xpath->query( '//*[@aria-hidden="true"]' );
 
 		foreach ( $aria_hidden as $element ) {
-			// Check if it contains focusable elements
+			// Check if it contains focusable elements..
 			$focusable = $xpath->query(
 				'.//a[@href] | .//button | .//input | .//select | .//textarea',
 				$element

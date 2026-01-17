@@ -238,7 +238,7 @@ abstract class AbstractCheck implements CheckInterface {
 	 * @return bool True if element has accessible name
 	 */
 	protected function has_accessible_name( $element ) {
-		// Check aria-label
+		// Check aria-label..
 		if ( $element->hasAttribute( 'aria-label' ) ) {
 			$label = trim( $element->getAttribute( 'aria-label' ) );
 			if ( ! empty( $label ) ) {
@@ -246,7 +246,7 @@ abstract class AbstractCheck implements CheckInterface {
 			}
 		}
 
-		// Check aria-labelledby
+		// Check aria-labelledby..
 		if ( $element->hasAttribute( 'aria-labelledby' ) ) {
 			$labelledby = trim( $element->getAttribute( 'aria-labelledby' ) );
 			if ( ! empty( $labelledby ) ) {
@@ -254,7 +254,7 @@ abstract class AbstractCheck implements CheckInterface {
 			}
 		}
 
-		// Check title
+		// Check title..
 		if ( $element->hasAttribute( 'title' ) ) {
 			$title = trim( $element->getAttribute( 'title' ) );
 			if ( ! empty( $title ) ) {
@@ -273,17 +273,17 @@ abstract class AbstractCheck implements CheckInterface {
 	 * @return bool True if element is hidden
 	 */
 	protected function is_hidden( $element ) {
-		// Check aria-hidden
+		// Check aria-hidden..
 		if ( $element->getAttribute( 'aria-hidden' ) === 'true' ) {
 			return true;
 		}
 
-		// Check hidden attribute
+		// Check hidden attribute..
 		if ( $element->hasAttribute( 'hidden' ) ) {
 			return true;
 		}
 
-		// Check inline display:none or visibility:hidden
+		// Check inline display:none or visibility:hidden..
 		$style = $element->getAttribute( 'style' );
 		if ( preg_match( '/display\s*:\s*none|visibility\s*:\s*hidden/i', $style ) ) {
 			return true;

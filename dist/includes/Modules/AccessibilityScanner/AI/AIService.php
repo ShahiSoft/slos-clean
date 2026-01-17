@@ -11,7 +11,7 @@ class AIService {
 	private $api_endpoint = 'https://api.openai.com/v1/chat/completions';
 
 	public function __construct() {
-		// In a real scenario, this would come from plugin settings
+		// In a real scenario, this would come from plugin settings..
 		$this->api_key = get_option( 'slos_openai_api_key', '' );
 	}
 

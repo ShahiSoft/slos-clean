@@ -15,6 +15,11 @@
  * @package ShahiLegalFlowSuite
  */
 
+// Prevent direct access.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 // Configuration.
 $plugin_dir   = dirname( __DIR__ );
 $includes_dir = $plugin_dir . '/includes';

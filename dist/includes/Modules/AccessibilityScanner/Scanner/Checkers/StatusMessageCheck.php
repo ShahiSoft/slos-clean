@@ -101,19 +101,19 @@ class StatusMessageCheck extends AbstractCheck {
 		$dom    = $this->get_dom( $content );
 		$xpath  = new \DOMXPath( $dom );
 
-		// 1. Check status message containers without ARIA
+		// 1. Check status message containers without ARIA..
 		$this->check_status_containers( $xpath, $issues );
 
-		// 2. Check for common live region mistakes
+		// 2. Check for common live region mistakes..
 		$this->check_live_region_usage( $xpath, $issues );
 
-		// 3. Check output elements
+		// 3. Check output elements..
 		$this->check_output_elements( $dom, $issues );
 
-		// 4. Check for progress indicators
+		// 4. Check for progress indicators..
 		$this->check_progress_indicators( $xpath, $issues );
 
-		// 5. Check for form validation messages
+		// 5. Check for form validation messages..
 		$this->check_validation_messages( $xpath, $issues );
 
 		return $issues;
@@ -130,17 +130,17 @@ class StatusMessageCheck extends AbstractCheck {
 			$elements = $xpath->query( "//*[contains(@class, '$pattern')]" );
 
 			foreach ( $elements as $element ) {
-				// Skip if it has appropriate ARIA
+				// Skip if it has appropriate ARIA..
 				if ( $this->has_live_region_semantics( $element ) ) {
 					continue;
 				}
 
-				// Check for indicators that suggest dynamic content
+				// Check for indicators that suggest dynamic content..
 				$has_dynamic_hints = $this->has_dynamic_hints( $element );
 				$is_empty          = trim( $element->textContent ) === '';
 
 				if ( $has_dynamic_hints || $is_empty ) {
-					// Likely a dynamic container
+					// Likely a dynamic container..
 					$issues[] = array(
 						'element' => $element->tagName,
 						'context' => $this->get_element_html( $element ),
@@ -150,7 +150,7 @@ class StatusMessageCheck extends AbstractCheck {
 						),
 					);
 				} else {
-					// Static content - lower severity
+					// Static content - lower severity..
 					$issues[] = array(
 						'element'  => $element->tagName,
 						'context'  => $this->get_element_html( $element ),
@@ -172,13 +172,13 @@ class StatusMessageCheck extends AbstractCheck {
 	 * @return bool True if has live region semantics.
 	 */
 	private function has_live_region_semantics( $element ) {
-		// Check explicit aria-live
+		// Check explicit aria-live..
 		$aria_live = $element->getAttribute( 'aria-live' );
 		if ( in_array( $aria_live, array( 'polite', 'assertive' ), true ) ) {
 			return true;
 		}
 
-		// Check roles with implicit live region semantics
+		// Check roles with implicit live region semantics..
 		$role = $element->getAttribute( 'role' );
 		if ( in_array( $role, $this->live_region_roles, true ) ) {
 			return true;
@@ -208,7 +208,7 @@ class StatusMessageCheck extends AbstractCheck {
 
 		foreach ( $dynamic_attrs as $attr ) {
 			if ( strpos( $attr, '-' ) === strlen( $attr ) - 1 ) {
-				// Prefix match (e.g., 'data-ng-')
+				// Prefix match (e.g., 'data-ng-')..
 				foreach ( $element->attributes as $node_attr ) {
 					if ( strpos( $node_attr->name, rtrim( $attr, '-' ) ) === 0 ) {
 						return true;
@@ -219,7 +219,7 @@ class StatusMessageCheck extends AbstractCheck {
 			}
 		}
 
-		// Check for JavaScript event handlers
+		// Check for JavaScript event handlers..
 		$js_events = array( 'onclick', 'onload', 'onchange' );
 		foreach ( $js_events as $event ) {
 			if ( $element->hasAttribute( $event ) ) {
@@ -237,7 +237,7 @@ class StatusMessageCheck extends AbstractCheck {
 	 * @param array     $issues Issues array by reference.
 	 */
 	private function check_live_region_usage( $xpath, &$issues ) {
-		// Check for aria-live="off" on alert containers
+		// Check for aria-live="off" on alert containers..
 		$off_alerts = $xpath->query( "//*[@aria-live='off'][contains(@class, 'alert') or contains(@class, 'error') or contains(@class, 'message')]" );
 
 		foreach ( $off_alerts as $element ) {
@@ -248,7 +248,7 @@ class StatusMessageCheck extends AbstractCheck {
 			);
 		}
 
-		// Check for role="alert" used for non-error messages
+		// Check for role="alert" used for non-error messages..
 		$success_alerts = $xpath->query( "//*[@role='alert'][contains(@class, 'success') or contains(@class, 'info')]" );
 
 		foreach ( $success_alerts as $element ) {
@@ -260,7 +260,7 @@ class StatusMessageCheck extends AbstractCheck {
 			);
 		}
 
-		// Check for aria-atomic usage without aria-live
+		// Check for aria-atomic usage without aria-live..
 		$atomic_no_live = $xpath->query( "//*[@aria-atomic='true'][not(@aria-live)][not(@role='alert')][not(@role='status')]" );
 
 		foreach ( $atomic_no_live as $element ) {
@@ -272,7 +272,7 @@ class StatusMessageCheck extends AbstractCheck {
 			);
 		}
 
-		// Check for aria-relevant without aria-live
+		// Check for aria-relevant without aria-live..
 		$relevant_no_live = $xpath->query( "//*[@aria-relevant][not(@aria-live)][not(@role='alert')][not(@role='status')][not(@role='log')]" );
 
 		foreach ( $relevant_no_live as $element ) {
@@ -295,8 +295,8 @@ class StatusMessageCheck extends AbstractCheck {
 		$outputs = $dom->getElementsByTagName( 'output' );
 
 		foreach ( $outputs as $output ) {
-			// Output has implicit role="status", which is good
-			// But check if it has proper association
+			// Output has implicit role="status", which is good..
+			// But check if it has proper association..
 			$for_attr  = $output->getAttribute( 'for' );
 			$form_attr = $output->getAttribute( 'form' );
 
@@ -318,7 +318,7 @@ class StatusMessageCheck extends AbstractCheck {
 	 * @param array     $issues Issues array by reference.
 	 */
 	private function check_progress_indicators( $xpath, &$issues ) {
-		// Check custom progress indicators (not using progress element)
+		// Check custom progress indicators (not using progress element)..
 		$progress_patterns = array( 'progress', 'loading', 'spinner', 'loader' );
 
 		foreach ( $progress_patterns as $pattern ) {
@@ -327,7 +327,7 @@ class StatusMessageCheck extends AbstractCheck {
 			foreach ( $elements as $element ) {
 				$tag = strtolower( $element->tagName );
 
-				// Skip actual progress elements
+				// Skip actual progress elements..
 				if ( $tag === 'progress' ) {
 					continue;
 				}
@@ -353,11 +353,11 @@ class StatusMessageCheck extends AbstractCheck {
 			}
 		}
 
-		// Check native progress elements
+		// Check native progress elements..
 		$progresses = $xpath->query( '//progress' );
 
 		foreach ( $progresses as $progress ) {
-			// Check for accessible name
+			// Check for accessible name..
 			$has_label = $this->element_has_accessible_name( $progress, $xpath );
 
 			if ( ! $has_label ) {
@@ -379,12 +379,12 @@ class StatusMessageCheck extends AbstractCheck {
 	 * @return bool True if has accessible name.
 	 */
 	private function element_has_accessible_name( $element, $xpath ) {
-		// Check aria-label
+		// Check aria-label..
 		if ( $element->hasAttribute( 'aria-label' ) && trim( $element->getAttribute( 'aria-label' ) ) !== '' ) {
 			return true;
 		}
 
-		// Check aria-labelledby
+		// Check aria-labelledby..
 		$labelledby = $element->getAttribute( 'aria-labelledby' );
 		if ( ! empty( $labelledby ) ) {
 			$ref = $xpath->query( "//*[@id='$labelledby']" );
@@ -393,12 +393,12 @@ class StatusMessageCheck extends AbstractCheck {
 			}
 		}
 
-		// Check title
+		// Check title..
 		if ( $element->hasAttribute( 'title' ) && trim( $element->getAttribute( 'title' ) ) !== '' ) {
 			return true;
 		}
 
-		// Check associated label
+		// Check associated label..
 		$id = $element->getAttribute( 'id' );
 		if ( ! empty( $id ) ) {
 			$labels = $xpath->query( "//label[@for='$id']" );
@@ -429,18 +429,18 @@ class StatusMessageCheck extends AbstractCheck {
 			$elements = $xpath->query( "//*[contains(@class, '$pattern')]" );
 
 			foreach ( $elements as $element ) {
-				// Check if it's properly linked to a form field
+				// Check if it's properly linked to a form field..
 				$id        = $element->getAttribute( 'id' );
 				$is_linked = false;
 
 				if ( ! empty( $id ) ) {
-					// Check if any form field references this via aria-describedby or aria-errormessage
+					// Check if any form field references this via aria-describedby or aria-errormessage..
 					$linked    = $xpath->query( "//*[contains(@aria-describedby, '$id') or @aria-errormessage='$id']" );
 					$is_linked = $linked->length > 0;
 				}
 
 				if ( ! $is_linked ) {
-					// Check for aria-live on the message itself
+					// Check for aria-live on the message itself..
 					if ( ! $this->has_live_region_semantics( $element ) ) {
 						$issues[] = array(
 							'element'  => $element->tagName,

@@ -30,13 +30,13 @@ class SemanticHtmlCheck extends AbstractCheck {
 		$dom    = $this->get_dom( $content );
 		$xpath  = new \DOMXPath( $dom );
 
-		// Check for divs with onclick (should be button) - Covered by InteractiveElementCheck
-		// Check for divs with class "heading" or "title" (should be h1-h6)
+		// Check for divs with onclick (should be button) - Covered by InteractiveElementCheck..
+		// Check for divs with class "heading" or "title" (should be h1-h6)..
 
 		$elements = $xpath->query( '//div[contains(@class, "heading") or contains(@class, "title") or contains(@class, "header")]' );
 
 		foreach ( $elements as $element ) {
-			// If it's not a heading tag
+			// If it's not a heading tag..
 			if ( ! preg_match( '/^h[1-6]$/', $element->tagName ) ) {
 				$issues[] = array(
 					'element' => $element->tagName,
@@ -46,7 +46,7 @@ class SemanticHtmlCheck extends AbstractCheck {
 			}
 		}
 
-		// Check for divs with class "btn" or "button"
+		// Check for divs with class "btn" or "button"..
 		$buttons = $xpath->query( '//div[contains(@class, "btn") or contains(@class, "button")] | //span[contains(@class, "btn") or contains(@class, "button")]' );
 
 		foreach ( $buttons as $button ) {

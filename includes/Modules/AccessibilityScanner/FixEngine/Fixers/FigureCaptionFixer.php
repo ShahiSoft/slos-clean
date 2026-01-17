@@ -82,7 +82,7 @@ final class FigureCaptionFixer extends AbstractFixer {
 				// Try to extract from src filename..
 				$src = $img->getAttribute( 'src' );
 				if ( $src ) {
-					$filename = basename( parse_url( $src, PHP_URL_PATH ) ?: $src );
+					$filename = basename( wp_parse_url( $src, PHP_URL_PATH ) ?: $src );
 					$name     = pathinfo( $filename, PATHINFO_FILENAME );
 					$name     = str_replace( array( '-', '_' ), ' ', $name );
 					// Only use if it looks like a proper name..

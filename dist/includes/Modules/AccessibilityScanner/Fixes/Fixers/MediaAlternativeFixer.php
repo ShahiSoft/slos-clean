@@ -59,10 +59,10 @@ class MediaAlternativeFixer extends BaseFixer {
 		$xpath         = new \DOMXPath( $dom );
 		$fixes_applied = 0;
 
-		// Fix audio elements without transcripts
+		// Fix audio elements without transcripts..
 		$audio_elements = $xpath->query( '//audio' );
 		foreach ( $audio_elements as $audio ) {
-			// Check if there's already a transcript nearby
+			// Check if there's already a transcript nearby..
 			$has_transcript = false;
 			$next           = $audio->nextSibling;
 			while ( $next && $next->nodeType === XML_ELEMENT_NODE && in_array( $next->nodeName, array( 'p', 'div' ), true ) ) {
@@ -88,7 +88,7 @@ class MediaAlternativeFixer extends BaseFixer {
 			}
 		}
 
-		// Fix object/embed elements without alternative text
+		// Fix object/embed elements without alternative text..
 		$objects = $xpath->query( '//object[not(.//param[@name="alt" or @name="description"])] | //embed[not(@alt)]' );
 		foreach ( $objects as $object ) {
 			$note = $dom->createElement( 'p' );
@@ -104,7 +104,7 @@ class MediaAlternativeFixer extends BaseFixer {
 			++$fixes_applied;
 		}
 
-		// Fix canvas elements without alternative content
+		// Fix canvas elements without alternative content..
 		$canvases = $xpath->query( '//canvas[not(normalize-space(text()))]' );
 		foreach ( $canvases as $canvas ) {
 			$fallback              = $dom->createElement( 'p' );

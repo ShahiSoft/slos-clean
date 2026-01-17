@@ -59,7 +59,7 @@ class SkipLinkCheck extends AbstractCheck {
 		$issues = array();
 		$dom    = $this->get_dom( $content );
 
-		// Only check if this appears to be a full page (has nav/header)
+		// Only check if this appears to be a full page (has nav/header)..
 		if ( ! $this->appears_to_be_full_page( $dom ) ) {
 			return $issues;
 		}
@@ -75,13 +75,13 @@ class SkipLinkCheck extends AbstractCheck {
 				'confidence' => 'high',
 			);
 		} else {
-			// Validate skip link target exists
+			// Validate skip link target exists..
 			$target_issue = $this->validate_skip_link_target( $dom, $skip_link );
 			if ( $target_issue ) {
 				$issues[] = $target_issue;
 			}
 
-			// Check if skip link is early in the DOM (should be first or second focusable)
+			// Check if skip link is early in the DOM (should be first or second focusable)..
 			$position_issue = $this->check_skip_link_position( $dom, $skip_link );
 			if ( $position_issue ) {
 				$issues[] = $position_issue;
@@ -100,12 +100,12 @@ class SkipLinkCheck extends AbstractCheck {
 		$html_element    = $dom->getElementsByTagName( 'html' );
 		$body_element    = $dom->getElementsByTagName( 'body' );
 
-		// Has structural elements suggesting full page
+		// Has structural elements suggesting full page..
 		if ( $html_element->length > 0 || $body_element->length > 0 ) {
 			return true;
 		}
 
-		// Has navigation that would need to be skipped
+		// Has navigation that would need to be skipped..
 		if ( $nav_elements->length > 0 || $header_elements->length > 0 ) {
 			return true;
 		}
@@ -120,15 +120,15 @@ class SkipLinkCheck extends AbstractCheck {
 		foreach ( $links as $link ) {
 			$href = $link->getAttribute( 'href' );
 
-			// Must be an anchor link
+			// Must be an anchor link..
 			if ( strpos( $href, '#' ) !== 0 || $href === '#' ) {
 				continue;
 			}
 
-			// Check link text
+			// Check link text..
 			$text = strtolower( trim( $link->textContent ) );
 
-			// Check aria-label as well
+			// Check aria-label as well..
 			$aria_label = strtolower( trim( $link->getAttribute( 'aria-label' ) ) );
 
 			$text_to_check = $text . ' ' . $aria_label;
@@ -154,7 +154,7 @@ class SkipLinkCheck extends AbstractCheck {
 			return null;
 		}
 
-		// Find element with this ID
+		// Find element with this ID..
 		$xpath   = new \DOMXPath( $dom );
 		$targets = $xpath->query( "//*[@id='$target_id']" );
 
@@ -186,7 +186,7 @@ class SkipLinkCheck extends AbstractCheck {
 			}
 		}
 
-		// Skip link should be within first 3 focusable elements
+		// Skip link should be within first 3 focusable elements..
 		if ( $position > 3 ) {
 			return array(
 				'element'    => 'a',

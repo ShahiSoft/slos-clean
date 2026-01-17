@@ -30,7 +30,7 @@ class PageStructureCheck extends AbstractCheck {
 		$dom    = $this->get_dom( $content );
 		$xpath  = new \DOMXPath( $dom );
 
-		// Check if <html> tag exists
+		// Check if <html> tag exists..
 		$html = $xpath->query( '//html' );
 
 		if ( $html->length > 0 ) {
@@ -43,7 +43,7 @@ class PageStructureCheck extends AbstractCheck {
 				);
 			}
 
-			// Check for <title> in <head>
+			// Check for <title> in <head>..
 			$title = $xpath->query( '//head/title' );
 			if ( $title->length === 0 || trim( $title->item( 0 )->textContent ) === '' ) {
 				$issues[] = array(

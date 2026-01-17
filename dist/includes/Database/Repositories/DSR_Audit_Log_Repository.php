@@ -13,7 +13,7 @@
 
 namespace ShahiLegalFlowSuite\Database\Repositories;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -63,7 +63,7 @@ class DSR_Audit_Log_Repository extends Base_Repository {
 
 		$data = wp_parse_args( $data, $defaults );
 
-		// Hash IP and user agent for privacy
+		// Hash IP and user agent for privacy..
 		$ip_hash = ! empty( $data['ip_address'] )
 			? hash( 'sha256', $data['ip_address'] )
 			: null;
@@ -137,7 +137,7 @@ class DSR_Audit_Log_Repository extends Base_Repository {
 			return array();
 		}
 
-		// Decode metadata JSON
+		// Decode metadata JSON..
 		foreach ( $results as &$log ) {
 			if ( ! empty( $log['metadata'] ) ) {
 				$log['metadata'] = json_decode( $log['metadata'], true );
@@ -205,11 +205,11 @@ class DSR_Audit_Log_Repository extends Base_Repository {
 		$order_by     = sprintf( 'ORDER BY created_at %s', $filters['order'] === 'ASC' ? 'ASC' : 'DESC' );
 		$limit_clause = sprintf( 'LIMIT %d OFFSET %d', absint( $filters['limit'] ), absint( $filters['offset'] ) );
 
-		// Get total count
+		// Get total count..
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$total = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$this->table} WHERE {$where_clause}" );
 
-		// Get logs
+		// Get logs..
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$logs = $wpdb->get_results(
 			"SELECT * FROM {$this->table} WHERE {$where_clause} {$order_by} {$limit_clause}",
@@ -220,7 +220,7 @@ class DSR_Audit_Log_Repository extends Base_Repository {
 			$logs = array();
 		}
 
-		// Decode metadata JSON
+		// Decode metadata JSON..
 		foreach ( $logs as &$log ) {
 			if ( ! empty( $log['metadata'] ) ) {
 				$log['metadata'] = json_decode( $log['metadata'], true );
@@ -296,7 +296,7 @@ class DSR_Audit_Log_Repository extends Base_Repository {
 			return array();
 		}
 
-		// Decode metadata JSON
+		// Decode metadata JSON..
 		foreach ( $results as &$log ) {
 			if ( ! empty( $log['metadata'] ) ) {
 				$log['metadata'] = json_decode( $log['metadata'], true );

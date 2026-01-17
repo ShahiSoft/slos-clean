@@ -8,6 +8,15 @@
  * @package ShahiLegalFlowSuite
  */
 
+// Prevent direct access.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+
+// phpcs:disable WordPress.Security.EscapeOutput -- CLI test output
+
 // Load WordPress..
 require_once __DIR__ . '/../../../../../wp-load.php';
 
@@ -116,9 +125,9 @@ if ( isset( $filtered_data['test_field'] ) && $filtered_data['test_field'] === '
 echo 'Test 8: Generate documentation... ';
 $documentation = Hooks::generate_documentation();
 if ( is_string( $documentation ) && strlen( $documentation ) > 1000 ) {
-	echo 'PASS (' . strlen( $documentation ) . " bytes)\n";
+	echo esc_html( 'PASS (' . strlen( $documentation ) . " bytes)\n" );
 } else {
-	echo "FAIL\n";
+	echo esc_html( "FAIL\n" );
 }
 
 // Test 9: Verify all action hooks are documented..
@@ -139,13 +148,13 @@ $expected_actions = array(
 $all_documented = true;
 foreach ( $expected_actions as $action ) {
 	if ( ! isset( $action_hooks[ $action ] ) ) {
-		echo "FAIL (Missing: $action)\n";
+		echo esc_html( "FAIL (Missing: $action)\n" );
 		$all_documented = false;
 		break;
 	}
 }
 if ( $all_documented ) {
-	echo "PASS\n";
+	echo esc_html( "PASS\n" );
 }
 
 // Test 10: Verify all filter hooks are documented..
@@ -169,13 +178,13 @@ $expected_filters = array(
 $all_documented = true;
 foreach ( $expected_filters as $filter ) {
 	if ( ! isset( $filter_hooks[ $filter ] ) ) {
-		echo "FAIL (Missing: $filter)\n";
+		echo esc_html( "FAIL (Missing: $filter)\n" );
 		$all_documented = false;
 		break;
 	}
 }
 if ( $all_documented ) {
-	echo "PASS\n";
+	echo esc_html( "PASS\n" );
 }
 
 // Test 11: Test category filtering..
@@ -194,7 +203,7 @@ echo 'Test 12: Hook examples present... ';
 $has_examples = true;
 foreach ( $action_hooks as $hook_name => $hook_data ) {
 	if ( empty( $hook_data['example'] ) ) {
-		echo "FAIL (Missing example for: $hook_name)\n";
+		echo esc_html( "FAIL (Missing example for: $hook_name)\n" );
 		$has_examples = false;
 		break;
 	}
@@ -202,28 +211,28 @@ foreach ( $action_hooks as $hook_name => $hook_data ) {
 if ( $has_examples ) {
 	foreach ( $filter_hooks as $hook_name => $hook_data ) {
 		if ( empty( $hook_data['example'] ) ) {
-			echo "FAIL (Missing example for: $hook_name)\n";
+			echo esc_html( "FAIL (Missing example for: $hook_name)\n" );
 			$has_examples = false;
 			break;
 		}
 	}
 }
 if ( $has_examples ) {
-	echo "PASS\n";
+	echo esc_html( "PASS\n" );
 }
 
 // Summary..
-echo "\n=== Test Summary ===\n";
-echo 'Total Action Hooks: ' . count( $action_hooks ) . "\n";
-echo 'Total Filter Hooks: ' . count( $filter_hooks ) . "\n";
-echo 'Total Hooks: ' . ( count( $action_hooks ) + count( $filter_hooks ) ) . "\n";
-echo "\nAction Hooks:\n";
+echo esc_html( "\n=== Test Summary ===\n" );
+echo esc_html( 'Total Action Hooks: ' . count( $action_hooks ) . "\n" );
+echo esc_html( 'Total Filter Hooks: ' . count( $filter_hooks ) . "\n" );
+echo esc_html( 'Total Hooks: ' . ( count( $action_hooks ) + count( $filter_hooks ) ) . "\n" );
+echo esc_html( "\nAction Hooks:\n" );
 foreach ( array_keys( $action_hooks ) as $hook_name ) {
-	echo "  - $hook_name\n";
+	echo esc_html( "  - $hook_name\n" );
 }
-echo "\nFilter Hooks:\n";
+echo esc_html( "\nFilter Hooks:\n" );
 foreach ( array_keys( $filter_hooks ) as $hook_name ) {
-	echo "  - $hook_name\n";
+	echo esc_html( "  - $hook_name\n" );
 }
 
 echo "\n=== All Tests Passed ===\n";

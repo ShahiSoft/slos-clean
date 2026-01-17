@@ -39,9 +39,9 @@ final class HeadingNestingFixer extends AbstractFixer {
 	}
 
 	protected function apply_fix( string $content, array $options = array() ): FixResult {
-		// The legacy HeadingNestingFixer currently performs no automatic
-		// structural changes and always returns the original content.
-		// Reflect that behavior here directly.
+		// The legacy HeadingNestingFixer currently performs no automatic..
+		// structural changes and always returns the original content...
+		// Reflect that behavior here directly...
 		return FixResult::skipped( $this->get_id(), 'No automatic fix available for heading nesting', $content );
 	}
 }

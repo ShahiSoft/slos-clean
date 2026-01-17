@@ -1,4 +1,9 @@
 <?php
+// Prevent direct access.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 // phpcs:ignoreFile -- DOM API uses camelCase properties and structured HTML mutations that violate naming sniffs but are safe.
 /**
  * Accessibility fixer utilities.

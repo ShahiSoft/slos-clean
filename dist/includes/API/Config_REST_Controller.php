@@ -16,7 +16,7 @@ use WP_REST_Response;
 use WP_Error;
 use ShahiLegalFlowSuite\Services\Config_Sync_Service;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -54,7 +54,7 @@ class Config_REST_Controller extends Base_REST_Controller {
 	 * @return void
 	 */
 	public function register_routes() {
-		// Export configuration
+		// Export configuration..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/export',
@@ -68,7 +68,7 @@ class Config_REST_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Import configuration
+		// Import configuration..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/import',
@@ -82,7 +82,7 @@ class Config_REST_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// List available exports
+		// List available exports..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/exports',
@@ -95,7 +95,7 @@ class Config_REST_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Delete export file
+		// Delete export file..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/exports/(?P<filename>[a-zA-Z0-9_\-\.]+)',
@@ -108,7 +108,7 @@ class Config_REST_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Validate configuration
+		// Validate configuration..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/validate',
@@ -127,7 +127,7 @@ class Config_REST_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Compare configurations
+		// Compare configurations..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/compare',
@@ -146,7 +146,7 @@ class Config_REST_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// Download export file
+		// Download export file..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/download/(?P<filename>[a-zA-Z0-9_\-\.]+)',
@@ -229,14 +229,14 @@ class Config_REST_Controller extends Base_REST_Controller {
 			'selected_settings' => $request->get_param( 'selected_settings' ) ?? array(),
 		);
 
-		// Import from file if filename provided
+		// Import from file if filename provided..
 		if ( ! empty( $filename ) ) {
 			$upload_dir = wp_upload_dir();
 			$filepath   = trailingslashit( $upload_dir['basedir'] ) . 'slos-exports/' . basename( $filename );
 
 			$result = $this->sync_service->import_from_file( $filepath, $options );
 		} else {
-			// Import from provided profile
+			// Import from provided profile..
 			if ( empty( $profile ) ) {
 				return new WP_Error(
 					'missing_profile',
@@ -367,14 +367,14 @@ class Config_REST_Controller extends Base_REST_Controller {
 	public function compare_configs( WP_REST_Request $request ) {
 		$filename = $request->get_param( 'filename' );
 
-		// Get current config
+		// Get current config..
 		$current_profile = $this->sync_service->export_config();
 
 		if ( is_wp_error( $current_profile ) ) {
 			return $current_profile;
 		}
 
-		// Get imported config
+		// Get imported config..
 		$upload_dir    = wp_upload_dir();
 		$filepath      = trailingslashit( $upload_dir['basedir'] ) . 'slos-exports/' . basename( $filename );
 		$imported_json = file_get_contents( $filepath );
@@ -430,12 +430,12 @@ class Config_REST_Controller extends Base_REST_Controller {
 			wp_die( esc_html__( 'File not found', 'shahi-legalflowsuite' ), 404 );
 		}
 
-		// Set headers for download
+		// Set headers for download..
 		header( 'Content-Type: application/json' );
 		header( 'Content-Disposition: attachment; filename="' . basename( $filepath ) . '"' );
 		header( 'Content-Length: ' . filesize( $filepath ) );
 
-		// Output file
+		// Output file..
 		readfile( $filepath );
 		exit;
 	}

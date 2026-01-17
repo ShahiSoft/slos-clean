@@ -58,7 +58,7 @@ final class TableHeaderFixer extends AbstractFixer {
 		$details       = array();
 
 		foreach ( $tables as $table ) {
-			// Skip layout tables
+			// Skip layout tables..
 			if ( $this->is_layout_table( $table ) ) {
 				continue;
 			}
@@ -94,13 +94,13 @@ final class TableHeaderFixer extends AbstractFixer {
 	 * @return bool
 	 */
 	private function is_layout_table( \DOMElement $table ): bool {
-		// Check for role="presentation" or role="none"
+		// Check for role="presentation" or role="none"..
 		$role = $table->getAttribute( 'role' );
 		if ( in_array( $role, array( 'presentation', 'none' ) ) ) {
 			return true;
 		}
 
-		// Check for layout-related classes
+		// Check for layout-related classes..
 		$class          = strtolower( $table->getAttribute( 'class' ) );
 		$layout_classes = array( 'layout', 'grid', 'container', 'wrapper', 'structure' );
 
@@ -122,11 +122,11 @@ final class TableHeaderFixer extends AbstractFixer {
 	private function fix_table_headers( \DOMElement $table ): int {
 		$fixes = 0;
 
-		// Check if table already has th elements
+		// Check if table already has th elements..
 		$existing_ths = $table->getElementsByTagName( 'th' );
 
 		if ( $existing_ths->length > 0 ) {
-			// Add scope to existing headers without it
+			// Add scope to existing headers without it..
 			foreach ( $existing_ths as $th ) {
 				if ( ! $th->hasAttribute( 'scope' ) ) {
 					$scope = $this->determine_scope( $th, $table );
@@ -137,14 +137,14 @@ final class TableHeaderFixer extends AbstractFixer {
 			return $fixes;
 		}
 
-		// No th elements - try to convert first row
+		// No th elements - try to convert first row..
 		$rows = $table->getElementsByTagName( 'tr' );
 
 		if ( $rows->length === 0 ) {
 			return 0;
 		}
 
-		// Look for thead or first row
+		// Look for thead or first row..
 		$thead      = $table->getElementsByTagName( 'thead' )->item( 0 );
 		$header_row = null;
 
@@ -161,11 +161,11 @@ final class TableHeaderFixer extends AbstractFixer {
 			return 0;
 		}
 
-		// Convert td to th in header row
+		// Convert td to th in header row..
 		$cells            = $header_row->getElementsByTagName( 'td' );
 		$cells_to_convert = array();
 
-		// Collect cells first (can't modify during iteration)
+		// Collect cells first (can't modify during iteration)..
 		foreach ( $cells as $cell ) {
 			$cells_to_convert[] = $cell;
 		}
@@ -174,12 +174,12 @@ final class TableHeaderFixer extends AbstractFixer {
 			$th = $this->doc->createElement( 'th' );
 			$th->setAttribute( 'scope', 'col' );
 
-			// Copy attributes
+			// Copy attributes..
 			foreach ( $td->attributes as $attr ) {
 				$th->setAttribute( $attr->nodeName, $attr->nodeValue );
 			}
 
-			// Copy children
+			// Copy children..
 			while ( $td->firstChild ) {
 				$th->appendChild( $td->firstChild );
 			}
@@ -188,18 +188,18 @@ final class TableHeaderFixer extends AbstractFixer {
 			++$fixes;
 		}
 
-		// If no thead, create one and move header row
+		// If no thead, create one and move header row..
 		if ( ! $thead && $fixes > 0 ) {
 			$thead = $this->doc->createElement( 'thead' );
 			$tbody = $table->getElementsByTagName( 'tbody' )->item( 0 );
 
 			if ( $tbody ) {
-				// Move row from tbody to thead
+				// Move row from tbody to thead..
 				$thead->appendChild( $header_row->cloneNode( true ) );
 				$header_row->parentNode->removeChild( $header_row );
 				$table->insertBefore( $thead, $tbody );
 			} else {
-				// Wrap remaining rows in tbody
+				// Wrap remaining rows in tbody..
 				$tbody        = $this->doc->createElement( 'tbody' );
 				$rows_to_move = array();
 
@@ -231,7 +231,7 @@ final class TableHeaderFixer extends AbstractFixer {
 	 * @return string
 	 */
 	private function determine_scope( \DOMElement $th, \DOMElement $table ): string {
-		// Check if in thead
+		// Check if in thead..
 		$parent = $th->parentNode;
 		while ( $parent && $parent !== $table ) {
 			if ( $parent->nodeName === 'thead' ) {
@@ -240,12 +240,12 @@ final class TableHeaderFixer extends AbstractFixer {
 			$parent = $parent->parentNode;
 		}
 
-		// Check position in row
+		// Check position in row..
 		$row = $th->parentNode;
 		if ( $row && $row->nodeName === 'tr' ) {
 			$first_cell = $row->getElementsByTagName( 'th' )->item( 0 );
 			if ( $first_cell === $th || $row->getElementsByTagName( 'td' )->item( 0 ) === null ) {
-				// First cell or only th in row - likely row header
+				// First cell or only th in row - likely row header..
 				$all_th = $row->getElementsByTagName( 'th' );
 				if ( $all_th->length === 1 ) {
 					return 'row';

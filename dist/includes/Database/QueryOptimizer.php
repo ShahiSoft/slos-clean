@@ -42,23 +42,23 @@ class QueryOptimizer {
 	public static function get_period_stats_cached( $start, $end, $ttl = 3600 ) {
 		global $wpdb;
 
-		// Create cache key from date range
+		// Create cache key from date range..
 		$start_date = date( 'Y-m-d', $start );
 		$end_date   = date( 'Y-m-d', $end );
 		$cache_key  = 'shahi_period_stats_' . $start_date . '_' . $end_date;
 
-		// Try to get from cache
+		// Try to get from cache..
 		$cached = get_transient( $cache_key );
 		if ( false !== $cached ) {
 			return $cached;
 		}
 
-		// Not in cache, execute queries
+		// Not in cache, execute queries..
 		$table_name = $wpdb->prefix . 'shahi_analytics_events';
 
-		// Check if table exists.
+		// Check if table exists...
 		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) != $table_name ) {
-			// Table doesn't exist, return zeros.
+			// Table doesn't exist, return zeros...
 			return array(
 				'total_events'    => 0,
 				'unique_users'    => 0,
@@ -72,7 +72,7 @@ class QueryOptimizer {
 		$start_datetime = date( 'Y-m-d H:i:s', $start );
 		$end_datetime   = date( 'Y-m-d H:i:s', $end );
 
-		// Query 1: Total events (uses index)
+		// Query 1: Total events (uses index)..
 		$total_events = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(*) FROM $table_name WHERE event_time BETWEEN %s AND %s",
@@ -81,7 +81,7 @@ class QueryOptimizer {
 			)
 		);
 
-		// Query 2: Unique users (uses index)
+		// Query 2: Unique users (uses index)..
 		$unique_users = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(DISTINCT user_id) FROM $table_name WHERE event_time BETWEEN %s AND %s",
@@ -90,7 +90,7 @@ class QueryOptimizer {
 			)
 		);
 
-		// Query 3: Page views (uses compound index)
+		// Query 3: Page views (uses compound index)..
 		$page_views = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(*) FROM $table_name WHERE event_type = %s AND event_time BETWEEN %s AND %s",
@@ -109,7 +109,7 @@ class QueryOptimizer {
 			'conversion_rate' => rand( 2, 8 ),
 		);
 
-		// Cache the results
+		// Cache the results..
 		set_transient( $cache_key, $stats, $ttl );
 
 		return $stats;
@@ -172,7 +172,7 @@ class QueryOptimizer {
 		$start_datetime = date( 'Y-m-d H:i:s', $start );
 		$end_datetime   = date( 'Y-m-d H:i:s', $end );
 
-		// Group by event_type with index on event_type column
+		// Group by event_type with index on event_type column..
 		$results = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT event_type, COUNT(*) as count FROM $table_name 
@@ -227,14 +227,14 @@ class QueryOptimizer {
 		$table_name = $wpdb->prefix . 'shahi_analytics_events';
 
 		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) != $table_name ) {
-			// Return empty array if table doesn't exist
+			// Return empty array if table doesn't exist..
 			return array();
 		}
 
 		$start_datetime = date( 'Y-m-d H:i:s', $start );
 		$end_datetime   = date( 'Y-m-d H:i:s', $end );
 
-		// Query with LIMIT to prevent loading all results
+		// Query with LIMIT to prevent loading all results..
 		$results = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT page_url, COUNT(*) as views FROM $table_name 
@@ -277,7 +277,7 @@ class QueryOptimizer {
 		delete_transient( 'shahi_period_stats_' . $start_date . '_' . $end_date );
 		delete_transient( 'shahi_event_types_' . $start_date . '_' . $end_date );
 
-		// Clear all top_pages caches (for different limits)
+		// Clear all top_pages caches (for different limits)..
 		for ( $i = 1; $i <= 100; $i += 9 ) {
 			delete_transient( 'shahi_top_pages_' . $start_date . '_' . $end_date . '_' . $i );
 		}
@@ -297,18 +297,18 @@ class QueryOptimizer {
 		$cache_key = 'shahi_table_exists_' . sanitize_key( $table_name );
 		$exists    = get_transient( $cache_key );
 
-		// Check transient cache first
+		// Check transient cache first..
 		if ( false !== $exists ) {
 			return (bool) $exists;
 		}
 
-		// If not cached, check database
+		// If not cached, check database..
 		global $wpdb;
 		$exists = (bool) $wpdb->get_var(
 			$wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name )
 		);
 
-		// Cache result for 24 hours
+		// Cache result for 24 hours..
 		set_transient( $cache_key, $exists, 24 * HOUR_IN_SECONDS );
 
 		return $exists;

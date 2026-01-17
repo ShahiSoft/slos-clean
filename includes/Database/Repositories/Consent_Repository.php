@@ -131,8 +131,10 @@ class Consent_Repository extends Base_Repository {
 	 * @return array Array of statistics (type => count)
 	 */
 	public function get_stats_by_type(): array {
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- static query using internal table name (sanitized) and no user input.
 		$results = $this->wpdb->get_results(
-			"SELECT type, COUNT(*) as count FROM {$this->table} WHERE status = 'accepted' GROUP BY type"
+			"SELECT type, COUNT(*) as count FROM {$this->table} WHERE status = 'accepted' GROUP BY type",
+			ARRAY_A
 		);
 
 		$stats = array();
@@ -150,8 +152,10 @@ class Consent_Repository extends Base_Repository {
 	 * @return array Array of statistics (status => count)
 	 */
 	public function get_stats_by_status(): array {
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- static query using internal table name (sanitized) and no user input.
 		$results = $this->wpdb->get_results(
-			"SELECT status, COUNT(*) as count FROM {$this->table} GROUP BY status"
+			"SELECT status, COUNT(*) as count FROM {$this->table} GROUP BY status",
+			ARRAY_A
 		);
 
 		$stats = array();
@@ -270,7 +274,7 @@ class Consent_Repository extends Base_Repository {
 
 		if ( ! empty( $where_values ) ) {
 			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-			$sql = $this->wpdb->prepare( $sql, $where_values );
+			$sql = $this->wpdb->prepare( $sql, ...$where_values );
 		}
 
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared

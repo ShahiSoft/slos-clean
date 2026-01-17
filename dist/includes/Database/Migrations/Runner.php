@@ -12,7 +12,7 @@
 
 namespace ShahiLegalFlowSuite\Database\Migrations;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -79,7 +79,7 @@ class Runner {
 	public static function rollback_all() {
 		$migrations_dir = __DIR__;
 
-		// Reverse order to handle dependencies
+		// Reverse order to handle dependencies..
 		$migrations = array(
 			'Migration_Company_Profile'                   => 'Migration_Company_Profile',
 			'migration_2025_12_29_accessibility_fix_history_table' => 'Migration_2025_12_29_accessibility_fix_history_table',

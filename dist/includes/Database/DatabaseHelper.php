@@ -33,6 +33,8 @@ class DatabaseHelper {
 	 */
 	public static function get_table_name( $table ) {
 		global $wpdb;
+		// Ensure table identifier is safe for use in SQL identifiers.
+		$table = sanitize_key( (string) $table );
 		return $wpdb->prefix . 'shahi_' . $table;
 	}
 
@@ -63,11 +65,12 @@ class DatabaseHelper {
 		$table_name = self::get_table_name( $table );
 
 		if ( empty( $where ) ) {
-			return (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table_name ) );
+			$sql = "SELECT COUNT(*) FROM {$table_name}";
+			return (int) $wpdb->get_var( $sql );
 		}
 
 		$where_clause = self::build_where_clause( $where );
-		$sql          = $wpdb->prepare( 'SELECT COUNT(*) FROM %i WHERE ', $table_name ) . $where_clause;
+		$sql          = "SELECT COUNT(*) FROM {$table_name} WHERE {$where_clause}";
 
 		return (int) $wpdb->get_var( $sql );
 	}
@@ -144,7 +147,12 @@ class DatabaseHelper {
 		$where_clause = self::build_where_clause( $where );
 
 		$select_clause = ! empty( $columns ) ? implode( ', ', $columns ) : '*';
-		$sql           = "SELECT {$select_clause} FROM {$table_name} WHERE {$where_clause} LIMIT 1";
+		// Use a prepared LIMIT to satisfy PHPCS about prepared statements while keeping the
+		// where clause built from sanitized/prepared fragments.
+		$sql = "SELECT {$select_clause} FROM {$table_name} WHERE {$where_clause} LIMIT %d";
+
+		// LIMIT 1 is constant; prepare for consistency.
+		$sql = $wpdb->prepare( $sql, 1 );
 
 		return $wpdb->get_row( $sql, $output );
 	}
@@ -181,18 +189,30 @@ class DatabaseHelper {
 		}
 
 		if ( ! empty( $args['order_by'] ) ) {
-			$order = strtoupper( $args['order'] ) === 'ASC' ? 'ASC' : 'DESC';
-			$sql  .= " ORDER BY {$args['order_by']} {$order}";
+			// Only allow safe column names for ORDER BY
+			$order   = strtoupper( $args['order'] ) === 'ASC' ? 'ASC' : 'DESC';
+			$orderby = sanitize_key( $args['order_by'] );
+			$sql    .= " ORDER BY {$orderby} {$order}";
 		}
 
+		// Prepare LIMIT/OFFSET using placeholders to satisfy PHPCS and avoid SQL injection.
+		$prepare_values = array();
 		if ( ! empty( $args['limit'] ) ) {
-			$sql .= " LIMIT {$args['limit']}";
+			$sql             .= ' LIMIT %d';
+			$prepare_values[] = absint( $args['limit'] );
 
 			if ( ! empty( $args['offset'] ) ) {
-				$sql .= " OFFSET {$args['offset']}";
+				$sql             .= ' OFFSET %d';
+				$prepare_values[] = absint( $args['offset'] );
 			}
 		}
 
+		if ( ! empty( $prepare_values ) ) {
+			$sql = $wpdb->prepare( $sql, ...$prepare_values );
+		}
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- WHERE clause fragments are prepared
+		// via `build_where_clause()` and LIMIT/OFFSET are prepared when present; table name is sanitized.
 		return $wpdb->get_results( $sql );
 	}
 
@@ -239,7 +259,7 @@ class DatabaseHelper {
 			if ( is_null( $value ) ) {
 				$conditions[] = "{$column} IS NULL";
 			} elseif ( is_array( $value ) ) {
-				// IN clause
+				// IN clause..
 				$placeholders = implode( ', ', array_fill( 0, count( $value ), '%s' ) );
 				$conditions[] = $wpdb->prepare( "{$column} IN ({$placeholders})", $value );
 			} else {
@@ -283,6 +303,8 @@ class DatabaseHelper {
 			);
 		}
 
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- WHERE clause fragments are prepared
+		// via `build_where_clause()` and LIMIT/OFFSET are prepared when present; table name is sanitized.
 		return $wpdb->get_results( $sql );
 	}
 

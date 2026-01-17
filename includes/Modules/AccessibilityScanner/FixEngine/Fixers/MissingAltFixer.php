@@ -113,7 +113,7 @@ final class MissingAltFixer extends AbstractFixer {
 		}
 
 		// Generate from filename..
-		$filename = basename( parse_url( $src, PHP_URL_PATH ) ?: '' );
+		$filename = basename( wp_parse_url( $src, PHP_URL_PATH ) ?: '' );
 
 		if ( empty( $filename ) ) {
 			return '';
@@ -136,8 +136,7 @@ final class MissingAltFixer extends AbstractFixer {
 
 		$attachment_id = $wpdb->get_var(
 			$wpdb->prepare(
-				'SELECT ID FROM %i WHERE guid = %s',
-				$wpdb->posts,
+				'SELECT ID FROM ' . $wpdb->posts . ' WHERE guid = %s',
 				$url
 			)
 		);
@@ -147,8 +146,7 @@ final class MissingAltFixer extends AbstractFixer {
 			$filename      = basename( $url );
 			$attachment_id = $wpdb->get_var(
 				$wpdb->prepare(
-					"SELECT post_id FROM %i WHERE meta_key = '_wp_attached_file' AND meta_value LIKE %s",
-					$wpdb->postmeta,
+					'SELECT post_id FROM ' . $wpdb->postmeta . " WHERE meta_key = '_wp_attached_file' AND meta_value LIKE %s",
 					'%' . $wpdb->esc_like( $filename )
 				)
 			);

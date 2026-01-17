@@ -14,7 +14,7 @@ namespace ShahiLegalFlowSuite\Admin;
 
 use ShahiLegalFlowSuite\Services\Consent_Audit_Logger;
 
-// Exit if accessed directly
+// Exit if accessed directly...
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -77,16 +77,16 @@ class Consent_Logs_Page {
 	 * Enqueue assets
 	 *
 	 * @since 3.0.1
-	 * @param string $hook Current page hook
+	 * @param string $hook Current page hook.
 	 * @return void
 	 */
 	public function enqueue_assets( string $hook ) {
-		// Only load on our page
+		// Only load on our page...
 		if ( 'shahi-legalflowsuite_page_' . $this->page_slug !== $hook ) {
 			return;
 		}
 
-		// Enqueue JavaScript
+		// Enqueue JavaScript...
 		wp_enqueue_script(
 			'slos-admin-consent-logs',
 			SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/js/admin-consent-logs.js',
@@ -95,7 +95,7 @@ class Consent_Logs_Page {
 			true
 		);
 
-		// Localize script
+		// Localize script...
 		wp_localize_script(
 			'slos-admin-consent-logs',
 			'slosLogsData',
@@ -129,7 +129,7 @@ class Consent_Logs_Page {
 			)
 		);
 
-		// Enqueue admin CSS (if exists)
+		// Enqueue admin CSS (if exists)...
 		wp_enqueue_style( 'slos-admin-global' );
 	}
 
@@ -140,7 +140,7 @@ class Consent_Logs_Page {
 	 * @return void
 	 */
 	public function render_page() {
-		// Check permissions
+		// Check permissions...
 		if ( ! current_user_can( 'manage_shahi_template' ) ) {
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'shahi-legalflowsuite' ) );
 		}
@@ -158,7 +158,7 @@ class Consent_Logs_Page {
 	 * @return void
 	 */
 	public function render_content() {
-		// Load template
+		// Load template...
 		$template_path = SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'templates/admin/consent-logs.php';
 
 		if ( file_exists( $template_path ) ) {

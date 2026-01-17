@@ -32,7 +32,7 @@ class ComplexImageCheck extends AbstractCheck {
 		foreach ( $images as $img ) {
 			$alt = strtolower( $img->getAttribute( 'alt' ) );
 
-			// Heuristic: alt text indicates complex data
+			// Heuristic: alt text indicates complex data..
 			if ( preg_match( '/(chart|graph|diagram|map|infographic|statistics)/i', $alt ) ) {
 				$has_longdesc         = $img->hasAttribute( 'longdesc' );
 				$has_aria_describedby = $img->hasAttribute( 'aria-describedby' );

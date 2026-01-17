@@ -1,3 +1,9 @@
+<?php
+// Prevent direct access.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+?>
 <!-- Consent Logs Admin Template -->
 <div class="wrap slos-consent-logs">
 	<h1><?php esc_html_e( 'Consent Audit Logs', 'shahi-legalflowsuite' ); ?></h1>

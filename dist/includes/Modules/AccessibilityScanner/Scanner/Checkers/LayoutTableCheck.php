@@ -33,13 +33,13 @@ class LayoutTableCheck extends AbstractCheck {
 		$tables = $xpath->query( '//table' );
 
 		foreach ( $tables as $table ) {
-			// If it has th, caption, or summary, it's likely a data table.
+			// If it has th, caption, or summary, it's likely a data table...
 			$hasTh      = $table->getElementsByTagName( 'th' )->length > 0;
 			$hasCaption = $table->getElementsByTagName( 'caption' )->length > 0;
 			$hasSummary = $table->hasAttribute( 'summary' );
 
 			if ( ! $hasTh && ! $hasCaption && ! $hasSummary ) {
-				// Likely a layout table
+				// Likely a layout table..
 				$role = $table->getAttribute( 'role' );
 				if ( $role !== 'presentation' && $role !== 'none' ) {
 					$issues[] = array(

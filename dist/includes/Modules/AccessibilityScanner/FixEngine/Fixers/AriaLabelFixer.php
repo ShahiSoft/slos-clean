@@ -60,7 +60,7 @@ final class AriaLabelFixer extends AbstractFixer {
 		$fixes_applied = 0;
 		$details       = array();
 
-		// Fix empty aria-label attributes
+		// Fix empty aria-label attributes..
 		$empty_labels = $this->query( '//*[@aria-label=""]' );
 		foreach ( $empty_labels as $element ) {
 			$element->removeAttribute( 'aria-label' );
@@ -71,7 +71,7 @@ final class AriaLabelFixer extends AbstractFixer {
 			);
 		}
 
-		// Fix invalid aria-labelledby references
+		// Fix invalid aria-labelledby references..
 		$labelledby_elements = $this->query( '//*[@aria-labelledby]' );
 		foreach ( $labelledby_elements as $element ) {
 			$ids       = explode( ' ', $element->getAttribute( 'aria-labelledby' ) );
@@ -83,7 +83,7 @@ final class AriaLabelFixer extends AbstractFixer {
 					continue;
 				}
 
-				// Check if referenced element exists
+				// Check if referenced element exists..
 				$referenced = $this->query( "//*[@id='{$id}']" );
 				if ( count( $referenced ) > 0 ) {
 					$valid_ids[] = $id;
@@ -109,7 +109,7 @@ final class AriaLabelFixer extends AbstractFixer {
 			}
 		}
 
-		// Add labels to landmark regions without them
+		// Add labels to landmark regions without them..
 		$landmarks = array(
 			'nav'     => __( 'Navigation', 'shahi-legalflowsuite' ),
 			'main'    => __( 'Main content', 'shahi-legalflowsuite' ),
@@ -124,21 +124,21 @@ final class AriaLabelFixer extends AbstractFixer {
 			$elements = $this->query( "//{$tag}" );
 
 			foreach ( $elements as $element ) {
-				// Skip if already has label
+				// Skip if already has label..
 				if ( $element->hasAttribute( 'aria-label' ) || $element->hasAttribute( 'aria-labelledby' ) ) {
 					continue;
 				}
 
-				// For section, only label if it has a role
+				// For section, only label if it has a role..
 				if ( $tag === 'section' && ! $element->hasAttribute( 'role' ) ) {
 					continue;
 				}
 
-				// Try to find heading inside for label
+				// Try to find heading inside for label..
 				$heading = $this->find_heading_in_element( $element );
 
 				if ( $heading ) {
-					// Use heading as label via aria-labelledby
+					// Use heading as label via aria-labelledby..
 					$heading_id = $heading->getAttribute( 'id' );
 
 					if ( empty( $heading_id ) ) {
@@ -154,7 +154,7 @@ final class AriaLabelFixer extends AbstractFixer {
 						'heading' => $heading->textContent,
 					);
 				} elseif ( $default_label ) {
-					// Use default label
+					// Use default label..
 					$element->setAttribute( 'aria-label', $default_label );
 					++$fixes_applied;
 					$details[] = array(
@@ -166,7 +166,7 @@ final class AriaLabelFixer extends AbstractFixer {
 			}
 		}
 
-		// Handle multiple nav elements - make labels unique
+		// Handle multiple nav elements - make labels unique..
 		$navs = $this->query( '//nav[@aria-label]' );
 		if ( count( $navs ) > 1 ) {
 			$nav_labels = array();
@@ -175,7 +175,7 @@ final class AriaLabelFixer extends AbstractFixer {
 				$label = $nav->getAttribute( 'aria-label' );
 
 				if ( isset( $nav_labels[ $label ] ) ) {
-					// Make unique
+					// Make unique..
 					++$nav_labels[ $label ];
 					$new_label = $label . ' ' . $nav_labels[ $label ];
 					$nav->setAttribute( 'aria-label', $new_label );

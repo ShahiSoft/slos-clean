@@ -357,7 +357,7 @@ class GenericLinkTextFixer extends BaseFixer {
 		}
 
 		// Fallback: extract meaningful text from URL path..
-		$path = parse_url( $href, PHP_URL_PATH );
+		$path = wp_parse_url( $href, PHP_URL_PATH );
 		if ( $path ) {
 			$slug = basename( $path );
 			$slug = preg_replace( '/\.[^.]+$/', '', $slug ); // Remove extension
@@ -449,7 +449,7 @@ class DownloadLinkFixer extends BaseFixer {
 			// Also check for download attribute..
 			if ( ! $is_download && $link->hasAttribute( 'download' ) ) {
 				$is_download = true;
-				$path        = parse_url( $href, PHP_URL_PATH );
+				$path        = wp_parse_url( $href, PHP_URL_PATH );
 				if ( $path ) {
 					$path_ext = pathinfo( $path, PATHINFO_EXTENSION );
 					$file_ext = $path_ext ? strtoupper( $path_ext ) : 'FILE';
@@ -495,7 +495,7 @@ class ExternalLinkFixer extends BaseFixer {
 
 		// Get home URL safely..
 		$home_url  = function_exists( 'home_url' ) ? home_url() : ( isset( $_SERVER['HTTP_HOST'] ) ? '//' . $_SERVER['HTTP_HOST'] : '' );
-		$home_host = parse_url( $home_url, PHP_URL_HOST ) ?: '';
+		$home_host = wp_parse_url( $home_url, PHP_URL_HOST ) ?: '';
 
 		// Convert to array to avoid issues with modifying during iteration..
 		$links_array = array();
@@ -519,7 +519,7 @@ class ExternalLinkFixer extends BaseFixer {
 			// Check if it's an external URL (starts with http/https and different host)..
 			$is_external = false;
 			if ( preg_match( '/^https?:\/\//i', $href ) ) {
-				$link_host = parse_url( $href, PHP_URL_HOST ) ?: '';
+				$link_host = wp_parse_url( $href, PHP_URL_HOST ) ?: '';
 				if ( $link_host && $link_host !== $home_host ) {
 					$is_external = true;
 				}

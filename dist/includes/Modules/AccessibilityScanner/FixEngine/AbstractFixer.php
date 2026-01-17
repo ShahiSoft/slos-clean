@@ -56,7 +56,7 @@ abstract class AbstractFixer implements FixerInterface {
 			);
 
 			throw new \InvalidArgumentException(
-				sprintf( 'Fixer ID "%s" is not in the canonical registry. Check CanonicalIds class.', $id )
+				sprintf( 'Fixer ID "%s" is not in the canonical registry. Check CanonicalIds class.', esc_html( $id ) )
 			);
 		}
 	}
@@ -161,7 +161,7 @@ abstract class AbstractFixer implements FixerInterface {
 
 		libxml_use_internal_errors( true );
 
-		// Wrap content in proper HTML structure
+		// Wrap content in proper HTML structure..
 		$wrapped = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>'
 				. $content
 				. '</body></html>';
@@ -169,7 +169,7 @@ abstract class AbstractFixer implements FixerInterface {
 		$dom->loadHTML( $wrapped, LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED );
 		libxml_clear_errors();
 
-		// Cache DOM and XPath for helper methods like query() and get_html().
+		// Cache DOM and XPath for helper methods like query() and get_html()...
 		$this->dom   = $dom;
 		$this->xpath = new \DOMXPath( $dom );
 
@@ -219,7 +219,7 @@ abstract class AbstractFixer implements FixerInterface {
 	 * @return string
 	 */
 	protected function generate_alt_from_src( string $src ): string {
-		$filename = basename( parse_url( $src, PHP_URL_PATH ) ?? '' );
+		$filename = basename( wp_parse_url( $src, PHP_URL_PATH ) ?? '' );
 		$name     = pathinfo( $filename, PATHINFO_FILENAME );
 		$name     = preg_replace( '/[-_]+/', ' ', $name );
 		$name     = preg_replace( '/\d+x\d+/', '', $name ); // Remove dimensions
@@ -234,17 +234,17 @@ abstract class AbstractFixer implements FixerInterface {
 	 * @return bool
 	 */
 	protected function has_accessible_name( \DOMElement $element ): bool {
-		// Check text content
+		// Check text content..
 		if ( trim( $element->textContent ) !== '' ) {
 			return true;
 		}
 
-		// Check aria-label
+		// Check aria-label..
 		if ( $element->hasAttribute( 'aria-label' ) && trim( $element->getAttribute( 'aria-label' ) ) !== '' ) {
 			return true;
 		}
 
-		// Check aria-labelledby
+		// Check aria-labelledby..
 		if ( $element->hasAttribute( 'aria-labelledby' ) ) {
 			$labelledby    = $element->getAttribute( 'aria-labelledby' );
 			$label_element = $this->dom->getElementById( $labelledby );
@@ -253,7 +253,7 @@ abstract class AbstractFixer implements FixerInterface {
 			}
 		}
 
-		// Check title attribute
+		// Check title attribute..
 		if ( $element->hasAttribute( 'title' ) && trim( $element->getAttribute( 'title' ) ) !== '' ) {
 			return true;
 		}

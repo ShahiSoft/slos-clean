@@ -25,9 +25,9 @@
 		"php": "html"
 	},
 	"intelephense.diagnostics.enable": false,
-	"php.validate.enable": false
+	"php.validate.enable": false,
 	// AI rules pointer for agents and helper tasks
-	,"ai.rulesPath": ".vscode/ai-rules.md",
+	"ai.rulesPath": ".vscode/ai-rules.md",
 	"ai.complianceTemplatePath": ".vscode/compliance-check-template.md",
 
 	// Best-effort Copilot Chat / GitHub Copilot system prompt settings (workspace-level)

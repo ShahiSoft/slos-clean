@@ -85,7 +85,7 @@ class Document_Hub_Controller {
 	 * @return void
 	 */
 	public function init() {
-		// Register AJAX handlers
+		// Register AJAX handlers .
 		add_action( 'wp_ajax_slos_hub_generate_document', array( $this, 'ajax_generate_document' ) );
 		add_action( 'wp_ajax_slos_hub_publish_document', array( $this, 'ajax_publish_document' ) );
 		add_action( 'wp_ajax_slos_hub_regenerate_document', array( $this, 'ajax_regenerate_document' ) );
@@ -93,11 +93,11 @@ class Document_Hub_Controller {
 		add_action( 'wp_ajax_slos_hub_bulk_action', array( $this, 'ajax_bulk_action' ) );
 		add_action( 'wp_ajax_slos_hub_get_document_preview', array( $this, 'ajax_get_document_preview' ) );
 
-		// Export AJAX handlers
+		// Export AJAX handlers .
 		add_action( 'wp_ajax_slos_export_document', array( $this, 'ajax_export_document' ) );
 		add_action( 'wp_ajax_slos_export_bulk', array( $this, 'ajax_export_bulk' ) );
 
-		// Generate tab AJAX handlers (Phase 1E)
+		// Generate tab AJAX handlers (Phase 1E) .
 		add_action( 'wp_ajax_slos_gen_get_context', array( $this, 'ajax_get_generation_context' ) );
 		add_action( 'wp_ajax_slos_gen_preview', array( $this, 'ajax_generate_preview' ) );
 		add_action( 'wp_ajax_slos_gen_generate', array( $this, 'ajax_generate_from_profile' ) );
@@ -107,7 +107,7 @@ class Document_Hub_Controller {
 		add_action( 'wp_ajax_slos_gen_compare_versions', array( $this, 'ajax_compare_versions' ) );
 		add_action( 'wp_ajax_slos_gen_clear_drafts', array( $this, 'ajax_clear_drafts' ) );
 
-		// Document editor AJAX handler
+		// Document editor AJAX handler .
 		add_action( 'wp_ajax_slos_save_document_edit', array( $this, 'ajax_save_document_edit' ) );
 	}
 
@@ -120,10 +120,10 @@ class Document_Hub_Controller {
 	public function render() {
 		$data = $this->prepare_hub_data();
 
-		// Load the template - Updated for Phase 4 hub template
+		// Load the template - Updated for Phase 4 hub template .
 		$template_path = SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'templates/admin/documents/hub.php';
 
-		// Fallback to legacy template if new one doesn't exist
+		// Fallback to legacy template if new one doesn't exist .
 		if ( ! file_exists( $template_path ) ) {
 			$template_path = SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'templates/admin/document-hub.php';
 		}
@@ -164,7 +164,7 @@ class Document_Hub_Controller {
 	public function enqueue_assets() {
 		$data = $this->prepare_hub_data();
 
-		// CSS
+		// CSS .
 		wp_enqueue_style(
 			'slos-document-hub',
 			SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/css/document-hub.css',
@@ -172,7 +172,7 @@ class Document_Hub_Controller {
 			SHAHI_LEGALFLOWSUITE_VERSION
 		);
 
-		// JavaScript
+		// JavaScript .
 		wp_enqueue_script(
 			'slos-document-hub',
 			SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/js/document-hub.js',
@@ -181,7 +181,7 @@ class Document_Hub_Controller {
 			true
 		);
 
-		// Localize script
+		// Localize script .
 		wp_localize_script(
 			'slos-document-hub',
 			'slosHub',
@@ -241,20 +241,20 @@ class Document_Hub_Controller {
 			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'shahi-legalflowsuite' ) ) );
 		}
 
-		$doc_type = isset( $_POST['doc_type'] ) ? sanitize_key( $_POST['doc_type'] ) : '';
+		$doc_type = isset( $_POST['doc_type'] ) ? sanitize_key( wp_unslash( $_POST['doc_type'] ) ) : '';
 		$force    = isset( $_POST['force'] ) && 'true' === $_POST['force'];
 
 		if ( empty( $doc_type ) ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid document type.', 'shahi-legalflowsuite' ) ) );
 		}
 
-		// Get type configuration
+		// Get type configuration .
 		$type_config = $this->hub_service->get_document_type( $doc_type );
 		if ( ! $type_config ) {
 			wp_send_json_error( array( 'message' => __( 'Unknown document type.', 'shahi-legalflowsuite' ) ) );
 		}
 
-		// Generate the document
+		// Generate the document .
 		$result = $this->generator->generate(
 			$doc_type,
 			null,
@@ -264,7 +264,7 @@ class Document_Hub_Controller {
 		);
 
 		if ( ! $result['success'] ) {
-			// Check if profile is incomplete
+			// Check if profile is incomplete .
 			if ( ! empty( $result['requires_profile'] ) ) {
 				wp_send_json_error(
 					array(
@@ -278,7 +278,7 @@ class Document_Hub_Controller {
 			wp_send_json_error( array( 'message' => $result['message'] ) );
 		}
 
-		// Success - return with card refresh data
+		// Success - return with card refresh data .
 		wp_send_json_success(
 			array(
 				'message'  => $result['message'],
@@ -305,13 +305,13 @@ class Document_Hub_Controller {
 		}
 
 		$doc_id   = isset( $_POST['doc_id'] ) ? absint( $_POST['doc_id'] ) : 0;
-		$doc_type = isset( $_POST['doc_type'] ) ? sanitize_key( $_POST['doc_type'] ) : '';
+		$doc_type = isset( $_POST['doc_type'] ) ? sanitize_key( wp_unslash( $_POST['doc_type'] ) ) : '';
 
 		if ( empty( $doc_id ) && empty( $doc_type ) ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid document.', 'shahi-legalflowsuite' ) ) );
 		}
 
-		// Get document
+		// Get document .
 		$document = null;
 		if ( $doc_id ) {
 			$document = $this->doc_repository->find( $doc_id );
@@ -323,7 +323,7 @@ class Document_Hub_Controller {
 			wp_send_json_error( array( 'message' => __( 'Document not found.', 'shahi-legalflowsuite' ) ) );
 		}
 
-		// Update status to published
+		// Update status to published .
 		$metadata = is_string( $document->metadata )
 			? json_decode( $document->metadata, true )
 			: (array) $document->metadata;
@@ -367,13 +367,13 @@ class Document_Hub_Controller {
 			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'shahi-legalflowsuite' ) ) );
 		}
 
-		$doc_type = isset( $_POST['doc_type'] ) ? sanitize_key( $_POST['doc_type'] ) : '';
+		$doc_type = isset( $_POST['doc_type'] ) ? sanitize_key( wp_unslash( $_POST['doc_type'] ) ) : '';
 
 		if ( empty( $doc_type ) ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid document type.', 'shahi-legalflowsuite' ) ) );
 		}
 
-		// Regenerate the document
+		// Regenerate the document .
 		$result = $this->generator->regenerate( $doc_type );
 
 		if ( ! $result['success'] ) {
@@ -407,10 +407,8 @@ class Document_Hub_Controller {
 		}
 
 		$doc_id   = isset( $_POST['doc_id'] ) ? absint( $_POST['doc_id'] ) : 0;
-		$doc_type = isset( $_POST['doc_type'] ) ? sanitize_key( $_POST['doc_type'] ) : '';
+		$doc_type = isset( $_POST['doc_type'] ) ? sanitize_key( wp_unslash( $_POST['doc_type'] ) ) : '';
 
-		// Get document
-		$document = null;
 		if ( $doc_id ) {
 			$document = $this->doc_repository->find( $doc_id );
 		} elseif ( $doc_type ) {
@@ -421,7 +419,7 @@ class Document_Hub_Controller {
 			wp_send_json_error( array( 'message' => __( 'Document not found.', 'shahi-legalflowsuite' ) ) );
 		}
 
-		// Perform delete (or archive)
+		// Perform delete (or archive) .
 		$deleted = $this->doc_repository->delete( $document->id );
 
 		if ( ! $deleted ) {
@@ -449,11 +447,11 @@ class Document_Hub_Controller {
 			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'shahi-legalflowsuite' ) ) );
 		}
 
-		$action = isset( $_POST['bulk_action'] ) ? sanitize_key( $_POST['bulk_action'] ) : '';
+		$action = isset( $_POST['bulk_action'] ) ? sanitize_key( wp_unslash( $_POST['bulk_action'] ) ) : '';
 
 		switch ( $action ) {
 			case 'regenerate_outdated':
-				// Get outdated documents
+				// Get outdated documents .
 				$outdated = $this->generator->get_outdated_documents();
 
 				if ( empty( $outdated ) ) {
@@ -465,7 +463,7 @@ class Document_Hub_Controller {
 					);
 				}
 
-				// Bulk regenerate
+				// Bulk regenerate .
 				$result = $this->generator->bulk_regenerate( $outdated );
 
 				$message = sprintf(
@@ -493,7 +491,7 @@ class Document_Hub_Controller {
 				break;
 
 			case 'export_all':
-				// Get all documents for bulk export
+				// Get all documents for bulk export .
 				$documents = $this->hub_service->get_all_documents();
 
 				if ( empty( $documents ) ) {
@@ -556,14 +554,14 @@ class Document_Hub_Controller {
 			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'shahi-legalflowsuite' ) ) );
 		}
 
-		$doc_type     = isset( $_POST['doc_type'] ) ? sanitize_key( $_POST['doc_type'] ) : '';
-		$preview_mode = isset( $_POST['preview_mode'] ) ? sanitize_key( $_POST['preview_mode'] ) : 'existing';
+		$doc_type     = isset( $_POST['doc_type'] ) ? sanitize_key( wp_unslash( $_POST['doc_type'] ) ) : '';
+		$preview_mode = isset( $_POST['preview_mode'] ) ? sanitize_key( wp_unslash( $_POST['preview_mode'] ) ) : 'generated';
 
 		if ( empty( $doc_type ) ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid document type.', 'shahi-legalflowsuite' ) ) );
 		}
 
-		// If preview mode is 'generated', show what would be generated
+		// If preview mode is 'generated', show what would be generated .
 		if ( 'generated' === $preview_mode ) {
 			$preview = $this->generator->preview( $doc_type );
 
@@ -583,11 +581,11 @@ class Document_Hub_Controller {
 			);
 		}
 
-		// Otherwise show existing document
+		// Otherwise show existing document .
 		$document = $this->hub_service->get_document_by_type( $doc_type );
 
 		if ( ! $document ) {
-			// Try to show preview instead
+			// Try to show preview instead .
 			$preview = $this->generator->preview( $doc_type );
 
 			if ( $preview['success'] ) {
@@ -631,6 +629,8 @@ class Document_Hub_Controller {
 	 * @since 4.1.0
 	 * @param array $card Card data.
 	 * @return void
+	 *
+	 * @phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter.Found -- Parameter used in included template file.
 	 */
 	public function render_card( $card ) {
 		$template_path = SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'templates/admin/hub-parts/document-card.php';
@@ -646,6 +646,8 @@ class Document_Hub_Controller {
 	 * @since 4.1.0
 	 * @param array $profile Profile summary data.
 	 * @return void
+	 *
+	 * @phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter.Found -- Parameter used in included template file.
 	 */
 	public function render_profile_banner( $profile ) {
 		$template_path = SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'templates/admin/hub-parts/profile-banner.php';
@@ -669,13 +671,13 @@ class Document_Hub_Controller {
 		}
 
 		$doc_id = isset( $_POST['doc_id'] ) ? intval( $_POST['doc_id'] ) : 0;
-		$format = isset( $_POST['format'] ) ? sanitize_key( $_POST['format'] ) : Export_Manager::FORMAT_PDF;
+		$format = isset( $_POST['format'] ) ? sanitize_key( wp_unslash( $_POST['format'] ) ) : 'pdf';
 
-		if ( ! $doc_id ) {
+		if ( $doc_id <= 0 ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid document ID.', 'shahi-legalflowsuite' ) ) );
 		}
 
-		// Validate format
+		// Validate format .
 		$valid_formats = array(
 			Export_Manager::FORMAT_PDF,
 			Export_Manager::FORMAT_HTML,
@@ -685,13 +687,13 @@ class Document_Hub_Controller {
 			$format = Export_Manager::FORMAT_PDF;
 		}
 
-		// Get branding options from request
+		// Get branding options from request .
 		$options = array(
 			'include_branding' => isset( $_POST['include_branding'] ) ? (bool) $_POST['include_branding'] : true,
 			'include_toc'      => isset( $_POST['include_toc'] ) ? (bool) $_POST['include_toc'] : false,
 		);
 
-		// Export based on format
+		// Export based on format .
 		if ( Export_Manager::FORMAT_PDF === $format ) {
 			$result = $this->export_manager->export_pdf( $doc_id, $options );
 		} else {
@@ -729,23 +731,23 @@ class Document_Hub_Controller {
 			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'shahi-legalflowsuite' ) ) );
 		}
 
-		// Get document IDs
+		// Get document IDs .
 		$doc_ids = isset( $_POST['doc_ids'] ) ? array_map( 'intval', (array) $_POST['doc_ids'] ) : array();
-		$doc_ids = array_filter( $doc_ids ); // Remove zeros
+		$doc_ids = array_filter( $doc_ids ); // Remove zeros.
 
 		if ( empty( $doc_ids ) ) {
 			wp_send_json_error( array( 'message' => __( 'No documents selected.', 'shahi-legalflowsuite' ) ) );
 		}
 
-		// Get export options from request
+		// Get export options from request .
 		$options = array(
 			'include_branding' => isset( $_POST['include_branding'] ) ? (bool) $_POST['include_branding'] : true,
 			'include_manifest' => isset( $_POST['include_manifest'] ) ? (bool) $_POST['include_manifest'] : true,
 			'include_readme'   => isset( $_POST['include_readme'] ) ? (bool) $_POST['include_readme'] : true,
-			'format'           => isset( $_POST['format'] ) ? sanitize_key( $_POST['format'] ) : Export_Manager::FORMAT_HTML,
+			'format'           => isset( $_POST['format'] ) ? sanitize_key( wp_unslash( $_POST['format'] ) ) : Export_Manager::FORMAT_HTML,
 		);
 
-		// Validate format for bulk export
+		// Validate format for bulk export .
 		if ( ! in_array( $options['format'], array( Export_Manager::FORMAT_PDF, Export_Manager::FORMAT_HTML ), true ) ) {
 			$options['format'] = Export_Manager::FORMAT_HTML;
 		}
@@ -789,7 +791,7 @@ class Document_Hub_Controller {
 			wp_send_json_error( array( 'message' => __( 'Unauthorized', 'shahi-legalflowsuite' ) ), 403 );
 		}
 
-		$doc_type = isset( $_POST['doc_type'] ) ? sanitize_text_field( $_POST['doc_type'] ) : '';
+		$doc_type = isset( $_POST['doc_type'] ) ? sanitize_text_field( wp_unslash( $_POST['doc_type'] ) ) : '';
 
 		if ( empty( $doc_type ) ) {
 			wp_send_json_error( array( 'message' => __( 'Document type required', 'shahi-legalflowsuite' ) ), 400 );
@@ -798,8 +800,8 @@ class Document_Hub_Controller {
 		try {
 			$context = $this->generator->get_generation_context( $doc_type );
 
-			// Check for actual error vs incomplete profile
-			// An incomplete profile should still show in modal with missing fields
+			// Check for actual error vs incomplete profile .
+			// An incomplete profile should still show in modal with missing fields .
 			if ( isset( $context['error'] ) && ! empty( $context['error'] ) ) {
 				wp_send_json_error(
 					array(
@@ -810,9 +812,10 @@ class Document_Hub_Controller {
 				);
 			}
 
-			// Always return success - modal will show missing fields if not valid
+			// Always return success - modal will show missing fields if not valid .
 			wp_send_json_success( $context );
 		} catch ( \Exception $e ) {
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			error_log( 'SLOS get_generation_context error: ' . $e->getMessage() );
 			wp_send_json_error(
 				array(
@@ -823,7 +826,10 @@ class Document_Hub_Controller {
 				500
 			);
 		} catch ( \Error $e ) {
-			error_log( 'SLOS get_generation_context fatal: ' . $e->getMessage() );
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+				error_log( 'SLOS get_generation_context fatal: ' . $e->getMessage() );
+			}
 			wp_send_json_error(
 				array(
 					'message' => $e->getMessage(),
@@ -851,8 +857,9 @@ class Document_Hub_Controller {
 			wp_send_json_error( array( 'message' => __( 'Unauthorized', 'shahi-legalflowsuite' ) ), 403 );
 		}
 
-		$doc_type  = isset( $_POST['doc_type'] ) ? sanitize_text_field( $_POST['doc_type'] ) : '';
-		$overrides = isset( $_POST['overrides'] ) ? json_decode( stripslashes( $_POST['overrides'] ), true ) : array();
+		$doc_type      = isset( $_POST['doc_type'] ) ? sanitize_text_field( wp_unslash( $_POST['doc_type'] ) ) : '';
+		$overrides_raw = isset( $_POST['overrides'] ) ? sanitize_text_field( wp_unslash( $_POST['overrides'] ) ) : '';
+		$overrides     = ! empty( $overrides_raw ) ? json_decode( $overrides_raw, true ) : array();
 
 		if ( empty( $doc_type ) ) {
 			wp_send_json_error( array( 'message' => __( 'Document type required', 'shahi-legalflowsuite' ) ), 400 );
@@ -894,16 +901,17 @@ class Document_Hub_Controller {
 			wp_send_json_error( array( 'message' => __( 'Unauthorized', 'shahi-legalflowsuite' ) ), 403 );
 		}
 
-		$doc_type      = isset( $_POST['doc_type'] ) ? sanitize_text_field( $_POST['doc_type'] ) : '';
-		$overrides     = isset( $_POST['overrides'] ) ? json_decode( stripslashes( $_POST['overrides'] ), true ) : array();
-		$change_reason = isset( $_POST['change_reason'] ) ? sanitize_text_field( $_POST['change_reason'] ) : __( 'Generated from profile', 'shahi-legalflowsuite' );
+		$doc_type      = isset( $_POST['doc_type'] ) ? sanitize_text_field( wp_unslash( $_POST['doc_type'] ) ) : '';
+		$overrides_raw = isset( $_POST['overrides'] ) ? sanitize_text_field( wp_unslash( $_POST['overrides'] ) ) : '';
+		$overrides     = ! empty( $overrides_raw ) ? json_decode( $overrides_raw, true ) : array();
+		$change_reason = isset( $_POST['change_reason'] ) ? sanitize_text_field( wp_unslash( $_POST['change_reason'] ) ) : '';
 
 		if ( empty( $doc_type ) ) {
 			wp_send_json_error( array( 'message' => __( 'Document type required', 'shahi-legalflowsuite' ) ), 400 );
 		}
 
 		try {
-			// Add change reason to overrides
+			// Add change reason to overrides .
 			$overrides['change_reason'] = $change_reason;
 
 			$doc_id = $this->generator->generate_from_profile( $doc_type, $overrides, get_current_user_id() );
@@ -927,6 +935,7 @@ class Document_Hub_Controller {
 				)
 			);
 		} catch ( \Exception $e ) {
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			error_log( 'SLOS generate_from_profile error: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine() );
 			wp_send_json_error(
 				array(
@@ -937,7 +946,10 @@ class Document_Hub_Controller {
 				500
 			);
 		} catch ( \Error $e ) {
-			error_log( 'SLOS generate_from_profile fatal: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine() );
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+				error_log( 'SLOS generate_from_profile fatal: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine() );
+			}
 			wp_send_json_error(
 				array(
 					'message' => $e->getMessage(),
@@ -973,10 +985,11 @@ class Document_Hub_Controller {
 		global $wpdb;
 		$table = $wpdb->prefix . 'slos_legal_doc_versions';
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$versions = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT id, change_reason, created_by, created_at
-            FROM {$table}
+            FROM {$wpdb->prefix}slos_legal_doc_versions
             WHERE doc_id = %d
             ORDER BY created_at DESC
             LIMIT 20",
@@ -984,12 +997,12 @@ class Document_Hub_Controller {
 			)
 		);
 
-		// Enrich with user data and add version numbers (descending)
+		// Enrich with user data and add version numbers (descending) .
 		$count = count( $versions );
 		foreach ( $versions as $index => $version ) {
 			$user                 = get_userdata( $version->created_by );
 			$version->author_name = $user ? $user->display_name : __( 'Unknown', 'shahi-legalflowsuite' );
-			// Highest number is most recent (timeline is already DESC)
+			// Highest number is most recent (timeline is already DESC) .
 			$version->version_num = $count - $index;
 		}
 
@@ -1027,10 +1040,11 @@ class Document_Hub_Controller {
 		$versions_table = $wpdb->prefix . 'slos_legal_doc_versions';
 		$docs_table     = $wpdb->prefix . 'slos_documents';
 
-		// Get old version content
+		// Get old version content .
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$old_version = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT content FROM {$versions_table} WHERE id = %d AND doc_id = %d",
+				"SELECT content FROM {$wpdb->prefix}slos_legal_doc_versions WHERE id = %d AND doc_id = %d",
 				$version_id,
 				$doc_id
 			)
@@ -1040,10 +1054,11 @@ class Document_Hub_Controller {
 			wp_send_json_error( array( 'message' => __( 'Version not found', 'shahi-legalflowsuite' ) ), 404 );
 		}
 
-		// Get original document info
+		// Get original document info .
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$doc = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT title, type, locale FROM {$docs_table} WHERE id = %d",
+				"SELECT title, type, locale FROM {$wpdb->prefix}slos_documents WHERE id = %d",
 				$doc_id
 			)
 		);
@@ -1052,7 +1067,7 @@ class Document_Hub_Controller {
 			wp_send_json_error( array( 'message' => __( 'Document not found', 'shahi-legalflowsuite' ) ), 404 );
 		}
 
-		// Create new draft with restored content
+		// Create new draft with restored content .
 		$new_doc_id = $this->doc_repository->create(
 			array(
 				'title'      => $doc->title . ' ' . __( '(Restored)', 'shahi-legalflowsuite' ),
@@ -1108,10 +1123,11 @@ class Document_Hub_Controller {
 		global $wpdb;
 		$docs_table = $wpdb->prefix . 'slos_documents';
 
-		// Get document content
+		// Get document content .
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$doc = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT title, content, status, version FROM {$docs_table} WHERE id = %d",
+				"SELECT title, content, status, version FROM {$wpdb->prefix}slos_documents WHERE id = %d",
 				$doc_id
 			)
 		);
@@ -1120,21 +1136,21 @@ class Document_Hub_Controller {
 			wp_send_json_error( array( 'message' => __( 'Document not found', 'shahi-legalflowsuite' ) ), 404 );
 		}
 
-		// Process content similar to how WordPress displays posts
-		// Apply shortcodes, autop, and other filters
+		// Process content similar to how WordPress displays posts .
+		// Apply shortcodes, autop, and other filters .
 		$html_content = $doc->content;
 
-		// Apply the_content filters (shortcodes, autop, etc.)
+		// Apply the_content filters (shortcodes, autop, etc.) .
 		$html_content = apply_filters( 'the_content', $html_content );
 
-		// Additional formatting for better display
-		$html_content = wpautop( $html_content ); // Convert line breaks to paragraphs
-		$html_content = do_shortcode( $html_content ); // Process shortcodes
+		// Additional formatting for better display .
+		$html_content = wpautop( $html_content ); // Convert line breaks to paragraphs.
+		$html_content = do_shortcode( $html_content ); // Process shortcodes.
 
-		// Sanitize for security while preserving formatting
+		// Sanitize for security while preserving formatting .
 		$html_content = wp_kses_post( $html_content );
 
-		// Calculate word count
+		// Calculate word count .
 		$word_count = str_word_count( wp_strip_all_tags( $doc->content ) );
 
 		wp_send_json_success(
@@ -1173,17 +1189,19 @@ class Document_Hub_Controller {
 		global $wpdb;
 		$versions_table = $wpdb->prefix . 'slos_legal_doc_versions';
 
-		// Get both versions
+		// Get both versions .
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$version1 = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT id, content, change_reason, created_at FROM {$versions_table} WHERE id = %d",
+				"SELECT id, content, change_reason, created_at FROM {$wpdb->prefix}slos_legal_doc_versions WHERE id = %d",
 				$version_id
 			)
 		);
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$version2 = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT id, content, change_reason, created_at FROM {$versions_table} WHERE id = %d",
+				"SELECT id, content, change_reason, created_at FROM {$wpdb->prefix}slos_legal_doc_versions WHERE id = %d",
 				$compare_id
 			)
 		);
@@ -1192,13 +1210,13 @@ class Document_Hub_Controller {
 			wp_send_json_error( array( 'message' => __( 'Version not found', 'shahi-legalflowsuite' ) ), 404 );
 		}
 
-		// Simple line-by-line comparison
+		// Simple line-by-line comparison .
 		$lines1 = explode( "\n", wp_strip_all_tags( $version1->content ) );
 		$lines2 = explode( "\n", wp_strip_all_tags( $version2->content ) );
 
 		$diff_html = '<div class="slos-gen-diff">';
 
-		// Use WordPress text diff if available
+		// Use WordPress text diff if available .
 		if ( class_exists( 'WP_Text_Diff_Renderer_Table' ) ) {
 			$text_diff = wp_text_diff(
 				$version2->content,
@@ -1216,7 +1234,7 @@ class Document_Hub_Controller {
 				$diff_html .= '<p>' . __( 'No differences found.', 'shahi-legalflowsuite' ) . '</p>';
 			}
 		} else {
-			// Fallback: simple side-by-side
+			// Fallback: simple side-by-side .
 			$diff_html .= '<div class="slos-gen-diff-simple">';
 			$diff_html .= '<div class="slos-gen-diff-left"><h4>' . esc_html__( 'Previous Version', 'shahi-legalflowsuite' ) . '</h4>';
 			$diff_html .= '<pre>' . esc_html( $version2->content ) . '</pre></div>';
@@ -1254,12 +1272,15 @@ class Document_Hub_Controller {
 		global $wpdb;
 		$docs_table = $wpdb->prefix . 'slos_documents';
 
-		// Get count of drafts
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$draft_count = $wpdb->get_var(
-			"SELECT COUNT(*) FROM {$docs_table} WHERE status = 'draft'"
+			$wpdb->prepare(
+				"SELECT COUNT(*) FROM {$wpdb->prefix}slos_documents WHERE status = %s",
+				'draft'
+			)
 		);
 
-		if ( $draft_count == 0 ) {
+		if ( 0 === $draft_count ) {
 			wp_send_json_success(
 				array(
 					'message' => __( 'No draft documents to clear.', 'shahi-legalflowsuite' ),
@@ -1268,10 +1289,11 @@ class Document_Hub_Controller {
 			);
 		}
 
-		// Delete all draft documents
+		// Delete all draft documents .
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$deleted = $wpdb->delete( $docs_table, array( 'status' => 'draft' ), array( '%s' ) );
 
-		if ( $deleted === false ) {
+		if ( false === $deleted ) {
 			wp_send_json_error(
 				array(
 					'message' => __( 'Failed to delete draft documents.', 'shahi-legalflowsuite' ),
@@ -1311,14 +1333,14 @@ class Document_Hub_Controller {
 		}
 
 		$doc_id  = isset( $_POST['doc_id'] ) ? absint( $_POST['doc_id'] ) : 0;
-		$title   = isset( $_POST['title'] ) ? sanitize_text_field( $_POST['title'] ) : '';
-		$content = isset( $_POST['content'] ) ? wp_kses_post( $_POST['content'] ) : '';
+		$title   = isset( $_POST['title'] ) ? sanitize_text_field( wp_unslash( $_POST['title'] ) ) : '';
+		$content = isset( $_POST['content'] ) ? wp_kses_post( wp_unslash( $_POST['content'] ) ) : '';
 
 		if ( ! $doc_id ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid document ID.', 'shahi-legalflowsuite' ) ) );
 		}
 
-		// Update document
+		// Update document .
 		$result = $this->doc_repository->save(
 			array(
 				'id'         => $doc_id,
@@ -1332,7 +1354,7 @@ class Document_Hub_Controller {
 			wp_send_json_error( array( 'message' => __( 'Failed to save document.', 'shahi-legalflowsuite' ) ) );
 		}
 
-		// Create version entry
+		// Create version entry .
 		$this->doc_repository->create_version(
 			$doc_id,
 			array(

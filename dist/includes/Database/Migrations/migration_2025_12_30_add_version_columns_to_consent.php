@@ -7,25 +7,26 @@
  *
  * @package     ShahiLegalFlowSuite
  * @subpackage  Database\Migrations
- * @version     3.1.1
  * @since       3.1.1
+ * @version     3.1.1
  */
+// phpcs:ignoreFile WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 namespace ShahiLegalFlowSuite\Database\Migrations;
 
-// Exit if accessed directly.
+// Exit if accessed directly...
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
 /**
- * Class Migration_2025_12_30_add_version_columns_to_consent
+ * Class Migration_2025_12_30_Add_Version_Columns_To_Consent
  *
  * Adds version tracking columns to consent records for audit trail compliance.
  *
  * @since 3.1.1
  */
-class Migration_2025_12_30_add_version_columns_to_consent {
+class Migration_2025_12_30_Add_Version_Columns_To_Consent {
 
 	/**
 	 * Run migration (add columns)
@@ -38,7 +39,8 @@ class Migration_2025_12_30_add_version_columns_to_consent {
 
 		$table_name = $wpdb->prefix . 'slos_consent';
 
-		// Check if table exists.
+		// Check if table exists...
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$table_exists = $wpdb->get_var(
 			$wpdb->prepare(
 				'SHOW TABLES LIKE %s',
@@ -50,10 +52,12 @@ class Migration_2025_12_30_add_version_columns_to_consent {
 			return false;
 		}
 
-		// Check if columns already exist.
-		$columns          = $wpdb->get_results( "SHOW COLUMNS FROM {$table_name}" );
+		// Check if columns already exist...
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$columns          = $wpdb->get_results( "SHOW COLUMNS FROM {$table_name}" ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		$existing_columns = array_map(
 			function ( $col ) {
+				// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 				return $col->Field;
 			},
 			$columns
@@ -61,9 +65,11 @@ class Migration_2025_12_30_add_version_columns_to_consent {
 
 		$errors = array();
 
-		// Add banner_version column if not exists.
+		// Add banner_version column if not exists...
 		if ( ! in_array( 'banner_version', $existing_columns, true ) ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
 			$result = $wpdb->query(
+				// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 				"ALTER TABLE {$table_name} ADD COLUMN banner_version VARCHAR(50) NULL AFTER metadata"
 			);
 			if ( false === $result ) {
@@ -71,20 +77,22 @@ class Migration_2025_12_30_add_version_columns_to_consent {
 			}
 		}
 
-		// Add policy_version column if not exists.
+		// Add policy_version column if not exists...
 		if ( ! in_array( 'policy_version', $existing_columns, true ) ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
 			$result = $wpdb->query(
-				"ALTER TABLE {$table_name} ADD COLUMN policy_version VARCHAR(50) NULL AFTER banner_version"
+				"ALTER TABLE {$table_name} ADD COLUMN policy_version VARCHAR(50) NULL AFTER banner_version" // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 			);
 			if ( false === $result ) {
 				$errors[] = 'policy_version';
 			}
 		}
 
-		// Return false if any errors occurred.
+		// Return false if any errors occurred...
 		if ( ! empty( $errors ) ) {
-			// Log errors for debugging.
-			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			// Log errors for debugging...
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 				error_log( 'Migration failed for columns: ' . implode( ', ', $errors ) );
 			}
 			return false;
@@ -104,7 +112,8 @@ class Migration_2025_12_30_add_version_columns_to_consent {
 
 		$table_name = $wpdb->prefix . 'slos_consent';
 
-		// Check if table exists.
+		// Check if table exists...
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$table_exists = $wpdb->get_var(
 			$wpdb->prepare(
 				'SHOW TABLES LIKE %s',
@@ -116,10 +125,12 @@ class Migration_2025_12_30_add_version_columns_to_consent {
 			return false;
 		}
 
-		// Check if columns exist before trying to drop them.
-		$columns          = $wpdb->get_results( "SHOW COLUMNS FROM {$table_name}" );
+		// Check if columns exist before trying to drop them...
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$columns          = $wpdb->get_results( "SHOW COLUMNS FROM {$table_name}" ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		$existing_columns = array_map(
 			function ( $col ) {
+				// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 				return $col->Field;
 			},
 			$columns
@@ -127,29 +138,32 @@ class Migration_2025_12_30_add_version_columns_to_consent {
 
 		$errors = array();
 
-		// Drop policy_version column if exists (drop in reverse order).
+		// Drop policy_version column if exists (drop in reverse order)...
 		if ( in_array( 'policy_version', $existing_columns, true ) ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
 			$result = $wpdb->query(
-				"ALTER TABLE {$table_name} DROP COLUMN policy_version"
+				"ALTER TABLE {$table_name} DROP COLUMN policy_version" // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 			);
 			if ( false === $result ) {
 				$errors[] = 'policy_version';
 			}
 		}
 
-		// Drop banner_version column if exists.
+		// Drop banner_version column if exists...
 		if ( in_array( 'banner_version', $existing_columns, true ) ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
 			$result = $wpdb->query(
-				"ALTER TABLE {$table_name} DROP COLUMN banner_version"
+				"ALTER TABLE {$table_name} DROP COLUMN banner_version" // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 			);
 			if ( false === $result ) {
 				$errors[] = 'banner_version';
 			}
 		}
 
-		// Return false if any errors occurred.
+		// Return false if any errors occurred...
 		if ( ! empty( $errors ) ) {
-			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 				error_log( 'Migration rollback failed for columns: ' . implode( ', ', $errors ) );
 			}
 			return false;

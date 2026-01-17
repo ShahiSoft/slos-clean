@@ -492,11 +492,9 @@ class Consent_Service extends Base_Service {
 		$values[] = $per_page;
 		$values[] = $offset;
 
-		if ( ! empty( $values ) ) {
-			$sql = $wpdb->prepare( $sql, $values );
-		}
+		$sql = $wpdb->prepare( $sql, ...$values );
 
-		return $wpdb->get_results( $sql );
+		return $wpdb->get_results( $sql, ARRAY_A );
 	}
 
 	/**
@@ -558,11 +556,9 @@ class Consent_Service extends Base_Service {
 
 		$where_sql = implode( ' AND ', $where );
 
-		$sql = "SELECT COUNT(*) FROM {$table} WHERE {$where_sql}";
+		$sql = "SELECT COUNT(*) FROM {$table}" . ( ! empty( $where_sql ) ? " WHERE {$where_sql}" : '' );
 
-		if ( ! empty( $values ) ) {
-			$sql = $wpdb->prepare( $sql, $values );
-		}
+		$sql = $wpdb->prepare( $sql, ...$values );
 
 		return (int) $wpdb->get_var( $sql );
 	}
@@ -1337,6 +1333,7 @@ class Consent_Service extends Base_Service {
 			// Format: 2024-W01 -> Week 1, 2024..
 			preg_match( '/(\d{4})-W(\d{2})/', $period, $matches );
 			if ( $matches ) {
+				/* translators: 1: week number, 2: year (e.g. 1, 2024) */
 				return sprintf( __( 'Week %1$d, %2$d', 'shahi-legalflowsuite' ), (int) $matches[2], (int) $matches[1] );
 			}
 		}

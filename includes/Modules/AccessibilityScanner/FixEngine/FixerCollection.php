@@ -58,7 +58,7 @@ final class FixerCollection implements \Countable, \IteratorAggregate {
 			);
 
 			throw new \InvalidArgumentException(
-				sprintf( 'Cannot register fixer with non-canonical ID: %s', $id )
+				sprintf( 'Cannot register fixer with non-canonical ID: %s', esc_html( $id ) )
 			);
 		}
 

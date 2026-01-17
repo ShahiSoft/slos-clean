@@ -41,37 +41,40 @@
 		 * Initialize the onboarding wizard
 		 */
 		init() {
-			console.log('SHAHI ONBOARDING JS: init() called');
+			console.log( 'SHAHI ONBOARDING JS: init() called' );
 			this.cacheElements();
-			console.log('SHAHI ONBOARDING JS: Elements cached:', {
-				overlay: this.$overlay.length,
-				modal: this.$modal.length,
-				steps: this.$steps.length,
-			});
+			console.log(
+				'SHAHI ONBOARDING JS: Elements cached:',
+				{
+					overlay: this.$overlay.length,
+					modal: this.$modal.length,
+					steps: this.$steps.length,
+				}
+			);
 
 			// Ensure only first step is active on init
-			this.$steps.removeClass('active');
-			$('.shahi-onboarding-step[data-step="1"]').addClass('active');
+			this.$steps.removeClass( 'active' );
+			$( '.shahi-onboarding-step[data-step="1"]' ).addClass( 'active' );
 
 			this.bindEvents();
 			this.updateProgress();
 			this.updateButtons();
-			console.log('SHAHI ONBOARDING JS: Initialization complete');
+			console.log( 'SHAHI ONBOARDING JS: Initialization complete' );
 		},
 
 		/**
 		 * Cache DOM elements
 		 */
 		cacheElements() {
-			this.$overlay = $('#shahi-onboarding-overlay');
-			this.$modal = $('.shahi-onboarding-modal');
-			this.$steps = $('.shahi-onboarding-step');
-			this.$progressFill = $('#shahi-progress-fill');
-			this.$currentStepText = $('#shahi-current-step');
-			this.$prevBtn = $('#shahi-prev-btn');
-			this.$nextBtn = $('#shahi-next-btn');
-			this.$finishBtn = $('#shahi-finish-btn');
-			this.$skipBtn = $('#shahi-onboarding-skip');
+			this.$overlay = $( '#shahi-onboarding-overlay' );
+			this.$modal = $( '.shahi-onboarding-modal' );
+			this.$steps = $( '.shahi-onboarding-step' );
+			this.$progressFill = $( '#shahi-progress-fill' );
+			this.$currentStepText = $( '#shahi-current-step' );
+			this.$prevBtn = $( '#shahi-prev-btn' );
+			this.$nextBtn = $( '#shahi-next-btn' );
+			this.$finishBtn = $( '#shahi-finish-btn' );
+			this.$skipBtn = $( '#shahi-onboarding-skip' );
 		},
 
 		/**
@@ -81,77 +84,95 @@
 			const self = this;
 
 			// Navigation buttons
-			this.$prevBtn.on('click', function () {
-				self.previousStep();
-			});
+			this.$prevBtn.on(
+				'click',
+				function () {
+					self.previousStep();
+				}
+			);
 
-			this.$nextBtn.on('click', function () {
-				self.nextStep();
-			});
+			this.$nextBtn.on(
+				'click',
+				function () {
+					self.nextStep();
+				}
+			);
 
-			this.$finishBtn.on('click', function () {
-				self.finish();
-			});
+			this.$finishBtn.on(
+				'click',
+				function () {
+					self.finish();
+				}
+			);
 
 			// Skip button
-			this.$skipBtn.on('click', function () {
-				self.skip();
-			});
+			this.$skipBtn.on(
+				'click',
+				function () {
+					self.skip();
+				}
+			);
 
 			// Purpose selection - auto-recommend modules
-			$('input[name="purpose"]').on('change', function () {
-				self.recommendModules($(this).val());
-			});
+			$( 'input[name="purpose"]' ).on(
+				'change',
+				function () {
+					self.recommendModules( $( this ).val() );
+				}
+			);
 
 			// Premium module card toggle functionality
-			$(document).on(
+			$( document ).on(
 				'change',
 				'.shahi-onboarding-module-toggle',
 				function () {
-					const $toggle = $(this);
+					const $toggle = $( this );
 					const $card = $toggle.closest(
 						'.shahi-onboarding-module-card'
 					);
 
-					if ($toggle.is(':checked')) {
-						$card.addClass('active');
+					if ($toggle.is( ':checked' )) {
+						$card.addClass( 'active' );
 					} else {
-						$card.removeClass('active');
+						$card.removeClass( 'active' );
 					}
 				}
 			);
 
 			// Card click to toggle (anywhere on card)
-			$(document).on(
+			$( document ).on(
 				'click',
 				'.shahi-onboarding-module-card',
 				function (e) {
 					// Don't toggle if clicking directly on the checkbox/label
 					if (
-						$(e.target).is('.shahi-onboarding-module-toggle') ||
-						$(e.target).closest('.shahi-toggle-switch-premium')
+						$( e.target ).is( '.shahi-onboarding-module-toggle' ) ||
+						$( e.target ).closest( '.shahi-toggle-switch-premium' )
 							.length
 					) {
 						return;
 					}
 
-					const $card = $(this);
+					const $card = $( this );
 					const $toggle = $card.find(
 						'.shahi-onboarding-module-toggle'
 					);
 
 					$toggle
-						.prop('checked', !$toggle.is(':checked'))
-						.trigger('change');
+						.prop( 'checked', ! $toggle.is( ':checked' ) )
+						.trigger( 'change' );
 				}
 			);
 
 			// ESC key to close
-			$(document).on('keyup', function (e) {
-				if (e.key === 'Escape' && self.$overlay.is(':visible')) {
-					self.skip();
+			$( document ).on(
+				'keyup',
+				function (e) {
+					if (e.key === 'Escape' && self.$overlay.is( ':visible' )) {
+						self.skip();
+					}
 				}
-			});
+			);
 		},
 
 		/**
@@ -160,7 +181,7 @@
 		previousStep() {
 			if (this.currentStep > 1) {
 				this.currentStep--;
-				this.showStep(this.currentStep);
+				this.showStep( this.currentStep );
 			}
 		},
 
@@ -169,13 +190,13 @@
 		 */
 		nextStep() {
 			// Validate current step
-			if (!this.validateStep(this.currentStep)) {
+			if ( ! this.validateStep( this.currentStep )) {
 				return;
 			}
 
 			if (this.currentStep < this.totalSteps) {
 				this.currentStep++;
-				this.showStep(this.currentStep);
+				this.showStep( this.currentStep );
 			}
 		},
 
@@ -184,18 +205,21 @@
 		 *
 		 * @param stepNumber
 		 */
-		showStep(stepNumber) {
+		showStep( stepNumber ) {
 			const self = this;
 
 			// Hide all steps
-			this.$steps.removeClass('active');
+			this.$steps.removeClass( 'active' );
 
 			// Show target step with animation
-			setTimeout(function () {
-				$(
-					'.shahi-onboarding-step[data-step="' + stepNumber + '"]'
-				).addClass('active');
-			}, 50);
+			setTimeout(
+				function () {
+					$(
+						'.shahi-onboarding-step[data-step="' + stepNumber + '"]'
+					).addClass( 'active' );
+				},
+				50
+			);
 
 			// Update progress
 			this.updateProgress();
@@ -204,9 +228,9 @@
 			this.updateButtons();
 
 			// Trigger confetti on final step
-			if (stepNumber === this.totalSteps) {
-				this.triggerConfetti();
-			}
+		if (stepNumber === this.totalSteps) {
+			this.triggerConfetti();
+		}
 		},
 
 		/**
@@ -215,8 +239,8 @@
 		updateProgress() {
 			const percentage = (this.currentStep / this.totalSteps) * 100;
 
-			this.$progressFill.css('width', percentage + '%');
-			this.$currentStepText.text(this.currentStep);
+			this.$progressFill.css( 'width', percentage + '%' );
+			this.$currentStepText.text( this.currentStep );
 		},
 
 		/**
@@ -225,9 +249,9 @@
 		updateButtons() {
 			// Previous button
 			if (this.currentStep === 1) {
-				this.$prevBtn.prop('disabled', true);
+				this.$prevBtn.prop( 'disabled', true );
 			} else {
-				this.$prevBtn.prop('disabled', false);
+				this.$prevBtn.prop( 'disabled', false );
 			}
 
 			// Next/Finish buttons
@@ -245,12 +269,12 @@
 		 *
 		 * @param stepNumber
 		 */
-		validateStep(stepNumber) {
+		validateStep( stepNumber ) {
 			let isValid = true;
 
 			switch (stepNumber) {
 				case 2: // Purpose selection
-					if ($('input[name="purpose"]:checked').length === 0) {
+					if ($( 'input[name="purpose"]:checked' ).length === 0) {
 						this.showNotice(
 							'Please select your website purpose.',
 							'warning'
@@ -260,7 +284,7 @@
 					break;
 
 				case 3: // Module selection
-					if ($('input[name="modules[]"]:checked').length === 0) {
+					if ($( 'input[name="modules[]"]:checked' ).length === 0) {
 						this.showNotice(
 							'Please select at least one module.',
 							'warning'
@@ -278,23 +302,25 @@
 		 *
 		 * @param purpose
 		 */
-		recommendModules(purpose) {
+		recommendModules( purpose ) {
 			const recommended = this.moduleRecommendations[purpose] || [];
 
 			// Uncheck all modules first and remove active class from cards
-			$('input[name="modules[]"]').prop('checked', false);
-			$('.shahi-onboarding-module-card').removeClass('active');
+			$( 'input[name="modules[]"]' ).prop( 'checked', false );
+			$( '.shahi-onboarding-module-card' ).removeClass( 'active' );
 
 			// Check recommended modules and add active class to their cards
-			recommended.forEach(function (moduleKey) {
-				const $checkbox = $(
-					'input[name="modules[]"][value="' + moduleKey + '"]'
-				);
-				$checkbox.prop('checked', true);
-				$checkbox
-					.closest('.shahi-onboarding-module-card')
-					.addClass('active');
-			});
+			recommended.forEach(
+				function (moduleKey) {
+					const $checkbox = $(
+						'input[name="modules[]"][value="' + moduleKey + '"]'
+					);
+					$checkbox.prop( 'checked', true );
+					$checkbox
+					.closest( '.shahi-onboarding-module-card' )
+					.addClass( 'active' );
+				}
+			);
 		},
 
 		/**
@@ -307,73 +333,80 @@
 			const data = {
 				action: 'shahi_save_onboarding',
 				nonce: shahiOnboardingData.nonce,
-				purpose: $('input[name="purpose"]:checked').val(),
-				modules: $('input[name="modules[]"]:checked')
-					.map(function () {
-						return $(this).val();
-					})
+				purpose: $( 'input[name="purpose"]:checked' ).val(),
+				modules: $( 'input[name="modules[]"]:checked' )
+					.map(
+						function () {
+							return $( this ).val();
+						}
+					)
 					.get(),
-				settings: {
-					enable_analytics: $(
-						'input[name="settings[enable_analytics]"]'
-					).is(':checked')
-						? 1
-						: 0,
-					enable_notifications: $(
-						'input[name="settings[enable_notifications]"]'
-					).is(':checked')
-						? 1
-						: 0,
+			settings: {
+				enable_analytics: $(
+					'input[name="settings[enable_analytics]"]'
+				).is( ':checked' )
+					? 1
+					: 0,
+				enable_notifications: $(
+					'input[name="settings[enable_notifications]"]'
+				).is( ':checked' )
+					? 1
+					: 0,
 				},
 			};
 
 			// Show loading state
 			this.$finishBtn
-				.prop('disabled', true)
+				.prop( 'disabled', true )
 				.html(
 					'<span class="dashicons dashicons-update spin-animation"></span> Saving...'
 				);
 
 			// Send AJAX request
-			$.ajax({
-				url: shahiOnboardingData.ajaxUrl,
-				type: 'POST',
-				data,
-				success(response) {
-					if (response.success) {
-						self.showNotice(
-							'Setup completed successfully!',
-							'success'
-						);
+			$.ajax(
+				{
+					url: shahiOnboardingData.ajaxUrl,
+					type: 'POST',
+					data,
+					success( response ) {
+						if (response.success) {
+							self.showNotice(
+								'Setup completed successfully!',
+								'success'
+							);
 
-						// Close modal after delay
-						setTimeout(function () {
-							self.closeModal();
-						}, 2000);
-					} else {
-						self.showNotice(
-							response.data.message || 'Failed to save settings.',
-							'error'
-						);
-						self.$finishBtn
-							.prop('disabled', false)
+							// Close modal after delay
+							setTimeout(
+								function () {
+									self.closeModal();
+								},
+								2000
+							);
+						} else {
+							self.showNotice(
+								response.data.message || 'Failed to save settings.',
+								'error'
+							);
+							self.$finishBtn
+							.prop( 'disabled', false )
 							.html(
 								'Get Started <span class="dashicons dashicons-arrow-right-alt2"></span>'
 							);
-					}
-				},
-				error() {
-					self.showNotice(
-						'An error occurred. Please try again.',
-						'error'
-					);
+						}
+					},
+					error() {
+						self.showNotice(
+							'An error occurred. Please try again.',
+							'error'
+						);
 					self.$finishBtn
-						.prop('disabled', false)
+						.prop( 'disabled', false )
 						.html(
 							'Get Started <span class="dashicons dashicons-arrow-right-alt2"></span>'
 						);
-				},
-			});
+					},
+				}
+			);
 		},
 
 		/**
@@ -383,7 +416,7 @@
 			const self = this;
 
 			if (
-				!confirm(
+				! confirm(
 					'Are you sure you want to skip the onboarding wizard? You can run it again from Settings.'
 				)
 			) {
@@ -391,37 +424,42 @@
 			}
 
 			// Send skip request
-			$.ajax({
-				url: shahiOnboardingData.ajaxUrl,
-				type: 'POST',
-				data: {
-					action: 'shahi_skip_onboarding',
-					nonce: shahiOnboardingData.nonce,
-				},
-				success(response) {
-					if (response.success) {
-						self.closeModal();
-					}
-				},
-			});
+			$.ajax(
+				{
+					url: shahiOnboardingData.ajaxUrl,
+					type: 'POST',
+					data: {
+						action: 'shahi_skip_onboarding',
+						nonce: shahiOnboardingData.nonce,
+					},
+					success( response ) {
+						if (response.success) {
+							self.closeModal();
+						}
+					},
+				}
+			);
 		},
 
 		/**
 		 * Close modal
 		 */
 		closeModal() {
-			this.$overlay.fadeOut(300, function () {
-				$(this).remove();
-			});
+			this.$overlay.fadeOut(
+				300,
+				function () {
+					$( this ).remove();
+				}
+			);
 		},
 
 		/**
 		 * Trigger confetti animation
 		 */
 		triggerConfetti() {
-			const $confetti = $('#shahi-confetti');
+			const $confetti = $( '#shahi-confetti' );
 
-			if ($confetti.find('.confetti-piece').length > 0) {
+			if ($confetti.find( '.confetti-piece' ).length > 0) {
 				return; // Already triggered
 			}
 
@@ -436,15 +474,17 @@
 			];
 
 			for (let i = 0; i < 50; i++) {
-				const $piece = $('<div class="confetti-piece"></div>');
-				$piece.css({
-					left: Math.random() * 100 + '%',
-					background:
-						colors[Math.floor(Math.random() * colors.length)],
-					animationDelay: Math.random() * 2 + 's',
-					animationDuration: Math.random() * 2 + 2 + 's',
-				});
-				$confetti.append($piece);
+				const $piece = $( '<div class="confetti-piece"></div>' );
+				$piece.css(
+					{
+						left: Math.random() * 100 + '%',
+						background:
+						colors[Math.floor( Math.random() * colors.length )],
+						animationDelay: Math.random() * 2 + 's',
+						animationDuration: Math.random() * 2 + 2 + 's',
+					}
+				);
+				$confetti.append( $piece );
 			}
 		},
 
@@ -454,9 +494,9 @@
 		 * @param message
 		 * @param type
 		 */
-		showNotice(message, type) {
+		showNotice( message, type ) {
 			// Remove existing notices
-			$('.shahi-onboarding-notice').remove();
+			$( '.shahi-onboarding-notice' ).remove();
 
 			// Create notice element
 			const typeClass =
@@ -475,38 +515,46 @@
 			);
 
 			// Add to modal
-			this.$modal.prepend($notice);
+			this.$modal.prepend( $notice );
 
 			// Auto-remove after 5 seconds
-			setTimeout(function () {
-				$notice.fadeOut(300, function () {
-					$(this).remove();
-				});
-			}, 5000);
+			setTimeout(
+				function () {
+					$notice.fadeOut(
+						300,
+						function () {
+							$( this ).remove();
+						}
+					);
+				},
+				5000
+			);
 		},
 	};
 
 	/**
 	 * Initialize when document is ready
 	 */
-	$(document).ready(function () {
-		console.log('SHAHI ONBOARDING JS: jQuery document.ready fired');
-		console.log(
-			'SHAHI ONBOARDING JS: Looking for #shahi-onboarding-overlay'
-		);
-		// Check if onboarding overlay exists
-		const $overlay = $('#shahi-onboarding-overlay');
-		console.log('SHAHI ONBOARDING JS: Overlay found:', $overlay.length > 0);
-		if ($overlay.length) {
-			console.log('SHAHI ONBOARDING JS: Calling ShahiOnboarding.init()');
-			ShahiOnboarding.init();
-		} else {
+	$( document ).ready(
+		function () {
+			console.log( 'SHAHI ONBOARDING JS: jQuery document.ready fired' );
 			console.log(
-				'SHAHI ONBOARDING JS: No overlay found - onboarding not displayed'
+				'SHAHI ONBOARDING JS: Looking for #shahi-onboarding-overlay'
 			);
+			// Check if onboarding overlay exists
+			const $overlay = $( '#shahi-onboarding-overlay' );
+			console.log( 'SHAHI ONBOARDING JS: Overlay found:', $overlay.length > 0 );
+			if ($overlay.length) {
+				console.log( 'SHAHI ONBOARDING JS: Calling ShahiOnboarding.init()' );
+				ShahiOnboarding.init();
+			} else {
+				console.log(
+					'SHAHI ONBOARDING JS: No overlay found - onboarding not displayed'
+				);
+			}
 		}
-	});
-})(jQuery);
+	);
+})( jQuery );
 
 /**
  * CSS for inline notices and animations
@@ -567,6 +615,6 @@
 	`;
 
 	if (document.head) {
-		document.head.insertAdjacentHTML('beforeend', styles);
+		document.head.insertAdjacentHTML( 'beforeend', styles );
 	}
 })();

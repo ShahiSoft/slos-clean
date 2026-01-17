@@ -42,8 +42,8 @@ class ExternalLinkCheck extends AbstractCheck {
 			$link_host = parse_url( $href, PHP_URL_HOST );
 
 			if ( $link_host && $link_host !== $host ) {
-				// It's external. Check if it has indication.
-				// Heuristic: check for "external" class, or aria-label containing "external", or icon
+				// It's external. Check if it has indication...
+				// Heuristic: check for "external" class, or aria-label containing "external", or icon..
 				$class = $link->getAttribute( 'class' );
 				$aria  = $link->getAttribute( 'aria-label' );
 				$text  = $link->textContent;

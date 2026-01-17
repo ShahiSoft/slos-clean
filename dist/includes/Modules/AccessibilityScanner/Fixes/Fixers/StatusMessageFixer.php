@@ -91,7 +91,7 @@ class StatusMessageFixer extends BaseFixer {
 		$xpath = new \DOMXPath( $dom );
 		$fixed = 0;
 
-		// Find potential status elements by class.
+		// Find potential status elements by class...
 		$status_elements = $this->find_status_elements( $xpath );
 		foreach ( $status_elements as $element ) {
 			if ( $this->fix_status_element( $element ) ) {
@@ -99,19 +99,19 @@ class StatusMessageFixer extends BaseFixer {
 			}
 		}
 
-		// Fix form validation messages.
+		// Fix form validation messages...
 		$fixed += $this->fix_form_messages( $xpath );
 
-		// Fix loading indicators.
+		// Fix loading indicators...
 		$fixed += $this->fix_loading_indicators( $dom, $xpath );
 
-		// Fix search result counters.
+		// Fix search result counters...
 		$fixed += $this->fix_result_counters( $xpath );
 
-		// Fix cart/checkout messages (WooCommerce patterns).
+		// Fix cart/checkout messages (WooCommerce patterns)...
 		$fixed += $this->fix_cart_messages( $xpath );
 
-		// Add screen reader announcer region if status elements found.
+		// Add screen reader announcer region if status elements found...
 		if ( $fixed > 0 ) {
 			$this->ensure_live_region_exists( $dom );
 		}
@@ -131,7 +131,7 @@ class StatusMessageFixer extends BaseFixer {
 	private function find_status_elements( $xpath ) {
 		$elements = array();
 
-		// Build class selector from known status classes.
+		// Build class selector from known status classes...
 		$class_conditions = array();
 		foreach ( self::STATUS_CLASSES as $class ) {
 			$class_conditions[] = "contains(@class, '{$class}')";
@@ -157,7 +157,7 @@ class StatusMessageFixer extends BaseFixer {
 		$class = strtolower( $element->getAttribute( 'class' ) );
 		$text  = strtolower( $element->textContent );
 
-		// Determine type based on class/content.
+		// Determine type based on class/content...
 		$type = $this->determine_status_type( $class, $text );
 
 		if ( ! $type ) {
@@ -205,7 +205,7 @@ class StatusMessageFixer extends BaseFixer {
 			}
 		}
 
-		// Check for common Bootstrap/UI framework classes.
+		// Check for common Bootstrap/UI framework classes...
 		if ( preg_match( '/\b(alert|notice|message)-(success|error|warning|info|danger|primary|secondary)\b/', $class, $m ) ) {
 			if ( 'danger' === $m[2] ) {
 				return 'error';
@@ -228,7 +228,7 @@ class StatusMessageFixer extends BaseFixer {
 	private function fix_form_messages( $xpath ) {
 		$fixed = 0;
 
-		// Find form validation messages.
+		// Find form validation messages...
 		$messages = $xpath->query(
 			'//*[contains(@class, "validation") or contains(@class, "form-error") or ' .
 			'contains(@class, "field-error") or contains(@class, "help-block") or ' .
@@ -255,7 +255,7 @@ class StatusMessageFixer extends BaseFixer {
 	private function fix_loading_indicators( $dom, $xpath ) {
 		$fixed = 0;
 
-		// Find loading spinners/indicators.
+		// Find loading spinners/indicators...
 		$loaders = $xpath->query(
 			'//*[contains(@class, "loading") or contains(@class, "spinner") or ' .
 			'contains(@class, "loader") or contains(@class, "progress") or ' .
@@ -267,7 +267,7 @@ class StatusMessageFixer extends BaseFixer {
 			$loader->setAttribute( 'role', 'status' );
 			$loader->setAttribute( 'aria-live', 'polite' );
 
-			// If no text content, add screen reader text.
+			// If no text content, add screen reader text...
 			if ( '' === trim( $loader->textContent ) ) {
 				$sr_text = $dom->createElement( 'span' );
 				$sr_text->setAttribute( 'class', 'screen-reader-text slos-sr-only' );
@@ -290,7 +290,7 @@ class StatusMessageFixer extends BaseFixer {
 	private function fix_result_counters( $xpath ) {
 		$fixed = 0;
 
-		// Find search result counters.
+		// Find search result counters...
 		$counters = $xpath->query(
 			'//*[(contains(@class, "result") and contains(@class, "count")) or ' .
 			'contains(@class, "search-results-count") or contains(@class, "found-posts")]' .
@@ -316,7 +316,7 @@ class StatusMessageFixer extends BaseFixer {
 	private function fix_cart_messages( $xpath ) {
 		$fixed = 0;
 
-		// Find WooCommerce and cart-related messages.
+		// Find WooCommerce and cart-related messages...
 		$cart_messages = $xpath->query(
 			'//*[contains(@class, "cart-message") or contains(@class, "checkout-message") or ' .
 			'contains(@class, "woocommerce-message") or contains(@class, "woocommerce-error") or ' .
@@ -328,7 +328,7 @@ class StatusMessageFixer extends BaseFixer {
 		foreach ( $cart_messages as $msg ) {
 			$class = strtolower( $msg->getAttribute( 'class' ) );
 
-			// Determine if error or success.
+			// Determine if error or success...
 			if ( stripos( $class, 'error' ) !== false ) {
 				$msg->setAttribute( 'role', 'alert' );
 				$msg->setAttribute( 'aria-live', 'assertive' );
@@ -357,7 +357,7 @@ class StatusMessageFixer extends BaseFixer {
 			return;
 		}
 
-		// Create announcer region for JavaScript to use.
+		// Create announcer region for JavaScript to use...
 		$announcer = $dom->createElement( 'div' );
 		$announcer->setAttribute( 'data-slos-announcer', 'true' );
 		$announcer->setAttribute( 'role', 'status' );

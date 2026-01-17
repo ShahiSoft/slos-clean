@@ -748,20 +748,18 @@ class DSR_Service extends Base_Service {
 		$placeholders  = implode( ', ', array_fill( 0, count( $open_statuses ), '%s' ) );
 		$open_args     = array_merge( array( $table ), $open_statuses );
 
+		$query      = sprintf( 'SELECT COUNT(*) FROM %%s WHERE status IN (%s)', $placeholders );
 		$open_count = $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT COUNT(*) FROM %i WHERE status IN ($placeholders)",
-				...$open_args
-			)
+			$wpdb->prepare( $query, ...$open_args )
 		);
 
 		// Total requests..
-		$total_count = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table ) );
+		$total_count = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %s', $table ) );
 
 		// Completed requests..
 		$completed_count = $wpdb->get_var(
 			$wpdb->prepare(
-				'SELECT COUNT(*) FROM %i WHERE status = %s',
+				'SELECT COUNT(*) FROM %s WHERE status = %s',
 				$table,
 				'completed'
 			)
@@ -771,7 +769,7 @@ class DSR_Service extends Base_Service {
 		// Note: Table uses completed_date and due_date, not completed_at and sla_deadline..
 		$sla_compliant = $wpdb->get_var(
 			$wpdb->prepare(
-				'SELECT COUNT(*) FROM %i WHERE status = %s AND completed_date IS NOT NULL AND completed_date <= due_date',
+				'SELECT COUNT(*) FROM %s WHERE status = %s AND completed_date IS NOT NULL AND completed_date <= due_date',
 				$table,
 				'completed'
 			)
@@ -783,7 +781,7 @@ class DSR_Service extends Base_Service {
 
 		// Queue breakdown by status..
 		$queue_breakdown = $wpdb->get_results(
-			$wpdb->prepare( 'SELECT status, COUNT(*) as count FROM %i GROUP BY status', $table ),
+			$wpdb->prepare( 'SELECT status, COUNT(*) as count FROM %s GROUP BY status', $table ),
 			ARRAY_A
 		);
 
@@ -796,7 +794,7 @@ class DSR_Service extends Base_Service {
 		// Note: Table uses request_date, not submitted_at..
 		$by_type = $wpdb->get_results(
 			$wpdb->prepare(
-				'SELECT request_type, COUNT(*) as count FROM %i WHERE request_date >= %s GROUP BY request_type',
+				'SELECT request_type, COUNT(*) as count FROM %s WHERE request_date >= %s GROUP BY request_type',
 				$table,
 				gmdate( 'Y-m-d H:i:s', strtotime( '-30 days' ) )
 			),
@@ -812,7 +810,7 @@ class DSR_Service extends Base_Service {
 		// Note: Table uses due_date, not sla_deadline..
 		$overdue = $wpdb->get_var(
 			$wpdb->prepare(
-				'SELECT COUNT(*) FROM %i WHERE status NOT IN (%s, %s) AND due_date < %s',
+				'SELECT COUNT(*) FROM %s WHERE status NOT IN (%s, %s) AND due_date < %s',
 				$table,
 				'completed',
 				'rejected',

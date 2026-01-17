@@ -35,7 +35,7 @@ class LogoImageCheck extends AbstractCheck {
 			$id    = strtolower( $img->getAttribute( 'id' ) );
 			$alt   = trim( $img->getAttribute( 'alt' ) );
 
-			// Heuristic: Check if it's a logo
+			// Heuristic: Check if it's a logo..
 			if ( strpos( $src, 'logo' ) !== false || strpos( $class, 'logo' ) !== false || strpos( $id, 'logo' ) !== false ) {
 				if ( empty( $alt ) ) {
 					$issues[] = array(

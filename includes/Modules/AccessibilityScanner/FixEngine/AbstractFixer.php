@@ -56,7 +56,7 @@ abstract class AbstractFixer implements FixerInterface {
 			);
 
 			throw new \InvalidArgumentException(
-				sprintf( 'Fixer ID "%s" is not in the canonical registry. Check CanonicalIds class.', $id )
+				sprintf( 'Fixer ID "%s" is not in the canonical registry. Check CanonicalIds class.', esc_html( $id ) )
 			);
 		}
 	}
@@ -219,7 +219,7 @@ abstract class AbstractFixer implements FixerInterface {
 	 * @return string
 	 */
 	protected function generate_alt_from_src( string $src ): string {
-		$filename = basename( parse_url( $src, PHP_URL_PATH ) ?? '' );
+		$filename = basename( wp_parse_url( $src, PHP_URL_PATH ) ?? '' );
 		$name     = pathinfo( $filename, PATHINFO_FILENAME );
 		$name     = preg_replace( '/[-_]+/', ' ', $name );
 		$name     = preg_replace( '/\d+x\d+/', '', $name ); // Remove dimensions

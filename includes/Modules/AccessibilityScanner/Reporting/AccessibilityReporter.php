@@ -1,11 +1,51 @@
 <?php
+/**
+ * Accessibility report exports and email delivery.
+ *
+ * @package ShahiLegalFlowSuite\Modules\AccessibilityScanner\Reporting
+ */
+
 namespace ShahiLegalFlowSuite\Modules\AccessibilityScanner\Reporting;
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use WP_Query;
+use function __;
+use function admin_url;
+use function check_ajax_referer;
+use function current_time;
+use function current_user_can;
+use function date_i18n;
+use function esc_html;
+use function esc_html__;
+use function esc_url;
+use function get_bloginfo;
+use function get_option;
+use function get_permalink;
+use function get_post_meta;
+use function get_site_url;
+use function gmdate;
+use function is_email;
+use function wp_mail;
+use function wp_send_json_error;
+use function wp_send_json_success;
+use function wp_unslash;
+use function sanitize_text_field;
+use function wp_json_encode;
 
+// Prevent direct access.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * Handles export and reporting for accessibility scans.
+ */
 class AccessibilityReporter {
 
+	/**
+	 * Hook registrations.
+	 */
 	public function __construct() {
 		add_action( 'wp_ajax_slos_export_report', array( $this, 'ajax_export_report' ) );
 		add_action( 'wp_ajax_slos_export_pdf', array( $this, 'ajax_export_pdf' ) );
@@ -14,14 +54,19 @@ class AccessibilityReporter {
 		add_action( 'wp_ajax_slos_send_test_report', array( $this, 'ajax_send_test_report' ) );
 	}
 
+	/**
+	 * AJAX: Export report dispatcher.
+	 *
+	 * @return void.
+	 */
 	public function ajax_export_report() {
 		check_ajax_referer( 'slos_scanner_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( 'Unauthorized' );
+			wp_send_json_error( __( 'Unauthorized access.', 'shahi-legalflowsuite' ) );
 		}
 
-		$format  = isset( $_POST['format'] ) ? sanitize_text_field( $_POST['format'] ) : 'csv';
+		$format  = isset( $_POST['format'] ) ? sanitize_text_field( wp_unslash( $_POST['format'] ) ) : 'csv';
 		$results = $this->get_all_scan_results();
 
 		switch ( $format ) {
@@ -35,14 +80,15 @@ class AccessibilityReporter {
 				$this->export_html( $results );
 				break;
 			default:
-				wp_send_json_error( 'Invalid format' );
+				wp_send_json_error( __( 'Invalid format.', 'shahi-legalflowsuite' ) );
 		}
 	}
 
 	/**
-	 * AJAX: Export PDF report
+	 * AJAX: Export PDF report.
 	 *
 	 * @since 3.1.1
+	 * @return void.
 	 */
 	public function ajax_export_pdf() {
 		check_ajax_referer( 'slos_scanner_nonce', 'nonce' );
@@ -51,7 +97,7 @@ class AccessibilityReporter {
 			wp_send_json_error( array( 'message' => __( 'Unauthorized access.', 'shahi-legalflowsuite' ) ) );
 		}
 
-		$template = isset( $_POST['template'] ) ? sanitize_text_field( $_POST['template'] ) : 'executive';
+		$template = isset( $_POST['template'] ) ? sanitize_text_field( wp_unslash( $_POST['template'] ) ) : 'executive';
 
 		try {
 			$this->export_pdf( $template );
@@ -61,9 +107,10 @@ class AccessibilityReporter {
 	}
 
 	/**
-	 * AJAX: Export enhanced CSV
+	 * AJAX: Export enhanced CSV.
 	 *
 	 * @since 3.1.1
+	 * @return void.
 	 */
 	public function ajax_export_csv() {
 		check_ajax_referer( 'slos_scanner_nonce', 'nonce' );
@@ -77,9 +124,10 @@ class AccessibilityReporter {
 	}
 
 	/**
-	 * AJAX: Export JSON
+	 * AJAX: Export JSON.
 	 *
 	 * @since 3.1.1
+	 * @return void.
 	 */
 	public function ajax_export_json() {
 		check_ajax_referer( 'slos_scanner_nonce', 'nonce' );
@@ -93,9 +141,10 @@ class AccessibilityReporter {
 	}
 
 	/**
-	 * AJAX: Send test report email
+	 * AJAX: Send test report email.
 	 *
 	 * @since 3.1.1
+	 * @return void.
 	 */
 	public function ajax_send_test_report() {
 		check_ajax_referer( 'slos_scanner_nonce', 'nonce' );
@@ -105,7 +154,7 @@ class AccessibilityReporter {
 		}
 
 		$email    = isset( $_POST['email'] ) ? sanitize_text_field( wp_unslash( $_POST['email'] ) ) : '';
-		$template = isset( $_POST['template'] ) ? sanitize_text_field( $_POST['template'] ) : 'executive';
+		$template = isset( $_POST['template'] ) ? sanitize_text_field( wp_unslash( $_POST['template'] ) ) : 'executive';
 		if ( empty( $email ) || ! is_email( $email ) ) {
 			wp_send_json_error( array( 'message' => __( 'Please provide a valid email address.', 'shahi-legalflowsuite' ) ) );
 		}
@@ -119,8 +168,14 @@ class AccessibilityReporter {
 		}
 	}
 
+	/**
+	 * Retrieve all posts/pages with accessibility scan results.
+	 *
+	 * @return array Scan results with metadata.
+	 */
 	private function get_all_scan_results() {
-		// Fetch all posts with scan results
+		// Fetch all posts with scan results.
+		// phpcs:disable WordPress.DB.SlowDBQuery
 		$args = array(
 			'post_type'      => array( 'post', 'page' ),
 			'posts_per_page' => -1,
@@ -131,8 +186,9 @@ class AccessibilityReporter {
 				),
 			),
 		);
+		// phpcs:enable WordPress.DB.SlowDBQuery
 
-		$query = new \WP_Query( $args );
+		$query = new WP_Query( $args );
 		$data  = array();
 
 		foreach ( $query->posts as $post ) {
@@ -151,14 +207,20 @@ class AccessibilityReporter {
 		return $data;
 	}
 
+	/**
+	 * Export scan results to CSV.
+	 *
+	 * @param array $data Results data.
+	 * @return void
+	 */
 	private function export_csv( $data ) {
-		$filename = 'accessibility-report-' . date( 'Y-m-d' ) . '.csv';
+		$filename = 'accessibility-report-' . gmdate( 'Y-m-d' ) . '.csv';
 		header( 'Content-Type: text/csv' );
 		header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
 
 		$output = fopen( 'php://output', 'w' );
 
-		// Enhanced CSV headers
+		// Enhanced CSV headers.
 		fputcsv( $output, array( 'Post ID', 'Title', 'URL', 'Post Type', 'Scan Date', 'Overall Score', 'Issue Type', 'Severity', 'WCAG Criterion', 'Description', 'Message', 'Element', 'Line Number', 'Fixable' ) );
 
 		foreach ( $data as $row ) {
@@ -195,12 +257,19 @@ class AccessibilityReporter {
 			}
 		}
 
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Required for CSV output streaming
 		fclose( $output );
 		exit;
 	}
 
+	/**
+	 * Export scan results to JSON.
+	 *
+	 * @param array $data Results data.
+	 * @return void
+	 */
 	private function export_json( $data ) {
-		$filename = 'accessibility-report-' . date( 'Y-m-d' ) . '.json';
+		$filename = 'accessibility-report-' . gmdate( 'Y-m-d' ) . '.json';
 		header( 'Content-Type: application/json' );
 		header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
 
@@ -213,19 +282,19 @@ class AccessibilityReporter {
 			'pages'          => $data,
 		);
 
-		echo json_encode( $export_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES );
+		echo wp_json_encode( $export_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES );
 		exit;
 	}
 
 	/**
 	 * Generate PDF report
 	 *
-	 * @param string $template Template type (executive|technical)
-	 * @throws \Exception If PDF generation fails
+	 * @param string $template Template type (executive|technical).
+	 * @throws \Exception If PDF generation fails.
 	 */
 	private function export_pdf( $template = 'executive' ) {
 		if ( ! class_exists( 'Dompdf\Dompdf' ) ) {
-			throw new \Exception( __( 'PDF library not available.', 'shahi-legalflowsuite' ) );
+			throw new \Exception( esc_html__( 'PDF library not available.', 'shahi-legalflowsuite' ) );
 		}
 
 		$data  = $this->get_all_scan_results();
@@ -245,7 +314,7 @@ class AccessibilityReporter {
 		$dompdf->setPaper( 'A4', 'portrait' );
 		$dompdf->render();
 
-		$filename = 'accessibility-report-' . $template . '-' . date( 'Y-m-d' ) . '.pdf';
+		$filename = 'accessibility-report-' . $template . '-' . gmdate( 'Y-m-d' ) . '.pdf';
 		$dompdf->stream( $filename, array( 'Attachment' => true ) );
 		exit;
 	}
@@ -253,14 +322,16 @@ class AccessibilityReporter {
 	/**
 	 * Generate Executive Summary HTML for PDF
 	 *
-	 * @param array $data Scan results data
-	 * @param array $stats Statistics
-	 * @return string HTML content
+	 * @param array $data  Scan results data.
+	 * @param array $stats Statistics.
+	 * @return string HTML content.
 	 */
 	private function generate_executive_summary_html( $data, $stats ) {
-		$site_name = get_bloginfo( 'name' );
-		$site_url  = get_site_url();
-		$date      = date_i18n( get_option( 'date_format' ) );
+		$site_name     = get_bloginfo( 'name' );
+		$site_url      = get_site_url();
+		$date          = date_i18n( get_option( 'date_format' ) );
+		$average_score = isset( $stats['average_score'] ) ? intval( $stats['average_score'] ) : 0;
+		$total_issues  = isset( $stats['total_issues'] ) ? intval( $stats['total_issues'] ) : 0;
 
 		$average_score  = isset( $stats['average_score'] ) ? intval( $stats['average_score'] ) : 0;
 		$total_issues   = isset( $stats['total_issues'] ) ? intval( $stats['total_issues'] ) : 0;
@@ -352,7 +423,7 @@ class AccessibilityReporter {
 	<p>This report evaluates your website against Web Content Accessibility Guidelines (WCAG) 2.2 Level AA standards, which are required by many accessibility laws including the ADA (Americans with Disabilities Act) and Section 508.</p>
 
 	<div class="page-footer">
-		<p>' . esc_html( $site_name ) . ' - Accessibility Report &copy; ' . date( 'Y' ) . '</p>
+		<p>' . esc_html( $site_name ) . ' - Accessibility Report &copy; ' . gmdate( 'Y' ) . '</p>
 	</div>
 </body>
 </html>';
@@ -363,14 +434,16 @@ class AccessibilityReporter {
 	/**
 	 * Generate Technical Details HTML for PDF
 	 *
-	 * @param array $data Scan results data
-	 * @param array $stats Statistics
-	 * @return string HTML content
+	 * @param array $data  Scan results data.
+	 * @param array $stats Statistics.
+	 * @return string HTML content.
 	 */
 	private function generate_technical_details_html( $data, $stats ) {
-		$site_name = get_bloginfo( 'name' );
-		$site_url  = get_site_url();
-		$date      = date_i18n( get_option( 'date_format' ) );
+		$site_name     = get_bloginfo( 'name' );
+		$site_url      = get_site_url();
+		$date          = date_i18n( get_option( 'date_format' ) );
+		$average_score = isset( $stats['average_score'] ) ? intval( $stats['average_score'] ) : 0;
+		$total_issues  = isset( $stats['total_issues'] ) ? intval( $stats['total_issues'] ) : 0;
 
 		$html = '<!DOCTYPE html>
 <html>
@@ -396,7 +469,7 @@ class AccessibilityReporter {
 </head>
 <body>
 	<h1>Website Accessibility Technical Report</h1>
-	<div class="meta">' . esc_html( $site_name ) . ' | ' . esc_html( $site_url ) . ' | Generated: ' . esc_html( $date ) . '</div>';
+	<div class="meta">' . esc_html( $site_name ) . ' | ' . esc_html( $site_url ) . ' | Generated: ' . esc_html( $date ) . ' | Avg Score: ' . esc_html( $average_score ) . '% | Issues: ' . esc_html( $total_issues ) . '</div>';
 
 		foreach ( $data as $page ) {
 			$html .= '<div class="page-break">
@@ -448,9 +521,9 @@ class AccessibilityReporter {
 	/**
 	 * Send email report
 	 *
-	 * @param string $email Recipient email
-	 * @param string $template Report template
-	 * @return bool Success status
+	 * @param string $email    Recipient email.
+	 * @param string $template Report template.
+	 * @return bool Success status.
 	 */
 	public function send_email_report( $email, $template = 'executive' ) {
 		$stats          = get_option( 'slos_scan_statistics', array() );
@@ -481,9 +554,9 @@ class AccessibilityReporter {
 	/**
 	 * Generate email HTML template
 	 *
-	 * @param string $template Template type
-	 * @param array  $data Email data
-	 * @return string HTML content
+	 * @param string $template Template type.
+	 * @param array  $data     Email data.
+	 * @return string HTML content.
 	 */
 	private function generate_email_template( $template, $data ) {
 		$site_name = get_bloginfo( 'name' );
@@ -548,8 +621,8 @@ class AccessibilityReporter {
 			<a href="' . esc_url( $admin_url ) . '" class="button">View Full Report</a>
 		</div>
 		<div class="footer">
-			<p>&copy; ' . date( 'Y' ) . ' ' . esc_html( $site_name ) . ' | <a href="' . esc_url( $site_url ) . '">' . esc_url( $site_url ) . '</a></p>
-			<p>This is an automated report from Shahi LegalOps Suite Accessibility Scanner.</p>
+			<p>&copy; ' . gmdate( 'Y' ) . ' ' . esc_html( $site_name ) . ' | <a href="' . esc_url( $site_url ) . '">' . esc_url( $site_url ) . '</a></p>
+			<p>This is an automated report from Shahi LegalFlowSuite Accessibility Scanner.</p>
 		</div>
 	</div>
 </body>
@@ -558,8 +631,14 @@ class AccessibilityReporter {
 		return $html;
 	}
 
+	/**
+	 * Export scan results to HTML.
+	 *
+	 * @param array $data Results data.
+	 * @return void.
+	 */
 	private function export_html( $data ) {
-		$filename = 'accessibility-report-' . date( 'Y-m-d' ) . '.html';
+		$filename = 'accessibility-report-' . gmdate( 'Y-m-d' ) . '.html';
 		header( 'Content-Type: text/html' );
 		header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
 
@@ -567,7 +646,7 @@ class AccessibilityReporter {
 		<!DOCTYPE html>
 		<html>
 		<head>
-			<title>Accessibility Report - <?php echo date( 'Y-m-d' ); ?></title>
+			<title>Accessibility Report - <?php echo esc_html( gmdate( 'Y-m-d' ) ); ?></title>
 			<style>
 				body { font-family: sans-serif; line-height: 1.6; color: #333; max-width: 1200px; margin: 0 auto; padding: 20px; }
 				h1 { border-bottom: 2px solid #2271b1; padding-bottom: 10px; }
@@ -582,7 +661,7 @@ class AccessibilityReporter {
 		</head>
 		<body>
 			<h1>Accessibility Compliance Report</h1>
-			<p>Generated on: <?php echo date( 'Y-m-d H:i:s' ); ?></p>
+			<p>Generated on: <?php echo esc_html( gmdate( 'Y-m-d H:i:s' ) ); ?></p>
 			<p>Total Pages Scanned: <?php echo count( $data ); ?></p>
 
 			<?php foreach ( $data as $row ) : ?>
@@ -608,7 +687,7 @@ class AccessibilityReporter {
 								<?php foreach ( $row['results'] as $check_id => $result ) : ?>
 									<?php foreach ( $result['issues'] as $issue ) : ?>
 										<tr>
-											<td><span style="color: <?php echo $result['severity'] === 'critical' ? '#d63638' : '#dba617'; ?>; font-weight: bold;"><?php echo esc_html( ucfirst( $result['severity'] ) ); ?></span></td>
+											<td><span style="color: <?php echo 'critical' === $result['severity'] ? '#d63638' : '#dba617'; ?>; font-weight: bold;"><?php echo esc_html( ucfirst( $result['severity'] ) ); ?></span></td>
 											<td><?php echo esc_html( $result['description'] ); ?></td>
 											<td><?php echo esc_html( $issue['message'] ); ?></td>
 										</tr>

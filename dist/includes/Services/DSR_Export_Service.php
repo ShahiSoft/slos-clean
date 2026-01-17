@@ -1,6 +1,6 @@
 <?php
 /**
- * DSR Export Service
+ * DSR Export Service.
  *
  * Generates GDPR-compliant data export packages for data portability requests.
  * Collects data from WordPress core, plugins, and registered providers.
@@ -12,16 +12,16 @@
 
 namespace ShahiLegalFlowSuite\Services;
 
+use ShahiLegalFlowSuite\Database\Repositories\Consent_Repository;
 use ShahiLegalFlowSuite\Database\Repositories\DSR_Repository;
 use ShahiLegalFlowSuite\Services\Consent_Service;
-use ShahiLegalFlowSuite\Database\Repositories\Consent_Repository;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
 /**
- * DSR Export Service Class
+ * DSR Export Service Class.
  *
  * Orchestrates data collection, formatting, and secure delivery.
  *
@@ -30,43 +30,43 @@ if ( ! defined( 'ABSPATH' ) ) {
 class DSR_Export_Service {
 
 	/**
-	 * DSR Repository instance
+	 * DSR repository instance.
 	 *
 	 * @var DSR_Repository
 	 */
 	private $repository;
 
 	/**
-	 * Consent Service instance
+	 * Consent service instance.
 	 *
 	 * @var Consent_Service
 	 */
 	private $consent_service;
 
 	/**
-	 * Maximum export file size (100MB)
+	 * Maximum export file size (100MB).
 	 *
 	 * @var int
 	 */
 	private $max_file_size = 104857600;
 
 	/**
-	 * Initialize service
+	 * Initialize service.
 	 *
 	 * @since 3.0.1
 	 */
 	public function __construct() {
 		$this->repository = new DSR_Repository();
 
-		// Register default data providers
+		// Register default data providers.
 		add_filter( 'slos_dsr_data_providers', array( $this, 'register_core_providers' ), 10 );
 
-		// Hook into export generation action
+		// Hook into export generation action.
 		add_action( 'slos_dsr_export_ready', array( $this, 'process_export_generation' ), 10, 3 );
 	}
 
 	/**
-	 * Get consent service instance (lazy initialization)
+	 * Get consent service instance (lazy initialization).
 	 *
 	 * @since 3.1.1
 	 * @return Consent_Service
@@ -76,15 +76,16 @@ class DSR_Export_Service {
 			$consent_repository    = new Consent_Repository();
 			$this->consent_service = new Consent_Service( $consent_repository );
 		}
+
 		return $this->consent_service;
 	}
 
 	/**
-	 * Register core WordPress data providers
+	 * Register core WordPress data providers.
 	 *
 	 * @since 3.0.1
-	 * @param array $providers Existing providers
-	 * @return array Updated providers
+	 * @param array $providers Existing providers.
+	 * @return array Updated providers.
 	 */
 	public function register_core_providers( array $providers ): array {
 		$providers['wordpress'] = array(
@@ -109,37 +110,39 @@ class DSR_Export_Service {
 	}
 
 	/**
-	 * Process export generation (hooked to slos_dsr_export_ready)
+	 * Process export generation (hooked to slos_dsr_export_ready).
 	 *
 	 * @since 3.0.1
-	 * @param int    $request_id   Request ID
-	 * @param string $export_token Export token
-	 * @param object $request      Request object
-	 * @return bool True on success
+	 * @param int    $request_id   Request ID.
+	 * @param string $export_token Export token.
+	 * @param object $request      Request object.
+	 * @return bool True on success.
 	 */
 	public function process_export_generation( int $request_id, string $export_token, $request ): bool {
 		try {
-			// Collect all data
 			$collected_data = $this->collect_all_data( $request );
 
 			if ( empty( $collected_data ) ) {
-				error_log( sprintf( 'DSR Export: No data collected for request %d', $request_id ) );
+				if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Debug logging when WP_DEBUG_LOG is enabled.
+					error_log( sprintf( 'DSR Export: No data collected for request %d', $request_id ) );
+				}
 				return false;
 			}
 
-			// Generate export package
 			$package_path = $this->generate_package( $request_id, $collected_data, $request );
 
 			if ( ! $package_path ) {
-				error_log( sprintf( 'DSR Export: Failed to generate package for request %d', $request_id ) );
+				if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Debug logging when WP_DEBUG_LOG is enabled.
+					error_log( sprintf( 'DSR Export: Failed to generate package for request %d', $request_id ) );
+				}
 				return false;
 			}
 
-			// Calculate file hash and size
 			$file_hash = hash_file( 'sha256', $package_path );
 			$file_size = filesize( $package_path );
 
-			// Update request with export metadata
 			$this->repository->update(
 				$request_id,
 				array(
@@ -148,20 +151,23 @@ class DSR_Export_Service {
 				)
 			);
 
-			// Store extended metadata in transient (7 days)
-			$export_meta              = get_transient( 'slos_dsr_export_' . $request_id ) ?: array();
-			$export_meta['file_hash'] = $file_hash;
-			$export_meta['file_size'] = $file_size;
-			$export_meta['file_path'] = basename( $package_path );
+			$export_meta = get_transient( 'slos_dsr_export_' . $request_id );
+			if ( false === $export_meta || ! is_array( $export_meta ) ) {
+				$export_meta = array();
+			}
+
+			$export_meta['file_hash']      = $file_hash;
+			$export_meta['file_size']      = $file_size;
+			$export_meta['file_path']      = basename( $package_path );
+			$export_meta['export_token']   = $export_token;
+			$export_meta['export_expires'] = gmdate( 'Y-m-d H:i:s', time() + ( 7 * DAY_IN_SECONDS ) );
+
 			set_transient( 'slos_dsr_export_' . $request_id, $export_meta, 7 * DAY_IN_SECONDS );
 
-			// Generate download URL
 			$download_url = $this->generate_download_url( $request_id, $export_token );
 
-			// Send email with download link
 			$this->send_export_email( $request, $download_url, $export_meta );
 
-			// Log audit entry
 			do_action(
 				'slos_dsr_audit_log',
 				$request_id,
@@ -175,22 +181,24 @@ class DSR_Export_Service {
 			return true;
 
 		} catch ( \Throwable $e ) {
-			error_log( sprintf( 'DSR Export error for request %d: %s', $request_id, $e->getMessage() ) );
+			if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Debug logging when WP_DEBUG_LOG is enabled.
+				error_log( sprintf( 'DSR Export error for request %d: %s', $request_id, $e->getMessage() ) );
+			}
 			return false;
 		}
 	}
 
 	/**
-	 * Collect all data from registered providers
+	 * Collect all data from registered providers.
 	 *
 	 * @since 3.0.1
-	 * @param object $request Request object
-	 * @return array Collected data organized by provider
+	 * @param object $request Request object.
+	 * @return array Collected data organized by provider.
 	 */
 	private function collect_all_data( $request ): array {
 		$providers = apply_filters( 'slos_dsr_data_providers', array() );
 
-		// Sort by priority
 		uasort(
 			$providers,
 			function ( $a, $b ) {
@@ -214,7 +222,10 @@ class DSR_Export_Service {
 					);
 				}
 			} catch ( \Throwable $e ) {
-				error_log( sprintf( 'DSR Export: Provider "%s" failed: %s', $key, $e->getMessage() ) );
+				if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Debug logging when WP_DEBUG_LOG is enabled.
+					error_log( sprintf( 'DSR Export: Provider "%s" failed: %s', $key, $e->getMessage() ) );
+				}
 			}
 		}
 
@@ -222,16 +233,15 @@ class DSR_Export_Service {
 	}
 
 	/**
-	 * Collect WordPress core data (user profile)
+	 * Collect WordPress core data (user profile).
 	 *
 	 * @since 3.0.1
-	 * @param object $request Request object
-	 * @return array User data
+	 * @param object $request Request object.
+	 * @return array User data.
 	 */
 	public function collect_wordpress_data( $request ): array {
 		$data = array();
 
-		// If user_id is set, get user data
 		if ( ! empty( $request->user_id ) ) {
 			$user = get_userdata( $request->user_id );
 			if ( $user ) {
@@ -248,7 +258,6 @@ class DSR_Export_Service {
 					'roles'           => $user->roles,
 				);
 
-				// User meta (exclude sensitive keys)
 				$meta_keys = get_user_meta( $user->ID );
 				$safe_meta = array();
 				$excluded  = array( 'session_tokens', 'password', 'activation_key' );
@@ -267,11 +276,11 @@ class DSR_Export_Service {
 	}
 
 	/**
-	 * Collect comments data
+	 * Collect comments data.
 	 *
 	 * @since 3.0.1
-	 * @param object $request Request object
-	 * @return array Comments data
+	 * @param object $request Request object.
+	 * @return array Comments data.
 	 */
 	public function collect_comments( $request ): array {
 		$data = array();
@@ -301,7 +310,6 @@ class DSR_Export_Service {
 				);
 			}
 		} else {
-			// Use email for non-registered users
 			$comments = get_comments(
 				array(
 					'author_email' => $request->requester_email,
@@ -330,19 +338,19 @@ class DSR_Export_Service {
 	}
 
 	/**
-	 * Collect consent records
+	 * Collect consent records.
 	 *
 	 * @since 3.0.1
-	 * @param object $request Request object
-	 * @return array Consent data
+	 * @param object $request Request object.
+	 * @return array Consent data.
 	 */
 	public function collect_consent_data( $request ): array {
 		global $wpdb;
 
-		$data  = array();
-		$email = $request->requester_email;
+		$data    = array();
+		$email   = $request->requester_email ?? '';
+		$user_id = $request->user_id ?? 0;
 
-		// Collect from new consent system (slos_consent table)
 		if ( ! empty( $email ) ) {
 			$consents = $this->get_consent_service()->get_by_email( $email );
 
@@ -365,12 +373,10 @@ class DSR_Export_Service {
 			}
 		}
 
-		// Collect from legacy consent_logs table (if exists)
 		$table = $wpdb->prefix . 'slos_consent_logs';
 
-		// Check if table exists.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Safe existence check for legacy consent table.
 		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) === $table ) {
-			// Query consent logs
 			$where  = array();
 			$values = array();
 
@@ -388,8 +394,8 @@ class DSR_Export_Service {
 				$where_sql = implode( ' OR ', $where );
 				$sql       = "SELECT * FROM $table WHERE $where_sql ORDER BY created_at DESC";
 
-                // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-				$results = $wpdb->get_results( $wpdb->prepare( $sql, $values ) );
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared -- Controlled export lookup with dynamic filters.
+				$results = $wpdb->get_results( $wpdb->prepare( $sql, ...$values ) );
 
 				if ( ! empty( $results ) ) {
 					$data['consent_logs'] = array_map(
@@ -412,26 +418,23 @@ class DSR_Export_Service {
 	}
 
 	/**
-	 * Generate export package (JSON, CSV, XML, PDF, ZIP)
+	 * Generate export package (JSON, CSV, XML, PDF, ZIP).
 	 *
 	 * @since 3.0.1
-	 * @param int    $request_id Request ID
-	 * @param array  $data       Collected data
-	 * @param object $request    Request object
-	 * @return string|false Package file path or false
+	 * @param int    $request_id Request ID.
+	 * @param array  $data       Collected data.
+	 * @param object $request    Request object.
+	 * @return string|false Package file path or false.
 	 */
 	private function generate_package( int $request_id, array $data, $request ) {
+		// phpcs:disable WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents,WordPress.WP.AlternativeFunctions.file_system_operations_unlink,WordPress.WP.AlternativeFunctions.file_system_read_file -- Direct file operations are required for export packaging.
 		$upload_dir = wp_upload_dir();
 		$export_dir = trailingslashit( $upload_dir['basedir'] ) . 'slos-exports';
 
-		// Create exports directory with protection
 		if ( ! file_exists( $export_dir ) ) {
 			wp_mkdir_p( $export_dir );
 
-			// Add index.php to prevent directory listing
 			file_put_contents( $export_dir . '/index.php', '<?php // Silence is golden' );
-
-			// Add .htaccess for Apache
 			file_put_contents( $export_dir . '/.htaccess', 'Deny from all' );
 		}
 
@@ -441,7 +444,6 @@ class DSR_Export_Service {
 
 		wp_mkdir_p( $temp_dir );
 
-		// Metadata for package
 		$metadata = array(
 			'generated_at'    => current_time( 'mysql' ),
 			'request_id'      => $request_id,
@@ -452,98 +454,93 @@ class DSR_Export_Service {
 			'processor_email' => get_option( 'admin_email' ),
 		);
 
-		// Generate JSON
 		$json_data = array(
 			'metadata' => $metadata,
 			'data'     => $data,
 		);
+
 		file_put_contents( $temp_dir . '/export.json', wp_json_encode( $json_data, JSON_PRETTY_PRINT ) );
 
-		// Generate CSV files (one per data section)
 		foreach ( $data as $key => $section ) {
 			if ( isset( $section['data'] ) && is_array( $section['data'] ) ) {
 				$this->generate_csv( $temp_dir . '/' . $key . '.csv', $section['data'] );
 			}
 		}
 
-		// Generate XML
 		$this->generate_xml( $temp_dir . '/export.xml', $json_data );
-
-		// Generate PDF summary
 		$this->generate_pdf_summary( $temp_dir . '/summary.pdf', $metadata, $data );
-
-		// Create README
 		$this->generate_readme( $temp_dir . '/README.txt', $metadata );
 
-		// Create ZIP package
 		$zip_path = $export_dir . '/' . $basename . '.zip';
 
 		if ( ! $this->create_zip( $temp_dir, $zip_path ) ) {
-			error_log( 'DSR Export: Failed to create ZIP package' );
+			if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Debug logging when WP_DEBUG_LOG is enabled.
+				error_log( 'DSR Export: Failed to create ZIP package' );
+			}
 			return false;
 		}
 
-		// Clean up temp directory
 		$this->remove_directory( $temp_dir );
 
-		// Check file size
 		if ( filesize( $zip_path ) > $this->max_file_size ) {
-			error_log( sprintf( 'DSR Export: Package exceeds max size (%d bytes)', filesize( $zip_path ) ) );
+			if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Debug logging when WP_DEBUG_LOG is enabled.
+				error_log( sprintf( 'DSR Export: Package exceeds max size (%d bytes)', filesize( $zip_path ) ) );
+			}
 		}
 
 		return $zip_path;
+		// phpcs:enable WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents,WordPress.WP.AlternativeFunctions.file_system_operations_unlink,WordPress.WP.AlternativeFunctions.file_system_read_file
 	}
 
 	/**
-	 * Generate CSV file from data array
+	 * Generate CSV file from data array.
 	 *
 	 * @since 3.0.1
-	 * @param string $path Target file path
-	 * @param array  $data Data to convert
-	 * @return bool Success status
+	 * @param string $path Target file path.
+	 * @param array  $data Data to convert.
+	 * @return bool Success status.
 	 */
 	private function generate_csv( string $path, array $data ): bool {
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- Controlled export write.
 		$handle = fopen( $path, 'w' );
 		if ( ! $handle ) {
 			return false;
 		}
 
-		// Flatten nested arrays for CSV
 		$rows = $this->flatten_for_csv( $data );
 
 		if ( ! empty( $rows ) ) {
-			// Write headers
 			fputcsv( $handle, array_keys( $rows[0] ) );
 
-			// Write rows
 			foreach ( $rows as $row ) {
 				fputcsv( $handle, $row );
 			}
 		}
 
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Controlled export write.
 		fclose( $handle );
 		return true;
 	}
 
 	/**
-	 * Flatten nested array for CSV export
+	 * Flatten nested array for CSV export.
 	 *
 	 * @since 3.0.1
-	 * @param array $data Data to flatten
-	 * @return array Flattened rows
+	 * @param array $data Data to flatten.
+	 * @return array Flattened rows.
 	 */
 	private function flatten_for_csv( array $data ): array {
 		$rows = array();
 
 		foreach ( $data as $key => $value ) {
 			if ( is_array( $value ) ) {
-				// Check if indexed array of objects/arrays
 				if ( isset( $value[0] ) && is_array( $value[0] ) ) {
 					foreach ( $value as $item ) {
 						$rows[] = $this->flatten_array( $item );
 					}
 				} else {
-					// Single associative array
 					$rows[] = $this->flatten_array( $value );
 				}
 			} else {
@@ -555,11 +552,11 @@ class DSR_Export_Service {
 	}
 
 	/**
-	 * Flatten single array (non-recursive for CSV)
+	 * Flatten single array (non-recursive for CSV).
 	 *
 	 * @since 3.0.1
-	 * @param array $arr Array to flatten
-	 * @return array Flattened array
+	 * @param array $arr Array to flatten.
+	 * @return array Flattened array.
 	 */
 	private function flatten_array( array $arr ): array {
 		$result = array();
@@ -576,31 +573,34 @@ class DSR_Export_Service {
 	}
 
 	/**
-	 * Generate XML file
+	 * Generate XML file.
 	 *
 	 * @since 3.0.1
-	 * @param string $path Target file path
-	 * @param array  $data Data to convert
-	 * @return bool Success status
+	 * @param string $path Target file path.
+	 * @param array  $data Data to convert.
+	 * @return bool Success status.
 	 */
 	private function generate_xml( string $path, array $data ): bool {
 		$xml = new \SimpleXMLElement( '<?xml version="1.0" encoding="UTF-8"?><export></export>' );
 		$this->array_to_xml( $data, $xml );
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents -- Controlled export write.
 		return (bool) file_put_contents( $path, $xml->asXML() );
 	}
 
 	/**
-	 * Convert array to XML recursively
+	 * Convert array to XML recursively.
 	 *
 	 * @since 3.0.1
-	 * @param array             $data   Data array
-	 * @param \SimpleXMLElement $xml    XML object
-	 * @param string            $parent Parent key
+	 * @param array             $data        Data array.
+	 * @param \SimpleXMLElement $xml         XML object.
+	 * @param string            $parent_key  Parent key.
 	 * @return void
 	 */
-	private function array_to_xml( array $data, \SimpleXMLElement $xml, string $parent = '' ): void {
+	private function array_to_xml( array $data, \SimpleXMLElement $xml, string $parent_key = '' ): void {
 		foreach ( $data as $key => $value ) {
-			$key = is_numeric( $key ) ? ( $parent ?: 'item' ) : $key;
+			if ( is_numeric( $key ) ) {
+				$key = $parent_key ? $parent_key : 'item';
+			}
 			$key = preg_replace( '/[^a-zA-Z0-9_]/', '_', $key );
 
 			if ( is_array( $value ) ) {
@@ -613,17 +613,15 @@ class DSR_Export_Service {
 	}
 
 	/**
-	 * Generate PDF summary
+	 * Generate PDF summary.
 	 *
 	 * @since 3.0.1
-	 * @param string $path     Target file path
-	 * @param array  $metadata Metadata
-	 * @param array  $data     Collected data
-	 * @return bool Success status
+	 * @param string $path     Target file path.
+	 * @param array  $metadata Metadata.
+	 * @param array  $data     Collected data.
+	 * @return bool Success status.
 	 */
 	private function generate_pdf_summary( string $path, array $metadata, array $data ): bool {
-		// Simple text-based summary (PDF libraries not included by default)
-		// For production, integrate TCPDF, mPDF, or similar
 		$content  = "DATA SUBJECT REQUEST EXPORT SUMMARY\n";
 		$content .= str_repeat( '=', 80 ) . "\n\n";
 
@@ -643,18 +641,19 @@ class DSR_Export_Service {
 		}
 
 		$content .= "\n" . str_repeat( '=', 80 ) . "\n";
-		$content .= "For detailed data, please refer to the JSON, CSV, and XML files included in this package.\n";
+		$content .= 'For detailed data, please refer to the JSON, CSV, and XML files included in this package.' . "\n";
 
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents -- Controlled export write.
 		return (bool) file_put_contents( $path, $content );
 	}
 
 	/**
-	 * Generate README file
+	 * Generate README file.
 	 *
 	 * @since 3.0.1
-	 * @param string $path     Target file path
-	 * @param array  $metadata Metadata
-	 * @return bool Success status
+	 * @param string $path     Target file path.
+	 * @param array  $metadata Metadata.
+	 * @return bool Success status.
 	 */
 	private function generate_readme( string $path, array $metadata ): bool {
 		$content  = "DATA SUBJECT REQUEST EXPORT\n";
@@ -683,20 +682,24 @@ class DSR_Export_Service {
 		$content .= 'Processor: ' . ( $metadata['processor'] ?? 'N/A' ) . "\n";
 		$content .= 'Email: ' . ( $metadata['processor_email'] ?? 'N/A' ) . "\n";
 
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents -- Controlled export write.
 		return (bool) file_put_contents( $path, $content );
 	}
 
 	/**
-	 * Create ZIP archive from directory
+	 * Create ZIP archive from directory.
 	 *
 	 * @since 3.0.1
-	 * @param string $source_dir Source directory
-	 * @param string $zip_path   Target ZIP path
-	 * @return bool Success status
+	 * @param string $source_dir Source directory.
+	 * @param string $zip_path   Target ZIP path.
+	 * @return bool Success status.
 	 */
 	private function create_zip( string $source_dir, string $zip_path ): bool {
 		if ( ! class_exists( 'ZipArchive' ) ) {
-			error_log( 'DSR Export: ZipArchive class not available' );
+			if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Debug logging when WP_DEBUG_LOG is enabled.
+				error_log( 'DSR Export: ZipArchive class not available' );
+			}
 			return false;
 		}
 
@@ -723,11 +726,11 @@ class DSR_Export_Service {
 	}
 
 	/**
-	 * Remove directory recursively
+	 * Remove directory recursively.
 	 *
 	 * @since 3.0.1
-	 * @param string $dir Directory path
-	 * @return bool Success status
+	 * @param string $dir Directory path.
+	 * @return bool Success status.
 	 */
 	private function remove_directory( string $dir ): bool {
 		if ( ! is_dir( $dir ) ) {
@@ -738,19 +741,24 @@ class DSR_Export_Service {
 
 		foreach ( $files as $file ) {
 			$path = $dir . '/' . $file;
-			is_dir( $path ) ? $this->remove_directory( $path ) : unlink( $path );
+			if ( is_dir( $path ) ) {
+				$this->remove_directory( $path );
+			} else {
+				wp_delete_file( $path );
+			}
 		}
 
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir -- Remove temporary export directory.
 		return rmdir( $dir );
 	}
 
 	/**
-	 * Generate download URL with token
+	 * Generate download URL with token.
 	 *
 	 * @since 3.0.1
-	 * @param int    $request_id   Request ID
-	 * @param string $export_token Export token
-	 * @return string Download URL
+	 * @param int    $request_id   Request ID.
+	 * @param string $export_token Export token.
+	 * @return string Download URL.
 	 */
 	private function generate_download_url( int $request_id, string $export_token ): string {
 		return add_query_arg(
@@ -763,17 +771,18 @@ class DSR_Export_Service {
 	}
 
 	/**
-	 * Send export ready email
+	 * Send export ready email.
 	 *
 	 * @since 3.0.1
-	 * @param object $request      Request object
-	 * @param string $download_url Download URL
-	 * @param array  $export_meta  Export metadata
-	 * @return bool Success status
+	 * @param object $request      Request object.
+	 * @param string $download_url Download URL.
+	 * @param array  $export_meta  Export metadata.
+	 * @return bool Success status.
 	 */
 	private function send_export_email( $request, string $download_url, array $export_meta ): bool {
 		$to      = $request->requester_email;
 		$subject = sprintf(
+			/* translators: %d: data subject request ID. */
 			__( 'Your Data Export is Ready - Request #%d', 'shahi-legalflowsuite' ),
 			$request->id ?? 0
 		);
@@ -782,7 +791,8 @@ class DSR_Export_Service {
 		$expires = $export_meta['export_expires'] ?? '';
 
 		$message = sprintf(
-			__( "Your data export package is ready for download.\n\nRequest ID: %1\$d\nFile Size: %2\$s MB\nExpires: %3\$s\n\nDownload Link:\n%4\$s\n\nThis link is valid for 7 days and can only be used once.\n\nIf you did not request this export, please contact us immediately.", 'shahi-legalflowsuite' ),
+			/* translators: 1: request ID, 2: file size in MB, 3: expiration datetime, 4: download URL. */
+			__( "Your data export package is ready for download.\n\nRequest ID: %1\$s\nFile Size: %2\$s MB\nExpires: %3\$s\n\nDownload Link:\n%4\$s\n\nThis link is valid for 7 days and can only be used once.\n\nIf you did not request this export, please contact us immediately.", 'shahi-legalflowsuite' ),
 			$request->id ?? 0,
 			$size_mb,
 			$expires,
@@ -793,32 +803,32 @@ class DSR_Export_Service {
 	}
 
 	/**
-	 * Handle download request
+	 * Handle download request.
 	 *
 	 * @since 3.0.1
 	 * @return void
 	 */
 	public function handle_download_request(): void {
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Download token provides request validation.
 		if ( ! isset( $_GET['slos_dsr_download'], $_GET['token'] ) ) {
 			return;
 		}
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Token validation acts as nonce for download.
 		$request_id = absint( $_GET['slos_dsr_download'] );
-		$token      = sanitize_text_field( wp_unslash( $_GET['token'] ) );
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Token validation acts as nonce for download.
+		$token = sanitize_text_field( wp_unslash( $_GET['token'] ) );
 
-		// Verify token
 		$export_meta = get_transient( 'slos_dsr_export_' . $request_id );
 
 		if ( ! $export_meta || ! isset( $export_meta['export_token'] ) || $export_meta['export_token'] !== $token ) {
 			wp_die( esc_html__( 'Invalid or expired download link.', 'shahi-legalflowsuite' ), 403 );
 		}
 
-		// Check expiry
 		if ( isset( $export_meta['export_expires'] ) && strtotime( $export_meta['export_expires'] ) < time() ) {
 			wp_die( esc_html__( 'Download link has expired.', 'shahi-legalflowsuite' ), 403 );
 		}
 
-		// Get file path
 		$upload_dir = wp_upload_dir();
 		$export_dir = trailingslashit( $upload_dir['basedir'] ) . 'slos-exports';
 		$file_name  = $export_meta['file_path'] ?? '';
@@ -828,29 +838,29 @@ class DSR_Export_Service {
 			wp_die( esc_html__( 'Export file not found.', 'shahi-legalflowsuite' ), 404 );
 		}
 
-		// Verify hash
 		if ( isset( $export_meta['file_hash'] ) ) {
 			$current_hash = hash_file( 'sha256', $file_path );
 			if ( $current_hash !== $export_meta['file_hash'] ) {
-				error_log( sprintf( 'DSR Export: Hash mismatch for request %d', $request_id ) );
+				if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Debug logging when WP_DEBUG_LOG is enabled.
+					error_log( sprintf( 'DSR Export: Hash mismatch for request %d', $request_id ) );
+				}
 				wp_die( esc_html__( 'File integrity check failed.', 'shahi-legalflowsuite' ), 500 );
 			}
 		}
 
-		// Log download
 		do_action(
 			'slos_dsr_audit_log',
 			$request_id,
 			'export_downloaded',
 			array(
-				'ip_address' => $_SERVER['REMOTE_ADDR'] ?? '',
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- IP sanitized for audit logging.
+				'ip_address' => isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '',
 			)
 		);
 
-		// Delete token (single use)
 		delete_transient( 'slos_dsr_export_' . $request_id );
 
-		// Stream file
 		header( 'Content-Type: application/zip' );
 		header( 'Content-Disposition: attachment; filename="' . basename( $file_path ) . '"' );
 		header( 'Content-Length: ' . filesize( $file_path ) );
@@ -858,11 +868,13 @@ class DSR_Export_Service {
 		header( 'Pragma: no-cache' );
 		header( 'Expires: 0' );
 
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile, WordPress.WP.AlternativeFunctions.file_system_read_file -- Direct file streaming for download.
 		readfile( $file_path );
 
-		// Delete file after download
-		unlink( $file_path );
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink -- File removed after download.
+		wp_delete_file( $file_path );
 
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 		exit;
 	}
 }

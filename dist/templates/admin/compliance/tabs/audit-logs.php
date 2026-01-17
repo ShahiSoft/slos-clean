@@ -396,37 +396,45 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<div class="slos-log-card">
 		<div class="slos-log-list" id="audit-log-list">
 			<?php
-			// Load audit logs from database
+			// Load audit logs from database.
 			global $wpdb;
 			$logs_table = esc_sql( $wpdb->prefix . 'slos_consent_logs' );
 
-			// Check if table exists
-			$table_exists = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $logs_table ) );
+			// Check if table exists.
+			$table_exists = wp_cache_get( 'slos_consent_logs_table_exists', 'slos' );
+			if ( false === $table_exists ) {
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Read-only existence check; table name sanitized and result cached below.
+				$table_exists = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $logs_table ) );
+				wp_cache_set( 'slos_consent_logs_table_exists', $table_exists, 'slos', 3600 );
+			}
 
 			$audit_logs = array();
 			if ( $table_exists ) {
-				$audit_logs = $wpdb->get_results(
-					$wpdb->prepare(
-						"SELECT * FROM {$logs_table} ORDER BY created_at DESC LIMIT %d",
-						25
-					),
-					ARRAY_A
-				);
+				// Table names cannot be parameterized; ensure the table name is safe and values are prepared.
+				$safe_table = esc_sql( $logs_table );
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Read-only query built for cached log display; results cached below.
+				$query      = $wpdb->prepare( "SELECT * FROM {$safe_table} ORDER BY created_at DESC LIMIT %d", 25 ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name sanitized; limit value prepared.
+				$audit_logs = wp_cache_get( 'slos_audit_logs', 'slos' );
+				if ( false === $audit_logs ) {
+					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared -- Read-only query with sanitized table name and prepared values; cached for performance.
+					$audit_logs = $wpdb->get_results( $query, ARRAY_A );
+					wp_cache_set( 'slos_audit_logs', $audit_logs, 'slos', 3600 );
+				}
 			}
 
 			if ( ! empty( $audit_logs ) ) :
 				foreach ( $audit_logs as $log ) :
-					$action     = $log['action'] ?? 'grant';
+					$log_action = $log['action'] ?? 'grant';
 					$icon_class = 'grant';
 					$icon       = 'yes-alt';
 
-					if ( $action === 'withdraw' || $action === 'reject' ) {
+					if ( 'withdraw' === $log_action || 'reject' === $log_action ) {
 						$icon_class = 'withdraw';
 						$icon       = 'minus';
-					} elseif ( $action === 'update' ) {
+					} elseif ( 'update' === $log_action ) {
 						$icon_class = 'update';
 						$icon       = 'update';
-					} elseif ( $action === 'export' ) {
+					} elseif ( 'export' === $log_action ) {
 						$icon_class = 'export';
 						$icon       = 'download';
 					}
@@ -447,14 +455,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<div class="slos-log-title">
 								<strong><?php echo esc_html( $user_display ); ?></strong> 
 								<?php
-								if ( $action === 'grant' ) {
+								if ( 'grant' === $log_action ) {
 									esc_html_e( 'granted consent for', 'shahi-legalflowsuite' );
-								} elseif ( $action === 'withdraw' || $action === 'reject' ) {
+								} elseif ( 'withdraw' === $log_action || 'reject' === $log_action ) {
 									esc_html_e( 'withdrew consent for', 'shahi-legalflowsuite' );
-								} elseif ( $action === 'update' ) {
+								} elseif ( 'update' === $log_action ) {
 									esc_html_e( 'updated preferences for', 'shahi-legalflowsuite' );
 								} else {
-									echo esc_html( $action );
+									echo esc_html( $log_action );
 								}
 								?>
 								<span class="slos-action-tag <?php echo esc_attr( $icon_class ); ?>"><?php echo esc_html( $purpose ); ?></span>
@@ -500,9 +508,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<div class="slos-pagination">
 			<div class="slos-pagination-info">
 				<?php
-				$total_logs = $table_exists ? (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$logs_table} WHERE 1 = %d", 1 ) ) : 0;
-				/* translators: 1: number of items shown, 2: total number of log entries */
+				$total_logs = 0;
+				if ( $table_exists ) {
+					$total_logs = wp_cache_get( 'slos_audit_logs_count', 'slos' );
+					if ( false === $total_logs ) {
+						// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Read-only count query; result cached.
+						$count_query = $wpdb->prepare( "SELECT COUNT(*) FROM {$logs_table} WHERE 1 = %d", 1 ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name sanitized; value prepared.
+						// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Table name sanitized; count value prepared.
+						$total_logs = (int) $wpdb->get_var( $count_query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared -- Count query prepared and cached above; table name sanitized.
+						wp_cache_set( 'slos_audit_logs_count', $total_logs, 'slos', 3600 );
+					}
+				}
+				/* translators: 1: number of items shown, 2: total number of log entries. */
 				printf(
+					// translators: 1: number of items shown, 2: total number of log entries.
 					esc_html__( 'Showing 1 - %1$d of %2$s log entries', 'shahi-legalflowsuite' ),
 					absint( min( 25, count( $audit_logs ) ) ),
 					esc_html( number_format_i18n( $total_logs ) )

@@ -126,8 +126,7 @@ class IdCanonicalizationMigration {
 		foreach ( $meta_keys as $meta_key ) {
 			$results = $wpdb->get_results(
 				$wpdb->prepare(
-					'SELECT meta_id, post_id, meta_value FROM %i WHERE meta_key = %s',
-					$wpdb->postmeta,
+					'SELECT meta_id, post_id, meta_value FROM ' . $wpdb->postmeta . ' WHERE meta_key = %s',
 					$meta_key
 				)
 			);
@@ -200,7 +199,7 @@ class IdCanonicalizationMigration {
 		}
 
 		$count   = 0;
-		$results = $wpdb->get_results( $wpdb->prepare( 'SELECT id, fixer_id FROM %i', $table ) );
+		$results = $wpdb->get_results( sprintf( 'SELECT id, fixer_id FROM %s', $wpdb->_escape( $table ) ) );
 
 		foreach ( $results as $row ) {
 			if ( isset( self::$legacy_map[ $row->fixer_id ] ) ) {

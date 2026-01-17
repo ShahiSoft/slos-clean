@@ -55,7 +55,7 @@ class CanonicalIds {
 	 */
 	private static $ids = array(
 
-		// ========== IMAGES ==========
+		// ========== IMAGES ==========..
 		'missing-alt-text'         => array(
 			'name'         => 'Missing Alt Text',
 			'severity'     => self::SEVERITY_CRITICAL,
@@ -169,7 +169,7 @@ class CanonicalIds {
 			'auto_fixable' => false,
 		),
 
-		// ========== HEADINGS ==========
+		// ========== HEADINGS ==========..
 		'missing-h1'               => array(
 			'name'         => 'Missing H1',
 			'severity'     => self::SEVERITY_SERIOUS,
@@ -227,7 +227,7 @@ class CanonicalIds {
 			'auto_fixable' => false,
 		),
 
-		// ========== LINKS ==========
+		// ========== LINKS ==========..
 		'empty-link'               => array(
 			'name'         => 'Empty Link',
 			'severity'     => self::SEVERITY_CRITICAL,
@@ -278,7 +278,7 @@ class CanonicalIds {
 			'auto_fixable' => true,
 		),
 
-		// ========== FORMS ==========
+		// ========== FORMS ==========..
 		'missing-form-label'       => array(
 			'name'         => 'Missing Form Label',
 			'severity'     => self::SEVERITY_CRITICAL,
@@ -357,7 +357,7 @@ class CanonicalIds {
 			'auto_fixable' => true,
 		),
 
-		// ========== TABLES ==========
+		// ========== TABLES ==========..
 		'table-header'             => array(
 			'name'         => 'Table Header',
 			'severity'     => self::SEVERITY_CRITICAL,
@@ -394,7 +394,7 @@ class CanonicalIds {
 			'auto_fixable' => true,
 		),
 
-		// ========== MEDIA ==========
+		// ========== MEDIA ==========..
 		'iframe-title'             => array(
 			'name'         => 'Iframe Title',
 			'severity'     => self::SEVERITY_CRITICAL,
@@ -424,7 +424,7 @@ class CanonicalIds {
 			'auto_fixable' => false,
 		),
 
-		// ========== INTERACTIVITY ==========
+		// ========== INTERACTIVITY ==========..
 		'positive-tabindex'        => array(
 			'name'         => 'Positive Tabindex',
 			'severity'     => self::SEVERITY_SERIOUS,
@@ -468,7 +468,7 @@ class CanonicalIds {
 			'auto_fixable' => false,
 		),
 
-		// ========== COLOR/CONTRAST ==========
+		// ========== COLOR/CONTRAST ==========..
 		'text-color-contrast'      => array(
 			'name'         => 'Text Color Contrast',
 			'severity'     => self::SEVERITY_SERIOUS,
@@ -491,7 +491,7 @@ class CanonicalIds {
 			'auto_fixable' => false,
 		),
 
-		// ========== TOUCH/VIEWPORT ==========
+		// ========== TOUCH/VIEWPORT ==========..
 		'touch-target'             => array(
 			'name'         => 'Touch Target',
 			'severity'     => self::SEVERITY_MODERATE,
@@ -514,7 +514,7 @@ class CanonicalIds {
 			'auto_fixable' => true,
 		),
 
-		// ========== ARIA ==========
+		// ========== ARIA ==========..
 		'aria-role'                => array(
 			'name'         => 'ARIA Role',
 			'severity'     => self::SEVERITY_SERIOUS,
@@ -565,7 +565,7 @@ class CanonicalIds {
 			'auto_fixable' => false,
 		),
 
-		// ========== STRUCTURE/CONTENT ==========
+		// ========== STRUCTURE/CONTENT ==========..
 		'semantic-html'            => array(
 			'name'         => 'Semantic HTML',
 			'severity'     => self::SEVERITY_MODERATE,

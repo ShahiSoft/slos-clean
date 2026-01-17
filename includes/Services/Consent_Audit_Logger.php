@@ -232,7 +232,7 @@ class Consent_Audit_Logger extends Base_Service {
 
 		if ( ! empty( $where_values ) ) {
 			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-			$sql = $wpdb->prepare( $sql, $where_values );
+			$sql = $wpdb->prepare( $sql, ...$where_values );
 		}
 
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
@@ -310,7 +310,7 @@ class Consent_Audit_Logger extends Base_Service {
 
 		if ( ! empty( $where_values ) ) {
 			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-			$sql = $wpdb->prepare( $sql, $where_values );
+			$sql = $wpdb->prepare( $sql, ...$where_values );
 		}
 
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
@@ -478,7 +478,7 @@ class Consent_Audit_Logger extends Base_Service {
 
 		if ( ! empty( $where_values ) ) {
 			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-			$sql = $wpdb->prepare( $sql, $where_values );
+			$sql = $wpdb->prepare( $sql, ...$where_values );
 		}
 
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared

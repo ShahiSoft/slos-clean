@@ -413,7 +413,7 @@ class DSR_Erasure_Service {
 		$sql       = "SELECT * FROM $table WHERE $where_sql";
 
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
-		$records = $wpdb->get_results( $wpdb->prepare( $sql, $values ) );
+		$records = $wpdb->get_results( $wpdb->prepare( $sql, ...$values ) );
 
 		if ( empty( $records ) ) {
 			return false;

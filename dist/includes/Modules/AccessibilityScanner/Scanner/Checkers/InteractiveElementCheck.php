@@ -30,7 +30,7 @@ class InteractiveElementCheck extends AbstractCheck {
 		$dom    = $this->get_dom( $content );
 		$xpath  = new \DOMXPath( $dom );
 
-		// Find elements with onclick but not a native interactive element
+		// Find elements with onclick but not a native interactive element..
 		$elements = $xpath->query( '//*[@onclick]' );
 
 		$interactiveTags = array( 'a', 'button', 'input', 'select', 'textarea', 'details', 'summary' );
@@ -40,7 +40,7 @@ class InteractiveElementCheck extends AbstractCheck {
 				continue;
 			}
 
-			// Check if it has tabindex and role
+			// Check if it has tabindex and role..
 			$hasTabindex   = $element->hasAttribute( 'tabindex' );
 			$hasRole       = $element->hasAttribute( 'role' );
 			$hasKeyHandler = $element->hasAttribute( 'onkeydown' ) || $element->hasAttribute( 'onkeypress' ) || $element->hasAttribute( 'onkeyup' );

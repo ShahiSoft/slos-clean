@@ -167,7 +167,7 @@ final class EmptyAltFixer extends AbstractFixer {
 		}
 
 		// Try to generate from filename..
-		return $this->humanize_filename( basename( parse_url( $src, PHP_URL_PATH ) ?: '' ) );
+		return $this->humanize_filename( basename( wp_parse_url( $src, PHP_URL_PATH ) ?: '' ) );
 	}
 
 	/**

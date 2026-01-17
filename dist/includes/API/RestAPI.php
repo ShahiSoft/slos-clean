@@ -17,7 +17,7 @@ namespace ShahiLegalFlowSuite\API;
 
 use ShahiLegalFlowSuite\Core\Security;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -81,7 +81,7 @@ class RestAPI {
 			'onboarding' => new OnboardingController(),
 			'system'     => new SystemController(),
 		);
-		// Consent-related controllers are now registered by the ConsentManagement module
+		// Consent-related controllers are now registered by the ConsentManagement module..
 	}
 
 	/**

@@ -60,7 +60,7 @@ final class LinkTargetBlankFixer extends AbstractFixer {
 		foreach ( $links as $link ) {
 			$modified = false;
 
-			// Add security attributes
+			// Add security attributes..
 			$rel       = $link->getAttribute( 'rel' ) ?: '';
 			$rel_parts = array_filter( array_map( 'trim', explode( ' ', $rel ) ) );
 
@@ -78,7 +78,7 @@ final class LinkTargetBlankFixer extends AbstractFixer {
 				$link->setAttribute( 'rel', implode( ' ', $rel_parts ) );
 			}
 
-			// Add warning to aria-label if not already present
+			// Add warning to aria-label if not already present..
 			$aria_label    = $link->getAttribute( 'aria-label' );
 			$link_text     = trim( $link->textContent );
 			$current_label = ! empty( $aria_label ) ? $aria_label : $link_text;
@@ -91,7 +91,7 @@ final class LinkTargetBlankFixer extends AbstractFixer {
 				$modified = true;
 			}
 
-			// Add visually hidden text for screen readers if no aria-label was added
+			// Add visually hidden text for screen readers if no aria-label was added..
 			if ( empty( $current_label ) ) {
 				$span = $this->doc->createElement( 'span' );
 				$span->setAttribute( 'class', 'screen-reader-text sr-only visually-hidden' );

@@ -14,7 +14,7 @@
 
 namespace ShahiLegalFlowSuite\Shortcodes;
 
-// Exit if accessed directly
+// Exit if accessed directly...
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -53,7 +53,7 @@ class ShortcodeManager {
 	 * @return void
 	 */
 	private function init_shortcodes() {
-		// Register shortcode instances (keeping only module-related shortcodes for legal operations)
+		// Register shortcode instances (keeping only module-related shortcodes for legal operations)...
 		$this->shortcodes = array(
 			'module'            => new ModuleShortcode(),
 			'dsr_form'          => new DSR_Form_Shortcode(),
@@ -63,7 +63,7 @@ class ShortcodeManager {
 			'embed_placeholder' => new Embed_Placeholder_Shortcode(),
 			'legal_doc'         => new Legal_Doc_Shortcode(),
 		);
-		// Consent shortcodes are now registered by the ConsentManagement module
+		// Consent shortcodes are now registered by the ConsentManagement module...
 	}
 
 	/**
@@ -101,14 +101,14 @@ class ShortcodeManager {
 	 * @return void
 	 */
 	public function enqueue_shortcode_assets() {
-		// Check if any ShahiLegalFlowSuite shortcodes are present in the content
+		// Check if any ShahiLegalFlowSuite shortcodes are present in the content...
 		global $post;
 
 		if ( ! is_a( $post, 'WP_Post' ) ) {
 			return;
 		}
 
-		// Check if shortcodes are present
+		// Check if shortcodes are present...
 		$has_shortcodes = false;
 		$shortcode_tags = array( 'shahi_stats', 'shahi_module', 'shahi_button' );
 
@@ -123,7 +123,7 @@ class ShortcodeManager {
 			return;
 		}
 
-		// Add inline CSS for shortcodes
+		// Add inline CSS for shortcodes...
 		$css = '
         /* ShahiLegalFlowSuite Shortcodes Styling */
         .shahi-shortcode {
@@ -277,7 +277,7 @@ class ShortcodeManager {
 
 		wp_add_inline_style( 'wp-block-library', $css );
 
-		// Enqueue dashicons for button icons
+		// Enqueue dashicons for button icons...
 		wp_enqueue_style( 'dashicons' );
 	}
 

@@ -751,9 +751,9 @@
 .slos-cursor-pointer { cursor: pointer; }
 .slos-cursor-not-allowed { cursor: not-allowed; }
 
-.slos-select-none { user-select: none; user-select: none; }
-.slos-select-text { user-select: text; user-select: text; }
-.slos-select-all { user-select: all; user-select: all; }
+.slos-select-none { user-select: none; }
+.slos-select-text { user-select: text; }
+.slos-select-all { user-select: all; }
 
 .slos-pointer-events-none { pointer-events: none; }
 .slos-pointer-events-auto { pointer-events: auto; }

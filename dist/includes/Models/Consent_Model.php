@@ -12,7 +12,7 @@
 
 namespace ShahiLegalFlowSuite\Models;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -105,7 +105,7 @@ class Consent_Model {
 		$this->created_at = $data['created_at'] ?? '';
 		$this->updated_at = $data['updated_at'] ?? '';
 
-		// Parse metadata from JSON string
+		// Parse metadata from JSON string..
 		if ( isset( $data['metadata'] ) ) {
 			if ( is_string( $data['metadata'] ) ) {
 				$this->metadata = json_decode( $data['metadata'], true ) ?? array();
@@ -354,12 +354,12 @@ class Consent_Model {
 	 * @return bool True if model is valid
 	 */
 	public function is_valid(): bool {
-		// Must have type and status
+		// Must have type and status..
 		if ( empty( $this->type ) || empty( $this->status ) ) {
 			return false;
 		}
 
-		// Must have either user_id or ip_hash
+		// Must have either user_id or ip_hash..
 		if ( null === $this->user_id && null === $this->ip_hash ) {
 			return false;
 		}
@@ -416,7 +416,7 @@ class Consent_Model {
 	 * @param mixed  $value Value
 	 */
 	public function __set( string $name, $value ) {
-		// Prevent modification - model should be immutable
+		// Prevent modification - model should be immutable..
 		_doing_it_wrong(
 			__METHOD__,
 			'Consent_Model is immutable. Use Consent_Service to modify consent data.',

@@ -59,22 +59,22 @@ class TimingControlFixer extends BaseFixer {
 		$xpath = new \DOMXPath( $dom );
 		$fixed = 0;
 
-		// Fix auto-refresh meta tags.
+		// Fix auto-refresh meta tags...
 		$fixed += $this->fix_meta_refresh( $dom );
 
-		// Fix countdown timers.
+		// Fix countdown timers...
 		$fixed += $this->fix_countdown_timers( $dom, $xpath );
 
-		// Fix session timeout warnings.
+		// Fix session timeout warnings...
 		$fixed += $this->fix_session_warnings( $dom, $xpath );
 
-		// Fix auto-advancing content (wizards, steps).
+		// Fix auto-advancing content (wizards, steps)...
 		$fixed += $this->fix_auto_advance( $dom, $xpath );
 
-		// Fix auto-dismissing notifications.
+		// Fix auto-dismissing notifications...
 		$fixed += $this->fix_auto_dismiss( $dom, $xpath );
 
-		// Inject timing control styles if any fixes were made.
+		// Inject timing control styles if any fixes were made...
 		if ( $fixed > 0 ) {
 			$this->inject_timing_styles( $dom );
 		}
@@ -103,17 +103,17 @@ class TimingControlFixer extends BaseFixer {
 
 			$content = $meta->getAttribute( 'content' );
 
-			// Extract time and optional URL.
+			// Extract time and optional URL...
 			if ( preg_match( '/^(\d+)(?:\s*;\s*url=(.+))?/i', $content, $matches ) ) {
 				$seconds = (int) $matches[1];
 				$url     = isset( $matches[2] ) ? $matches[2] : null;
 
-				// Skip if time is 0 (immediate redirect) or very long.
+				// Skip if time is 0 (immediate redirect) or very long...
 				if ( 0 === $seconds || $seconds >= self::MAX_PROBLEMATIC_SECONDS ) {
 					continue;
 				}
 
-				// Create warning element.
+				// Create warning element...
 				$warning = $dom->createElement( 'div' );
 				$warning->setAttribute( 'class', 'slos-timing-warning' );
 				$warning->setAttribute( 'role', 'alert' );
@@ -124,7 +124,7 @@ class TimingControlFixer extends BaseFixer {
 					$warning->setAttribute( 'data-slos-refresh-url', $url );
 				}
 
-				// Create warning text.
+				// Create warning text...
 				$action  = $url ? 'redirect to another page' : 'refresh';
 				$message = sprintf(
 					'This page will %s in %d seconds. ',
@@ -135,7 +135,7 @@ class TimingControlFixer extends BaseFixer {
 				$text = $dom->createTextNode( $message );
 				$warning->appendChild( $text );
 
-				// Add extend time button.
+				// Add extend time button...
 				$extend_btn = $dom->createElement( 'button' );
 				$extend_btn->setAttribute( 'type', 'button' );
 				$extend_btn->setAttribute( 'class', 'slos-extend-time' );
@@ -143,14 +143,14 @@ class TimingControlFixer extends BaseFixer {
 				$extend_btn->textContent = 'Extend time by 5 minutes';
 				$warning->appendChild( $extend_btn );
 
-				// Add cancel button.
+				// Add cancel button...
 				$cancel_btn = $dom->createElement( 'button' );
 				$cancel_btn->setAttribute( 'type', 'button' );
 				$cancel_btn->setAttribute( 'class', 'slos-cancel-refresh' );
 				$cancel_btn->textContent = 'Cancel ' . ( $url ? 'redirect' : 'refresh' );
 				$warning->appendChild( $cancel_btn );
 
-				// Insert at top of body.
+				// Insert at top of body...
 				$body = $dom->getElementsByTagName( 'body' )->item( 0 );
 				if ( $body && $body->firstChild ) {
 					$body->insertBefore( $warning, $body->firstChild );
@@ -172,7 +172,7 @@ class TimingControlFixer extends BaseFixer {
 	private function fix_countdown_timers( $dom, $xpath ) {
 		$fixed = 0;
 
-		// Find countdown elements by class or ID patterns.
+		// Find countdown elements by class or ID patterns...
 		$timers = $xpath->query(
 			'//*[contains(@class, "countdown") or contains(@class, "timer") or ' .
 			'contains(@id, "countdown") or contains(@id, "timer")]' .
@@ -185,7 +185,7 @@ class TimingControlFixer extends BaseFixer {
 			$timer->setAttribute( 'aria-live', 'polite' );
 			$timer->setAttribute( 'aria-atomic', 'true' );
 
-			// Add control buttons if not present.
+			// Add control buttons if not present...
 			$this->add_timer_controls( $dom, $timer );
 
 			++$fixed;
@@ -204,7 +204,7 @@ class TimingControlFixer extends BaseFixer {
 	private function fix_session_warnings( $dom, $xpath ) {
 		$fixed = 0;
 
-		// Find session timeout elements.
+		// Find session timeout elements...
 		$sessions = $xpath->query(
 			'//*[contains(@class, "session") and (contains(@class, "timeout") or ' .
 			'contains(@class, "warning") or contains(@class, "expir"))]' .
@@ -219,10 +219,10 @@ class TimingControlFixer extends BaseFixer {
 			$session->setAttribute( 'role', 'alertdialog' );
 			$session->setAttribute( 'aria-modal', 'true' );
 
-			// Generate ID for aria-labelledby if needed.
+			// Generate ID for aria-labelledby if needed...
 			$title_id = 'slos-session-warning-title-' . uniqid();
 
-			// Check if there's a heading or title.
+			// Check if there's a heading or title...
 			$heading = $xpath->query( './/h1|.//h2|.//h3|.//h4|.//h5|.//h6|.//*[contains(@class, "title")]', $session )->item( 0 );
 			if ( $heading ) {
 				if ( ! $heading->hasAttribute( 'id' ) ) {
@@ -233,7 +233,7 @@ class TimingControlFixer extends BaseFixer {
 				$session->setAttribute( 'aria-labelledby', $title_id );
 			}
 
-			// Ensure there's an extend option.
+			// Ensure there's an extend option...
 			$extend = $xpath->query(
 				'.//*[contains(@class, "extend") or contains(text(), "extend") or ' .
 				'contains(text(), "Extend") or contains(@class, "renew")]',
@@ -264,7 +264,7 @@ class TimingControlFixer extends BaseFixer {
 	private function fix_auto_advance( $dom, $xpath ) {
 		$fixed = 0;
 
-		// Find auto-advancing wizards/steps.
+		// Find auto-advancing wizards/steps...
 		$wizards = $xpath->query(
 			'//*[@data-auto-advance or @data-autoadvance or ' .
 			'(contains(@class, "wizard") and contains(@class, "auto")) or ' .
@@ -275,7 +275,7 @@ class TimingControlFixer extends BaseFixer {
 		foreach ( $wizards as $wizard ) {
 			$wizard->setAttribute( 'data-slos-timing-control', 'true' );
 
-			// Add manual advance controls.
+			// Add manual advance controls...
 			$controls = $dom->createElement( 'div' );
 			$controls->setAttribute( 'class', 'slos-timing-controls' );
 			$controls->setAttribute( 'role', 'group' );
@@ -305,7 +305,7 @@ class TimingControlFixer extends BaseFixer {
 	private function fix_auto_dismiss( $dom, $xpath ) {
 		$fixed = 0;
 
-		// Find auto-dismissing notifications.
+		// Find auto-dismissing notifications...
 		$notifications = $xpath->query(
 			'//*[@data-auto-dismiss or @data-timeout or @data-dismiss-after or ' .
 			'@data-autodismiss or @data-auto-close or @data-autoclose]' .
@@ -315,12 +315,12 @@ class TimingControlFixer extends BaseFixer {
 		foreach ( $notifications as $notification ) {
 			$notification->setAttribute( 'data-slos-timing-control', 'true' );
 
-			// Add aria-live if not present.
+			// Add aria-live if not present...
 			if ( ! $notification->hasAttribute( 'aria-live' ) ) {
 				$notification->setAttribute( 'aria-live', 'polite' );
 			}
 
-			// Check for close button.
+			// Check for close button...
 			$close = $xpath->query(
 				'.//*[contains(@class, "close") or @aria-label="Close" or ' .
 				'contains(@class, "dismiss")]',
@@ -328,7 +328,7 @@ class TimingControlFixer extends BaseFixer {
 			);
 
 			if ( 0 === $close->length ) {
-				// Add close button.
+				// Add close button...
 				$close_btn = $dom->createElement( 'button' );
 				$close_btn->setAttribute( 'type', 'button' );
 				$close_btn->setAttribute( 'class', 'slos-notification-close' );
@@ -337,7 +337,7 @@ class TimingControlFixer extends BaseFixer {
 				$notification->appendChild( $close_btn );
 			}
 
-			// Add "keep visible" option.
+			// Add "keep visible" option...
 			$keep_btn = $dom->createElement( 'button' );
 			$keep_btn->setAttribute( 'type', 'button' );
 			$keep_btn->setAttribute( 'class', 'slos-keep-visible' );
@@ -363,7 +363,7 @@ class TimingControlFixer extends BaseFixer {
 		$controls->setAttribute( 'role', 'group' );
 		$controls->setAttribute( 'aria-label', 'Timer controls' );
 
-		// Pause button.
+		// Pause button...
 		$pause = $dom->createElement( 'button' );
 		$pause->setAttribute( 'type', 'button' );
 		$pause->setAttribute( 'class', 'slos-timer-pause' );
@@ -371,7 +371,7 @@ class TimingControlFixer extends BaseFixer {
 		$pause->textContent = '⏸ Pause';
 		$controls->appendChild( $pause );
 
-		// Add time button.
+		// Add time button...
 		$add = $dom->createElement( 'button' );
 		$add->setAttribute( 'type', 'button' );
 		$add->setAttribute( 'class', 'slos-timer-add' );
@@ -379,7 +379,7 @@ class TimingControlFixer extends BaseFixer {
 		$add->textContent = '+1 min';
 		$controls->appendChild( $add );
 
-		// Add more time button.
+		// Add more time button...
 		$add_more = $dom->createElement( 'button' );
 		$add_more->setAttribute( 'type', 'button' );
 		$add_more->setAttribute( 'class', 'slos-timer-add' );

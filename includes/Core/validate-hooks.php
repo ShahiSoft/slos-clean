@@ -5,6 +5,8 @@
  * @package ShahiLegalFlowSuite
  */
 
+// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- CLI test output
+
 echo "=== WordPress Hooks Validation ===\n\n";
 
 // Load Hooks class directly..

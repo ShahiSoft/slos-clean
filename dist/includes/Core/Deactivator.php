@@ -32,17 +32,17 @@ class Deactivator {
 	 * @return void
 	 */
 	public static function deactivate() {
-		// Clear transients
+		// Clear transients..
 		self::clear_transients();
 
-		// Remove custom capabilities
+		// Remove custom capabilities..
 		\ShahiLegalFlowSuite\Admin\MenuManager::remove_capabilities();
 
-		// Flush rewrite rules
+		// Flush rewrite rules..
 		flush_rewrite_rules();
 
-		// Note: We do NOT delete any user data here
-		// Data deletion only happens in uninstall.php if user chooses to
+		// Note: We do NOT delete any user data here..
+		// Data deletion only happens in uninstall.php if user chooses to..
 	}
 
 	/**
@@ -54,7 +54,7 @@ class Deactivator {
 	private static function clear_transients() {
 		global $wpdb;
 
-		// Delete all transients with our prefix
+		// Delete all transients with our prefix..
 		$wpdb->query(
 			$wpdb->prepare(
 				"DELETE FROM {$wpdb->options} 

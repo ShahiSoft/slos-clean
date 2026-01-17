@@ -43,7 +43,7 @@ final class EmptyLinkFixer extends AbstractFixer {
 	}
 
 	public function can_fix( string $content ): bool {
-		// Check for potentially empty links
+		// Check for potentially empty links..
 		return strpos( $content, '<a' ) !== false;
 	}
 
@@ -67,23 +67,23 @@ final class EmptyLinkFixer extends AbstractFixer {
 			$accessible_name = $this->generate_accessible_name( $link, $href );
 
 			if ( ! empty( $accessible_name ) ) {
-				// Check if link has only image child
+				// Check if link has only image child..
 				$images = $link->getElementsByTagName( 'img' );
 				if ( $images->length === 1 && trim( $link->textContent ) === '' ) {
-					// Add alt to image instead
+					// Add alt to image instead..
 					$img = $images->item( 0 );
 					if ( empty( $img->getAttribute( 'alt' ) ) ) {
 						$img->setAttribute( 'alt', $accessible_name );
 					}
 				} else {
-					// Add visually hidden span
+					// Add visually hidden span..
 					$span = $this->doc->createElement( 'span' );
 					$span->setAttribute( 'class', 'screen-reader-text sr-only visually-hidden' );
 					$span->textContent = $accessible_name;
 					$link->appendChild( $span );
 				}
 
-				// Also add aria-label as backup
+				// Also add aria-label as backup..
 				if ( ! $link->hasAttribute( 'aria-label' ) && ! $link->hasAttribute( 'aria-labelledby' ) ) {
 					$link->setAttribute( 'aria-label', $accessible_name );
 				}
@@ -116,23 +116,23 @@ final class EmptyLinkFixer extends AbstractFixer {
 	 * @return bool
 	 */
 	private function is_empty_link( \DOMElement $link ): bool {
-		// Has aria-label
+		// Has aria-label..
 		if ( ! empty( $link->getAttribute( 'aria-label' ) ) ) {
 			return false;
 		}
 
-		// Has aria-labelledby
+		// Has aria-labelledby..
 		if ( ! empty( $link->getAttribute( 'aria-labelledby' ) ) ) {
 			return false;
 		}
 
-		// Has text content
+		// Has text content..
 		$text = trim( $link->textContent );
 		if ( ! empty( $text ) ) {
 			return false;
 		}
 
-		// Has image with alt
+		// Has image with alt..
 		$images = $link->getElementsByTagName( 'img' );
 		foreach ( $images as $img ) {
 			if ( ! empty( $img->getAttribute( 'alt' ) ) ) {
@@ -140,7 +140,7 @@ final class EmptyLinkFixer extends AbstractFixer {
 			}
 		}
 
-		// Has title (not ideal but provides some accessibility)
+		// Has title (not ideal but provides some accessibility)..
 		if ( ! empty( $link->getAttribute( 'title' ) ) ) {
 			return false;
 		}
@@ -156,25 +156,25 @@ final class EmptyLinkFixer extends AbstractFixer {
 	 * @return string
 	 */
 	private function generate_accessible_name( \DOMElement $link, string $href ): string {
-		// Check title attribute
+		// Check title attribute..
 		$title = $link->getAttribute( 'title' );
 		if ( ! empty( $title ) ) {
 			return $title;
 		}
 
-		// Check for common social media patterns
+		// Check for common social media patterns..
 		$social_name = $this->detect_social_link( $href );
 		if ( $social_name ) {
 			return $social_name;
 		}
 
-		// Check for common action patterns
+		// Check for common action patterns..
 		$action_name = $this->detect_action_link( $href, $link );
 		if ( $action_name ) {
 			return $action_name;
 		}
 
-		// Parse URL for context
+		// Parse URL for context..
 		return $this->generate_from_url( $href );
 	}
 
@@ -217,23 +217,35 @@ final class EmptyLinkFixer extends AbstractFixer {
 		if ( strpos( $href, 'mailto:' ) === 0 ) {
 			$email = str_replace( 'mailto:', '', $href );
 			$email = explode( '?', $email )[0]; // Remove query params
-			return sprintf( __( /* translators: %s: email address */  'Send email to %s', 'shahi-legalflowsuite' ), $email );
+			return sprintf(
+				/* translators: %s: email address */
+				__( 'Send email to %s', 'shahi-legalflowsuite' ),
+				$email
+			);
 		}
 
 		if ( strpos( $href, 'tel:' ) === 0 ) {
 			$phone = str_replace( 'tel:', '', $href );
-			return sprintf( __( /* translators: %s: phone number */  'Call %s', 'shahi-legalflowsuite' ), $phone );
+			return sprintf(
+				/* translators: %s: phone number */
+				__( 'Call %s', 'shahi-legalflowsuite' ),
+				$phone
+			);
 		}
 
 		if ( strpos( $href, '#' ) === 0 ) {
 			$anchor = substr( $href, 1 );
 			if ( ! empty( $anchor ) ) {
 				$readable = str_replace( array( '-', '_' ), ' ', $anchor );
-				return sprintf( __( /* translators: %s: anchor name */  'Jump to %s', 'shahi-legalflowsuite' ), ucwords( $readable ) );
+				return sprintf(
+					/* translators: %s: anchor name */
+					__( 'Jump to %s', 'shahi-legalflowsuite' ),
+					ucwords( $readable )
+				);
 			}
 		}
 
-		// Check for download links
+		// Check for download links..
 		$class = $link->getAttribute( 'class' );
 		if ( strpos( $class, 'download' ) !== false || $link->hasAttribute( 'download' ) ) {
 			return __( 'Download file', 'shahi-legalflowsuite' );
@@ -252,9 +264,13 @@ final class EmptyLinkFixer extends AbstractFixer {
 		$parsed = wp_parse_url( $href );
 
 		if ( ! empty( $parsed['host'] ) ) {
-			// External link
+			// External link..
 			$domain = preg_replace( '/^www\./', '', $parsed['host'] );
-			return sprintf( __( /* translators: %s: domain name */  'Visit %s', 'shahi-legalflowsuite' ), $domain );
+			return sprintf(
+				/* translators: %s: domain name */
+				__( 'Visit %s', 'shahi-legalflowsuite' ),
+				$domain
+			);
 		}
 
 		if ( ! empty( $parsed['path'] ) ) {

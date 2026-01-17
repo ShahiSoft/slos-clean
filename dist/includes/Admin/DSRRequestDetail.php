@@ -53,7 +53,7 @@ class DSRRequestDetail {
 	 * Constructor
 	 */
 	public function __construct() {
-		// Dependencies will be lazy-loaded when needed
+		// Dependencies will be lazy-loaded when needed..
 	}
 
 	/**
@@ -110,14 +110,14 @@ class DSRRequestDetail {
 			wp_die( esc_html__( 'Invalid request ID.', 'shahi-legalflowsuite' ) );
 		}
 
-		// Get request data
+		// Get request data..
 		$request = $this->get_repository()->find_by_id( $request_id );
 
 		if ( ! $request ) {
 			wp_die( esc_html__( 'Request not found.', 'shahi-legalflowsuite' ) );
 		}
 
-		// Get audit timeline
+		// Get audit timeline..
 		$timeline = $this->get_audit_service()->get_timeline( $request_id, array( 'order' => 'DESC' ) );
 
 		echo '<div class="wrap shahi-legalflowsuite">';
@@ -126,17 +126,17 @@ class DSRRequestDetail {
 		echo '<a href="' . esc_url( admin_url( 'admin.php?page=' . MenuManager::MENU_SLUG . '-dsr-requests' ) ) . '" class="page-title-action">' . esc_html__( '← Back to Requests', 'shahi-legalflowsuite' ) . '</a>';
 		echo '<hr class="wp-header-end" />';
 
-		// Two-column layout
+		// Two-column layout..
 		echo '<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-top: 20px;">';
 
-		// Left column: Request details
+		// Left column: Request details..
 		echo '<div>';
 		$this->render_request_details( $request );
 		$this->render_consent_history( $request );
 		$this->render_audit_timeline( $timeline );
 		echo '</div>';
 
-		// Right column: SLA countdown and actions
+		// Right column: SLA countdown and actions..
 		echo '<div>';
 		$this->render_sla_panel( $request );
 		$this->render_actions_panel( $request );
@@ -221,7 +221,7 @@ class DSRRequestDetail {
 		echo '<h2 class="hndle"><span>' . esc_html__( 'Consent History', 'shahi-legalflowsuite' ) . '</span></h2>';
 		echo '<div class="inside">';
 
-		// Fetch consents by email
+		// Fetch consents by email..
 		$consents = $this->get_consent_service()->get_by_email( $request->requester_email ?? '' );
 
 		if ( empty( $consents ) ) {
@@ -253,24 +253,24 @@ class DSRRequestDetail {
 
 		echo '<div class="consent-entry" style="position: relative; padding: 15px 0; border-left: 2px solid #ddd;">';
 
-		// Icon
+		// Icon..
 		echo '<div style="position: absolute; left: -11px; top: 15px; width: 20px; height: 20px; border-radius: 50%; background: #fff; border: 2px solid ' . esc_attr( $status_color ) . '; display: flex; align-items: center; justify-content: center;">';
 		echo '<span class="dashicons ' . esc_attr( $icon ) . '" style="font-size: 12px; width: 12px; height: 12px; color: ' . esc_attr( $status_color ) . ';"></span>';
 		echo '</div>';
 
-		// Content
+		// Content..
 		echo '<div style="margin-left: 20px;">';
 		echo '<div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 5px;">';
 		echo '<strong>' . esc_html( ucwords( str_replace( '_', ' ', $consent['type'] ?? '' ) ) ) . '</strong>';
 		echo '<span style="font-size: 12px; color: #666;">' . esc_html( $this->format_relative_time( $consent['created_at'] ?? '' ) ) . '</span>';
 		echo '</div>';
 
-		// Status badge
+		// Status badge..
 		echo '<div style="margin: 5px 0;">';
 		echo '<span style="display: inline-block; padding: 2px 8px; background: ' . esc_attr( $status_color ) . '; color: white; border-radius: 3px; font-size: 11px; font-weight: 600;">' . esc_html( ucfirst( $status ) ) . '</span>';
 		echo '</div>';
 
-		// User info
+		// User info..
 		if ( ! empty( $consent['user_name'] ) ) {
 			echo '<div style="font-size: 12px; color: #666; margin-top: 5px;">';
 			echo '<span class="dashicons dashicons-admin-users" style="font-size: 14px; vertical-align: middle;"></span> ';
@@ -281,7 +281,7 @@ class DSRRequestDetail {
 			echo '</div>';
 		}
 
-		// Metadata (if present)
+		// Metadata (if present)..
 		if ( ! empty( $consent['metadata'] ) && is_array( $consent['metadata'] ) ) {
 			echo '<details style="margin-top: 8px; font-size: 12px;">';
 			echo '<summary style="cursor: pointer; color: #0073aa;">' . esc_html__( 'View Metadata', 'shahi-legalflowsuite' ) . '</summary>';
@@ -334,12 +334,12 @@ class DSRRequestDetail {
 
 		echo '<div class="timeline-entry" style="position: relative; padding: 15px 0; border-left: 2px solid #ddd;">';
 
-		// Icon
+		// Icon..
 		echo '<div style="position: absolute; left: -11px; top: 15px; width: 20px; height: 20px; border-radius: 50%; background: #fff; border: 2px solid ' . esc_attr( $this->get_action_color( $entry['action'] ?? '' ) ) . '; display: flex; align-items: center; justify-content: center;">';
 		echo '<span class="dashicons ' . esc_attr( $icon ) . '" style="font-size: 12px; width: 12px; height: 12px; color: ' . esc_attr( $this->get_action_color( $entry['action'] ?? '' ) ) . ';"></span>';
 		echo '</div>';
 
-		// Content
+		// Content..
 		echo '<div style="margin-left: 20px;">';
 		echo '<div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 5px;">';
 		echo '<strong>' . esc_html( $entry['action_label'] ?? '' ) . '</strong>';
@@ -357,7 +357,7 @@ class DSRRequestDetail {
 			echo '</div>';
 		}
 
-		// Metadata (if present)
+		// Metadata (if present)..
 		if ( ! empty( $entry['metadata'] ) && is_array( $entry['metadata'] ) ) {
 			echo '<details style="margin-top: 8px; font-size: 12px;">';
 			echo '<summary style="cursor: pointer; color: #0073aa;">' . esc_html__( 'View Details', 'shahi-legalflowsuite' ) . '</summary>';
@@ -387,7 +387,7 @@ class DSRRequestDetail {
 		$diff     = $due_date - $now;
 
 		if ( ! empty( $request->completed_at ) ) {
-			// Request completed
+			// Request completed..
 			$completed_date = strtotime( $request->completed_at );
 			$completed_diff = $completed_date - strtotime( $request->submitted_at ?? '' );
 			$completed_days = floor( $completed_diff / DAY_IN_SECONDS );
@@ -399,7 +399,7 @@ class DSRRequestDetail {
 			echo '<p style="color: #666;">' . sprintf( esc_html__( 'Resolved in %d days', 'shahi-legalflowsuite' ), absint( $completed_days ) ) . '</p>';
 			echo '</div>';
 		} elseif ( $diff < 0 ) {
-			// Overdue
+			// Overdue..
 			$overdue_days = abs( floor( $diff / DAY_IN_SECONDS ) );
 			echo '<div style="text-align: center; padding: 20px; background: #fff3cd; border-radius: 4px;">';
 			echo '<div class="dashicons dashicons-warning" style="font-size: 48px; width: 48px; height: 48px; color: #dc3232;"></div>';
@@ -408,12 +408,13 @@ class DSRRequestDetail {
 			echo '<p style="color: #666;">' . sprintf( esc_html__( '%d days past due date', 'shahi-legalflowsuite' ), absint( $overdue_days ) ) . '</p>';
 			echo '</div>';
 		} else {
-			// Countdown
+			// Countdown..
 			$days_remaining = ceil( $diff / DAY_IN_SECONDS );
 			$color          = $days_remaining <= 7 ? '#f18500' : '#46b450';
 
 			echo '<div style="text-align: center; padding: 20px;">';
-			echo '<div class="dashicons dashicons-clock" style="font-size: 48px; width: 48px; height: 48px; color: ' . esc_attr( $color ) . ';"></div>';			/* translators: %d: number of days remaining until due date */			echo '<h3 style="margin: 10px 0 5px; color: ' . esc_attr( $color ) . ';">' . sprintf( esc_html__( '%d Days', 'shahi-legalflowsuite' ), absint( $days_remaining ) ) . '</h3>';
+			echo '<div class="dashicons dashicons-clock" style="font-size: 48px; width: 48px; height: 48px; color: ' . esc_attr( $color ) . ';"></div>';
+			/* translators: %d: number of days remaining until due date */          echo '<h3 style="margin: 10px 0 5px; color: ' . esc_attr( $color ) . ';">' . sprintf( esc_html__( '%d Days', 'shahi-legalflowsuite' ), absint( $days_remaining ) ) . '</h3>';
 			echo '<p style="color: #666;">' . esc_html__( 'Until due date', 'shahi-legalflowsuite' ) . '</p>';
 			echo '<p style="font-size: 12px; color: #999;">' . esc_html( date_i18n( get_option( 'date_format' ), $due_date ) ) . '</p>';
 			echo '</div>';
@@ -434,7 +435,7 @@ class DSRRequestDetail {
 		echo '<h2 class="hndle"><span>' . esc_html__( 'Quick Actions', 'shahi-legalflowsuite' ) . '</span></h2>';
 		echo '<div class="inside">';
 
-		// Status change
+		// Status change..
 		echo '<div style="margin-bottom: 15px;">';
 		echo '<label style="display: block; margin-bottom: 5px; font-weight: 600;">' . esc_html__( 'Change Status', 'shahi-legalflowsuite' ) . '</label>';
 		echo '<select id="dsr-status-change" style="width: 100%;">';
@@ -453,14 +454,14 @@ class DSRRequestDetail {
 		echo '<button type="button" class="button button-primary" style="margin-top: 5px; width: 100%;" onclick="updateDSRStatus(' . absint( $request->id ?? 0 ) . ')">' . esc_html__( 'Update Status', 'shahi-legalflowsuite' ) . '</button>';
 		echo '</div>';
 
-		// Add note
+		// Add note..
 		echo '<div style="margin-bottom: 15px;">';
 		echo '<label style="display: block; margin-bottom: 5px; font-weight: 600;">' . esc_html__( 'Add Note', 'shahi-legalflowsuite' ) . '</label>';
 		echo '<textarea id="dsr-note" rows="3" style="width: 100%;"></textarea>';
 		echo '<button type="button" class="button" style="margin-top: 5px; width: 100%;" onclick="addDSRNote(' . absint( $request->id ?? 0 ) . ')">' . esc_html__( 'Add Note', 'shahi-legalflowsuite' ) . '</button>';
 		echo '</div>';
 
-		// Export data
+		// Export data..
 		if ( in_array( $request->status ?? '', array( 'verified', 'in_progress', 'completed' ), true ) ) {
 			echo '<div style="margin-bottom: 15px;">';
 			echo '<label style="display: block; margin-bottom: 5px; font-weight: 600;">' . esc_html__( 'Export Data', 'shahi-legalflowsuite' ) . '</label>';
@@ -469,7 +470,7 @@ class DSRRequestDetail {
 			echo '</div>';
 		}
 
-		// Delete request (danger zone)
+		// Delete request (danger zone)..
 		echo '<div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #ddd;">';
 		echo '<button type="button" class="button button-link-delete" style="width: 100%;" onclick="deleteDSRRequest(' . absint( $request->id ?? 0 ) . ')">' . esc_html__( 'Delete Request', 'shahi-legalflowsuite' ) . '</button>';
 		echo '</div>';
@@ -477,7 +478,7 @@ class DSRRequestDetail {
 		echo '</div>'; // .inside
 		echo '</div>'; // .postbox
 
-		// JavaScript for AJAX actions
+		// JavaScript for AJAX actions..
 		$this->render_inline_script( $request );
 	}
 
@@ -521,7 +522,7 @@ class DSRRequestDetail {
 			const note = document.getElementById('dsr-note').value;
 			if (!note) return;
 
-			// Note: This would need a dedicated endpoint or we can simulate by status update with note
+			// Note: This would need a dedicated endpoint or we can simulate by status update with note..
 			alert('<?php echo esc_js( __( 'Note functionality requires REST API endpoint.', 'shahi-legalflowsuite' ) ); ?>');
 		}
 

@@ -117,7 +117,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 								<span class="dashicons dashicons-<?php echo esc_attr( $step['icon'] ); ?>"></span>
 							</div>
 							<div class="slos-step-meta">
-								<span class="slos-step-badge"><?php printf( esc_html__( 'Step %d of 11', 'shahi-legalflowsuite' ), $step_num ); ?></span>
+								<span class="slos-step-badge"><?php /* translators: %d: current step number (1-based) */ printf( esc_html__( 'Step %d of 11', 'shahi-legalflowsuite' ), intval( $step_num ) ); ?></span>
 								<h2 class="slos-step-heading"><?php echo esc_html( $step['title'] ); ?></h2>
 								<p class="slos-step-description"><?php echo esc_html( $step['description'] ); ?></p>
 							</div>

@@ -96,7 +96,14 @@ final class AudioAccessibilityFixer extends AbstractFixer {
 					$label    = pathinfo( $filename, PATHINFO_FILENAME );
 					$label    = str_replace( array( '-', '_' ), ' ', $label );
 					$label    = ucwords( $label );
-					$audio->setAttribute( 'aria-label', sprintf( __( 'Audio: %s', 'shahi-legalflowsuite' ), $label ) );
+					$audio->setAttribute(
+						'aria-label',
+						sprintf(
+						// translators: %s: audio label generated from filename (human readable)
+							__( 'Audio: %s', 'shahi-legalflowsuite' ),
+							$label
+						)
+					);
 				} else {
 					$audio->setAttribute( 'aria-label', __( 'Audio player', 'shahi-legalflowsuite' ) );
 				}

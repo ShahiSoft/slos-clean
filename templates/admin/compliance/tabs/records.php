@@ -13,21 +13,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Get filter values from URL
-$filter_type     = isset( $_GET['consent_type'] ) ? sanitize_text_field( $_GET['consent_type'] ) : '';
-$filter_status   = isset( $_GET['consent_status'] ) ? sanitize_text_field( $_GET['consent_status'] ) : '';
-$filter_date     = isset( $_GET['date_range'] ) ? sanitize_text_field( $_GET['date_range'] ) : '30d';
-$filter_geo_rule = isset( $_GET['geo_rule'] ) ? sanitize_text_field( $_GET['geo_rule'] ) : '';
-$filter_region   = isset( $_GET['region'] ) ? sanitize_text_field( $_GET['region'] ) : '';
-$search_query    = isset( $_GET['search'] ) ? sanitize_text_field( $_GET['search'] ) : '';
+// Get filter values from URL.
+$filter_type     = isset( $_GET['consent_type'] ) ? sanitize_text_field( wp_unslash( $_GET['consent_type'] ) ) : '';
+$filter_status   = isset( $_GET['consent_status'] ) ? sanitize_text_field( wp_unslash( $_GET['consent_status'] ) ) : '';
+$filter_date     = isset( $_GET['date_range'] ) ? sanitize_text_field( wp_unslash( $_GET['date_range'] ) ) : '30d';
+$filter_geo_rule = isset( $_GET['geo_rule'] ) ? sanitize_text_field( wp_unslash( $_GET['geo_rule'] ) ) : '';
+$filter_region   = isset( $_GET['region'] ) ? sanitize_text_field( wp_unslash( $_GET['region'] ) ) : '';
+$search_query    = isset( $_GET['search'] ) ? sanitize_text_field( wp_unslash( $_GET['search'] ) ) : '';
 
-// Get geo rules for filter dropdown
+// Get geo rules for filter dropdown.
 $geo_rules = get_option( 'slos_geo_rules', array() );
 if ( ! is_array( $geo_rules ) ) {
 	$geo_rules = array();
 }
 
-// Available regions
+// Available regions.
 $available_regions = array(
 	'EU'     => __( 'European Union', 'shahi-legalflowsuite' ),
 	'EEA'    => __( 'European Economic Area', 'shahi-legalflowsuite' ),
@@ -557,11 +557,11 @@ $available_regions = array(
 								$region       = $consent_arr['region'] ?? '';
 								$geo_rule_id  = $consent_arr['geo_rule_id'] ?? null;
 
-								// Find rule name if we have geo_rule_id
+								// Find rule name if we have geo_rule_id.
 								$rule_name = '';
 								if ( $geo_rule_id && ! empty( $geo_rules ) ) {
 									foreach ( $geo_rules as $rule ) {
-										if ( ( $rule['id'] ?? '' ) == $geo_rule_id ) {
+										if ( ( $rule['id'] ?? '' ) === $geo_rule_id ) {
 											$rule_name = $rule['name'] ?? '';
 											break;
 										}
@@ -629,10 +629,11 @@ $available_regions = array(
 				<?php
 				$total = $stats['total'] ?? 0;
 				printf(
+					// translators: %1$d: start record number, %2$d: end record number, %3$d: total records.
 					esc_html__( 'Showing %1$d - %2$d of %3$d records', 'shahi-legalflowsuite' ),
 					1,
-					min( 25, $total ),
-					$total
+					intval( min( 25, $total ) ),
+					intval( $total )
 				);
 				?>
 			</div>

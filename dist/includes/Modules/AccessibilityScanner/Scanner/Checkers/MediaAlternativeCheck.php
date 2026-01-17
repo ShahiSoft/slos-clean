@@ -33,7 +33,7 @@ class MediaAlternativeCheck extends AbstractCheck {
 		$medias = $xpath->query( '//video | //audio' );
 
 		foreach ( $medias as $media ) {
-			// Check for fallback content inside the tag
+			// Check for fallback content inside the tag..
 			if ( trim( $media->textContent ) === '' ) {
 				$issues[] = array(
 					'element' => $media->tagName,
@@ -42,10 +42,10 @@ class MediaAlternativeCheck extends AbstractCheck {
 				);
 			}
 
-			// Heuristic: Check for "transcript" link nearby?
-			// Hard to do reliably in DOM without context, but we can check if there's a link with "transcript" text in the whole content?
-			// No, that's too broad.
-			// We'll stick to the fallback content check for now.
+			// Heuristic: Check for "transcript" link nearby?..
+			// Hard to do reliably in DOM without context, but we can check if there's a link with "transcript" text in the whole content?..
+			// No, that's too broad...
+			// We'll stick to the fallback content check for now...
 		}
 
 		return $issues;

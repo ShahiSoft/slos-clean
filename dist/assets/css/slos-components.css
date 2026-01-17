@@ -115,8 +115,6 @@
 	border-radius: inherit;
 	padding: 1px;
 	background: var(--slos-gradient-primary);
-	mask: linear-gradient(#fff 0 0) content-box,
-					linear-gradient(#fff 0 0);
 	mask-composite: xor;
 	mask: linear-gradient(#fff 0 0) content-box,
 			linear-gradient(#fff 0 0);
@@ -144,8 +142,6 @@
 	border-radius: inherit;
 	padding: 1px;
 	background: var(--slos-gradient-primary);
-	mask: linear-gradient(#fff 0 0) content-box,
-					linear-gradient(#fff 0 0);
 	mask-composite: xor;
 	mask: linear-gradient(#fff 0 0) content-box,
 			linear-gradient(#fff 0 0);
@@ -209,7 +205,6 @@
 	letter-spacing: -0.02em;
 	font-variant-numeric: tabular-nums;
 	background: var(--slos-gradient-primary);
-	background-clip: text;
 	-webkit-text-fill-color: transparent;
 	background-clip: text;
 }
@@ -353,7 +348,6 @@
 	cursor: pointer;
 	transition: all 0.2s ease;
 	white-space: nowrap;
-	user-select: none;
 	user-select: none;
 }
 
@@ -1076,7 +1070,6 @@
 	font-size: var(--slos-text-sm);
 	color: var(--slos-text-secondary);
 	cursor: pointer;
-	user-select: none;
 	user-select: none;
 }
 

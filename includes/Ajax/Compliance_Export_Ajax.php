@@ -13,6 +13,21 @@ namespace ShahiLegalFlowSuite\Ajax;
 
 use ShahiLegalFlowSuite\Services\Consent_Service;
 use ShahiLegalFlowSuite\Services\Consent_Audit_Logger;
+use function absint;
+use function __;
+use function check_ajax_referer;
+use function current_user_can;
+use function esc_html;
+use function esc_html__;
+use function get_bloginfo;
+use function is_wp_error;
+use function number_format_i18n;
+use function sanitize_text_field;
+use function wp_die;
+use function wp_send_json_error;
+use function wp_send_json_success;
+use function wp_unslash;
+use const ARRAY_A;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -153,11 +168,12 @@ class Compliance_Export_Ajax {
 
 		$where_sql = implode( ' AND ', $where_clauses );
 
-		$query    = $wpdb->prepare(
-			"SELECT * FROM {$wpdb->prefix}slos_consent WHERE {$where_sql} ORDER BY created_at DESC LIMIT 10000", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$where_values
-		);
-		$consents = $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		// Escape table name and pass prepared values using variadic unpacking.
+		$escaped_table = esc_sql( $table );
+		// Build SQL with concatenation to avoid interpolating variables inside the prepared string.
+		$sql = 'SELECT * FROM ' . $escaped_table . ' WHERE ' . $where_sql . ' ORDER BY created_at DESC LIMIT 10000';
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql includes escaped table name and prepared values are passed separately.
+		$consents = $wpdb->get_results( $wpdb->prepare( $sql, ...$where_values ), ARRAY_A );
 
 		// Generate CSV.
 		$filename = 'consent-records-' . gmdate( 'Y-m-d-His' ) . '.csv';
@@ -167,6 +183,7 @@ class Compliance_Export_Ajax {
 		header( 'Pragma: no-cache' );
 		header( 'Expires: 0' );
 
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- Streaming CSV output via php://output.
 		$output = fopen( 'php://output', 'w' );
 
 		// Write CSV header.
@@ -230,39 +247,31 @@ class Compliance_Export_Ajax {
 		$start_date = gmdate( 'Y-m-d H:i:s', strtotime( "-{$days_back} days" ) );
 
 		// Total consents.
-		$total = $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT COUNT(*) FROM {$wpdb->prefix}slos_consent WHERE created_at >= %s",
-				$start_date
-			)
-		);
+		$table = $wpdb->prefix . 'slos_consent';
+		// Escape table name and use prepared placeholder for the date.
+		$escaped_table = esc_sql( $table );
+		// Build SQL with concatenation and prepare the date value.
+		$sql = 'SELECT COUNT(*) FROM ' . $escaped_table . ' WHERE created_at >= %s';
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql contains escaped table name; the date is prepared.
+		$total = $wpdb->get_var( $wpdb->prepare( $sql, $start_date ) );
 
 		// By status.
-		$by_status = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT status, COUNT(*) as count FROM {$wpdb->prefix}slos_consent WHERE created_at >= %s GROUP BY status",
-				$start_date
-			),
-			ARRAY_A
-		);
+		// Build SQL with concatenation and prepare the date value.
+		$sql = 'SELECT status, COUNT(*) as count FROM ' . $escaped_table . ' WHERE created_at >= %s GROUP BY status';
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql contains escaped table name; the date is prepared.
+		$by_status = $wpdb->get_results( $wpdb->prepare( $sql, $start_date ), ARRAY_A );
 
 		// By type.
-		$by_type = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT type, COUNT(*) as count FROM {$wpdb->prefix}slos_consent WHERE created_at >= %s GROUP BY type",
-				$start_date
-			),
-			ARRAY_A
-		);
+		// Build SQL with concatenation and prepare the date value.
+		$sql = 'SELECT type, COUNT(*) as count FROM ' . $escaped_table . ' WHERE created_at >= %s GROUP BY type';
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql contains escaped table name; the date is prepared.
+		$by_type = $wpdb->get_results( $wpdb->prepare( $sql, $start_date ), ARRAY_A );
 
 		// Top countries.
-		$by_country = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT country_code, COUNT(*) as count FROM {$wpdb->prefix}slos_consent WHERE created_at >= %s AND country_code IS NOT NULL GROUP BY country_code ORDER BY count DESC LIMIT 10",
-				$start_date
-			),
-			ARRAY_A
-		);
+		// Build SQL with concatenation and prepare the date value.
+		$sql = 'SELECT country_code, COUNT(*) as count FROM ' . $escaped_table . ' WHERE created_at >= %s AND country_code IS NOT NULL GROUP BY country_code ORDER BY count DESC LIMIT 10';
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql contains escaped table name; the date is prepared.
+		$by_country = $wpdb->get_results( $wpdb->prepare( $sql, $start_date ), ARRAY_A );
 
 		// Get time-series data.
 		$time_series = $this->consent_service->get_time_series(

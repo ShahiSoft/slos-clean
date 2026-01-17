@@ -262,7 +262,7 @@ final class GenericLinkTextFixer extends AbstractFixer {
 	 * @return string
 	 */
 	private function get_context_from_url( string $href ): string {
-		$parsed = parse_url( $href );
+		$parsed = wp_parse_url( $href );
 
 		if ( ! empty( $parsed['path'] ) ) {
 			$path     = $parsed['path'];

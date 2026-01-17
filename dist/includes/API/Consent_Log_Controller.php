@@ -17,7 +17,7 @@ use WP_REST_Request;
 use WP_REST_Response;
 use WP_Error;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -57,7 +57,7 @@ class Consent_Log_Controller extends Base_REST_Controller {
 	 * @since 3.0.1
 	 */
 	public function register_routes() {
-		// GET /slos/v1/consents/logs - Get logs with filters
+		// GET /slos/v1/consents/logs - Get logs with filters..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base,
@@ -71,7 +71,7 @@ class Consent_Log_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// GET /slos/v1/consents/logs/{id} - Get single log
+		// GET /slos/v1/consents/logs/{id} - Get single log..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/(?P<id>[\d]+)',
@@ -91,7 +91,7 @@ class Consent_Log_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// GET /slos/v1/consents/logs/stats - Get log statistics
+		// GET /slos/v1/consents/logs/stats - Get log statistics..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/stats',
@@ -116,7 +116,7 @@ class Consent_Log_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// GET /slos/v1/consents/{consent_id}/history - Get history for specific consent
+		// GET /slos/v1/consents/{consent_id}/history - Get history for specific consent..
 		register_rest_route(
 			$this->namespace,
 			'/consents/(?P<consent_id>[\d]+)/history',
@@ -145,7 +145,7 @@ class Consent_Log_Controller extends Base_REST_Controller {
 	 * @return WP_REST_Response|WP_Error Response object or error
 	 */
 	public function get_logs( WP_REST_Request $request ) {
-		// Get filter parameters
+		// Get filter parameters..
 		$args = array(
 			'user_id'   => $request->get_param( 'user_id' ),
 			'purpose'   => $request->get_param( 'purpose' ),
@@ -156,7 +156,7 @@ class Consent_Log_Controller extends Base_REST_Controller {
 			'offset'    => ( $request->get_param( 'page' ) - 1 ) * ( $request->get_param( 'per_page' ) ?? 20 ),
 		);
 
-		// Remove null values
+		// Remove null values..
 		$args = array_filter(
 			$args,
 			function ( $value ) {
@@ -164,14 +164,14 @@ class Consent_Log_Controller extends Base_REST_Controller {
 			}
 		);
 
-		// Get logs
+		// Get logs..
 		$logs  = $this->audit_logger->search( $args );
 		$total = $this->audit_logger->count( $args );
 
-		// Prepare response
+		// Prepare response..
 		$response = rest_ensure_response( $logs );
 
-		// Add pagination headers
+		// Add pagination headers..
 		$response->header( 'X-WP-Total', $total );
 		$response->header( 'X-WP-TotalPages', ceil( $total / ( $args['limit'] ?? 20 ) ) );
 

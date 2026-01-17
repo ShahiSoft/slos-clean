@@ -128,7 +128,11 @@ final class IframeAccessibilityFixer extends AbstractFixer {
 		$parsed = wp_parse_url( $src );
 		if ( ! empty( $parsed['host'] ) ) {
 			$host = preg_replace( '/^www\./', '', $parsed['host'] );
-			return sprintf( __( 'Embedded content from %s', 'shahi-legalflowsuite' ), $host );
+			return sprintf(
+				/* translators: %s: host or domain name (e.g. example.com) */
+				__( 'Embedded content from %s', 'shahi-legalflowsuite' ),
+				$host
+			);
 		}
 
 		return __( 'Embedded content', 'shahi-legalflowsuite' );

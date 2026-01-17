@@ -30,7 +30,7 @@ class FieldsetLegendCheck extends AbstractCheck {
 		$dom    = $this->get_dom( $content );
 		$xpath  = new \DOMXPath( $dom );
 
-		// Find all radio and checkbox inputs
+		// Find all radio and checkbox inputs..
 		$inputs = $xpath->query( '//input[@type="radio"] | //input[@type="checkbox"]' );
 
 		$groups = array();
@@ -46,14 +46,14 @@ class FieldsetLegendCheck extends AbstractCheck {
 
 		foreach ( $groups as $name => $groupInputs ) {
 			if ( count( $groupInputs ) > 1 ) {
-				// Check if they share a common fieldset parent
+				// Check if they share a common fieldset parent..
 				$parent      = $groupInputs[0]->parentNode;
 				$hasFieldset = false;
 
-				// Traverse up to find fieldset
+				// Traverse up to find fieldset..
 				while ( $parent && $parent instanceof \DOMElement ) {
 					if ( $parent->tagName === 'fieldset' ) {
-						// Check if fieldset has legend
+						// Check if fieldset has legend..
 						$legends = $parent->getElementsByTagName( 'legend' );
 						if ( $legends->length > 0 && ! empty( trim( $legends->item( 0 )->textContent ) ) ) {
 							$hasFieldset = true;

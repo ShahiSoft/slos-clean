@@ -172,7 +172,7 @@ class DSR_Repository extends Base_Repository {
 
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$prepared = $this->wpdb->prepare( $sql, $values );
+		$prepared = $this->wpdb->prepare( $sql, ...$values );
 
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		return $this->wpdb->get_results( $prepared );

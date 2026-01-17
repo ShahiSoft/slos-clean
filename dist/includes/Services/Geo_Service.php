@@ -14,7 +14,7 @@
 
 namespace ShahiLegalFlowSuite\Services;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -146,7 +146,7 @@ class Geo_Service extends Base_Service {
 			return null;
 		}
 
-		// Normalize fields
+		// Normalize fields..
 		$country      = $data['country_name'] ?? $data['country'] ?? '';
 		$country_code = strtoupper( (string) ( $data['country_code'] ?? $data['country'] ?? $data['countryCode'] ?? '' ) );
 		$region_name  = $data['region'] ?? $data['region_name'] ?? '';
@@ -222,7 +222,7 @@ class Geo_Service extends Base_Service {
 			if ( 'CA' === $state_code ) {
 				return 'US-CA'; // CCPA/CPRA
 			}
-			// Future: additional state-specific regs can be added via filter
+			// Future: additional state-specific regs can be added via filter..
 			$us_region = apply_filters( 'slos_geo_us_region', '', $state_code );
 			if ( is_string( $us_region ) && ! empty( $us_region ) ) {
 				return $us_region;
@@ -265,7 +265,7 @@ class Geo_Service extends Base_Service {
 				break;
 			}
 		}
-		// If we got a list, take first IP
+		// If we got a list, take first IP..
 		if ( strpos( $ip, ',' ) !== false ) {
 			$parts = explode( ',', $ip );
 			$ip    = trim( $parts[0] );

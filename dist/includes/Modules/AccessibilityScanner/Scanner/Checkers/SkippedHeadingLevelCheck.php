@@ -29,7 +29,7 @@ class SkippedHeadingLevelCheck extends AbstractCheck {
 		$issues = array();
 		$dom    = $this->get_dom( $content );
 		$xpath  = new \DOMXPath( $dom );
-		// Select all heading elements in document order
+		// Select all heading elements in document order..
 		$headings = $xpath->query( '//h1 | //h2 | //h3 | //h4 | //h5 | //h6' );
 
 		$previousLevel = 0;
@@ -37,9 +37,9 @@ class SkippedHeadingLevelCheck extends AbstractCheck {
 		foreach ( $headings as $heading ) {
 			$currentLevel = intval( substr( $heading->tagName, 1 ) );
 
-			// If current > previous + 1, it's a skip.
-			// We ignore the first heading (previousLevel == 0) for this check
-			// as MissingH1Check handles the start.
+			// If current > previous + 1, it's a skip...
+			// We ignore the first heading (previousLevel == 0) for this check..
+			// as MissingH1Check handles the start...
 			if ( $previousLevel > 0 && $currentLevel > $previousLevel + 1 ) {
 				$issues[] = array(
 					'message' => 'Skipped heading level: ' . strtoupper( $heading->tagName ) . " follows H$previousLevel.",

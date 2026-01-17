@@ -81,11 +81,11 @@ class Security {
 	 * @param string $action Action name for nonce.
 	 * @param string $name Optional. Nonce field name. Default '_wpnonce'.
 	 * @param bool   $referer Optional. Whether to add referer field. Default true.
-	 * @param bool   $echo Optional. Whether to echo or return. Default true.
+	 * @param bool   $should_echo Optional. Whether to echo or return. Default true.
 	 * @return string Nonce field HTML.
 	 */
-	public static function nonce_field( $action, $name = '_wpnonce', $referer = true, $echo = true ) {
-		return wp_nonce_field( self::NONCE_PREFIX . $action, $name, $referer, $echo );
+	public static function nonce_field( $action, $name = '_wpnonce', $referer = true, $should_echo = true ) {
+		return wp_nonce_field( self::NONCE_PREFIX . $action, $name, $referer, $should_echo );
 	}
 
 	/**
@@ -272,23 +272,23 @@ class Security {
 	 * @return bool True if valid, false otherwise.
 	 */
 	public static function validate_ajax_request( $action, $capability = 'manage_options', $nonce_key = 'nonce' ) {
-		// Check if it's an AJAX request
+		// Check if it's an AJAX request..
 		if ( ! wp_doing_ajax() ) {
 			return false;
 		}
 
-		// Verify nonce
+		// Verify nonce..
 		$nonce = isset( $_REQUEST[ $nonce_key ] ) ? sanitize_text_field( wp_unslash( $_REQUEST[ $nonce_key ] ) ) : '';
 		if ( ! self::verify_nonce( $nonce, $action ) ) {
 			return false;
 		}
 
-		// Check capability
+		// Check capability..
 		if ( ! self::check_capability( $capability ) ) {
 			return false;
 		}
 
-		// Check referer
+		// Check referer..
 		if ( ! check_ajax_referer( self::NONCE_PREFIX . $action, $nonce_key, false ) ) {
 			return false;
 		}
@@ -321,7 +321,6 @@ class Security {
 	 *
 	 * @since 1.0.0
 	 * @param string $url URL to check.
-	 * @param array  $allowed_hosts Optional. Allowed hosts.
 	 * @return bool True if URL is safe, false otherwise.
 	 */
 	public static function is_safe_url( $url ) {
@@ -329,19 +328,19 @@ class Security {
 			return false;
 		}
 
-		// Check if it's a relative URL
+		// Check if it's a relative URL..
 		if ( strpos( $url, '://' ) === false ) {
 			return true;
 		}
 
-		// Validate URL format
+		// Validate URL format..
 		if ( ! filter_var( $url, FILTER_VALIDATE_URL ) ) {
 			return false;
 		}
 
-		// Check allowed protocols
+		// Check allowed protocols..
 		$allowed_protocols = array( 'http', 'https' );
-		$protocol          = parse_url( $url, PHP_URL_SCHEME );
+		$protocol          = wp_parse_url( $url, PHP_URL_SCHEME );
 
 		if ( ! in_array( $protocol, $allowed_protocols, true ) ) {
 			return false;
@@ -375,7 +374,7 @@ class Security {
 	 * @return void Dies if CSRF detected.
 	 */
 	public static function prevent_csrf( $action ) {
-		$nonce = isset( $_REQUEST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) ) : '';
+		$nonce = isset( $_REQUEST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.NonceVerification.Recommended
 		self::verify_nonce_or_die( $nonce, $action );
 	}
 
@@ -396,7 +395,7 @@ class Security {
 			$ip = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) );
 		}
 
-		// Validate IP address
+		// Validate IP address..
 		if ( filter_var( $ip, FILTER_VALIDATE_IP ) ) {
 			return $ip;
 		}
@@ -426,14 +425,14 @@ class Security {
 			return '';
 		}
 
-		// IPv4
+		// IPv4..
 		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
 			$parts    = explode( '.', $ip );
 			$parts[3] = '0';
 			return implode( '.', $parts );
 		}
 
-		// IPv6
+		// IPv6..
 		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
 			$parts                        = explode( ':', $ip );
 			$parts[ count( $parts ) - 1 ] = '0';
@@ -453,12 +452,12 @@ class Security {
 	 * @return bool|string True if valid, error message if invalid.
 	 */
 	public static function validate_file_upload( $file, $allowed_types = array(), $max_size = 2097152 ) {
-		// Check if file was uploaded
+		// Check if file was uploaded..
 		if ( ! isset( $file['error'] ) || is_array( $file['error'] ) ) {
 			return __( 'Invalid file upload.', 'shahi-legalflowsuite' );
 		}
 
-		// Check for upload errors
+		// Check for upload errors..
 		switch ( $file['error'] ) {
 			case UPLOAD_ERR_OK:
 				break;
@@ -471,7 +470,7 @@ class Security {
 				return __( 'Unknown upload error.', 'shahi-legalflowsuite' );
 		}
 
-		// Check file size
+		// Check file size..
 		if ( $file['size'] > $max_size ) {
 			return sprintf(
 				/* translators: %s: maximum file size */
@@ -480,7 +479,7 @@ class Security {
 			);
 		}
 
-		// Check MIME type
+		// Check MIME type..
 		if ( ! empty( $allowed_types ) ) {
 			$finfo = finfo_open( FILEINFO_MIME_TYPE );
 			$mime  = finfo_file( $finfo, $file['tmp_name'] );
@@ -594,7 +593,7 @@ class Security {
 		$transient_key = 'shahi_ratelimit_' . md5( $action . self::get_user_ip() );
 		$attempts      = get_transient( $transient_key );
 
-		if ( $attempts === false ) {
+		if ( false === $attempts ) {
 			set_transient( $transient_key, 1, $window );
 			return true;
 		}
@@ -628,6 +627,9 @@ class Security {
 			'data'      => $data,
 		);
 
-		error_log( '[ShahiLegalFlowSuite Security] ' . wp_json_encode( $log_entry ) );
+		if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+			error_log( '[ShahiLegalFlowSuite Security] ' . wp_json_encode( $log_entry ) );
+		}
 	}
 }

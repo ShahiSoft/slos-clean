@@ -36,7 +36,7 @@ class Cookie_REST_Controller extends Base_REST_Controller {
 	 * Register routes
 	 */
 	public function register_routes() {
-		// GET /cookies/categories
+		// GET /cookies/categories..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/categories',
@@ -49,7 +49,7 @@ class Cookie_REST_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// GET /cookies/patterns
+		// GET /cookies/patterns..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/patterns',
@@ -62,7 +62,7 @@ class Cookie_REST_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// POST /cookies/report
+		// POST /cookies/report..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/report',
@@ -82,7 +82,7 @@ class Cookie_REST_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// POST /cookies/scan - Trigger server-side scan
+		// POST /cookies/scan - Trigger server-side scan..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/scan',
@@ -98,7 +98,7 @@ class Cookie_REST_Controller extends Base_REST_Controller {
 			)
 		);
 
-		// GET /cookies/inventory
+		// GET /cookies/inventory..
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/inventory',
@@ -188,7 +188,7 @@ class Cookie_REST_Controller extends Base_REST_Controller {
 			$site_url = home_url();
 		}
 
-		// Record scan start metadata
+		// Record scan start metadata..
 		$this->service->start_scan(
 			'manual',
 			array(
@@ -200,7 +200,7 @@ class Cookie_REST_Controller extends Base_REST_Controller {
 		$detected_cookies = array();
 		$errors           = array();
 
-		// Perform HTTP request to detect Set-Cookie headers
+		// Perform HTTP request to detect Set-Cookie headers..
 		$response = wp_remote_get(
 			$site_url,
 			array(
@@ -214,11 +214,11 @@ class Cookie_REST_Controller extends Base_REST_Controller {
 		);
 
 		if ( ! is_wp_error( $response ) ) {
-			// Get Set-Cookie headers
+			// Get Set-Cookie headers..
 			$headers     = wp_remote_retrieve_headers( $response );
 			$set_cookies = array();
 
-			// Headers can be array or Requests_Utility_CaseInsensitiveDictionary
+			// Headers can be array or Requests_Utility_CaseInsensitiveDictionary..
 			if ( is_array( $headers ) ) {
 				$set_cookies = isset( $headers['set-cookie'] ) ? (array) $headers['set-cookie'] : array();
 			} elseif ( is_object( $headers ) && method_exists( $headers, 'getAll' ) ) {
@@ -249,8 +249,8 @@ class Cookie_REST_Controller extends Base_REST_Controller {
 			}
 		}
 
-		// Also scan for common first-party cookies by checking known patterns
-		// These would typically be set by JavaScript on page load
+		// Also scan for common first-party cookies by checking known patterns..
+		// These would typically be set by JavaScript on page load..
 		$common_wp_cookies = array(
 			'wordpress_test_cookie' => array(
 				'category'    => 'necessary',
@@ -269,10 +269,10 @@ class Cookie_REST_Controller extends Base_REST_Controller {
 			),
 		);
 
-		// Check if any WordPress cookies might be set (based on user being logged in)
+		// Check if any WordPress cookies might be set (based on user being logged in)..
 		if ( is_user_logged_in() ) {
 			foreach ( $common_wp_cookies as $name => $info ) {
-				// Only add if not already detected
+				// Only add if not already detected..
 				$exists = array_filter(
 					$detected_cookies,
 					function ( $c ) use ( $name ) {
@@ -299,13 +299,13 @@ class Cookie_REST_Controller extends Base_REST_Controller {
 			}
 		}
 
-		// Save detected cookies to database
+		// Save detected cookies to database..
 		if ( ! empty( $detected_cookies ) ) {
 			update_option( 'slos_detected_cookies', $detected_cookies );
 			update_option( 'slos_cookie_scan_time', current_time( 'mysql' ) );
 		}
 
-		// Complete scan metadata
+		// Complete scan metadata..
 		$this->service->complete_scan(
 			array(
 				'cookies_found' => count( $detected_cookies ),
@@ -316,7 +316,11 @@ class Cookie_REST_Controller extends Base_REST_Controller {
 		/* translators: %d: number of cookies detected */
 		return $this->success_response(
 			$detected_cookies,
-			sprintf( __( 'Cookie scan completed. %d cookies detected.', 'shahi-legalflowsuite' ), count( $detected_cookies ) )
+			sprintf(
+				// translators: %d: number of cookies detected
+				__( 'Cookie scan completed. %d cookies detected.', 'shahi-legalflowsuite' ),
+				count( $detected_cookies )
+			)
 		);
 	}
 
@@ -334,7 +338,7 @@ class Cookie_REST_Controller extends Base_REST_Controller {
 		$parts = explode( ';', $cookie_string );
 		$main  = array_shift( $parts );
 
-		// Parse name=value
+		// Parse name=value..
 		$equals_pos = strpos( $main, '=' );
 		if ( $equals_pos === false ) {
 			return null;
@@ -358,7 +362,7 @@ class Cookie_REST_Controller extends Base_REST_Controller {
 			'samesite' => '',
 		);
 
-		// Parse attributes
+		// Parse attributes..
 		foreach ( $parts as $part ) {
 			$part = trim( $part );
 			if ( empty( $part ) ) {

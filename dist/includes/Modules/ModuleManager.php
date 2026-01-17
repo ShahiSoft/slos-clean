@@ -72,10 +72,10 @@ class ModuleManager {
 	 * @since 1.0.0
 	 */
 	private function __construct() {
-		// Register default modules
+		// Register default modules..
 		$this->register_default_modules();
 
-		// Initialize enabled modules
+		// Initialize enabled modules..
 		add_action( 'init', array( $this, 'initialize_modules' ), 5 );
 	}
 
@@ -110,7 +110,7 @@ class ModuleManager {
 			return false;
 		}
 
-		// Deactivate if enabled
+		// Deactivate if enabled..
 		if ( $this->modules[ $key ]->is_enabled() ) {
 			$this->modules[ $key ]->deactivate();
 		}
@@ -211,14 +211,14 @@ class ModuleManager {
 			return false;
 		}
 
-		// Check dependencies
+		// Check dependencies..
 		if ( ! $module->dependencies_met() ) {
 			return false;
 		}
 
-		// Activate module
+		// Activate module..
 		if ( $module->activate() ) {
-			// Initialize if not already initialized
+			// Initialize if not already initialized..
 			if ( ! isset( $this->initialized[ $key ] ) ) {
 				$module->init();
 				$this->initialized[ $key ] = true;
@@ -244,7 +244,7 @@ class ModuleManager {
 			return false;
 		}
 
-		// Check if other modules depend on this one
+		// Check if other modules depend on this one..
 		$dependents = $this->get_dependent_modules( $key );
 		if ( ! empty( $dependents ) ) {
 			return false; // Cannot disable if other modules depend on it
@@ -323,8 +323,7 @@ class ModuleManager {
 		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) === $table ) {
 			$db_record_exists = (bool) $wpdb->get_var(
 				$wpdb->prepare(
-					'SELECT COUNT(*) FROM %i WHERE module_key = %s',
-					$table,
+					'SELECT COUNT(*) FROM ' . $table . ' WHERE module_key = %s',
 					$key
 				)
 			);
@@ -345,27 +344,27 @@ class ModuleManager {
 	 * @return void
 	 */
 	private function register_default_modules() {
-		// Compliance Dashboard Module (Phase 2.1)
+		// Compliance Dashboard Module (Phase 2.1)..
 		if ( class_exists( 'ShahiLegalFlowSuite\Modules\ComplianceDashboard\ComplianceDashboard' ) ) {
 			$compliance_dashboard = new \ShahiLegalFlowSuite\Modules\ComplianceDashboard\ComplianceDashboard();
 			if ( $this->register( $compliance_dashboard ) && ! $this->module_record_exists( 'compliance-dashboard' ) ) {
-				// First time - enable by default
+				// First time - enable by default..
 				$this->enable_module( 'compliance-dashboard' );
 			}
 		}
 
-		// Security Module - DORMANT (temporarily disabled, data preserved)
-		// Uncomment to reactivate or remove 'security' from SLOS_DORMANT_MODULES constant
-		// if (class_exists('ShahiLegalFlowSuite\Modules\Security_Module')) {
-		// $this->register(new Security_Module());
-		// }
+		// Security Module - DORMANT (temporarily disabled, data preserved)..
+		// Uncomment to reactivate or remove 'security' from SLOS_DORMANT_MODULES constant..
+		// if (class_exists('ShahiLegalFlowSuite\Modules\Security_Module')) {..
+		// $this->register(new Security_Module());..
+		// }..
 
-		// Accessibility Scanner Module (Keep - legal requirement for ADA/WCAG compliance)
+		// Accessibility Scanner Module (Keep - legal requirement for ADA/WCAG compliance)..
 		if ( class_exists( 'ShahiLegalFlowSuite\Modules\AccessibilityScanner\AccessibilityScanner' ) ) {
 			$this->register( new \ShahiLegalFlowSuite\Modules\AccessibilityScanner\AccessibilityScanner() );
 		}
 
-		// Consent Management Module (GDPR compliance)
+		// Consent Management Module (GDPR compliance)..
 		if ( class_exists( 'ShahiLegalFlowSuite\Modules\ConsentManagement\ConsentManagement' ) ) {
 			$consent_module = new \ShahiLegalFlowSuite\Modules\ConsentManagement\ConsentManagement();
 			if ( $this->register( $consent_module ) && ! $this->module_record_exists( 'consent-management' ) ) {
@@ -373,16 +372,16 @@ class ModuleManager {
 			}
 		}
 
-		// DSR Portal Module - DORMANT (temporarily disabled, data preserved)
-		// Uncomment to reactivate or remove 'dsr-portal' from SLOS_DORMANT_MODULES constant
-		// if (class_exists('ShahiLegalFlowSuite\Modules\DSR_Portal\DSR_Portal')) {
-		// $dsr_module = new \ShahiLegalFlowSuite\Modules\DSR_Portal\DSR_Portal();
-		// if ($this->register($dsr_module) && !$this->module_record_exists('dsr-portal')) {
-		// $this->enable_module('dsr-portal');
-		// }
-		// }
+		// DSR Portal Module - DORMANT (temporarily disabled, data preserved)..
+		// Uncomment to reactivate or remove 'dsr-portal' from SLOS_DORMANT_MODULES constant..
+		// if (class_exists('ShahiLegalFlowSuite\Modules\DSR_Portal\DSR_Portal')) {..
+		// $dsr_module = new \ShahiLegalFlowSuite\Modules\DSR_Portal\DSR_Portal();..
+		// if ($this->register($dsr_module) && !$this->module_record_exists('dsr-portal')) {..
+		// $this->enable_module('dsr-portal');..
+		// }..
+		// }..
 
-		// Legal Documents Module (New)
+		// Legal Documents Module (New)..
 		if ( class_exists( 'ShahiLegalFlowSuite\Modules\LegalDocs\LegalDocuments' ) ) {
 			$legaldocs_module = new \ShahiLegalFlowSuite\Modules\LegalDocs\LegalDocuments();
 			if ( $this->register( $legaldocs_module ) && ! $this->module_record_exists( 'legal-docs' ) ) {
@@ -412,7 +411,7 @@ class ModuleManager {
 		$enabled  = count( $this->get_modules( true ) );
 		$disabled = $total - $enabled;
 
-		// Count by category
+		// Count by category..
 		$by_category = array();
 		foreach ( $this->modules as $module ) {
 			$category = $module->get_category();
@@ -523,7 +522,7 @@ class ModuleManager {
 				continue;
 			}
 
-			// Set enabled state
+			// Set enabled state..
 			if ( isset( $data['enabled'] ) ) {
 				if ( $data['enabled'] ) {
 					$this->enable_module( $key );
@@ -532,7 +531,7 @@ class ModuleManager {
 				}
 			}
 
-			// Import settings
+			// Import settings..
 			if ( isset( $data['settings'] ) && is_array( $data['settings'] ) ) {
 				foreach ( $data['settings'] as $setting_key => $setting_value ) {
 					$module->update_setting( $setting_key, $setting_value );

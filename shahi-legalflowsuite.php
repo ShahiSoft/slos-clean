@@ -11,7 +11,7 @@
  * Text Domain: shahi-legalflowsuite
  * Domain Path: /languages
  * Requires at least: 6.0
- * Tested up to: 6.7
+ * Tested up to: 6.9
  * Requires PHP: 7.4
  *
  * @package    ShahiLegalFlowSuite
@@ -65,6 +65,7 @@ require_once SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'includes/Core/Autoloader.php';
 ShahiLegalFlowSuite\Core\Autoloader::register();
 
 // Load translations at init hook to avoid just-in-time load notices.
+// phpcs:ignore PluginCheck.CodeAnalysis.DiscouragedFunctions.load_plugin_textdomainFound
 add_action(
 	'init',
 	function () {
@@ -383,7 +384,7 @@ function enqueue_slos_compliance_dashboard_assets( $hook ) {
 	// Enqueue Chart.js for time-series visualization.
 	wp_enqueue_script(
 		'chartjs',
-		'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js',
+		SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/js/chart.umd.min.js',
 		array(),
 		'4.4.1',
 		true

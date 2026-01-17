@@ -236,23 +236,23 @@ class Metaboxes {
 
 		switch ( $field['type'] ) {
 			case 'text':
-				echo '<input type="text" name="' . esc_attr( $name ) . '" value="' . esc_attr( $value ) . '" class="widefat" ' . $readonly . '>';
+				echo '<input type="text" name="' . esc_attr( $name ) . '" value="' . esc_attr( $value ) . '" class="widefat" ' . esc_attr( $readonly ) . '>';
 				break;
 
 			case 'number':
 				$value = $value ? intval( $value ) : 0;
-				echo '<input type="number" name="' . esc_attr( $name ) . '" value="' . esc_attr( $value ) . '" class="small-text" ' . $readonly . '>';
+				echo '<input type="number" name="' . esc_attr( $name ) . '" value="' . esc_attr( $value ) . '" class="small-text" ' . esc_attr( $readonly ) . '>';
 				break;
 
 			case 'textarea':
-				echo '<textarea name="' . esc_attr( $name ) . '" rows="4" class="widefat" ' . $readonly . '>' . esc_textarea( $value ) . '</textarea>';
+				echo '<textarea name="' . esc_attr( $name ) . '" rows="4" class="widefat" ' . esc_attr( $readonly ) . '>' . esc_textarea( $value ) . '</textarea>';
 				break;
 
 			case 'select':
 				echo '<select name="' . esc_attr( $name ) . '" class="widefat">';
 				foreach ( $field['options'] as $option_value => $option_label ) {
 					$selected = selected( $value, $option_value, false );
-					echo '<option value="' . esc_attr( $option_value ) . '" ' . $selected . '>' . esc_html( $option_label ) . '</option>';
+					echo '<option value="' . esc_attr( $option_value ) . '" ' . esc_attr( $selected ) . '>' . esc_html( $option_label ) . '</option>';
 				}
 				echo '</select>';
 				break;

@@ -184,7 +184,9 @@ class Consent_Export_Controller extends Base_REST_Controller {
 		header( 'Content-Disposition: attachment; filename="consent-export-' . gmdate( 'Y-m-d-His' ) . '.' . $format . '"' );
 		header( 'Pragma: no-cache' );
 
+		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo $data;
+		// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
 		exit;
 	}
 

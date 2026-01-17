@@ -12,6 +12,17 @@
 namespace ShahiLegalFlowSuite\Admin;
 
 use ShahiLegalFlowSuite\Services\Compliance_Score_Calculator;
+use function __;
+use function add_action;
+use function current_user_can;
+use function esc_html__;
+use function get_blog_option;
+use function get_sites;
+use function human_time_diff;
+use function restore_current_blog;
+use function switch_to_blog;
+use function wp_die;
+use function wp_enqueue_style;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -29,7 +40,7 @@ class Network_Compliance_Dashboard {
 	/**
 	 * Register menu and hooks
 	 *
-	 * @since 3.1.1
+	 * @since 3.1.1.
 	 * @return void
 	 */
 	public function init() {
@@ -44,7 +55,7 @@ class Network_Compliance_Dashboard {
 	/**
 	 * Add network admin menu
 	 *
-	 * @since 3.1.1
+	 * @since 3.1.1.
 	 * @return void
 	 */
 	public function add_network_menu() {
@@ -62,8 +73,8 @@ class Network_Compliance_Dashboard {
 	/**
 	 * Enqueue assets
 	 *
-	 * @since 3.1.1
-	 * @param string $hook Current admin page hook
+	 * @since 3.1.1.
+	 * @param string $hook Current admin page hook.
 	 * @return void
 	 */
 	public function enqueue_assets( $hook ) {
@@ -194,7 +205,7 @@ class Network_Compliance_Dashboard {
 			// Get last scan time..
 			$last_scan = get_option( 'slos_cookie_scan_time', '' );
 			if ( $last_scan ) {
-				$last_scan = human_time_diff( strtotime( $last_scan ), current_time( 'timestamp' ) ) . ' ' . __( 'ago', 'shahi-legalflowsuite' );
+				$last_scan = human_time_diff( strtotime( $last_scan ), time() ) . ' ' . __( 'ago', 'shahi-legalflowsuite' );
 			} else {
 				$last_scan = __( 'Never', 'shahi-legalflowsuite' );
 			}

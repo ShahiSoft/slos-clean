@@ -324,9 +324,9 @@ class PostTypeManager {
 		$count  = intval( $_REQUEST['bulk_count'] );
 
 		$messages = array(
-			'mark_featured'   => sprintf( _n( '%d item marked as featured.', '%d items marked as featured.', $count, 'shahi-legalflowsuite' ), $count ),
-			'unmark_featured' => sprintf( _n( '%d item unmarked as featured.', '%d items unmarked as featured.', $count, 'shahi-legalflowsuite' ), $count ),
-			'duplicate'       => sprintf( _n( '%d item duplicated.', '%d items duplicated.', $count, 'shahi-legalflowsuite' ), $count ),
+			'mark_featured'   => sprintf( /* translators: %d: number of items */ _n( '%d item marked as featured.', '%d items marked as featured.', $count, 'shahi-legalflowsuite' ), $count ),
+			'unmark_featured' => sprintf( /* translators: %d: number of items */ _n( '%d item unmarked as featured.', '%d items unmarked as featured.', $count, 'shahi-legalflowsuite' ), $count ),
+			'duplicate'       => sprintf( /* translators: %d: number of items */ _n( '%d item duplicated.', '%d items duplicated.', $count, 'shahi-legalflowsuite' ), $count ),
 		);
 
 		if ( isset( $messages[ $action ] ) ) {

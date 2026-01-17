@@ -17,61 +17,61 @@ final class LanguageChangeFixer extends AbstractFixer {
 	 * @var array<string, array<string>>
 	 */
 	private const LANGUAGE_PATTERNS = array(
-		// French.
+		// French...
 		'fr' => array(
 			'/\b(bonjour|merci|je\s+vous|nous|avec|pour|dans|cette?|ces|une?|des|mais|qui|que|comment|pourquoi|où)\b/iu',
 			'/\b(monsieur|madame|mademoiselle|café|résumé|cliché|déjà\s+vu|à\s+la\s+carte|bon\s+appétit|c\'est\s+la\s+vie|raison\s+d\'être|coup\s+de\s+grâce|je\s+ne\s+sais\s+quoi|savoir\s+faire|faux\s+pas)\b/iu',
 		),
-		// Spanish.
+		// Spanish...
 		'es' => array(
 			'/\b(hola|gracias|buenos?\s+días?|buenas?\s+noches?|señor|señora|por\s+favor|de\s+nada|mañana|fiesta|siesta|amigo|hasta\s+la\s+vista|que\s+será\s+será|olé)\b/iu',
 			'/\b(los|las|unos|unas|con|para|por|como|pero|más|muy|también|ahora)\b/iu',
 		),
-		// German.
+		// German...
 		'de' => array(
 			'/\b(guten\s+tag|guten\s+morgen|auf\s+wiedersehen|danke\s+schön?|bitte|herr|frau|wunderbar|zeitgeist|wanderlust|kindergarten|schadenfreude|über|angst|gesundheit|doppelgänger|poltergeist|leitmotif)\b/iu',
 		),
-		// Italian.
+		// Italian...
 		'it' => array(
 			'/\b(ciao|buongiorno|grazie|prego|signor|signora|arrivederci|bella|bello|dolce\s+vita|al\s+dente|cappuccino|espresso|pasta|pizza|gelato|prima\s+donna|paparazzi|graffiti|sotto\s+voce)\b/iu',
 		),
-		// Portuguese.
+		// Portuguese...
 		'pt' => array(
 			'/\b(obrigado|obrigada|bom\s+dia|boa\s+noite|senhor|senhora|saudade|fado)\b/iu',
 		),
-		// Japanese (Romaji).
+		// Japanese (Romaji)...
 		'ja' => array(
 			'/\b(arigatou?|konnichiwa|sayounara|ohayou?|sumimasen|hai|iie|san|sama|chan|kun|sensei|senpai|kawaii|sugoi|anime|manga|karaoke|tsunami|emoji|origami|karate|judo|samurai|ninja|sushi|sake|tofu|ramen|wasabi|tempura|teriyaki|miso|umami|bonsai|futon|kimono|zen)\b/iu',
 		),
-		// Chinese (Pinyin).
+		// Chinese (Pinyin)...
 		'zh' => array(
 			'/\b(nihao|xiexie|zaijian|feng\s+shui|yin\s+yang|kung\s+fu|tai\s+chi|dim\s+sum|chow\s+mein|wok|ginseng|qi|chi)\b/iu',
 		),
-		// Latin.
+		// Latin...
 		'la' => array(
 			'/\b(et\s+cetera|etc\.?|vice\s+versa|ad\s+hoc|per\s+se|status\s+quo|quid\s+pro\s+quo|modus\s+operandi|bona\s+fide|de\s+facto|prima\s+facie|pro\s+bono|in\s+vitro|in\s+vivo|alma\s+mater|curriculum\s+vitae|magna\s+cum\s+laude|carpe\s+diem|et\s+al\.?|i\.e\.|e\.g\.)\b/iu',
 		),
-		// Russian (Transliterated).
+		// Russian (Transliterated)...
 		'ru' => array(
 			'/\b(spasibo|da|nyet|zdravstvuyte|dosvidaniya|glasnost|perestroika|babushka|matryoshka|bolshoi|gulag|kremlin|vodka|troika|samovar|tsar|czar)\b/iu',
 		),
-		// Arabic (Transliterated).
+		// Arabic (Transliterated)...
 		'ar' => array(
 			'/\b(salaam|shukran|marhaba|inshallah|mashallah|alhamdulillah|halal|haram|imam|muezzin|ramadan|eid|hajj|sheikh|sultan|algebra|algorithm)\b/iu',
 		),
-		// Hindi (Transliterated).
+		// Hindi (Transliterated)...
 		'hi' => array(
 			'/\b(namaste|dhanyavaad|accha|bahut|thik|haan|nahin|guru|karma|yoga|chakra|mantra|nirvana|avatar|jungle|bungalow|pundit|rajah|maharajah)\b/iu',
 		),
-		// Korean (Romanized).
+		// Korean (Romanized)...
 		'ko' => array(
 			'/\b(annyeonghaseyo|gamsahamnida|kimchi|taekwondo|hangul|bulgogi|bibimbap|soju|oppa|unnie|aegyo|hallyu)\b/iu',
 		),
-		// Greek.
+		// Greek...
 		'el' => array(
 			'/\b(kalimera|efcharisto|yassou|opa|eureka|moussaka|gyros|souvlaki|ouzo|philosophia|demokratia)\b/iu',
 		),
-		// Dutch.
+		// Dutch...
 		'nl' => array(
 			'/\b(goedemorgen|dank\s+u\s+wel|alstublieft|tot\s+ziens|gezellig|appartheid|cookie|boss)\b/iu',
 		),

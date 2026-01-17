@@ -124,6 +124,7 @@ final class TableCaptionFixer extends AbstractFixer {
 			}
 			if ( count( $headers ) >= 2 && count( $headers ) <= 4 ) {
 				return sprintf(
+				/* translators: %s: comma-separated list of table column headers */
 					__( 'Table showing %s', 'shahi-legalflowsuite' ),
 					implode( ', ', array_slice( $headers, 0, 3 ) )
 				);
@@ -135,7 +136,11 @@ final class TableCaptionFixer extends AbstractFixer {
 		if ( count( $preceding ) > 0 ) {
 			$heading_text = trim( $preceding[0]->textContent );
 			if ( ! empty( $heading_text ) ) {
-				return sprintf( __( 'Table: %s', 'shahi-legalflowsuite' ), $heading_text );
+				return sprintf(
+					/* translators: %s: nearby heading text used as table caption */
+					__( 'Table: %s', 'shahi-legalflowsuite' ),
+					$heading_text
+				);
 			}
 		}
 

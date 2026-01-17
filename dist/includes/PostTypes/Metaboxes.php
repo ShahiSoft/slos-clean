@@ -14,7 +14,7 @@
 
 namespace ShahiLegalFlowSuite\PostTypes;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -65,7 +65,7 @@ class Metaboxes {
 	 * @return void
 	 */
 	private function init_metaboxes() {
-		// Template Item Details metabox
+		// Template Item Details metabox..
 		$this->metaboxes['template_item_details'] = array(
 			'id'        => 'shahi_item_details',
 			'title'     => __( 'Item Details', 'shahi-legalflowsuite' ),
@@ -108,7 +108,7 @@ class Metaboxes {
 			),
 		);
 
-		// Additional Settings metabox
+		// Additional Settings metabox..
 		$this->metaboxes['template_item_settings'] = array(
 			'id'        => 'shahi_item_settings',
 			'title'     => __( 'Additional Settings', 'shahi-legalflowsuite' ),
@@ -165,7 +165,7 @@ class Metaboxes {
 	 * @return void
 	 */
 	public function render_item_details_metabox( $post, $metabox ) {
-		// Add nonce for security
+		// Add nonce for security..
 		wp_nonce_field( 'shahi_item_details_nonce', 'shahi_item_details_nonce' );
 
 		echo '<div class="shahi-metabox-wrapper">';
@@ -198,7 +198,7 @@ class Metaboxes {
 	 * @return void
 	 */
 	public function render_item_settings_metabox( $post, $metabox ) {
-		// Add nonce for security
+		// Add nonce for security..
 		wp_nonce_field( 'shahi_item_settings_nonce', 'shahi_item_settings_nonce' );
 
 		echo '<div class="shahi-metabox-wrapper">';
@@ -236,23 +236,23 @@ class Metaboxes {
 
 		switch ( $field['type'] ) {
 			case 'text':
-				echo '<input type="text" name="' . esc_attr( $name ) . '" value="' . esc_attr( $value ) . '" class="widefat" ' . $readonly . '>';
+				echo '<input type="text" name="' . esc_attr( $name ) . '" value="' . esc_attr( $value ) . '" class="widefat" ' . esc_attr( $readonly ) . '>';
 				break;
 
 			case 'number':
 				$value = $value ? intval( $value ) : 0;
-				echo '<input type="number" name="' . esc_attr( $name ) . '" value="' . esc_attr( $value ) . '" class="small-text" ' . $readonly . '>';
+				echo '<input type="number" name="' . esc_attr( $name ) . '" value="' . esc_attr( $value ) . '" class="small-text" ' . esc_attr( $readonly ) . '>';
 				break;
 
 			case 'textarea':
-				echo '<textarea name="' . esc_attr( $name ) . '" rows="4" class="widefat" ' . $readonly . '>' . esc_textarea( $value ) . '</textarea>';
+				echo '<textarea name="' . esc_attr( $name ) . '" rows="4" class="widefat" ' . esc_attr( $readonly ) . '>' . esc_textarea( $value ) . '</textarea>';
 				break;
 
 			case 'select':
 				echo '<select name="' . esc_attr( $name ) . '" class="widefat">';
 				foreach ( $field['options'] as $option_value => $option_label ) {
 					$selected = selected( $value, $option_value, false );
-					echo '<option value="' . esc_attr( $option_value ) . '" ' . $selected . '>' . esc_html( $option_label ) . '</option>';
+					echo '<option value="' . esc_attr( $option_value ) . '" ' . esc_attr( $selected ) . '>' . esc_html( $option_label ) . '</option>';
 				}
 				echo '</select>';
 				break;
@@ -286,17 +286,17 @@ class Metaboxes {
 	 * @return void
 	 */
 	public function save_metaboxes( $post_id, $post ) {
-		// Skip autosave
+		// Skip autosave..
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 			return;
 		}
 
-		// Check post type
+		// Check post type..
 		if ( $post->post_type !== 'shahi_legalflowsuite_item' ) {
 			return;
 		}
 
-		// Save item details
+		// Save item details..
 		if ( isset( $_POST['shahi_item_details_nonce'] ) && wp_verify_nonce( $_POST['shahi_item_details_nonce'], 'shahi_item_details_nonce' ) ) {
 			if ( ! current_user_can( 'edit_post', $post_id ) ) {
 				return;
@@ -308,7 +308,7 @@ class Metaboxes {
 				$meta_key = '_shahi_' . $field_id;
 
 				if ( isset( $_POST[ $post_key ] ) ) {
-					// Sanitize based on field type
+					// Sanitize based on field type..
 					switch ( $field['type'] ) {
 						case 'number':
 							$value = intval( wp_unslash( $_POST[ $post_key ] ) );
@@ -322,13 +322,13 @@ class Metaboxes {
 
 					update_post_meta( $post_id, $meta_key, $value );
 				} elseif ( $field['type'] === 'checkbox' ) {
-					// Unchecked checkboxes don't submit
+					// Unchecked checkboxes don't submit..
 					delete_post_meta( $post_id, $meta_key );
 				}
 			}
 		}
 
-		// Save item settings
+		// Save item settings..
 		if ( isset( $_POST['shahi_item_settings_nonce'] ) && wp_verify_nonce( $_POST['shahi_item_settings_nonce'], 'shahi_item_settings_nonce' ) ) {
 			if ( ! current_user_can( 'edit_post', $post_id ) ) {
 				return;
@@ -340,7 +340,7 @@ class Metaboxes {
 				$meta_key = '_shahi_' . $field_id;
 
 				if ( isset( $_POST[ $post_key ] ) ) {
-					// Sanitize based on field type
+					// Sanitize based on field type..
 					switch ( $field['type'] ) {
 						case 'number':
 							$value = intval( wp_unslash( $_POST[ $post_key ] ) );
@@ -354,7 +354,7 @@ class Metaboxes {
 
 					update_post_meta( $post_id, $meta_key, $value );
 				} elseif ( $field['type'] === 'checkbox' ) {
-					// Unchecked checkboxes don't submit
+					// Unchecked checkboxes don't submit..
 					delete_post_meta( $post_id, $meta_key );
 				}
 			}
@@ -369,7 +369,7 @@ class Metaboxes {
 	 * @return void
 	 */
 	public function enqueue_metabox_assets( $hook ) {
-		// Only load on post edit pages
+		// Only load on post edit pages..
 		if ( ! in_array( $hook, array( 'post.php', 'post-new.php' ) ) ) {
 			return;
 		}
@@ -379,7 +379,7 @@ class Metaboxes {
 			return;
 		}
 
-		// Add inline CSS for metabox styling
+		// Add inline CSS for metabox styling..
 		$css = "
         .shahi-metabox-wrapper {
             padding: 10px 0;

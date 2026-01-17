@@ -56,7 +56,7 @@ class Dashboard {
 	 */
 	public function render() {
 		// Verify user capabilities.
-		if ( ! current_user_can( 'manage_shahi_template' ) ) {
+		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'shahi-legalflowsuite' ) );
 		}
 
@@ -328,7 +328,7 @@ class Dashboard {
 			return __( 'N/A', 'shahi-legalflowsuite' );
 		}
 
-		return human_time_diff( strtotime( $last_time ), current_time( 'timestamp' ) ) . ' ' . __( 'ago', 'shahi-legalflowsuite' );
+		return human_time_diff( strtotime( $last_time ), time() ) . ' ' . __( 'ago', 'shahi-legalflowsuite' );
 	}
 
 	/**
@@ -477,7 +477,7 @@ class Dashboard {
 			$activity[] = array(
 				'title'       => $this->format_event_title( $event->event_type ),
 				'description' => $this->format_event_description( $event ),
-				'time'        => human_time_diff( strtotime( $event->created_at ), current_time( 'timestamp' ) ) . ' ' . __( 'ago', 'shahi-legalflowsuite' ),
+				'time'        => human_time_diff( strtotime( $event->created_at ), time() ) . ' ' . __( 'ago', 'shahi-legalflowsuite' ),
 				'icon'        => $this->get_event_icon( $event->event_type ),
 				'type'        => $event->event_type,
 			);
@@ -519,7 +519,7 @@ class Dashboard {
 			return __( 'No additional details', 'shahi-legalflowsuite' );
 		}
 
-		// Format based on event type.
+		// Format based on event type...
 		switch ( $event->event_type ) {
 			case 'module_enabled':
 			case 'module_disabled':
@@ -566,7 +566,7 @@ class Dashboard {
 		$modules_configured   = $this->get_active_modules_count() > 0;
 		$settings_configured  = ! empty( get_option( 'shahi_legalflowsuite_settings', array() ) );
 
-		// Check if company profile is set up.
+		// Check if company profile is set up...
 		$company_profile    = get_option( 'slos_company_profile', array() );
 		$profile_configured = ! empty( $company_profile ) && ! empty( $company_profile['company_name'] );
 

@@ -345,7 +345,7 @@ class AnalyticsTracker {
 			return 0;
 		}
 
-		$cutoff_date = date( 'Y-m-d H:i:s', strtotime( "-$days days" ) );
+		$cutoff_date = gmdate( 'Y-m-d H:i:s', strtotime( "-$days days" ) );
 
 		$deleted = $wpdb->query(
 			$wpdb->prepare(

@@ -217,19 +217,31 @@ final class EmptyLinkFixer extends AbstractFixer {
 		if ( strpos( $href, 'mailto:' ) === 0 ) {
 			$email = str_replace( 'mailto:', '', $href );
 			$email = explode( '?', $email )[0]; // Remove query params
-			return sprintf( __( /* translators: %s: email address */  'Send email to %s', 'shahi-legalflowsuite' ), $email );
+			return sprintf(
+				/* translators: %s: email address */
+				__( 'Send email to %s', 'shahi-legalflowsuite' ),
+				$email
+			);
 		}
 
 		if ( strpos( $href, 'tel:' ) === 0 ) {
 			$phone = str_replace( 'tel:', '', $href );
-			return sprintf( __( /* translators: %s: phone number */  'Call %s', 'shahi-legalflowsuite' ), $phone );
+			return sprintf(
+				/* translators: %s: phone number */
+				__( 'Call %s', 'shahi-legalflowsuite' ),
+				$phone
+			);
 		}
 
 		if ( strpos( $href, '#' ) === 0 ) {
 			$anchor = substr( $href, 1 );
 			if ( ! empty( $anchor ) ) {
 				$readable = str_replace( array( '-', '_' ), ' ', $anchor );
-				return sprintf( __( /* translators: %s: anchor name */  'Jump to %s', 'shahi-legalflowsuite' ), ucwords( $readable ) );
+				return sprintf(
+					/* translators: %s: anchor name */
+					__( 'Jump to %s', 'shahi-legalflowsuite' ),
+					ucwords( $readable )
+				);
 			}
 		}
 
@@ -254,7 +266,11 @@ final class EmptyLinkFixer extends AbstractFixer {
 		if ( ! empty( $parsed['host'] ) ) {
 			// External link..
 			$domain = preg_replace( '/^www\./', '', $parsed['host'] );
-			return sprintf( __( /* translators: %s: domain name */  'Visit %s', 'shahi-legalflowsuite' ), $domain );
+			return sprintf(
+				/* translators: %s: domain name */
+				__( 'Visit %s', 'shahi-legalflowsuite' ),
+				$domain
+			);
 		}
 
 		if ( ! empty( $parsed['path'] ) ) {

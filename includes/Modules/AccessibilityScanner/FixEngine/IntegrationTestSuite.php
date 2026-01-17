@@ -5,6 +5,8 @@
  * End-to-end testing of FixEngine with real-world scenarios
  */
 
+// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- CLI test output
+
 namespace ShahiLegalFlowSuite\Tests\FixEngine;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -307,7 +309,7 @@ class IntegrationTestSuite {
 		$r = $this->results;
 
 		$report  = "# Phase 6: Integration Test Report\n\n";
-		$report .= '**Generated:** ' . date( 'Y-m-d H:i:s' ) . "\n\n";
+		$report .= '**Generated:** ' . gmdate( 'Y-m-d H:i:s' ) . "\n\n";
 
 		$report .= "## Summary\n\n";
 		$report .= "- Total Tests: {$r['total']}\n";
@@ -349,7 +351,7 @@ class IntegrationTestSuite {
 		$docs_dir = dirname( dirname( dirname( __DIR__ ) ) ) . '/docs/autofix';
 
 		if ( ! is_dir( $docs_dir ) ) {
-			mkdir( $docs_dir, 0755, true );
+			wp_mkdir_p( $docs_dir );
 		}
 
 		$filepath = $docs_dir . '/' . $filename;

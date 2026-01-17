@@ -6,6 +6,8 @@
  * Identifies gaps and determines porting priorities
  */
 
+// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- CLI analysis output
+
 namespace ShahiLegalFlowSuite\Docs\Analysis;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -40,16 +42,16 @@ class CoverageMatrixAnalyzer {
 			'categories'      => array(),
 		);
 
-		// Extract IDs from fixers
+		// Extract IDs from fixers..
 		$legacy_ids    = $this->extract_fixer_ids( $legacy_fixers );
 		$fixengine_ids = $this->extract_fixer_ids( $fixengine_fixers );
 
-		// Compare coverage
+		// Compare coverage..
 		$this->results['legacy_only']    = array_diff( $legacy_ids, $fixengine_ids );
 		$this->results['fixengine_only'] = array_diff( $fixengine_ids, $legacy_ids );
 		$this->results['both']           = array_intersect( $legacy_ids, $fixengine_ids );
 
-		// Categorize missing fixers
+		// Categorize missing fixers..
 		$this->categorize_gaps();
 
 		return $this->results;
@@ -85,7 +87,7 @@ class CoverageMatrixAnalyzer {
 			if ( file_exists( $full_path ) ) {
 				$content = file_get_contents( $full_path );
 
-				// Match get_id() or get_fixer_id() return value
+				// Match get_id() or get_fixer_id() return value..
 				if ( preg_match( "/function get_(?:fixer_)?id\(\)[^{]*\{[^}]*return\s+'([^']+)'/", $content, $matches ) ) {
 					$ids[ basename( $file, '.php' ) ] = $matches[1];
 				} elseif ( preg_match( '/public \$id\s*=\s*[\'"]([^\'"]+)/', $content, $matches ) ) {
@@ -101,7 +103,7 @@ class CoverageMatrixAnalyzer {
 	 * Categorize missing fixers by priority
 	 */
 	private function categorize_gaps() {
-		// High priority: Critical WCAG criteria
+		// High priority: Critical WCAG criteria..
 		$high_priority = array(
 			'missing-alt-text',
 			'empty-alt-text',
@@ -113,7 +115,7 @@ class CoverageMatrixAnalyzer {
 			'missing-table-headers',
 		);
 
-		// Medium priority: Serious issues
+		// Medium priority: Serious issues..
 		$medium_priority = array(
 			'empty-heading',
 			'empty-link',
@@ -139,7 +141,7 @@ class CoverageMatrixAnalyzer {
 	 */
 	public function generate_report() {
 		$report  = "# Phase 2.1: Coverage Matrix Analysis\n\n";
-		$report .= '**Generated:** ' . date( 'Y-m-d H:i:s' ) . "\n\n";
+		$report .= '**Generated:** ' . gmdate( 'Y-m-d H:i:s' ) . "\n\n";
 
 		$report .= "## Summary\n\n";
 		$report .= '- **Legacy Fixers:** ' . $this->results['legacy_count'] . "\n";
@@ -188,7 +190,7 @@ class CoverageMatrixAnalyzer {
 		$docs_dir = dirname( dirname( __DIR__ ) ) . '/docs/autofix';
 
 		if ( ! is_dir( $docs_dir ) ) {
-			mkdir( $docs_dir, 0755, true );
+			wp_mkdir_p( $docs_dir );
 		}
 
 		$filepath = $docs_dir . '/' . $filename;
@@ -198,7 +200,7 @@ class CoverageMatrixAnalyzer {
 	}
 }
 
-// Run analysis if executed directly
+// Run analysis if executed directly..
 if ( php_sapi_name() === 'cli' && basename( __FILE__ ) === basename( $_SERVER['SCRIPT_FILENAME'] ) ) {
 	require_once __DIR__ . '/../../vendor/autoload.php';
 

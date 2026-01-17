@@ -16,8 +16,8 @@ final class InvalidAriaCombinationFixer extends AbstractFixer {
 	}
 
 	protected function apply_fix( string $content, array $options = array() ): FixResult {
-		// The legacy implementation does not perform automatic fixes and
-		// always returns the original content. Reflect that here directly.
+		// The legacy implementation does not perform automatic fixes and..
+		// always returns the original content. Reflect that here directly...
 		return FixResult::skipped( $this->get_id(), 'No automatic fix available for invalid ARIA combinations', $content );
 	}
 }

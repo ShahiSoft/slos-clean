@@ -39,10 +39,10 @@ class RedundantAltTextCheck extends AbstractCheck {
 					continue;
 				}
 
-				// Get filename from src
+				// Get filename from src..
 				$filename = basename( $src );
 
-				// Check if alt equals filename (with or without extension)
+				// Check if alt equals filename (with or without extension)..
 				if ( $alt === $filename || $alt === pathinfo( $filename, PATHINFO_FILENAME ) ) {
 					$issues[] = array(
 						'message' => 'Alt text is the same as the filename. It should describe the image content.',

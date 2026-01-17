@@ -73,7 +73,7 @@ use ShahiLegalFlowSuite\Modules\AccessibilityScanner\Fixes\Fixers\{
 	VideoAccessibilityFixer,
 	AudioAccessibilityFixer,
 	MediaAlternativeFixer,
-	// Phase 3: New Fixer Classes
+	// Phase 3: New Fixer Classes..
 	LanguageChangeFixer,
 	StatusMessageFixer,
 	ErrorIdentificationFixer,
@@ -98,7 +98,7 @@ class FixerRegistry {
 	 * Keys MUST match the canonical IDs defined in FixEngine/CanonicalIds.php
 	 */
 	public static function init() {
-		// Skip initialization if autofix is dormant
+		// Skip initialization if autofix is dormant..
 		if ( defined( 'SLOS_DORMANT_AUTOFIX' ) && SLOS_DORMANT_AUTOFIX ) {
 			self::$initialized = true;
 			self::$registry    = array();
@@ -110,7 +110,7 @@ class FixerRegistry {
 		}
 
 		self::$registry = array(
-			// Image Fixers - canonical IDs
+			// Image Fixers - canonical IDs..
 			'missing-alt-text'           => MissingAltTextFixer::class,
 			'empty-alt-text'             => EmptyAltTextFixer::class,
 			'redundant-alt-text'         => RedundantAltTextFixer::class,
@@ -122,7 +122,7 @@ class FixerRegistry {
 			'missing-image-map-alt'      => ImageMapAltFixer::class,
 			'alt-text-quality'           => AltTextQualityFixer::class,
 
-			// Heading Fixers - canonical IDs
+			// Heading Fixers - canonical IDs..
 			'missing-h1'                 => MissingH1Fixer::class,
 			'multiple-h1'                => MultipleH1Fixer::class,
 			'empty-heading'              => EmptyHeadingFixer::class,
@@ -132,7 +132,7 @@ class FixerRegistry {
 			'heading-uniqueness'         => HeadingUniquenessFixer::class,
 			'heading-visual'             => HeadingVisualFixer::class,
 
-			// Link Fixers - canonical IDs
+			// Link Fixers - canonical IDs..
 			'empty-link'                 => EmptyLinkFixer::class,
 			'generic-link-text'          => GenericLinkTextFixer::class,
 			'link-opens-new-window'      => NewWindowLinkFixer::class,
@@ -141,7 +141,7 @@ class FixerRegistry {
 			'link-destination'           => LinkDestinationFixer::class,
 			'missing-skip-link'          => SkipLinkFixer::class,
 
-			// Form Fixers - canonical IDs
+			// Form Fixers - canonical IDs..
 			'missing-form-label'         => MissingFormLabelFixer::class,
 			'missing-fieldset-legend'    => FieldsetLegendFixer::class,
 			'missing-required-attribute' => RequiredAttributeFixer::class,
@@ -154,20 +154,20 @@ class FixerRegistry {
 			'orphaned-label'             => OrphanedLabelFixer::class,
 			'form-aria'                  => FormAriaFixer::class,
 
-			// Table Fixers - canonical IDs
+			// Table Fixers - canonical IDs..
 			'missing-table-headers'      => TableHeaderFixer::class,
 			'missing-table-caption'      => TableCaptionFixer::class,
 			'complex-table'              => ComplexTableFixer::class,
 			'layout-table'               => LayoutTableFixer::class,
 			'empty-table-cell'           => EmptyTableCellFixer::class,
 
-			// Media Fixers - canonical IDs
+			// Media Fixers - canonical IDs..
 			'missing-iframe-title'       => IframeTitleFixer::class,
 			'missing-video-caption'      => VideoAccessibilityFixer::class,
 			'audio-accessibility'        => AudioAccessibilityFixer::class,
 			'media-alternative'          => MediaAlternativeFixer::class,
 
-			// Interactivity Fixers - canonical IDs
+			// Interactivity Fixers - canonical IDs..
 			'invalid-tabindex'           => PositiveTabIndexFixer::class,
 			'interactive-element'        => InteractiveElementFixer::class,
 			'modal-accessibility'        => ModalAccessibilityFixer::class,
@@ -175,17 +175,17 @@ class FixerRegistry {
 			'keyboard-trap'              => KeyboardTrapFixer::class,
 			'focus-order'                => FocusOrderFixer::class,
 
-			// Color/Contrast Fixers - canonical IDs
+			// Color/Contrast Fixers - canonical IDs..
 			'text-color-contrast'        => TextColorContrastFixer::class,
 			'color-reliance'             => ColorRelianceFixer::class,
 			'complex-contrast'           => ComplexContrastFixer::class,
 
-			// Touch/Viewport Fixers - canonical IDs
+			// Touch/Viewport Fixers - canonical IDs..
 			'touch-target'               => TouchTargetFixer::class,
 			'touch-gesture'              => TouchGestureFixer::class,
 			'improper-viewport'          => ViewportFixer::class,
 
-			// ARIA Fixers - canonical IDs
+			// ARIA Fixers - canonical IDs..
 			'aria-role'                  => AriaRoleFixer::class,
 			'aria-attribute'             => AriaAttributeFixer::class,
 			'aria-state'                 => AriaStateFixer::class,
@@ -197,7 +197,7 @@ class FixerRegistry {
 			'live-region'                => LiveRegionFixer::class,
 			'page-structure'             => PageStructureFixer::class,
 
-			// Additional Fixers - canonical IDs
+			// Additional Fixers - canonical IDs..
 			'language-change'            => LanguageChangeFixer::class,      // WCAG 3.1.2
 			'status-message'             => StatusMessageFixer::class,       // WCAG 4.1.3
 			'error-identification'       => ErrorIdentificationFixer::class, // WCAG 3.3.1
@@ -205,7 +205,7 @@ class FixerRegistry {
 			'timing-control'             => TimingControlFixer::class,       // WCAG 2.2.1
 		);
 
-		// Normalize registry keys to canonical IDs
+		// Normalize registry keys to canonical IDs..
 		$normalized = array();
 		foreach ( self::$registry as $id => $class ) {
 			$canonical                = CanonicalIds::canonicalize( $id ) ?? $id;
@@ -271,9 +271,9 @@ class FixerRegistry {
 	public static function get_fixer_count() {
 		self::init();
 
-		// Only count fixers that can actually be instantiated. This keeps
-		// diagnostics and any UI that relies on this value aligned with the
-		// real set of available fixers.
+		// Only count fixers that can actually be instantiated. This keeps..
+		// diagnostics and any UI that relies on this value aligned with the..
+		// real set of available fixers...
 		$count = 0;
 		foreach ( array_keys( self::$registry ) as $checker_id ) {
 			if ( self::get_fixer( $checker_id ) ) {

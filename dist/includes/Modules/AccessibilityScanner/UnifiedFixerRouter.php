@@ -45,8 +45,8 @@ class UnifiedFixerRouter {
 	private $metrics = array();
 
 	public function __construct() {
-		// The unified router is deprecated and no longer participates in
-		// any production code paths. Instantiating it is strongly discouraged.
+		// The unified router is deprecated and no longer participates in..
+		// any production code paths. Instantiating it is strongly discouraged...
 		if ( function_exists( '\_doing_it_wrong' ) ) {
 			\_doing_it_wrong(
 				__METHOD__,
@@ -68,43 +68,43 @@ class UnifiedFixerRouter {
 	 * @return array Fix result
 	 */
 	public function fix( $content, $fixer_ids, $options = array() ) {
-		// Feature flag check
+		// Feature flag check..
 		if ( ! FeatureFlags::is_fixengine_enabled() ) {
 			Logger::debug( 'FixEngine disabled, using legacy system' );
 			return $this->route_to_legacy( $content, $fixer_ids, $options );
 		}
 
-		// Normalize to array
+		// Normalize to array..
 		$ids = is_array( $fixer_ids ) ? $fixer_ids : array( $fixer_ids );
 
-		// Check fixer availability
+		// Check fixer availability..
 		$route_map = $this->determine_routing( $ids );
 
-		// If all can go to FixEngine
+		// If all can go to FixEngine..
 		if ( empty( $route_map['legacy'] ) ) {
 			Logger::info( 'Routing to FixEngine', array( 'fixers' => $route_map['fixengine'] ) );
 			return $this->route_to_fixengine( $content, $route_map['fixengine'], $options );
 		}
 
-		// If all must go to legacy
+		// If all must go to legacy..
 		if ( empty( $route_map['fixengine'] ) ) {
 			Logger::info( 'Routing to legacy system', array( 'fixers' => $route_map['legacy'] ) );
 			return $this->route_to_legacy( $content, $route_map['legacy'], $options );
 		}
 
-		// Hybrid: some fixers in each system
+		// Hybrid: some fixers in each system..
 		Logger::warning( 'Hybrid routing required', $route_map );
 
 		if ( FeatureFlags::enable_legacy_fallback() ) {
-			// Run FixEngine first, then legacy for remaining
+			// Run FixEngine first, then legacy for remaining..
 			$fixengine_result = $this->route_to_fixengine( $content, $route_map['fixengine'], $options );
 			$content          = $fixengine_result['content'] ?? $content;
 			$legacy_result    = $this->route_to_legacy( $content, $route_map['legacy'], $options );
 
-			// Merge results
+			// Merge results..
 			return $this->merge_results( $fixengine_result, $legacy_result );
 		} else {
-			// Legacy fallback disabled, only run FixEngine
+			// Legacy fallback disabled, only run FixEngine..
 			return $this->route_to_fixengine( $content, $route_map['fixengine'], $options );
 		}
 	}
@@ -120,11 +120,11 @@ class UnifiedFixerRouter {
 
 		foreach ( $fixer_ids as $id ) {
 			$canonical_id = CanonicalIds::canonicalize( $id ) ?? $id;
-			// Check if FixEngine has this fixer
+			// Check if FixEngine has this fixer..
 			if ( $this->fix_engine->get_fixer( $canonical_id ) ) {
 				$route_map['fixengine'][] = $canonical_id;
 			} else {
-				// Check if legacy has it
+				// Check if legacy has it..
 				FixerRegistry::init();
 				if ( FixerRegistry::has_fixer( $canonical_id ) ) {
 					$route_map['legacy'][] = $canonical_id;
@@ -165,7 +165,7 @@ class UnifiedFixerRouter {
 				)
 			);
 
-			// Fallback to legacy if enabled
+			// Fallback to legacy if enabled..
 			if ( FeatureFlags::enable_legacy_fallback() ) {
 				Logger::info( 'Falling back to legacy system' );
 				return $this->route_to_legacy( $content, $fixer_ids, $options );

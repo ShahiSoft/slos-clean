@@ -31,7 +31,6 @@
 	padding: 1rem 2rem;
 	background: rgb(30 41 59 / 80%);
 	backdrop-filter: blur(12px);
-	backdrop-filter: blur(12px);
 	border-bottom: 1px solid rgb(255 255 255 / 8%);
 	position: sticky;
 	top: 32px;
@@ -211,7 +210,6 @@
 	position: relative;
 	background: rgb(30 41 59 / 60%);
 		backdrop-filter: blur(12px);
-		backdrop-filter: blur(12px);
 	border: 1px solid rgb(255 255 255 / 8%);
 	border-radius: 16px;
 	padding: 1.5rem;
@@ -349,7 +347,6 @@
 	============================================ */
 .shahi-v3-card {
 	background: rgb(30 41 59 / 60%);
-		backdrop-filter: blur(12px);
 		backdrop-filter: blur(12px);
 	border: 1px solid rgb(255 255 255 / 8%);
 	border-radius: 16px;

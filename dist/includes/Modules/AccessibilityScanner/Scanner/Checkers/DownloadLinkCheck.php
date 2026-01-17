@@ -38,7 +38,7 @@ class DownloadLinkCheck extends AbstractCheck {
 
 			if ( in_array( strtolower( $ext ), $extensions ) ) {
 				$text = $link->textContent;
-				// Check if text contains extension
+				// Check if text contains extension..
 				if ( stripos( $text, $ext ) === false ) {
 					$issues[] = array(
 						'element' => 'a',

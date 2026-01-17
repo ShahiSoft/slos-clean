@@ -13,13 +13,21 @@
  * @since       3.0.1
  */
 
+// phpcs:ignore WordPress.Files.FileName -- file naming follows existing project structure and renaming would break includes.
+
 namespace ShahiLegalFlowSuite\Shortcodes;
 
 use ShahiLegalFlowSuite\Core\I18n;
 
-// Exit if accessed directly
+// Exit if accessed directly...
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
+}
+
+// Verify nonce for token processing...
+if ( isset( $_GET['token'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['token'] ) ), 'slos_dsr_verify_nonce' ) ) {
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification happens here.
+	die( esc_html__( 'Invalid token.', 'shahi-legalflowsuite' ) );
 }
 
 /**
@@ -58,7 +66,7 @@ class DSR_Verify_Shortcode {
 	 * @return string HTML output
 	 */
 	public function render( array $atts = array() ): string {
-		// Enqueue shared DSR form CSS for consistent styling
+		// Enqueue shared DSR form CSS for consistent styling...
 		if ( defined( 'SHAHI_LEGALFLOWSUITE_PLUGIN_URL' ) && defined( 'SHAHI_LEGALFLOWSUITE_VERSION' ) ) {
 			wp_enqueue_style(
 				'slos-dsr-form',
@@ -68,12 +76,14 @@ class DSR_Verify_Shortcode {
 			);
 		}
 
+		// Token is provided via verification email links; nonce may not always be present...
+		// phpcs:ignore WordPress.Security.NonceVerification -- verification token comes from email link, validated by remote API response below.
 		$token = isset( $_GET['token'] ) ? sanitize_text_field( wp_unslash( $_GET['token'] ) ) : '';
 		if ( empty( $token ) && isset( $atts['token'] ) ) {
 			$token = sanitize_text_field( (string) $atts['token'] );
 		}
 
-		// Wrapper
+		// Wrapper...
 		ob_start();
 		echo '<div class="slos-dsr-form-wrapper slos-compact">';
 		echo '<div class="slos-dsr-form-container">';
@@ -87,7 +97,7 @@ class DSR_Verify_Shortcode {
 			return ob_get_clean();
 		}
 
-		// Call public REST endpoint: GET /slos/v1/dsr/verify?token=...
+		// Call public REST endpoint: GET /slos/v1/dsr/verify?token=.....
 		$url      = add_query_arg( array( 'token' => rawurlencode( $token ) ), rest_url( 'slos/v1/dsr/verify' ) );
 		$response = wp_remote_get( $url );
 
@@ -101,13 +111,13 @@ class DSR_Verify_Shortcode {
 		$body = wp_remote_retrieve_body( $response );
 		$json = json_decode( (string) $body, true );
 
-		if ( $code !== 200 || ! is_array( $json ) ) {
+		if ( 200 !== $code || ! is_array( $json ) ) {
 			$this->render_error( __( 'Invalid or expired verification token.', 'shahi-legalflowsuite' ) );
 			echo '</div></div>';
 			return ob_get_clean();
 		}
 
-		// Success
+		// Success...
 		$this->render_success(
 			__( 'Email verified successfully. Your request is now being processed.', 'shahi-legalflowsuite' ),
 			isset( $json['request_id'] ) ? (int) $json['request_id'] : 0

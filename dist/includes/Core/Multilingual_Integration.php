@@ -13,7 +13,7 @@
 
 namespace ShahiLegalFlowSuite\Core;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -49,10 +49,10 @@ class Multilingual_Integration {
 	 * @since 3.0.1
 	 */
 	public function __construct() {
-		// Register Polylang strings
+		// Register Polylang strings..
 		add_action( 'init', array( $this, 'register_polylang_strings' ), 20 );
 
-		// WPML hooks
+		// WPML hooks..
 		add_filter( 'wpml_register_string', array( $this, 'register_wpml_string' ), 10, 3 );
 	}
 
@@ -89,7 +89,7 @@ class Multilingual_Integration {
 			return;
 		}
 
-		// Consent Banner Strings
+		// Consent Banner Strings..
 		$this->register_polylang_string( 'banner_heading', __( 'We value your privacy', 'shahi-legalflowsuite' ) );
 		$this->register_polylang_string( 'banner_message', __( 'We use cookies to enhance your browsing experience and analyze our traffic. By clicking "Accept All", you consent to our use of cookies.', 'shahi-legalflowsuite' ) );
 		$this->register_polylang_string( 'banner_accept_all', __( 'Accept All', 'shahi-legalflowsuite' ) );
@@ -97,7 +97,7 @@ class Multilingual_Integration {
 		$this->register_polylang_string( 'banner_customize', __( 'Customize', 'shahi-legalflowsuite' ) );
 		$this->register_polylang_string( 'banner_learn_more', __( 'Learn More', 'shahi-legalflowsuite' ) );
 
-		// Consent Category Labels
+		// Consent Category Labels..
 		$this->register_polylang_string( 'category_necessary', __( 'Necessary', 'shahi-legalflowsuite' ) );
 		$this->register_polylang_string( 'category_necessary_desc', __( 'Essential cookies required for basic site functionality.', 'shahi-legalflowsuite' ) );
 		$this->register_polylang_string( 'category_analytics', __( 'Analytics', 'shahi-legalflowsuite' ) );
@@ -107,13 +107,13 @@ class Multilingual_Integration {
 		$this->register_polylang_string( 'category_preferences', __( 'Preferences', 'shahi-legalflowsuite' ) );
 		$this->register_polylang_string( 'category_preferences_desc', __( 'Cookies that remember your preferences and settings.', 'shahi-legalflowsuite' ) );
 
-		// Preferences Modal Strings
+		// Preferences Modal Strings..
 		$this->register_polylang_string( 'preferences_title', __( 'Privacy Preferences', 'shahi-legalflowsuite' ) );
 		$this->register_polylang_string( 'preferences_description', __( 'Manage your cookie preferences below. You can enable or disable different types of cookies.', 'shahi-legalflowsuite' ) );
 		$this->register_polylang_string( 'preferences_save', __( 'Save Preferences', 'shahi-legalflowsuite' ) );
 		$this->register_polylang_string( 'preferences_close', __( 'Close', 'shahi-legalflowsuite' ) );
 
-		// Action messages
+		// Action messages..
 		$this->register_polylang_string( 'consent_saved', __( 'Your preferences have been saved.', 'shahi-legalflowsuite' ) );
 		$this->register_polylang_string( 'consent_updated', __( 'Your consent preferences have been updated.', 'shahi-legalflowsuite' ) );
 		$this->register_polylang_string( 'consent_withdrawn', __( 'Your consent has been withdrawn.', 'shahi-legalflowsuite' ) );
@@ -159,34 +159,39 @@ class Multilingual_Integration {
 	 * @return string Translated string
 	 */
 	public static function get_translated_string( string $name, string $default_value, string $language_code = null ): string {
-		// Try Polylang first
+		// Try Polylang first..
 		if ( self::is_polylang_active() && function_exists( 'pll__' ) ) {
 			return pll__( $default_value );
 		}
 
-		// Try WPML
+		// Try WPML..
 		if ( self::is_wpml_active() && function_exists( 'icl_t' ) ) {
 			return icl_t( self::STRING_CONTEXT, $name, $default_value, false, false, $language_code );
 		}
 
-		// Fallback to WordPress translation
-	// phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText -- Variable contains translatable string key
+		// Fallback to WordPress translation (variable string key).
+		// phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText -- Variable contains translatable string key
+		return __( $default_value, 'shahi-legalflowsuite' );
+	}
+
+	/**
+	 * Get current language code
 	 *
 	 * @since 3.0.1
 	 * @return string Language code (e.g., 'en', 'fr', 'ar')
 	 */
 	public static function get_current_language(): string {
-		// Polylang
+		// Polylang..
 		if ( self::is_polylang_active() && function_exists( 'pll_current_language' ) ) {
 			return pll_current_language();
 		}
 
-		// WPML
+		// WPML..
 		if ( self::is_wpml_active() && defined( 'ICL_LANGUAGE_CODE' ) ) {
 			return ICL_LANGUAGE_CODE;
 		}
 
-		// WordPress locale
+		// WordPress locale..
 		$locale = get_locale();
 		return substr( $locale, 0, 2 );
 	}
@@ -198,18 +203,18 @@ class Multilingual_Integration {
 	 * @return array Array of language codes
 	 */
 	public static function get_active_languages(): array {
-		// Polylang
+		// Polylang..
 		if ( self::is_polylang_active() && function_exists( 'pll_languages_list' ) ) {
 			return pll_languages_list();
 		}
 
-		// WPML
+		// WPML..
 		if ( self::is_wpml_active() && function_exists( 'icl_get_languages' ) ) {
 			$languages = icl_get_languages( 'skip_missing=0' );
 			return array_keys( $languages );
 		}
 
-		// Default to current WordPress locale
+		// Default to current WordPress locale..
 		$locale = get_locale();
 		return array( substr( $locale, 0, 2 ) );
 	}
@@ -242,7 +247,7 @@ class Multilingual_Integration {
 
 		$args = wp_parse_args( $args, $defaults );
 
-		// Polylang
+		// Polylang..
 		if ( self::is_polylang_active() && function_exists( 'pll_the_languages' ) ) {
 			$pll_args = array(
 				'dropdown'               => $args['dropdown'] ? 1 : 0,
@@ -254,7 +259,7 @@ class Multilingual_Integration {
 			return pll_the_languages( $pll_args );
 		}
 
-		// WPML
+		// WPML..
 		if ( self::is_wpml_active() && function_exists( 'wpml_get_language_switcher' ) ) {
 			ob_start();
 			do_action( 'wpml_add_language_selector' );
@@ -264,4 +269,3 @@ class Multilingual_Integration {
 		return '';
 	}
 }
-

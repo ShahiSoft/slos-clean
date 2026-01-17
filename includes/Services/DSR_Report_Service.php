@@ -608,7 +608,7 @@ class DSR_Report_Service extends Base_Service {
 
 		// Clean up temp file..
 		if ( file_exists( $temp_file ) ) {
-			unlink( $temp_file );
+			wp_delete_file( $temp_file );
 		}
 
 		/**

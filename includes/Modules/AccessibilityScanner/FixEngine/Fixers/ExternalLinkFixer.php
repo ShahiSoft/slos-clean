@@ -22,7 +22,7 @@ final class ExternalLinkFixer extends AbstractFixer {
 
 		// Get home URL safely (replicate legacy behavior)...
 		$home_url  = function_exists( 'home_url' ) ? home_url() : ( isset( $_SERVER['HTTP_HOST'] ) ? '//' . $_SERVER['HTTP_HOST'] : '' );
-		$home_host = parse_url( $home_url, PHP_URL_HOST ) ?: '';
+		$home_host = wp_parse_url( $home_url, PHP_URL_HOST ) ?: '';
 
 		$links_array = array();
 		foreach ( $links as $link ) {
@@ -44,7 +44,7 @@ final class ExternalLinkFixer extends AbstractFixer {
 
 			$is_external = false;
 			if ( preg_match( '/^https?:\/\//i', $href ) ) {
-				$link_host = parse_url( $href, PHP_URL_HOST ) ?: '';
+				$link_host = wp_parse_url( $href, PHP_URL_HOST ) ?: '';
 				if ( $link_host && $link_host !== $home_host ) {
 					$is_external = true;
 				}

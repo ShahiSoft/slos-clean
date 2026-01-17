@@ -5,6 +5,8 @@
  * Verifies fixers produce consistent results across multiple runs
  */
 
+// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- CLI test output
+
 namespace ShahiLegalFlowSuite\Tests\FixEngine;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -168,7 +170,7 @@ class DeterminismChecker {
 		$r = $this->results;
 
 		$report  = "# Phase 2.5: Determinism Check Report\n\n";
-		$report .= '**Generated:** ' . date( 'Y-m-d H:i:s' ) . "\n\n";
+		$report .= '**Generated:** ' . gmdate( 'Y-m-d H:i:s' ) . "\n\n";
 
 		$report .= "## Summary\n\n";
 		$report .= "- Total Fixers: {$r['total_fixers']}\n";
@@ -214,7 +216,7 @@ class DeterminismChecker {
 		$docs_dir = dirname( dirname( dirname( __DIR__ ) ) ) . '/docs/autofix';
 
 		if ( ! is_dir( $docs_dir ) ) {
-			mkdir( $docs_dir, 0755, true );
+			wp_mkdir_p( $docs_dir );
 		}
 
 		$filepath = $docs_dir . '/' . $filename;

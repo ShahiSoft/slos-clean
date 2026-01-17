@@ -81,24 +81,27 @@ class MigrationManager {
 			return true;
 		}
 
-		// Get all migration files
+		// Get all migration files..
 		$migrations = $this->get_pending_migrations( $current_version );
 
 		if ( empty( $migrations ) ) {
-			// No migrations needed, just update version
+			// No migrations needed, just update version..
 			return $this->update_version();
 		}
 
-		// Run each migration
+		// Run each migration..
 		foreach ( $migrations as $migration ) {
 			if ( ! $this->run_migration_file( $migration ) ) {
-				// Migration failed, log error
-				error_log( "ShahiLegalFlowSuite: Migration failed - {$migration['file']}" );
+				// Migration failed, log error..
+				if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+					error_log( "ShahiLegalFlowSuite: Migration failed - {$migration['file']}" );
+				}
 				return false;
 			}
 		}
 
-		// Update database version
+		// Update database version..
 		return $this->update_version();
 	}
 
@@ -125,11 +128,11 @@ class MigrationManager {
 		foreach ( $files as $file ) {
 			$filename = basename( $file );
 
-			// Extract version from filename (e.g., migration_1_1_0.php -> 1.1.0)
+			// Extract version from filename (e.g., migration_1_1_0.php -> 1.1.0)..
 			if ( preg_match( '/migration_(\d+)_(\d+)_(\d+)\.php/', $filename, $matches ) ) {
 				$version = "{$matches[1]}.{$matches[2]}.{$matches[3]}";
 
-				// Only include migrations newer than current version
+				// Only include migrations newer than current version..
 				if ( version_compare( $version, $current_version, '>' ) &&
 					version_compare( $version, self::DB_VERSION, '<=' ) ) {
 					$migrations[] = array(
@@ -140,7 +143,7 @@ class MigrationManager {
 			}
 		}
 
-		// Sort migrations by version
+		// Sort migrations by version..
 		usort(
 			$migrations,
 			function ( $a, $b ) {
@@ -165,21 +168,27 @@ class MigrationManager {
 			return false;
 		}
 
-		// Include the migration file
+		// Include the migration file..
 		require_once $migration['file'];
 
-		// Migration files should define an up() function
+		// Migration files should define an up() function..
 		if ( ! function_exists( 'up' ) ) {
-			error_log( "ShahiLegalFlowSuite: Migration file missing up() function - {$migration['file']}" );
+			if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+				error_log( "ShahiLegalFlowSuite: Migration file missing up() function - {$migration['file']}" );
+			}
 			return false;
 		}
 
-		// Run the migration
+		// Run the migration..
 		try {
 			up( $wpdb );
 			return true;
 		} catch ( \Exception $e ) {
-			error_log( 'ShahiLegalFlowSuite: Migration exception - ' . $e->getMessage() );
+			if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+				error_log( 'ShahiLegalFlowSuite: Migration exception - ' . $e->getMessage() );
+			}
 			return false;
 		}
 	}
@@ -225,11 +234,11 @@ class MigrationManager {
 		$current_version = $this->get_current_version();
 
 		if ( version_compare( $version, $current_version, '>=' ) ) {
-			// Cannot rollback to same or newer version
+			// Cannot rollback to same or newer version..
 			return false;
 		}
 
-		// Get migrations between target and current
+		// Get migrations between target and current..
 		$files     = glob( $this->migrations_dir . 'migration_*.php' );
 		$rollbacks = array();
 
@@ -239,7 +248,7 @@ class MigrationManager {
 			if ( preg_match( '/migration_(\d+)_(\d+)_(\d+)\.php/', $filename, $matches ) ) {
 				$migration_version = "{$matches[1]}.{$matches[2]}.{$matches[3]}";
 
-				// Include migrations newer than target but <= current
+				// Include migrations newer than target but <= current..
 				if ( version_compare( $migration_version, $version, '>' ) &&
 					version_compare( $migration_version, $current_version, '<=' ) ) {
 					$rollbacks[] = array(
@@ -250,7 +259,7 @@ class MigrationManager {
 			}
 		}
 
-		// Sort in reverse order for rollback
+		// Sort in reverse order for rollback..
 		usort(
 			$rollbacks,
 			function ( $a, $b ) {
@@ -258,15 +267,18 @@ class MigrationManager {
 			}
 		);
 
-		// Run rollbacks
+		// Run rollbacks..
 		foreach ( $rollbacks as $rollback ) {
 			if ( ! $this->run_rollback_file( $rollback ) ) {
-				error_log( "ShahiLegalFlowSuite: Rollback failed - {$rollback['file']}" );
+				if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+					error_log( "ShahiLegalFlowSuite: Rollback failed - {$rollback['file']}" );
+				}
 				return false;
 			}
 		}
 
-		// Update version
+		// Update version..
 		return update_option( self::VERSION_OPTION, $version );
 	}
 
@@ -284,21 +296,24 @@ class MigrationManager {
 			return false;
 		}
 
-		// Include the migration file
+		// Include the migration file..
 		require_once $migration['file'];
 
-		// Migration files can optionally define a down() function
+		// Migration files can optionally define a down() function..
 		if ( ! function_exists( 'down' ) ) {
-			// If no down() function, just continue
+			// If no down() function, just continue..
 			return true;
 		}
 
-		// Run the rollback
+		// Run the rollback..
 		try {
 			down( $wpdb );
 			return true;
 		} catch ( \Exception $e ) {
-			error_log( 'ShahiLegalFlowSuite: Rollback exception - ' . $e->getMessage() );
+			if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+				error_log( 'ShahiLegalFlowSuite: Rollback exception - ' . $e->getMessage() );
+			}
 			return false;
 		}
 	}
@@ -334,7 +349,7 @@ class MigrationManager {
 			}
 		}
 
-		// Sort by version
+		// Sort by version..
 		usort(
 			$history,
 			function ( $a, $b ) {

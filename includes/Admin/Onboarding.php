@@ -14,6 +14,19 @@
 namespace ShahiLegalFlowSuite\Admin;
 
 use ShahiLegalFlowSuite\Core\Security;
+use function admin_url;
+use function current_time;
+use function current_user_can;
+use function delete_option;
+use function get_current_user_id;
+use function get_option;
+use function is_admin;
+use function sanitize_text_field;
+use function update_option;
+use function wp_cache_delete;
+use function wp_send_json_error;
+use function wp_send_json_success;
+use function wp_unslash;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -68,21 +81,21 @@ class Onboarding {
 	 * @return bool True if onboarding should be displayed
 	 */
 	public function should_show_onboarding() {
-		// Force fresh read from database, bypassing cache
+		// Force fresh read from database, bypassing cache.
 		wp_cache_delete( 'shahi_legalflowsuite_onboarding_completed', 'options' );
 		wp_cache_delete( 'shahi_legalflowsuite_onboarding_data', 'options' );
 
-		// Don't show if user doesn't have permission
+		// Don't show if user doesn't have permission.
 		if ( ! current_user_can( 'manage_shahi_template' ) ) {
 			return false;
 		}
 
-		// Don't show if already completed
+		// Don't show if already completed.
 		if ( get_option( self::OPTION_COMPLETED, false ) ) {
 			return false;
 		}
 
-		// Only show on plugin pages
+		// Only show on plugin pages.
 		if ( ! $this->is_plugin_page() ) {
 			return false;
 		}
@@ -101,7 +114,7 @@ class Onboarding {
 			return false;
 		}
 
-		$page = isset( $_GET['page'] ) ? sanitize_text_field( $_GET['page'] ) : '';
+		$page = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : '';
 		return strpos( $page, 'shahi-legalflowsuite' ) === 0;
 	}
 
@@ -263,8 +276,9 @@ class Onboarding {
 	 * @return void
 	 */
 	public function save_onboarding() {
-		// Verify nonce
-		if ( ! isset( $_POST['nonce'] ) || ! Security::verify_nonce( $_POST['nonce'], 'shahi_onboarding' ) ) {
+		// Verify nonce.
+		$nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
+		if ( empty( $nonce ) || ! Security::verify_nonce( $nonce, 'shahi_onboarding' ) ) {
 			wp_send_json_error(
 				array(
 					'message' => __( 'Security check failed.', 'shahi-legalflowsuite' ),
@@ -272,7 +286,7 @@ class Onboarding {
 			);
 		}
 
-		// Check permissions
+		// Check permissions.
 		if ( ! current_user_can( 'manage_shahi_template' ) ) {
 			wp_send_json_error(
 				array(
@@ -281,22 +295,22 @@ class Onboarding {
 			);
 		}
 
-		// Get submitted data
-		$purpose  = isset( $_POST['purpose'] ) ? sanitize_text_field( $_POST['purpose'] ) : '';
+		// Get submitted data.
+		$purpose  = isset( $_POST['purpose'] ) ? sanitize_text_field( wp_unslash( $_POST['purpose'] ) ) : '';
 		$modules  = isset( $_POST['modules'] ) && is_array( $_POST['modules'] )
-			? array_map( 'sanitize_text_field', $_POST['modules'] )
+			? array_map( 'sanitize_text_field', wp_unslash( $_POST['modules'] ) )
 			: array();
 		$settings = isset( $_POST['settings'] ) && is_array( $_POST['settings'] )
-			? $_POST['settings']
+			? wp_unslash( $_POST['settings'] )
 			: array();
 
-		// Sanitize settings
+		// Sanitize settings.
 		$sanitized_settings = array(
 			'enable_analytics'     => false,
 			'enable_notifications' => isset( $settings['enable_notifications'] ) ? (bool) $settings['enable_notifications'] : false,
 		);
 
-		// Save onboarding data
+		// Save onboarding data.
 		$onboarding_data = array(
 			'purpose'         => $purpose,
 			'modules_enabled' => $modules,
@@ -308,13 +322,13 @@ class Onboarding {
 		update_option( self::OPTION_DATA, $onboarding_data );
 		update_option( self::OPTION_COMPLETED, true );
 
-		// Enable selected modules in database
+		// Enable selected modules in database.
 		$this->enable_modules( $modules );
 
-		// Apply basic settings
+		// Apply basic settings.
 		$this->apply_settings( $sanitized_settings );
 
-		// Track analytics event
+		// Track analytics event.
 		$this->track_onboarding_completion( $onboarding_data );
 
 		wp_send_json_success(
@@ -340,22 +354,23 @@ class Onboarding {
 		global $wpdb;
 		$table = $wpdb->prefix . 'shahi_modules';
 
-		// Check if table exists
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) !== $table ) {
+		// Check if table exists.
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) !== $table ) {
 			return;
 		}
 
 		foreach ( $modules as $module_key ) {
-			// Check if module exists
+			// Check if module exists.
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared -- Table name uses $wpdb->prefix and is safely interpolated.
 			$exists = $wpdb->get_var(
 				$wpdb->prepare(
-					"SELECT COUNT(*) FROM $table WHERE module_key = %s",
+					"SELECT COUNT(*) FROM {$table} WHERE module_key = %s",
 					$module_key
 				)
 			);
 
 			if ( $exists ) {
-				// Update existing module
+				// Update existing module.
 				$wpdb->update(
 					$table,
 					array(
@@ -367,7 +382,7 @@ class Onboarding {
 					array( '%s' )
 				);
 			} else {
-				// Insert new module
+				// Insert new module.
 				$wpdb->insert(
 					$table,
 					array(
@@ -392,7 +407,7 @@ class Onboarding {
 	private function apply_settings( $settings ) {
 		$current_settings = get_option( 'shahi_legalflowsuite_settings', array() );
 
-		// Merge with onboarding preferences
+		// Merge with onboarding preferences.
 		if ( isset( $settings['enable_analytics'] ) ) {
 			$current_settings['enable_analytics'] = $settings['enable_analytics'];
 		}
@@ -415,8 +430,8 @@ class Onboarding {
 		global $wpdb;
 		$table = $wpdb->prefix . 'shahi_analytics';
 
-		// Check if table exists
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) !== $table ) {
+		// Check if table exists.
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) !== $table ) {
 			return;
 		}
 
@@ -451,8 +466,9 @@ class Onboarding {
 	 * @return void
 	 */
 	public function skip_onboarding() {
-		// Verify nonce
-		if ( ! isset( $_POST['nonce'] ) || ! Security::verify_nonce( $_POST['nonce'], 'shahi_onboarding' ) ) {
+		// Verify nonce.
+		$nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
+		if ( empty( $nonce ) || ! Security::verify_nonce( $nonce, 'shahi_onboarding' ) ) {
 			wp_send_json_error(
 				array(
 					'message' => __( 'Security check failed.', 'shahi-legalflowsuite' ),
@@ -460,7 +476,7 @@ class Onboarding {
 			);
 		}
 
-		// Check permissions
+		// Check permissions.
 		if ( ! current_user_can( 'manage_shahi_template' ) ) {
 			wp_send_json_error(
 				array(
@@ -469,7 +485,7 @@ class Onboarding {
 			);
 		}
 
-		// Mark as completed without data
+		// Mark as completed without data.
 		update_option( self::OPTION_COMPLETED, true );
 		update_option(
 			self::OPTION_DATA,

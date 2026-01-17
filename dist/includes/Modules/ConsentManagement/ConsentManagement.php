@@ -81,26 +81,26 @@ class ConsentManagement extends Module {
 	 * @return void
 	 */
 	public function init() {
-		// Only proceed if module is enabled
+		// Only proceed if module is enabled...
 		if ( ! $this->is_enabled() ) {
 			return;
 		}
 
-		// Register admin pages
+		// Register admin pages...
 		if ( is_admin() ) {
 			add_action( 'admin_menu', array( $this, 'register_admin_menu' ), 20 );
 		}
 
-		// Register REST API endpoints
+		// Register REST API endpoints...
 		add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
 
-		// Register shortcodes
+		// Register shortcodes...
 		add_action( 'init', array( $this, 'register_shortcodes' ) );
 
-		// Register Gutenberg blocks
+		// Register Gutenberg blocks...
 		add_action( 'init', array( $this, 'register_blocks' ) );
 
-		// Enqueue block editor assets
+		// Enqueue block editor assets...
 		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_block_editor_assets' ) );
 	}
 
@@ -113,12 +113,12 @@ class ConsentManagement extends Module {
 	 * @return void
 	 */
 	public function register_admin_menu() {
-		// Register main Privacy & Consent page (tabbed interface)
+		// Register main Privacy & Consent page (tabbed interface)...
 		add_submenu_page(
 			'shahi-legalflowsuite',
 			__( 'Privacy & Consent', 'shahi-legalflowsuite' ),
 			'🛡️ ' . __( 'Privacy & Consent', 'shahi-legalflowsuite' ),
-			'manage_shahi_template',
+			'manage_options',
 			'slos-compliance',
 			array( $this, 'render_main_page' )
 		);
@@ -211,7 +211,7 @@ class ConsentManagement extends Module {
 	 * @return void
 	 */
 	public function register_blocks() {
-		// Register embed placeholder block
+		// Register embed placeholder block...
 		if ( function_exists( 'register_block_type' ) ) {
 			register_block_type(
 				'slos/embed-placeholder',
@@ -243,11 +243,11 @@ class ConsentManagement extends Module {
 	 * Render embed placeholder block
 	 *
 	 * @since 3.1.1
-	 * @param array $attributes Block attributes
+	 * @param array $attributes Block attributes.
 	 * @return string Rendered block output
 	 */
 	public function render_embed_placeholder_block( $attributes ) {
-		// Use shortcode to render
+		// Use shortcode to render...
 		$shortcode = new \ShahiLegalFlowSuite\Shortcodes\Embed_Placeholder_Shortcode();
 		return $shortcode->render( $attributes );
 	}

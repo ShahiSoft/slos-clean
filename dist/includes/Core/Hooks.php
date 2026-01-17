@@ -13,7 +13,7 @@
 
 namespace ShahiLegalFlowSuite\Core;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -34,8 +34,8 @@ class Hooks {
 	 * @return void
 	 */
 	public static function init() {
-		// Hook documentation is provided via docblocks
-		// Actual hooks are fired from Service and Controller classes
+		// Hook documentation is provided via docblocks..
+		// Actual hooks are fired from Service and Controller classes..
 	}
 
 	/**
@@ -46,7 +46,7 @@ class Hooks {
 	 */
 	public static function get_action_hooks(): array {
 		return array(
-			// Consent Management Hooks
+			// Consent Management Hooks..
 			'slos_consent_recorded'       => array(
 				'description' => 'Fires after a consent record is successfully created',
 				'params'      => array(
@@ -87,7 +87,7 @@ class Hooks {
 				'example'     => "add_action('slos_bulk_consent_withdrawn', function(\$user_id, \$withdrawn_count, \$type) {\n    error_log('Bulk withdrawal: ' . \$withdrawn_count . ' consents for user ' . \$user_id);\n}, 10, 3);",
 			),
 
-			// Plugin Lifecycle Hooks
+			// Plugin Lifecycle Hooks..
 			'slos_plugin_activated'       => array(
 				'description' => 'Fires when the plugin is activated',
 				'params'      => array(),
@@ -106,7 +106,7 @@ class Hooks {
 				'example'     => "add_action('slos_migrations_completed', function(\$migrated_tables) {\n    // Post-migration setup\n}, 10, 1);",
 			),
 
-			// API Hooks
+			// API Hooks..
 			'slos_rest_api_init'          => array(
 				'description' => 'Fires when REST API routes are being registered',
 				'params'      => array(),
@@ -130,7 +130,7 @@ class Hooks {
 	 */
 	public static function get_filter_hooks(): array {
 		return array(
-			// Consent Data Filters
+			// Consent Data Filters..
 			'slos_consent_data_before_save'  => array(
 				'description' => 'Filter consent data before saving to database',
 				'params'      => array(
@@ -166,7 +166,7 @@ class Hooks {
 				'example'     => "add_filter('slos_allowed_consent_statuses', function(\$statuses) {\n    \$statuses[] = 'pending';\n    return \$statuses;\n});",
 			),
 
-			// Validation Filters
+			// Validation Filters..
 			'slos_validate_consent_data'     => array(
 				'description' => 'Filter validation result for consent data',
 				'params'      => array(
@@ -178,7 +178,7 @@ class Hooks {
 				'example'     => "add_filter('slos_validate_consent_data', function(\$is_valid, \$consent_data, \$errors) {\n    // Custom validation logic\n    return \$is_valid;\n}, 10, 3);",
 			),
 
-			// Query Filters
+			// Query Filters..
 			'slos_consent_query_args'        => array(
 				'description' => 'Filter query arguments for consent retrieval',
 				'params'      => array(
@@ -197,7 +197,7 @@ class Hooks {
 				'example'     => "add_filter('slos_consent_statistics', function(\$stats) {\n    // Add custom statistics\n    return \$stats;\n});",
 			),
 
-			// REST API Filters
+			// REST API Filters..
 			'slos_rest_consent_response'     => array(
 				'description' => 'Filter consent data before REST API response',
 				'params'      => array(
@@ -217,7 +217,7 @@ class Hooks {
 				'example'     => "add_filter('slos_rest_error_response', function(\$error_data, \$error_code) {\n    // Customize error messages\n    return \$error_data;\n}, 10, 2);",
 			),
 
-			// Privacy & Security Filters
+			// Privacy & Security Filters..
 			'slos_ip_hash_algorithm'         => array(
 				'description' => 'Filter the hashing algorithm for IP addresses',
 				'params'      => array(
@@ -236,7 +236,7 @@ class Hooks {
 				'example'     => "add_filter('slos_anonymize_consent_data', function(\$anonymized_data, \$original_data) {\n    // Custom anonymization logic\n    return \$anonymized_data;\n}, 10, 2);",
 			),
 
-			// Permission Filters
+			// Permission Filters..
 			'slos_user_can_withdraw_consent' => array(
 				'description' => 'Filter whether a user can withdraw consent',
 				'params'      => array(
@@ -338,7 +338,7 @@ class Hooks {
 		$doc .= "Complete reference for all action and filter hooks in Shahi LegalFlowSuite.\n\n";
 		$doc .= "Version: 3.0.1\n\n";
 
-		// Action Hooks
+		// Action Hooks..
 		$doc .= "## Action Hooks\n\n";
 		$doc .= "Action hooks allow you to execute custom code at specific points in the plugin lifecycle.\n\n";
 
@@ -360,7 +360,7 @@ class Hooks {
 			$doc .= "---\n\n";
 		}
 
-		// Filter Hooks
+		// Filter Hooks..
 		$doc .= "## Filter Hooks\n\n";
 		$doc .= "Filter hooks allow you to modify data before it's used by the plugin.\n\n";
 

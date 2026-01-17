@@ -30,16 +30,16 @@
 	 * @param url
 	 */
 	function shouldBlockUrl(url) {
-		if (!url || !blockingRules.length) {
+		if ( ! url || ! blockingRules.length) {
 			return null;
 		}
 
 		for (const rule of blockingRules) {
-			if (matchesPattern(url, rule.pattern)) {
+			if (matchesPattern( url, rule.pattern )) {
 				const category = rule.category;
 				const hasConsent = currentConsent[category];
 
-				if (!hasConsent) {
+				if ( ! hasConsent) {
 					return rule;
 				}
 			}
@@ -54,17 +54,17 @@
 	 * @param pattern
 	 */
 	function matchesPattern(url, pattern) {
-		if (!pattern) {
+		if ( ! pattern) {
 			return false;
 		}
 
 		// Regex pattern (starts with /).
-		if (pattern.startsWith('/') && pattern.includes('/')) {
+		if (pattern.startsWith( '/' ) && pattern.includes( '/' )) {
 			try {
-				const match = pattern.match(/^\/(.*)\/([gimuy]*)$/);
+				const match = pattern.match( /^\/(.*)\/([gimuy]*)$/ );
 				if (match) {
-					const regex = new RegExp(match[1], match[2]);
-					return regex.test(url);
+					const regex = new RegExp( match[1], match[2] );
+					return regex.test( url );
 				}
 			} catch (e) {
 				console.warn(
@@ -75,7 +75,7 @@
 		}
 
 		// Substring match.
-		return url.includes(pattern);
+		return url.includes( pattern );
 	}
 
 	/**
@@ -85,15 +85,15 @@
 	 */
 	window.fetch = function (...args) {
 		const url = args[0] || '';
-		const rule = shouldBlockUrl(url);
+		const rule = shouldBlockUrl( url );
 
 		if (rule) {
-			console.log(`[Consent Blocker] Blocked fetch to ${url}`, rule);
+			console.log( `[Consent Blocker] Blocked fetch to ${url}`, rule );
 			// Return rejected promise to prevent API call.
-			return Promise.reject(new Error(`Blocked by consent: ${rule.id}`));
+			return Promise.reject( new Error( `Blocked by consent: ${rule.id}` ) );
 		}
 
-		return originalFetch.apply(this, args);
+		return originalFetch.apply( this, args );
 	};
 
 	/**
@@ -101,15 +101,15 @@
 	 */
 	const XHROpen = XMLHttpRequest.prototype.open;
 	XMLHttpRequest.prototype.open = function (method, url) {
-		const rule = shouldBlockUrl(url);
+		const rule = shouldBlockUrl( url );
 
 		if (rule) {
-			console.log(`[Consent Blocker] Blocked XHR to ${url}`, rule);
+			console.log( `[Consent Blocker] Blocked XHR to ${url}`, rule );
 			this._consentBlocked = true;
 			this._blockingRule = rule;
 		}
 
-		return XHROpen.apply(this, arguments);
+		return XHROpen.apply( this, arguments );
 	};
 
 	// Prevent blocked XHR from sending.
@@ -121,62 +121,73 @@
 			);
 			return; // Don't send blocked request.
 		}
-		return XHRSend.apply(this, arguments);
+		return XHRSend.apply( this, arguments );
 	};
 
 	/**
 	 * Observer for dynamically injected scripts.
 	 */
 	if (typeof MutationObserver !== 'undefined') {
-		const observer = new MutationObserver(function (mutations) {
-			mutations.forEach(function (mutation) {
-				if (mutation.type === 'childList') {
-					mutation.addedNodes.forEach(function (node) {
-						// Check for script tags.
-						if (node.nodeName === 'SCRIPT' && node.src) {
-							const rule = shouldBlockUrl(node.src);
-							if (rule) {
-								console.log(
-									`[Consent Blocker] Removed dynamically injected script: ${node.src}`
-								);
-								// Remove blocked script from DOM.
-								node.parentNode.removeChild(node);
-								// Queue for later replay.
-								blockedScripts.push({
-									scriptTag: node.outerHTML,
-									url: node.src,
-									rule,
-								});
-							}
-						}
+		const observer = new MutationObserver(
+			function (mutations) {
+				mutations.forEach(
+					function (mutation) {
+						if (mutation.type === 'childList') {
+							mutation.addedNodes.forEach(
+								function (node) {
+									// Check for script tags.
+									if (node.nodeName === 'SCRIPT' && node.src) {
+										const rule = shouldBlockUrl( node.src );
+										if (rule) {
+											console.log(
+												`[Consent Blocker] Removed dynamically injected script: ${node.src}`
+											);
+											// Remove blocked script from DOM.
+											node.parentNode.removeChild( node );
+											// Queue for later replay.
+											blockedScripts.push(
+												{
+													scriptTag: node.outerHTML,
+													url: node.src,
+													rule,
+												}
+											);
+										}
+									}
 
-						// Check for iframes.
-						if (node.nodeName === 'IFRAME' && node.src) {
-							const rule = shouldBlockUrl(node.src);
-							if (
-								rule &&
-								rule.action === 'replace_with_placeholder'
-							) {
-								console.log(
-									`[Consent Blocker] Replaced iframe with placeholder: ${node.src}`
-								);
-								// Store original src.
-								node.dataset.consentSrc = node.src;
-								// Clear src to prevent loading.
-								node.src = 'about:blank';
-								node.classList.add('complyflow-iframe-blocked');
-							}
+									// Check for iframes.
+									if (node.nodeName === 'IFRAME' && node.src) {
+										const rule = shouldBlockUrl( node.src );
+										if (
+										rule &&
+										rule.action === 'replace_with_placeholder'
+										) {
+											console.log(
+												`[Consent Blocker] Replaced iframe with placeholder: ${node.src}`
+											);
+											// Store original src.
+											node.dataset.consentSrc = node.src;
+											// Clear src to prevent loading.
+											node.src = 'about:blank';
+											node.classList.add( 'complyflow-iframe-blocked' );
+										}
+									}
+								}
+							);
 						}
-					});
-				}
-			});
-		});
+					}
+				);
+			}
+		);
 
 		// Start observing.
-		observer.observe(document.documentElement, {
-			childList: true,
-			subtree: true,
-		});
+		observer.observe(
+			document.documentElement,
+			{
+				childList: true,
+				subtree: true,
+			}
+		);
 	}
 
 	/**
@@ -190,7 +201,7 @@
 	 * @param updatedConsent
 	 */
 	window.complyflowReplayScripts = function (updatedConsent) {
-		if (!blockedScripts.length) {
+		if ( ! blockedScripts.length) {
 			return;
 		}
 
@@ -202,11 +213,11 @@
 			const category = blocked.rule.category;
 			if (updatedConsent[category]) {
 				// Recreate and inject script.
-				const script = document.createElement('script');
+				const script = document.createElement( 'script' );
 				script.src = blocked.url;
 				script.async = true;
 				script.dataset.consentReplayed = true;
-				document.head.appendChild(script);
+				document.head.appendChild( script );
 
 				console.log(
 					`[Consent Blocker] Replayed script: ${blocked.url}`
@@ -225,30 +236,35 @@
 			'iframe.complyflow-iframe-blocked'
 		);
 
-		blockedIframes.forEach(function (iframe) {
-			const rule = iframe.dataset.consentRule;
-			if (!rule) {
-				return;
-			}
+		blockedIframes.forEach(
+			function (iframe) {
+				const rule = iframe.dataset.consentRule;
+				if ( ! rule) {
+					return;
+				}
 
-			// Try to parse rule from attribute.
-			const consentSrc = iframe.dataset.consentSrc;
-			if (consentSrc && updatedConsent[rule]) {
-				iframe.src = consentSrc;
-				iframe.classList.remove('complyflow-iframe-blocked');
-				console.log(
-					`[Consent Blocker] Re - enabled iframe: ${consentSrc}`
-				);
+				// Try to parse rule from attribute.
+				const consentSrc = iframe.dataset.consentSrc;
+				if (consentSrc && updatedConsent[rule]) {
+					iframe.src = consentSrc;
+					iframe.classList.remove( 'complyflow-iframe-blocked' );
+					console.log(
+						`[Consent Blocker] Re - enabled iframe: ${consentSrc}`
+					);
+				}
 			}
-		});
+		);
 	};
 
 	// Debug mode.
 	if (config.debug) {
-		console.log('[Consent Blocker] Initialized', {
-			blockingRules,
-			currentConsent,
-			sessionId,
-		});
+		console.log(
+			'[Consent Blocker] Initialized',
+			{
+				blockingRules,
+				currentConsent,
+				sessionId,
+			}
+		);
 	}
 })();

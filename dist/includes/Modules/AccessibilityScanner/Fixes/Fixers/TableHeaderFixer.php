@@ -59,20 +59,20 @@ class TableHeaderFixer extends BaseFixer {
 		$xpath         = new \DOMXPath( $dom );
 		$fixes_applied = 0;
 
-		// Find tables without thead
+		// Find tables without thead..
 		$tables = $xpath->query( '//table[not(thead)]' );
 
 		foreach ( $tables as $table ) {
-			// Check if first row looks like headers
+			// Check if first row looks like headers..
 			$first_row = $xpath->query( './/tr[1]', $table )->item( 0 );
 
 			if ( $first_row && $this->looks_like_header_row( $first_row ) ) {
-				// Create thead and move first row into it
+				// Create thead and move first row into it..
 				$thead = $dom->createElement( 'thead' );
 				$first_row->parentNode->removeChild( $first_row );
 				$thead->appendChild( $first_row );
 
-				// Insert thead at beginning of table
+				// Insert thead at beginning of table..
 				$tbody = $table->getElementsByTagName( 'tbody' )->item( 0 );
 				if ( $tbody ) {
 					$table->insertBefore( $thead, $tbody );
@@ -80,18 +80,18 @@ class TableHeaderFixer extends BaseFixer {
 					$table->insertBefore( $thead, $table->firstChild );
 				}
 
-				// Convert td to th in header row
+				// Convert td to th in header row..
 				$cells = $xpath->query( './/td', $first_row );
 				foreach ( $cells as $td ) {
 					$th = $dom->createElement( 'th' );
 					$th->setAttribute( 'scope', 'col' );
 
-					// Copy attributes
+					// Copy attributes..
 					foreach ( $td->attributes as $attr ) {
 						$th->setAttribute( $attr->name, $attr->value );
 					}
 
-					// Copy content
+					// Copy content..
 					while ( $td->firstChild ) {
 						$th->appendChild( $td->firstChild );
 					}
@@ -102,17 +102,17 @@ class TableHeaderFixer extends BaseFixer {
 			}
 		}
 
-		// Find th elements without scope
+		// Find th elements without scope..
 		$headers = $xpath->query( '//th[not(@scope)]' );
 		foreach ( $headers as $th ) {
-			// Determine if it's a column or row header
+			// Determine if it's a column or row header..
 			$parent_row     = $th->parentNode;
 			$parent_section = $parent_row->parentNode;
 
 			if ( $parent_section->nodeName === 'thead' ) {
 				$th->setAttribute( 'scope', 'col' );
 			} else {
-				// If it's the first cell in the row, it's probably a row header
+				// If it's the first cell in the row, it's probably a row header..
 				$first_cell = $xpath->query( './*[1]', $parent_row )->item( 0 );
 				if ( $first_cell === $th ) {
 					$th->setAttribute( 'scope', 'row' );
@@ -144,12 +144,12 @@ class TableHeaderFixer extends BaseFixer {
 		foreach ( $cells as $cell ) {
 			$content = trim( $cell->textContent );
 
-			// Check if content is short (likely a header)
+			// Check if content is short (likely a header)..
 			if ( strlen( $content ) < 50 ) {
 				++$short_count;
 			}
 
-			// Check for bold or strong styling
+			// Check for bold or strong styling..
 			if ( strpos( $cell->getAttribute( 'style' ), 'bold' ) !== false ||
 				$cell->getElementsByTagName( 'strong' )->length > 0 ||
 				$cell->getElementsByTagName( 'b' )->length > 0 ) {
@@ -157,7 +157,7 @@ class TableHeaderFixer extends BaseFixer {
 			}
 		}
 
-		// If most cells are short and/or bold, it's probably a header row
+		// If most cells are short and/or bold, it's probably a header row..
 		return ( $short_count >= $cells->length * 0.7 ) || ( $bold_count >= $cells->length * 0.5 );
 	}
 }

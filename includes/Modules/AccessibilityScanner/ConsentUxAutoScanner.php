@@ -203,8 +203,8 @@ class ConsentUxAutoScanner {
 		if ( $last_scan['critical'] > 0 ) {
 			$notice_class = 'notice-error';
 			$icon         = 'warning';
-			/* translators: 1: Page title, 2: Number of issues, 3: Health score */
-			$message = sprintf(
+			$message      = sprintf(
+				// translators: 1: Page title, 2: Number of issues, 3: Number of critical issues, 4: Health score
 				__( 'Consent UX Scan completed for "%1$s": Found %2$d issues (including %3$d critical). Health Score: %4$d/100. Please review accessibility issues.', 'shahi-legalflowsuite' ),
 				$post_title,
 				$issues,
@@ -214,8 +214,8 @@ class ConsentUxAutoScanner {
 		} elseif ( $issues > 0 ) {
 			$notice_class = 'notice-warning';
 			$icon         = 'info';
-			/* translators: 1: Page title, 2: Number of issues, 3: Health score */
-			$message = sprintf(
+			$message      = sprintf(
+				// translators: 1: Page title, 2: Number of issues, 3: Health score
 				__( 'Consent UX Scan completed for "%1$s": Found %2$d accessibility issues. Health Score: %3$d/100.', 'shahi-legalflowsuite' ),
 				$post_title,
 				$issues,
@@ -224,8 +224,8 @@ class ConsentUxAutoScanner {
 		} else {
 			$notice_class = 'notice-success';
 			$icon         = 'yes-alt';
-			/* translators: 1: Page title, 2: Health score */
-			$message = sprintf(
+			$message      = sprintf(
+				// translators: 1: Page title, 2: Health score
 				__( 'Consent UX Scan completed for "%1$s": No accessibility issues found. Health Score: %2$d/100.', 'shahi-legalflowsuite' ),
 				$post_title,
 				$health_score

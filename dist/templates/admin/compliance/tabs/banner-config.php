@@ -917,9 +917,9 @@ $banner_settings = array(
 		$show_banner_templates = ! ( defined( 'SLOS_DORMANT_BANNER_FEATURES' ) &&
 			is_array( SLOS_DORMANT_BANNER_FEATURES ) &&
 			in_array( 'templates', SLOS_DORMANT_BANNER_FEATURES, true ) );
-		
+
 		if ( $show_banner_templates ) :
-		?>
+			?>
 		<!-- Phase 2.1.1: Template Selector -->
 		<div class="slos-config-section">
 			<div class="slos-config-title">

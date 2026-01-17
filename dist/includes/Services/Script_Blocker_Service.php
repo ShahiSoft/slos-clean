@@ -101,8 +101,8 @@ class Script_Blocker_Service extends Base_Service {
 			return $tag;
 		}
 
-		// Check consent from localStorage (client-side enforces; server sets marker)
-		// Add data attributes so the client blocker can decide
+		// Check consent from localStorage (client-side enforces; server sets marker)..
+		// Add data attributes so the client blocker can decide..
 		$attrs = sprintf( ' data-slos-purpose="%s"', esc_attr( $purpose ) );
 		if ( false === strpos( $tag, 'data-slos-purpose' ) ) {
 			$tag = str_replace( '<script ', '<script ' . $attrs . ' ', $tag );
@@ -142,7 +142,7 @@ class Script_Blocker_Service extends Base_Service {
 	]
 	};
 
-	// Extend patterns (runtime) for additional platforms
+	// Extend patterns (runtime) for additional platforms..
 	blockedPatterns.analytics.push('tags.tiqcdn.com','cdn.optimizely.com','analytics.tiktok.com');
 	blockedPatterns.marketing.push('snap.licdn.com','analytics.twitter.com');
 	blockedPatterns.functional = ['widget.intercom.io','js.intercomcdn.com','js.driftt.com'];
@@ -158,7 +158,7 @@ class Script_Blocker_Service extends Base_Service {
 	return '';
 	}
 
-	// Intercept dynamic script creation
+	// Intercept dynamic script creation..
 	var origCreate = document.createElement.bind(document);
 	document.createElement = function(tag){
 	var el = origCreate(tag);
@@ -180,7 +180,7 @@ class Script_Blocker_Service extends Base_Service {
 	return el;
 	};
 
-	// Best-effort: block cookie writes for disallowed categories
+	// Best-effort: block cookie writes for disallowed categories..
 	try {
 	var origCookieDesc = Object.getOwnPropertyDescriptor(Document.prototype, 'cookie') || Object.getOwnPropertyDescriptor(HTMLDocument.prototype, 'cookie');
 	if (origCookieDesc && origCookieDesc.configurable) {
@@ -192,11 +192,11 @@ class Script_Blocker_Service extends Base_Service {
 			var name = (v||'').split('=')[0].trim();
 			var n = name.toLowerCase();
 			var deny = false;
-			// Analytics cookies
+			// Analytics cookies..
 			var analyticsNames = ['_ga','_gid','_gat','_gcl_','__utm','_hj'];
-			// Marketing cookies
+			// Marketing cookies..
 			var marketingNames = ['_fbp','fr','ide','dsid','nid'];
-			// Decide category
+			// Decide category..
 			if (analyticsNames.some(function(x){ return n.indexOf(x)===0; }) && !hasConsent('analytics')) deny = true;
 			if (marketingNames.some(function(x){ return n.indexOf(x)===0; }) && !hasConsent('marketing')) deny = true;
 			if (!deny) { origCookieDesc.set.call(document, v); }
@@ -206,7 +206,7 @@ class Script_Blocker_Service extends Base_Service {
 	}
 	} catch(e) { /* ignore */ }
 
-	// Intercept localStorage/sessionStorage writes for disallowed categories (heuristics)
+	// Intercept localStorage/sessionStorage writes for disallowed categories (heuristics)..
 	function classifyKey(k){
 	var s = (k||'').toLowerCase();
 	if (s.indexOf('ga')!==-1 || s.indexOf('analytics')!==-1) return 'analytics';
@@ -223,7 +223,7 @@ class Script_Blocker_Service extends Base_Service {
 	};
 	} catch(e) { /* ignore */ }
 
-	// Unblock scripts when consent updates
+	// Unblock scripts when consent updates..
 	document.addEventListener('slos-consent-updated', function(e){
 	try { consents = e.detail.consents || consents; } catch(err){}
 	var blocked = document.querySelectorAll('script[data-slos-blocked="true"]');
@@ -238,7 +238,7 @@ class Script_Blocker_Service extends Base_Service {
 		s.remove();
 		}
 	});
-	// Emit Google Consent Mode v2 update
+	// Emit Google Consent Mode v2 update..
 	try {
 		var state = {
 		'ad_storage': (hasConsent('marketing')||hasConsent('advertising')) ? 'granted' : 'denied',

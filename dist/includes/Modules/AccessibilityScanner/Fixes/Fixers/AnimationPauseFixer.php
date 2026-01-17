@@ -51,25 +51,25 @@ class AnimationPauseFixer extends BaseFixer {
 		$xpath = new \DOMXPath( $dom );
 		$fixed = 0;
 
-		// Fix animated GIFs.
+		// Fix animated GIFs...
 		$fixed += $this->fix_animated_gifs( $dom, $xpath );
 
-		// Fix CSS animation elements.
+		// Fix CSS animation elements...
 		$fixed += $this->fix_css_animations( $dom, $xpath );
 
-		// Fix auto-playing carousels/sliders.
+		// Fix auto-playing carousels/sliders...
 		$fixed += $this->fix_carousels( $dom, $xpath );
 
-		// Fix marquee elements (deprecated but still used).
+		// Fix marquee elements (deprecated but still used)...
 		$fixed += $this->fix_marquees( $dom, $xpath );
 
-		// Fix auto-scrolling content.
+		// Fix auto-scrolling content...
 		$fixed += $this->fix_auto_scroll( $xpath );
 
-		// Fix video autoplay.
+		// Fix video autoplay...
 		$fixed += $this->fix_video_autoplay( $xpath );
 
-		// Inject CSS for pause controls if any fixes were made.
+		// Inject CSS for pause controls if any fixes were made...
 		if ( $fixed > 0 ) {
 			$this->inject_animation_styles( $dom );
 		}
@@ -90,23 +90,23 @@ class AnimationPauseFixer extends BaseFixer {
 	private function fix_animated_gifs( $dom, $xpath ) {
 		$fixed = 0;
 
-		// Find GIF images without pause control.
+		// Find GIF images without pause control...
 		$gifs = $xpath->query( '//img[contains(@src, ".gif") and not(ancestor::*[@data-slos-pause-control])]' );
 
 		foreach ( $gifs as $gif ) {
-			// Skip small icons (likely not distracting).
+			// Skip small icons (likely not distracting)...
 			$width = $gif->getAttribute( 'width' );
 			if ( $width && (int) $width < 50 ) {
 				continue;
 			}
 
-			// Create wrapper container.
+			// Create wrapper container...
 			$wrapper = $dom->createElement( 'div' );
 			$wrapper->setAttribute( 'class', 'slos-animation-container' );
 			$wrapper->setAttribute( 'data-slos-pause-control', 'true' );
 			$wrapper->setAttribute( 'data-animation-type', 'gif' );
 
-			// Create pause button.
+			// Create pause button...
 			$button = $dom->createElement( 'button' );
 			$button->setAttribute( 'type', 'button' );
 			$button->setAttribute( 'class', 'slos-pause-animation' );
@@ -114,12 +114,12 @@ class AnimationPauseFixer extends BaseFixer {
 			$button->setAttribute( 'aria-pressed', 'false' );
 			$button->textContent = '⏸';
 
-			// Clone and modify GIF.
+			// Clone and modify GIF...
 			$parent    = $gif->parentNode;
 			$gif_clone = $gif->cloneNode( true );
 			$gif_clone->setAttribute( 'data-slos-animated', 'true' );
 
-			// Store original src for pause/play functionality.
+			// Store original src for pause/play functionality...
 			$gif_clone->setAttribute( 'data-slos-original-src', $gif->getAttribute( 'src' ) );
 
 			$wrapper->appendChild( $gif_clone );
@@ -141,14 +141,14 @@ class AnimationPauseFixer extends BaseFixer {
 	private function fix_css_animations( $dom, $xpath ) {
 		$fixed = 0;
 
-		// Find elements with animation in inline style.
+		// Find elements with animation in inline style...
 		$animated = $xpath->query( '//*[@style[contains(., "animation")]][not(@data-slos-pause-control)]' );
 
 		foreach ( $animated as $element ) {
 			$element->setAttribute( 'data-slos-pause-control', 'true' );
 			$element->setAttribute( 'data-slos-animation-state', 'running' );
 
-			// Add pause button if element is not interactive.
+			// Add pause button if element is not interactive...
 			if ( ! $this->is_interactive( $element ) ) {
 				$this->add_pause_button( $dom, $element );
 			}
@@ -156,12 +156,12 @@ class AnimationPauseFixer extends BaseFixer {
 			++$fixed;
 		}
 
-		// Find elements with common animation classes.
+		// Find elements with common animation classes...
 		$animation_classes = array( 'animate', 'animated', 'animation', 'motion', 'moving', 'pulse', 'blink', 'bounce', 'shake', 'spin', 'rotate', 'fade' );
 		foreach ( $animation_classes as $class ) {
 			$elements = $xpath->query( "//*[contains(@class, '{$class}') and not(@data-slos-pause-control)]" );
 			foreach ( $elements as $element ) {
-				// Skip very small elements.
+				// Skip very small elements...
 				$style = $element->getAttribute( 'style' );
 				if ( preg_match( '/width\s*:\s*(\d+)px/i', $style, $m ) && (int) $m[1] < 20 ) {
 					continue;
@@ -186,7 +186,7 @@ class AnimationPauseFixer extends BaseFixer {
 	private function fix_carousels( $dom, $xpath ) {
 		$fixed = 0;
 
-		// Common carousel class patterns.
+		// Common carousel class patterns...
 		$carousel_selectors = array(
 			"contains(@class, 'carousel')",
 			"contains(@class, 'slider')",
@@ -206,7 +206,7 @@ class AnimationPauseFixer extends BaseFixer {
 			$carousel->setAttribute( 'data-slos-pause-control', 'true' );
 			$carousel->setAttribute( 'aria-roledescription', 'carousel' );
 
-			// Check if pause button exists.
+			// Check if pause button exists...
 			$existing_pause = $xpath->query(
 				'.//*[contains(@class, "pause") or @aria-label[contains(., "pause")] or @aria-label[contains(., "Pause")]]',
 				$carousel
@@ -235,19 +235,19 @@ class AnimationPauseFixer extends BaseFixer {
 		$marquees = $xpath->query( '//marquee' );
 
 		foreach ( $marquees as $marquee ) {
-			// Replace with accessible alternative.
+			// Replace with accessible alternative...
 			$div = $dom->createElement( 'div' );
 			$div->setAttribute( 'class', 'slos-accessible-marquee' );
 			$div->setAttribute( 'role', 'marquee' );
 			$div->setAttribute( 'aria-live', 'off' );
 			$div->setAttribute( 'data-slos-pause-control', 'true' );
 
-			// Copy content.
+			// Copy content...
 			while ( $marquee->firstChild ) {
 				$div->appendChild( $marquee->firstChild );
 			}
 
-			// Add pause button at the start.
+			// Add pause button at the start...
 			$button = $dom->createElement( 'button' );
 			$button->setAttribute( 'type', 'button' );
 			$button->setAttribute( 'class', 'slos-pause-marquee' );
@@ -272,7 +272,7 @@ class AnimationPauseFixer extends BaseFixer {
 	private function fix_auto_scroll( $xpath ) {
 		$fixed = 0;
 
-		// Find elements with auto-scroll classes or attributes.
+		// Find elements with auto-scroll classes or attributes...
 		$scrollers = $xpath->query(
 			'//*[contains(@class, "auto-scroll") or contains(@class, "ticker") or ' .
 			'contains(@class, "news-feed") or contains(@class, "news-ticker") or ' .
@@ -298,13 +298,13 @@ class AnimationPauseFixer extends BaseFixer {
 	private function fix_video_autoplay( $xpath ) {
 		$fixed = 0;
 
-		// Find videos with autoplay.
+		// Find videos with autoplay...
 		$videos = $xpath->query( '//video[@autoplay and not(@data-slos-pause-control)]' );
 
 		foreach ( $videos as $video ) {
 			$video->setAttribute( 'data-slos-pause-control', 'true' );
 
-			// Ensure controls are visible.
+			// Ensure controls are visible...
 			if ( ! $video->hasAttribute( 'controls' ) ) {
 				$video->setAttribute( 'controls', 'controls' );
 			}

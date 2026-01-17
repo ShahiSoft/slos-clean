@@ -60,7 +60,7 @@ class AccessibilityMainPage {
 	 * @since 3.0.2
 	 */
 	public function __construct() {
-		// Initialize page instances..
+		// Initialize page instances.
 		$this->scanner_page   = new \ShahiLegalFlowSuite\Modules\AccessibilityScanner\Admin\ScannerPage();
 		$this->dashboard_page = new \ShahiLegalFlowSuite\Modules\AccessibilityScanner\Admin\AccessibilityDashboard();
 		$this->settings_page  = new \ShahiLegalFlowSuite\Modules\AccessibilityScanner\Admin\AccessibilitySettings();
@@ -87,15 +87,15 @@ class AccessibilityMainPage {
 	 * @return void
 	 */
 	public function render() {
-		// Check capability..
+		// Check capability.
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'shahi-legalflowsuite' ) );
 		}
 
-		// Get current tab..
+		// Get current tab.
 		$this->current_tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'tools';
 
-		// Validate tab..
+		// Validate tab.
 		$valid_tabs = array_keys( $this->get_tabs() );
 		if ( ! in_array( $this->current_tab, $valid_tabs, true ) ) {
 			$this->current_tab = 'tools';
@@ -208,7 +208,7 @@ class AccessibilityMainPage {
 		$tabs        = $this->get_tabs();
 		$current_url = admin_url( 'admin.php?page=slos-accessibility' );
 
-		// Tab icons..
+		// Tab icons.
 		$tab_icons = array(
 			'tools'     => 'dashicons-admin-tools',
 			'dashboard' => 'dashicons-chart-area',
@@ -268,11 +268,11 @@ class AccessibilityMainPage {
 	private function render_tools_tab() {
 		echo '<div class="slos-tab-pane slos-tools-pane">';
 
-		// Render tools page content..
+		// Render tools page content.
 		if ( $this->scanner_page && method_exists( $this->scanner_page, 'render_content' ) ) {
 			$this->scanner_page->render_content();
 		} else {
-			// Fallback - display placeholder content..
+			// Fallback - display placeholder content.
 			?>
 			<div style="background: #1e293b; border-radius: 8px; padding: 40px; text-align: center; color: #cbd5e1;">
 				<h2 style="color: #f1f5f9; margin-bottom: 16px;">🛠️ Tools & Scanner</h2>
@@ -294,7 +294,7 @@ class AccessibilityMainPage {
 	private function render_dashboard_tab() {
 		echo '<div class="slos-tab-pane slos-dashboard-pane">';
 
-		// Render dashboard page content..
+		// Render dashboard page content.
 		if ( method_exists( $this->dashboard_page, 'render_content' ) ) {
 			$this->dashboard_page->render_content();
 		} else {
@@ -313,11 +313,11 @@ class AccessibilityMainPage {
 	private function render_settings_tab() {
 		echo '<div class="slos-tab-pane slos-settings-pane">';
 
-		// Render settings page content..
+		// Render settings page content.
 		if ( method_exists( $this->settings_page, 'render_content' ) ) {
 			$this->settings_page->render_content();
 		} else {
-			// Link to settings page..
+			// Link to settings page.
 			?>
 			<div class="slos-settings-wrapper">
 				<p>

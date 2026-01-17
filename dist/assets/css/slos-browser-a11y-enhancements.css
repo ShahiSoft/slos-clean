@@ -79,9 +79,6 @@
 code,
 pre {
 	user-select: text;
-	user-select: text;
-	user-select: text;
-	user-select: text;
 }
 
 /* Prevent text selection on UI controls */
@@ -89,9 +86,6 @@ pre {
 .shahi-btn,
 button,
 [role="button"] {
-	user-select: none;
-	user-select: none;
-	user-select: none;
 	user-select: none;
 	-webkit-tap-highlight-color: transparent;
 }

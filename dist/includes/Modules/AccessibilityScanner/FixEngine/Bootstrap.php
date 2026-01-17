@@ -38,20 +38,20 @@ final class Bootstrap {
 			return;
 		}
 
-		// Load dependencies
+		// Load dependencies..
 		self::load_dependencies();
 
-		// Create instances
+		// Create instances..
 		self::$engine       = new FixEngine();
 		self::$ajax_handler = new FixEngineAjaxHandler( self::$engine );
 
-		// Register AJAX handlers
+		// Register AJAX handlers..
 		self::$ajax_handler->register();
 
-		// Register admin scripts
+		// Register admin scripts..
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_scripts' ) );
 
-		// Activation hook for database setup
+		// Activation hook for database setup..
 		$plugin_file = defined( 'SHAHI_LEGALFLOWSUITE_PLUGIN_FILE' )
 			? SHAHI_LEGALFLOWSUITE_PLUGIN_FILE
 			: __FILE__;
@@ -66,7 +66,7 @@ final class Bootstrap {
 	private static function load_dependencies(): void {
 		$base_dir = __DIR__;
 
-		// Load core interfaces and contracts first
+		// Load core interfaces and contracts first..
 		$contract_files = array(
 			'FixerInterface.php',
 		);
@@ -78,7 +78,7 @@ final class Bootstrap {
 			}
 		}
 
-		// Load infrastructure classes (Phase 0)
+		// Load infrastructure classes (Phase 0)..
 		$infrastructure_files = array(
 			'FeatureFlags.php',
 			'Logger.php',
@@ -92,7 +92,7 @@ final class Bootstrap {
 			}
 		}
 
-		// Load core classes
+		// Load core classes..
 		$core_files = array(
 			'FixResult.php',
 			'AbstractFixer.php',
@@ -110,7 +110,7 @@ final class Bootstrap {
 			}
 		}
 
-		// Load all fixers
+		// Load all fixers..
 		$fixers_dir = $base_dir . '/Fixers';
 		if ( is_dir( $fixers_dir ) ) {
 			$fixer_files = glob( $fixers_dir . '/*.php' );
@@ -152,14 +152,14 @@ final class Bootstrap {
 	 * @param string $hook_suffix
 	 */
 	public static function enqueue_scripts( string $hook_suffix ): void {
-		// Only on relevant pages
+		// Only on relevant pages..
 		if ( strpos( $hook_suffix, 'accessibility' ) === false &&
 			strpos( $hook_suffix, 'scanner' ) === false &&
 			strpos( $hook_suffix, 'slos' ) === false ) {
 			return;
 		}
 
-		// Localize data for JavaScript
+		// Localize data for JavaScript..
 		wp_localize_script(
 			'slos-autofix-progress', // Existing script handle
 			'slosFixEngine',
@@ -175,7 +175,7 @@ final class Bootstrap {
 			self::init();
 		}
 
-		// Create database table
+		// Create database table..
 		$repository = new FixHistoryRepository();
 		$repository->create_table();
 	}
@@ -198,5 +198,5 @@ final class Bootstrap {
 	}
 }
 
-// Auto-initialize when this file is loaded
+// Auto-initialize when this file is loaded..
 add_action( 'init', array( Bootstrap::class, 'init' ), 5 );

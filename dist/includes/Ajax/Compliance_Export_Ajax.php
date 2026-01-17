@@ -61,12 +61,12 @@ class Compliance_Export_Ajax {
 	 * @return void
 	 */
 	public function register_actions() {
-		// Check if consent records and audit logs features are dormant
+		// Check if consent records and audit logs features are dormant.
 		$dormant_features = defined( 'SLOS_DORMANT_COMPLIANCE_FEATURES' ) && is_array( SLOS_DORMANT_COMPLIANCE_FEATURES )
 			? SLOS_DORMANT_COMPLIANCE_FEATURES
 			: array();
 
-		// Only register export handlers if not dormant
+		// Only register export handlers if not dormant.
 		if ( ! in_array( 'records', $dormant_features, true ) ) {
 			add_action( 'wp_ajax_slos_export_consents_csv', array( $this, 'export_consents_csv' ) );
 			add_action( 'wp_ajax_slos_export_consents_pdf', array( $this, 'export_consents_pdf' ) );
@@ -85,20 +85,20 @@ class Compliance_Export_Ajax {
 	 * @return void
 	 */
 	public function get_consent_time_series() {
-		// Verify permissions
+		// Verify permissions.
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( array( 'message' => __( 'Insufficient permissions', 'shahi-legalflowsuite' ) ), 403 );
 		}
 
-		// Verify nonce
+		// Verify nonce.
 		check_ajax_referer( 'slos_export_consents', 'nonce' );
 
-		// Get parameters
+		// Get parameters.
 		$interval  = isset( $_POST['interval'] ) ? sanitize_text_field( wp_unslash( $_POST['interval'] ) ) : 'daily';
 		$days_back = isset( $_POST['days_back'] ) ? absint( $_POST['days_back'] ) : 30;
 		$group_by  = isset( $_POST['group_by'] ) ? sanitize_text_field( wp_unslash( $_POST['group_by'] ) ) : 'none';
 
-		// Get time-series data
+		// Get time-series data.
 		$data = $this->consent_service->get_time_series(
 			array(
 				'interval'  => $interval,
@@ -121,20 +121,20 @@ class Compliance_Export_Ajax {
 	 * @return void
 	 */
 	public function export_consents_csv() {
-		// Verify permissions
+		// Verify permissions.
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( esc_html__( 'Insufficient permissions', 'shahi-legalflowsuite' ), 403 );
 		}
 
-		// Verify nonce
+		// Verify nonce.
 		check_ajax_referer( 'slos_export_consents', 'nonce' );
 
-		// Get filter parameters
+		// Get filter parameters.
 		$days_back = isset( $_GET['days_back'] ) ? absint( $_GET['days_back'] ) : 30;
 		$status    = isset( $_GET['status'] ) ? sanitize_text_field( wp_unslash( $_GET['status'] ) ) : '';
 		$type      = isset( $_GET['type'] ) ? sanitize_text_field( wp_unslash( $_GET['type'] ) ) : '';
 
-		// Fetch consent records
+		// Fetch consent records.
 		global $wpdb;
 		$table = $wpdb->prefix . 'slos_consent';
 
@@ -153,10 +153,13 @@ class Compliance_Export_Ajax {
 
 		$where_sql = implode( ' AND ', $where_clauses );
 
-		$query    = "SELECT * FROM {$table} WHERE {$where_sql} ORDER BY created_at DESC LIMIT 10000";
-		$consents = $wpdb->get_results( $wpdb->prepare( $query, ...$where_values ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		$query    = $wpdb->prepare(
+			"SELECT * FROM {$wpdb->prefix}slos_consent WHERE {$where_sql} ORDER BY created_at DESC LIMIT 10000", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+			$where_values
+		);
+		$consents = $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
-		// Generate CSV
+		// Generate CSV.
 		$filename = 'consent-records-' . gmdate( 'Y-m-d-His' ) . '.csv';
 
 		header( 'Content-Type: text/csv; charset=utf-8' );
@@ -164,9 +167,9 @@ class Compliance_Export_Ajax {
 		header( 'Pragma: no-cache' );
 		header( 'Expires: 0' );
 
-		$output = fopen( 'php://output', 'w' );
+		$output = fopen( 'php:// output', 'w' );
 
-		// Write CSV header
+		// Write CSV header.
 		fputcsv(
 			$output,
 			array(
@@ -186,7 +189,7 @@ class Compliance_Export_Ajax {
 			)
 		);
 
-		// Write data rows
+		// Write data rows.
 		foreach ( $consents as $consent ) {
 			fputcsv(
 				$output,
@@ -208,7 +211,7 @@ class Compliance_Export_Ajax {
 			);
 		}
 
-		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Direct file handle from php://output
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Direct file handle from php:// output
 		fclose( $output );
 		exit;
 	}
@@ -226,42 +229,47 @@ class Compliance_Export_Ajax {
 
 		$start_date = gmdate( 'Y-m-d H:i:s', strtotime( "-{$days_back} days" ) );
 
-		// Total consents
+		// Total consents.
+		$table = $wpdb->prefix . 'slos_consent';
 		$total = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT COUNT(*) FROM {$table} WHERE created_at >= %s",
+				'SELECT COUNT(*) FROM %s WHERE created_at >= %s', // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$table,
 				$start_date
 			)
 		);
 
-		// By status
+		// By status.
 		$by_status = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT status, COUNT(*) as count FROM {$table} WHERE created_at >= %s GROUP BY status",
+				'SELECT status, COUNT(*) as count FROM %s WHERE created_at >= %s GROUP BY status', // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$table,
 				$start_date
 			),
 			ARRAY_A
 		);
 
-		// By type
+		// By type.
 		$by_type = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT type, COUNT(*) as count FROM {$table} WHERE created_at >= %s GROUP BY type",
+				'SELECT type, COUNT(*) as count FROM %s WHERE created_at >= %s GROUP BY type', // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$table,
 				$start_date
 			),
 			ARRAY_A
 		);
 
-		// Top countries
+		// Top countries.
 		$by_country = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT country_code, COUNT(*) as count FROM {$table} WHERE created_at >= %s AND country_code IS NOT NULL GROUP BY country_code ORDER BY count DESC LIMIT 10",
+				'SELECT country_code, COUNT(*) as count FROM %s WHERE created_at >= %s AND country_code IS NOT NULL GROUP BY country_code ORDER BY count DESC LIMIT 10', // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$table,
 				$start_date
 			),
 			ARRAY_A
 		);
 
-		// Get time-series data
+		// Get time-series data.
 		$time_series = $this->consent_service->get_time_series(
 			array(
 				'interval'  => 'daily',
@@ -385,7 +393,7 @@ class Compliance_Export_Ajax {
 
 			<div class="section">
 				<div class="summary-box">
-					<div class="summary-number"><?php echo number_format_i18n( $stats['total'] ); ?></div>
+					<div class="summary-number"><?php echo esc_html( number_format_i18n( $stats['total'] ) ); ?></div>
 					<div>Total Consent Records</div>
 				</div>
 			</div>
@@ -396,7 +404,7 @@ class Compliance_Export_Ajax {
 					<?php foreach ( $stats['by_status'] as $row ) : ?>
 					<div class="stat-row">
 						<div class="stat-label"><?php echo esc_html( ucfirst( $row['status'] ) ); ?></div>
-						<div class="stat-value"><?php echo number_format_i18n( $row['count'] ); ?></div>
+						<div class="stat-value"><?php echo esc_html( number_format_i18n( $row['count'] ) ); ?></div>
 					</div>
 					<?php endforeach; ?>
 				</div>
@@ -408,7 +416,7 @@ class Compliance_Export_Ajax {
 					<?php foreach ( $stats['by_type'] as $row ) : ?>
 					<div class="stat-row">
 						<div class="stat-label"><?php echo esc_html( ucfirst( $row['type'] ) ); ?></div>
-						<div class="stat-value"><?php echo number_format_i18n( $row['count'] ); ?></div>
+						<div class="stat-value"><?php echo esc_html( number_format_i18n( $row['count'] ) ); ?></div>
 					</div>
 					<?php endforeach; ?>
 				</div>
@@ -420,7 +428,7 @@ class Compliance_Export_Ajax {
 					<?php foreach ( $stats['by_country'] as $row ) : ?>
 					<div class="stat-row">
 						<div class="stat-label"><?php echo esc_html( strtoupper( $row['country_code'] ) ); ?></div>
-						<div class="stat-value"><?php echo number_format_i18n( $row['count'] ); ?></div>
+						<div class="stat-value"><?php echo esc_html( number_format_i18n( $row['count'] ) ); ?></div>
 					</div>
 					<?php endforeach; ?>
 				</div>
@@ -430,17 +438,17 @@ class Compliance_Export_Ajax {
 				<h2>Time Series Summary</h2>
 				<p>
 					<strong>Average daily consents:</strong> 
-					<?php echo number_format_i18n( $stats['time_series']['metadata']['average'] ?? 0, 1 ); ?>
+					<?php echo esc_html( number_format_i18n( $stats['time_series']['metadata']['average'] ?? 0, 1 ) ); ?>
 				</p>
 				<p>
 					<strong>Total in period:</strong> 
-					<?php echo number_format_i18n( $stats['time_series']['metadata']['total'] ?? 0 ); ?>
+					<?php echo esc_html( number_format_i18n( $stats['time_series']['metadata']['total'] ?? 0 ) ); ?>
 				</p>
 			</div>
 
 			<div class="footer">
 				<p>
-					This report was generated automatically by Shahi LegalOps Suite.<br>
+					This report was generated automatically by Shahi LegalFlowSuite.<br>
 					For detailed analysis, please access the admin dashboard.
 				</p>
 			</div>

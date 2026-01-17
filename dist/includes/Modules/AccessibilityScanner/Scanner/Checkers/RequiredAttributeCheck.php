@@ -34,10 +34,10 @@ class RequiredAttributeCheck extends AbstractCheck {
 			$hasRequired     = $input->hasAttribute( 'required' );
 			$hasAriaRequired = $input->hasAttribute( 'aria-required' );
 
-			// If one is present, check consistency?
-			// Or check if label indicates required (*) but attribute is missing?
+			// If one is present, check consistency?..
+			// Or check if label indicates required (*) but attribute is missing?..
 
-			// Heuristic: Check label for asterisk
+			// Heuristic: Check label for asterisk..
 			$label = $this->get_associated_label( $input, $dom );
 			if ( $label && strpos( $label, '*' ) !== false ) {
 				if ( ! $hasRequired && ! $hasAriaRequired ) {

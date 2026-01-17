@@ -35,15 +35,15 @@ class FeatureFlags {
 	 * @return bool
 	 */
 	public static function is_fixengine_enabled(): bool {
-		// Check environment override
+		// Check environment override..
 		if ( defined( 'SLOS_FIXENGINE_ENABLED' ) ) {
 			return (bool) SLOS_FIXENGINE_ENABLED;
 		}
 
-		// Check if staging/dev environment
+		// Check if staging/dev environment..
 		$is_staging = defined( 'WP_ENV' ) && in_array( WP_ENV, array( 'staging', 'development', 'local' ) );
 
-		// Default: enabled only in staging unless explicitly set
+		// Default: enabled only in staging unless explicitly set..
 		$default = $is_staging;
 
 		return (bool) get_option( self::FIXENGINE_ENABLED, $default );

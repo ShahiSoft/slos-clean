@@ -14,7 +14,7 @@
 
 namespace ShahiLegalFlowSuite\Services;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -55,21 +55,21 @@ class DSR_Email_Service {
 	 * @since 3.0.1
 	 */
 	public function __construct() {
-		// Requester notifications
+		// Requester notifications..
 		add_action( 'slos_dsr_submitted', array( $this, 'send_verification_email' ), 10, 2 );
 		add_action( 'slos_dsr_status_changed', array( $this, 'notify_requester_status_change' ), 10, 3 );
 		add_action( 'slos_dsr_completed', array( $this, 'notify_requester_completed' ), 10, 2 );
 		add_action( 'slos_dsr_export_ready', array( $this, 'notify_requester_export_ready' ), 10, 3 );
 
-		// Admin notifications
+		// Admin notifications..
 		add_action( 'slos_dsr_submitted', array( $this, 'notify_admin_new_request' ), 10, 2 );
 		add_action( 'slos_dsr_status_changed', array( $this, 'notify_admin_status_change' ), 10, 3 );
 		add_action( 'slos_dsr_erasure_execute', array( $this, 'notify_admin_erasure_action' ), 10, 2 );
 
-		// Overdue warnings (checked via cron)
+		// Overdue warnings (checked via cron)..
 		add_action( 'slos_dsr_check_overdue', array( $this, 'check_and_notify_overdue' ) );
 
-		// Schedule daily overdue check if not already scheduled
+		// Schedule daily overdue check if not already scheduled..
 		if ( ! wp_next_scheduled( 'slos_dsr_check_overdue' ) ) {
 			wp_schedule_event( time(), 'daily', 'slos_dsr_check_overdue' );
 		}
@@ -91,12 +91,12 @@ class DSR_Email_Service {
 			return false;
 		}
 
-		// Check throttle
+		// Check throttle..
 		if ( $this->is_throttled( 'verification', $request_id ) ) {
 			return false;
 		}
 
-		// Fetch token from repository
+		// Fetch token from repository..
 		$repo   = new \ShahiLegalFlowSuite\Database\Repositories\DSR_Repository();
 		$record = $repo->find( $request_id );
 		if ( ! $record || empty( $record->verification_token ) ) {
@@ -137,22 +137,22 @@ class DSR_Email_Service {
 	 * @return bool True if email sent.
 	 */
 	public function notify_requester_status_change( int $request_id, string $old_status, string $new_status ): bool {
-		// Check if requester notifications enabled
+		// Check if requester notifications enabled..
 		if ( ! $this->is_notification_enabled( 'requester_status_change' ) ) {
 			return false;
 		}
 
-		// Skip if moving to completed (handled by separate method)
+		// Skip if moving to completed (handled by separate method)..
 		if ( $new_status === 'completed' ) {
 			return false;
 		}
 
-		// Check throttle
+		// Check throttle..
 		if ( $this->is_throttled( 'status_change', $request_id ) ) {
 			return false;
 		}
 
-		// Load record
+		// Load record..
 		$repo   = new \ShahiLegalFlowSuite\Database\Repositories\DSR_Repository();
 		$record = $repo->find( $request_id );
 		if ( ! $record || empty( $record->email ) ) {
@@ -169,7 +169,7 @@ class DSR_Email_Service {
 			'site_name'    => wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES ),
 		);
 
-		// Special handling for specific status transitions
+		// Special handling for specific status transitions..
 		$template_key = 'status_change_' . $new_status;
 		if ( ! $this->template_exists( $template_key . '_subject' ) ) {
 			$template_key = 'status_change_generic';
@@ -205,7 +205,7 @@ class DSR_Email_Service {
 			return false;
 		}
 
-		// Check throttle
+		// Check throttle..
 		if ( $this->is_throttled( 'completed', $request_id ) ) {
 			return false;
 		}
@@ -245,7 +245,7 @@ class DSR_Email_Service {
 			return false;
 		}
 
-		// Check throttle
+		// Check throttle..
 		if ( $this->is_throttled( 'export_ready', $request_id ) ) {
 			return false;
 		}
@@ -290,7 +290,7 @@ class DSR_Email_Service {
 			return false;
 		}
 
-		// Check throttle
+		// Check throttle..
 		if ( $this->is_throttled( 'admin_new', $request_id ) ) {
 			return false;
 		}
@@ -334,7 +334,7 @@ class DSR_Email_Service {
 	 * @return bool True if email sent.
 	 */
 	public function notify_admin_status_change( int $request_id, string $old_status, string $new_status ): bool {
-		// Only notify on specific transitions
+		// Only notify on specific transitions..
 		$notify_on = array( 'verified', 'rejected' );
 		if ( ! in_array( $new_status, $notify_on, true ) ) {
 			return false;
@@ -344,7 +344,7 @@ class DSR_Email_Service {
 			return false;
 		}
 
-		// Check throttle
+		// Check throttle..
 		if ( $this->is_throttled( 'admin_status', $request_id ) ) {
 			return false;
 		}
@@ -354,7 +354,7 @@ class DSR_Email_Service {
 			return false;
 		}
 
-		// Load record
+		// Load record..
 		$repo   = new \ShahiLegalFlowSuite\Database\Repositories\DSR_Repository();
 		$record = $repo->find( $request_id );
 		if ( ! $record ) {
@@ -396,7 +396,7 @@ class DSR_Email_Service {
 			return false;
 		}
 
-		// Check throttle
+		// Check throttle..
 		if ( $this->is_throttled( 'admin_erasure', $request_id ) ) {
 			return false;
 		}
@@ -447,15 +447,15 @@ class DSR_Email_Service {
 		$now           = current_time( 'timestamp' );
 
 		foreach ( $requests as $request ) {
-			// Calculate days remaining
+			// Calculate days remaining..
 			$due_date  = strtotime( $request->due_date );
 			$submitted = strtotime( $request->submitted_at );
 			$total_sla = $due_date - $submitted;
 			$elapsed   = $now - $submitted;
 
-			// Send warning if > 80% of SLA elapsed
+			// Send warning if > 80% of SLA elapsed..
 			if ( $elapsed / $total_sla >= 0.8 ) {
-				// Check if already warned recently (24 hours)
+				// Check if already warned recently (24 hours)..
 				$throttle_key = 'overdue_' . $request->id;
 				if ( $this->is_throttled( 'overdue', $request->id, 86400 ) ) {
 					continue;
@@ -487,9 +487,9 @@ class DSR_Email_Service {
 
 		return $warnings_sent;
 	}
-	// ============================================================================
-	// HELPER METHODS
-	// ============================================================================
+	// ============================================================================..
+	// HELPER METHODS..
+	// ============================================================================..
 
 	/**
 	 * Get email template
@@ -517,7 +517,7 @@ class DSR_Email_Service {
 		$template = apply_filters( 'slos_dsr_email_template', $template, $template_key, $data );
 		$template = apply_filters( "slos_dsr_email_template_{$template_key}", $template, $data );
 
-		// Replace variables
+		// Replace variables..
 		return $this->replace_variables( $template, $data );
 	}
 
@@ -541,7 +541,7 @@ class DSR_Email_Service {
 	 */
 	private function get_default_templates(): array {
 		return array(
-			// Verification email
+			// Verification email..
 			'verification_subject'              => '[{site_name}] Verify Your Data Subject Request',
 			'verification_body'                 => "{site_name}\n\n" .
 				"We received a data subject request from this email address.\n\n" .
@@ -553,7 +553,7 @@ class DSR_Email_Service {
 				"This link expires in 48 hours. If you did not submit this request, please ignore this email.\n\n" .
 				"Thank you,\n{site_name}",
 
-			// Status change - Generic
+			// Status change - Generic..
 			'status_change_generic_subject'     => '[{site_name}] Update on Your Data Subject Request',
 			'status_change_generic_body'        => "Hello,\n\n" .
 				"Your data subject request (ID: #{request_id}) status has been updated.\n\n" .
@@ -562,7 +562,7 @@ class DSR_Email_Service {
 				"You can check the current status at:\n{status_url}\n\n" .
 				"Thank you,\n{site_name}",
 
-			// Status change - Verified
+			// Status change - Verified..
 			'status_change_verified_subject'    => '[{site_name}] Your Request Has Been Verified',
 			'status_change_verified_body'       => "Hello,\n\n" .
 				"Your data subject request (ID: #{request_id}) has been verified and is now being processed.\n\n" .
@@ -572,7 +572,7 @@ class DSR_Email_Service {
 				"{status_url}\n\n" .
 				"Thank you,\n{site_name}",
 
-			// Status change - In Progress
+			// Status change - In Progress..
 			'status_change_in_progress_subject' => '[{site_name}] Your Request Is Being Processed',
 			'status_change_in_progress_body'    => "Hello,\n\n" .
 				"Your data subject request (ID: #{request_id}) is now being actively processed.\n\n" .
@@ -581,7 +581,7 @@ class DSR_Email_Service {
 				"We will notify you once completed. Track progress at:\n{status_url}\n\n" .
 				"Thank you,\n{site_name}",
 
-			// Status change - Rejected
+			// Status change - Rejected..
 			'status_change_rejected_subject'    => '[{site_name}] Update on Your Data Subject Request',
 			'status_change_rejected_body'       => "Hello,\n\n" .
 				"We regret to inform you that your data subject request (ID: #{request_id}) could not be processed.\n\n" .
@@ -590,7 +590,7 @@ class DSR_Email_Service {
 				"If you have questions or believe this was in error, please contact us.\n\n" .
 				"Thank you,\n{site_name}",
 
-			// Completed
+			// Completed..
 			'completed_subject'                 => '[{site_name}] Your Data Subject Request Is Complete',
 			'completed_body'                    => "Hello,\n\n" .
 				"Your data subject request (ID: #{request_id}) has been successfully completed.\n\n" .
@@ -599,7 +599,7 @@ class DSR_Email_Service {
 				"View details at:\n{status_url}\n\n" .
 				"Thank you,\n{site_name}",
 
-			// Export ready
+			// Export ready..
 			'export_ready_subject'              => '[{site_name}] Your Data Export Is Ready',
 			'export_ready_body'                 => "Hello,\n\n" .
 				"Your data export (Request ID: #{request_id}) is ready for download.\n\n" .
@@ -607,7 +607,7 @@ class DSR_Email_Service {
 				"This link expires in {expires_days} days. The download is a single-use link for security.\n\n" .
 				"Thank you,\n{site_name}",
 
-			// Admin - New request
+			// Admin - New request..
 			'admin_new_request_subject'         => '[{site_name}] New Data Subject Request #{request_id}',
 			'admin_new_request_body'            => "A new data subject request has been submitted:\n\n" .
 				"Request ID: #{request_id}\n" .
@@ -618,7 +618,7 @@ class DSR_Email_Service {
 				"View and manage this request:\n{admin_url}\n\n" .
 				'This is an automated notification from {site_name}.',
 
-			// Admin - Status change
+			// Admin - Status change..
 			'admin_status_change_subject'       => '[{site_name}] DSR #{request_id} Status: {new_status_label}',
 			'admin_status_change_body'          => "Data subject request status changed:\n\n" .
 				"Request ID: #{request_id}\n" .
@@ -628,7 +628,7 @@ class DSR_Email_Service {
 				"View request:\n{admin_url}\n\n" .
 				'This is an automated notification from {site_name}.',
 
-			// Admin - Erasure action
+			// Admin - Erasure action..
 			'admin_erasure_subject'             => '[{site_name}] Erasure Request #{request_id} Initiated',
 			'admin_erasure_body'                => "A data erasure request has been initiated:\n\n" .
 				"Request ID: #{request_id}\n" .
@@ -638,7 +638,7 @@ class DSR_Email_Service {
 				"{admin_url}\n\n" .
 				'This is an automated notification from {site_name}.',
 
-			// Admin - Overdue warning
+			// Admin - Overdue warning..
 			'admin_overdue_subject'             => '[{site_name}] URGENT: DSR #{request_id} Approaching Due Date',
 			'admin_overdue_body'                => "ATTENTION: A data subject request is approaching its due date:\n\n" .
 				"Request ID: #{request_id}\n" .
@@ -660,13 +660,13 @@ class DSR_Email_Service {
 	 * @return string Processed template.
 	 */
 	private function replace_variables( string $template, array $data ): string {
-		// Add computed fields
+		// Add computed fields..
 		$data['request_type_label'] = isset( $data['request_type'] ) ? ucfirst( str_replace( '_', ' ', $data['request_type'] ) ) : 'Access';
 		$data['old_status_label']   = isset( $data['old_status'] ) ? ucfirst( str_replace( '_', ' ', $data['old_status'] ) ) : '';
 		$data['new_status_label']   = isset( $data['new_status'] ) ? ucfirst( str_replace( '_', ' ', $data['new_status'] ) ) : '';
 		$data['submitted_time']     = isset( $data['submitted_at'] ) ? $data['submitted_at'] : current_time( 'mysql' );
 
-		// Replace all {variable} patterns
+		// Replace all {variable} patterns..
 		foreach ( $data as $key => $value ) {
 			$template = str_replace( '{' . $key . '}', (string) $value, $template );
 		}
@@ -689,7 +689,7 @@ class DSR_Email_Service {
 			return add_query_arg( array( 'token' => rawurlencode( $token ) ), $verify_page_url );
 		}
 
-		// Default to REST endpoint
+		// Default to REST endpoint..
 		return add_query_arg( array( 'token' => rawurlencode( $token ) ), rest_url( 'slos/v1/dsr/verify' ) );
 	}
 
@@ -708,7 +708,7 @@ class DSR_Email_Service {
 			return add_query_arg( array( 'token' => rawurlencode( $token ) ), $status_page_url );
 		}
 
-		// Default to home with token
+		// Default to home with token..
 		return add_query_arg( array( 'token' => rawurlencode( $token ) ), home_url( '/dsr-status/' ) );
 	}
 
@@ -739,11 +739,11 @@ class DSR_Email_Service {
 	private function is_notification_enabled( string $notification_type ): bool {
 		$settings = get_option( 'slos_dsr_settings', array() );
 
-		// Map notification types to settings keys
+		// Map notification types to settings keys..
 		$setting_key = str_replace( 'admin_', 'notify_admin_', $notification_type );
 		$setting_key = str_replace( 'requester_', 'notify_requester_', $setting_key );
 
-		// Default: enable all notifications unless explicitly disabled
+		// Default: enable all notifications unless explicitly disabled..
 		return isset( $settings[ $setting_key ] ) ? (bool) $settings[ $setting_key ] : true;
 	}
 

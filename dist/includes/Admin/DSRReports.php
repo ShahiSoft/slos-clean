@@ -12,7 +12,7 @@
 
 namespace ShahiLegalFlowSuite\Admin;
 
-// Exit if accessed directly
+// Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -142,7 +142,7 @@ class DSRReports {
 	 * @return void
 	 */
 	public function render(): void {
-		// Check capabilities
+		// Check capabilities.
 		if ( ! current_user_can( 'slos_manage_dsr' ) ) {
 			wp_die( esc_html__( 'You do not have permission to access this page.', 'shahi-legalflowsuite' ) );
 		}
@@ -162,14 +162,14 @@ class DSRReports {
 	 * @return void
 	 */
 	public function render_content(): void {
-		// Get date range from request (default to last 30 days)
+		// Get date range from request (default to last 30 days).
 		$end_date   = isset( $_GET['end_date'] ) ? sanitize_text_field( $_GET['end_date'] ) : gmdate( 'Y-m-d' );
 		$start_date = isset( $_GET['start_date'] ) ? sanitize_text_field( $_GET['start_date'] ) : gmdate( 'Y-m-d', strtotime( '-30 days' ) );
 
-		// Generate report
+		// Generate report.
 		$report = $this->get_report_service()->generate_report( $start_date, $end_date );
 
-		// Get summary metrics
+		// Get summary metrics.
 		$summary = wp_parse_args(
 			(array) ( $report['summary'] ?? array() ),
 			array(
@@ -405,7 +405,7 @@ class DSRReports {
 	 * @return void
 	 */
 	private function render_report_content( array $report, array $samples ): void {
-		// Ensure report has required structure with safe defaults
+		// Ensure report has required structure with safe defaults.
 		if ( empty( $report ) ) {
 			$report = array(
 				'summary'       => array(),
@@ -417,7 +417,7 @@ class DSRReports {
 			);
 		}
 
-		// Safe array access with defaults
+		// Safe array access with defaults.
 		$report = wp_parse_args(
 			$report,
 			array(
@@ -702,7 +702,7 @@ class DSRReports {
 	 * @return void
 	 */
 	public function handle_export(): void {
-		// Only handle on DSR Reports page
+		// Only handle on DSR Reports page.
 		if ( ! isset( $_GET['page'] ) || 'shahi-legalflowsuite-dsr-reports' !== $_GET['page'] ) {
 			return;
 		}
@@ -711,12 +711,12 @@ class DSRReports {
 			return;
 		}
 
-		// Verify nonce
+		// Verify nonce.
 		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( $_GET['_wpnonce'], 'slos_export_report' ) ) {
 			wp_die( esc_html__( 'Security check failed', 'shahi-legalflowsuite' ) );
 		}
 
-		// Check capabilities
+		// Check capabilities.
 		if ( ! current_user_can( 'slos_manage_dsr' ) ) {
 			wp_die( esc_html__( 'You do not have permission to export reports.', 'shahi-legalflowsuite' ) );
 		}
@@ -735,7 +735,9 @@ class DSRReports {
 			header( 'Pragma: no-cache' );
 			header( 'Expires: 0' );
 
+			// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo $content;
+			// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
 			exit;
 		}
 
@@ -748,8 +750,9 @@ class DSRReports {
 			header( 'Pragma: no-cache' );
 			header( 'Expires: 0' );
 
-			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- PDF content is already sanitized
+			// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo $content;
+			// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
 			exit;
 		}
 	}

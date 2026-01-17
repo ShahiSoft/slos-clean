@@ -47,7 +47,7 @@ final class FixerCollection implements \Countable, \IteratorAggregate {
 			? $fixer->get_canonical_id()
 			: CanonicalIds::canonicalize( $id );
 
-		// Validate against canonical IDs
+		// Validate against canonical IDs..
 		if ( ! $canonical_id ) {
 			Logger::error(
 				'Attempted to register fixer with non-canonical ID',
@@ -58,7 +58,7 @@ final class FixerCollection implements \Countable, \IteratorAggregate {
 			);
 
 			throw new \InvalidArgumentException(
-				sprintf( 'Cannot register fixer with non-canonical ID: %s', $id )
+				sprintf( 'Cannot register fixer with non-canonical ID: %s', esc_html( $id ) )
 			);
 		}
 
@@ -169,12 +169,12 @@ final class FixerCollection implements \Countable, \IteratorAggregate {
 			$class_name = basename( $file, '.php' );
 			$fqcn       = __NAMESPACE__ . '\\Fixers\\' . $class_name;
 
-			// Skip if class doesn't exist
+			// Skip if class doesn't exist..
 			if ( ! class_exists( $fqcn ) ) {
 				continue;
 			}
 
-			// Check if extends AbstractFixer
+			// Check if extends AbstractFixer..
 			if ( ! is_subclass_of( $fqcn, AbstractFixer::class ) ) {
 				Logger::warning(
 					'Class does not extend AbstractFixer',

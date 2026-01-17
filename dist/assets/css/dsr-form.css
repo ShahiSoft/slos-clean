@@ -237,8 +237,6 @@
 	background-size: 12px;
 	padding-right: 40px;
 	appearance: none;
-	appearance: none;
-	appearance: none;
 }
 
 .slos-theme-dark .slos-form-select {
@@ -444,8 +442,6 @@
 	border-radius: 6px;
 	cursor: pointer;
 	transition: background-color 0.2s, transform 0.1s;
-	appearance: none;
-	appearance: none;
 	appearance: none;
 }
 

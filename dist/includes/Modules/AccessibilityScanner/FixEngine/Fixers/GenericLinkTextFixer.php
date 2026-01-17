@@ -87,7 +87,7 @@ final class GenericLinkTextFixer extends AbstractFixer {
 				continue;
 			}
 
-			// Already has aria-label
+			// Already has aria-label..
 			if ( ! empty( $link->getAttribute( 'aria-label' ) ) ) {
 				continue;
 			}
@@ -128,7 +128,7 @@ final class GenericLinkTextFixer extends AbstractFixer {
 	private function is_generic_text( string $text ): bool {
 		$text = strtolower( trim( $text ) );
 
-		// Remove punctuation for comparison
+		// Remove punctuation for comparison..
 		$text = preg_replace( '/[^\w\s]/', '', $text );
 
 		foreach ( self::GENERIC_TEXTS as $generic ) {
@@ -148,22 +148,22 @@ final class GenericLinkTextFixer extends AbstractFixer {
 	 * @return string
 	 */
 	private function get_descriptive_text( \DOMElement $link, string $original_text ): string {
-		// Check title attribute
+		// Check title attribute..
 		$title = $link->getAttribute( 'title' );
 		if ( ! empty( $title ) ) {
 			return $title;
 		}
 
-		// Look at parent context
+		// Look at parent context..
 		$parent = $link->parentNode;
 
-		// Check for nearby heading
+		// Check for nearby heading..
 		$heading_text = $this->find_nearby_heading( $link );
 		if ( ! empty( $heading_text ) ) {
 			return $this->combine_with_original( $original_text, $heading_text );
 		}
 
-		// Check parent paragraph/list item
+		// Check parent paragraph/list item..
 		if ( $parent ) {
 			$parent_text = $this->get_context_from_parent( $parent, $link );
 			if ( ! empty( $parent_text ) ) {
@@ -171,7 +171,7 @@ final class GenericLinkTextFixer extends AbstractFixer {
 			}
 		}
 
-		// Try to extract from URL
+		// Try to extract from URL..
 		$href        = $link->getAttribute( 'href' );
 		$url_context = $this->get_context_from_url( $href );
 		if ( ! empty( $url_context ) ) {
@@ -188,12 +188,12 @@ final class GenericLinkTextFixer extends AbstractFixer {
 	 * @return string
 	 */
 	private function find_nearby_heading( \DOMElement $link ): string {
-		// Look in ancestors
+		// Look in ancestors..
 		$node  = $link->parentNode;
 		$depth = 0;
 
 		while ( $node && $depth < 5 ) {
-			// Check for previous sibling headings
+			// Check for previous sibling headings..
 			$sibling = $node->previousSibling;
 			while ( $sibling ) {
 				if ( $sibling instanceof \DOMElement && preg_match( '/^h[1-6]$/i', $sibling->nodeName ) ) {
@@ -202,7 +202,7 @@ final class GenericLinkTextFixer extends AbstractFixer {
 				$sibling = $sibling->previousSibling;
 			}
 
-			// Check if inside article/section with heading
+			// Check if inside article/section with heading..
 			if ( $node instanceof \DOMElement && in_array( $node->nodeName, array( 'article', 'section', 'div' ) ) ) {
 				$headings = $node->getElementsByTagName( 'h1' );
 				if ( $headings->length === 0 ) {
@@ -235,15 +235,15 @@ final class GenericLinkTextFixer extends AbstractFixer {
 			return '';
 		}
 
-		// Get text before the link in the same element
+		// Get text before the link in the same element..
 		$full_text = $parent->textContent;
 		$link_text = $link->textContent;
 
-		// Find text before the link
+		// Find text before the link..
 		$pos = strpos( $full_text, $link_text );
 		if ( $pos !== false && $pos > 10 ) {
 			$before_text = substr( $full_text, 0, $pos );
-			// Get last sentence/phrase
+			// Get last sentence/phrase..
 			if ( preg_match( '/([^.!?\n]+)[\s]*$/', $before_text, $matches ) ) {
 				$context = trim( $matches[1] );
 				if ( strlen( $context ) > 10 && strlen( $context ) < 100 ) {
@@ -262,7 +262,7 @@ final class GenericLinkTextFixer extends AbstractFixer {
 	 * @return string
 	 */
 	private function get_context_from_url( string $href ): string {
-		$parsed = parse_url( $href );
+		$parsed = wp_parse_url( $href );
 
 		if ( ! empty( $parsed['path'] ) ) {
 			$path     = $parsed['path'];
@@ -270,7 +270,7 @@ final class GenericLinkTextFixer extends AbstractFixer {
 
 			if ( ! empty( $segments ) ) {
 				$last_segment = end( $segments );
-				// Remove extension and clean
+				// Remove extension and clean..
 				$clean = preg_replace( '/\.[^.]+$/', '', $last_segment );
 				$clean = str_replace( array( '-', '_' ), ' ', $clean );
 
@@ -294,7 +294,7 @@ final class GenericLinkTextFixer extends AbstractFixer {
 		$original = ucfirst( strtolower( $original ) );
 		$context  = ucfirst( trim( $context ) );
 
-		// Don't repeat if context already contains action word
+		// Don't repeat if context already contains action word..
 		$action_words = array( 'read', 'learn', 'view', 'see', 'click', 'go to', 'visit' );
 		foreach ( $action_words as $word ) {
 			if ( stripos( $context, $word ) === 0 ) {
@@ -302,7 +302,7 @@ final class GenericLinkTextFixer extends AbstractFixer {
 			}
 		}
 
-		// Format based on original text type
+		// Format based on original text type..
 		if ( in_array( strtolower( $original ), array( 'read more', 'learn more', 'see more', 'view more' ) ) ) {
 			$action = explode( ' ', $original )[0];
 			return sprintf( '%s about %s', ucfirst( $action ), $context );

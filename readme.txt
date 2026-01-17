@@ -2,7 +2,7 @@
 Contributors: shahisoft
 Tags: legal, gdpr, privacy, accessibility, wcag
 Requires at least: 6.0
-Tested up to: 6.7
+Tested up to: 6.9
 Requires PHP: 7.4
 Stable tag: 3.5.0
 License: GPLv3 or later
@@ -198,7 +198,7 @@ All libraries are GPL-compatible and included with full source code.
 * Added privacy policy confirming no data collection or tracking
 * Enhanced plugin description with specific features
 * Updated minimum WordPress version to 6.0
-* Added "Tested up to: 6.7" compatibility
+* Added "Tested up to: 6.9" compatibility
 
 = 3.1.1 - 2024-12-24 =
 * WordPress.org compliance improvements

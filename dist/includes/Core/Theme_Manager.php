@@ -43,7 +43,7 @@ class Theme_Manager {
 	 * @return string Theme key
 	 */
 	public function get_active_theme(): string {
-		// Allow override via option; default to Neon Aether
+		// Allow override via option; default to Neon Aether..
 		$theme = get_option( 'shahi_admin_theme', 'mac-slate-liquid' );
 		return is_string( $theme ) && ! empty( $theme ) ? $theme : 'neon-aether';
 	}
@@ -62,7 +62,7 @@ class Theme_Manager {
 			return $themes[ $key ]['variables'];
 		}
 
-		// Fallback to Neon Aether
+		// Fallback to Neon Aether..
 		if ( isset( $themes['neon-aether']['variables'] ) ) {
 			return $themes['neon-aether']['variables'];
 		}
@@ -83,7 +83,7 @@ class Theme_Manager {
 
 		$lines = array( ':root {' );
 		foreach ( $vars as $name => $value ) {
-			// Ensure variable naming and values are valid strings
+			// Ensure variable naming and values are valid strings..
 			if ( is_string( $name ) && is_string( $value ) && 0 === strpos( $name, '--' ) ) {
 				$lines[] = sprintf( '  %s: %s;', $name, $value );
 			}

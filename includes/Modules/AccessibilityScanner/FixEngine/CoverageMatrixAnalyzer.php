@@ -6,6 +6,8 @@
  * Identifies gaps and determines porting priorities
  */
 
+// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- CLI analysis output
+
 namespace ShahiLegalFlowSuite\Docs\Analysis;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -139,7 +141,7 @@ class CoverageMatrixAnalyzer {
 	 */
 	public function generate_report() {
 		$report  = "# Phase 2.1: Coverage Matrix Analysis\n\n";
-		$report .= '**Generated:** ' . date( 'Y-m-d H:i:s' ) . "\n\n";
+		$report .= '**Generated:** ' . gmdate( 'Y-m-d H:i:s' ) . "\n\n";
 
 		$report .= "## Summary\n\n";
 		$report .= '- **Legacy Fixers:** ' . $this->results['legacy_count'] . "\n";
@@ -188,7 +190,7 @@ class CoverageMatrixAnalyzer {
 		$docs_dir = dirname( dirname( __DIR__ ) ) . '/docs/autofix';
 
 		if ( ! is_dir( $docs_dir ) ) {
-			mkdir( $docs_dir, 0755, true );
+			wp_mkdir_p( $docs_dir );
 		}
 
 		$filepath = $docs_dir . '/' . $filename;

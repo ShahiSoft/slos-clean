@@ -43,7 +43,7 @@ final class InputErrorDescriptionFixer extends AbstractFixer {
 	}
 
 	public function can_fix( string $content ): bool {
-		// Look for common error class patterns
+		// Look for common error class patterns..
 		return (bool) preg_match( '/class\s*=\s*["\'][^"\']*(?:error|invalid|validation|feedback)[^"\']*["\']/', $content );
 	}
 
@@ -54,7 +54,7 @@ final class InputErrorDescriptionFixer extends AbstractFixer {
 			return FixResult::error( $this->get_id(), 'Failed to parse HTML', $content );
 		}
 
-		// Find error message elements
+		// Find error message elements..
 		$error_patterns = array(
 			'//span[contains(@class, "error")]',
 			'//div[contains(@class, "error")]',
@@ -75,17 +75,17 @@ final class InputErrorDescriptionFixer extends AbstractFixer {
 			$error_elements = $this->query( $pattern );
 
 			foreach ( $error_elements as $error ) {
-				// Find the associated input (likely a sibling or nearby)
+				// Find the associated input (likely a sibling or nearby)..
 				$input = $this->find_associated_input( $error );
 
 				if ( ! $input ) {
 					continue;
 				}
 
-				// Skip if input already has aria-describedby pointing to this error
+				// Skip if input already has aria-describedby pointing to this error..
 				$existing_describedby = $input->getAttribute( 'aria-describedby' );
 
-				// Ensure error element has an ID
+				// Ensure error element has an ID..
 				$error_id = $error->getAttribute( 'id' );
 				if ( ! $error_id ) {
 					++$error_id_counter;
@@ -93,24 +93,24 @@ final class InputErrorDescriptionFixer extends AbstractFixer {
 					$error->setAttribute( 'id', $error_id );
 				}
 
-				// Check if already linked
+				// Check if already linked..
 				if ( $existing_describedby && strpos( $existing_describedby, $error_id ) !== false ) {
 					continue;
 				}
 
-				// Add or append to aria-describedby
+				// Add or append to aria-describedby..
 				$new_describedby = $existing_describedby
 					? $existing_describedby . ' ' . $error_id
 					: $error_id;
 
 				$input->setAttribute( 'aria-describedby', $new_describedby );
 
-				// Also add role="alert" to error for screen readers
+				// Also add role="alert" to error for screen readers..
 				if ( ! $error->getAttribute( 'role' ) ) {
 					$error->setAttribute( 'role', 'alert' );
 				}
 
-				// Add aria-live for dynamic errors
+				// Add aria-live for dynamic errors..
 				if ( ! $error->getAttribute( 'aria-live' ) ) {
 					$error->setAttribute( 'aria-live', 'polite' );
 				}
@@ -140,7 +140,7 @@ final class InputErrorDescriptionFixer extends AbstractFixer {
 	 * Find the form input associated with an error message
 	 */
 	private function find_associated_input( \DOMElement $error ): ?\DOMElement {
-		// First, check for explicit "for" reference in error's data attributes
+		// First, check for explicit "for" reference in error's data attributes..
 		$for_id = $error->getAttribute( 'data-for' ) ?: $error->getAttribute( 'for' );
 		if ( $for_id ) {
 			$inputs = $this->query( '//*[@id="' . $for_id . '"]' );
@@ -149,14 +149,14 @@ final class InputErrorDescriptionFixer extends AbstractFixer {
 			}
 		}
 
-		// Check previous siblings
+		// Check previous siblings..
 		$previous = $error->previousSibling;
 		while ( $previous ) {
 			if ( $previous instanceof \DOMElement ) {
 				if ( in_array( $previous->nodeName, array( 'input', 'select', 'textarea' ), true ) ) {
 					return $previous;
 				}
-				// Check inside wrapper divs
+				// Check inside wrapper divs..
 				$inputs = $this->query( './/input | .//select | .//textarea', $previous );
 				if ( count( $inputs ) > 0 ) {
 					return $inputs[ count( $inputs ) - 1 ]; // Last input
@@ -165,7 +165,7 @@ final class InputErrorDescriptionFixer extends AbstractFixer {
 			$previous = $previous->previousSibling;
 		}
 
-		// Check parent form-group or field wrapper
+		// Check parent form-group or field wrapper..
 		$parent = $error->parentNode;
 		if ( $parent instanceof \DOMElement ) {
 			$parent_class = $parent->getAttribute( 'class' );

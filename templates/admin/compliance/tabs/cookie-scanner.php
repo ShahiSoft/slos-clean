@@ -13,19 +13,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Get scanner service instance
+// Get scanner service instance.
 $scanner_service = new \ShahiLegalFlowSuite\Services\Cookie_Scanner_Service();
 
-// Get detected cookies from database
+// Get detected cookies from database.
 $detected_cookies = get_option( 'slos_detected_cookies', array() );
 
-// Get last scan time
+// Get last scan time.
 $last_scan = get_option( 'slos_cookie_scan_time', null );
 
-// Get scan metadata
+// Get scan metadata.
 $scan_meta = $scanner_service->get_scan_metadata();
 
-// Calculate statistics from actual data
+// Calculate statistics from actual data.
 $cookie_stats = array(
 	'total'         => count( $detected_cookies ),
 	'categorized'   => 0,
@@ -37,10 +37,10 @@ $cookie_stats = array(
 );
 
 foreach ( $detected_cookies as $cookie ) {
-	$category = $cookie['category'] ?? 'unknown';
-	$status   = $cookie['status'] ?? 'uncategorized';
+	$category      = $cookie['category'] ?? 'unknown';
+	$cookie_status = $cookie['status'] ?? 'uncategorized';
 
-	if ( $status === 'categorized' || $category !== 'unknown' ) {
+	if ( 'categorized' === $cookie_status || 'unknown' !== $category ) {
 		++$cookie_stats['categorized'];
 	} else {
 		++$cookie_stats['uncategorized'];
@@ -511,6 +511,7 @@ foreach ( $detected_cookies as $cookie ) {
 	<!-- Last Scan Summary Card -->
 	<?php if ( ! empty( $scan_meta ) && isset( $scan_meta['completed_at'] ) ) : ?>
 		<?php
+		/* translators: %d: duration in seconds */
 		$duration_text  = isset( $scan_meta['duration'] ) ? sprintf( __( '%d seconds', 'shahi-legalflowsuite' ), $scan_meta['duration'] ) : __( 'N/A', 'shahi-legalflowsuite' );
 		$pages_scanned  = $scan_meta['pages_scanned'] ?? 1;
 		$cookies_found  = $scan_meta['cookies_found'] ?? count( $detected_cookies );
@@ -533,11 +534,11 @@ foreach ( $detected_cookies as $cookie ) {
 					</span>
 					<span class="slos-scan-summary-stat">
 						<span class="dashicons dashicons-admin-settings"></span>
-						<?php echo esc_html( sprintf( __( '%d cookies found', 'shahi-legalflowsuite' ), $cookies_found ) ); ?>
+						<?php /* translators: %d: number of cookies found */ echo esc_html( sprintf( __( '%d cookies found', 'shahi-legalflowsuite' ), $cookies_found ) ); ?>
 					</span>
 					<span class="slos-scan-summary-stat">
 						<span class="dashicons dashicons-admin-page"></span>
-						<?php echo esc_html( sprintf( _n( '%d page scanned', '%d pages scanned', $pages_scanned, 'shahi-legalflowsuite' ), $pages_scanned ) ); ?>
+						<?php /* translators: 1: singular/plural handled by _n; %d: number of pages scanned */ echo esc_html( sprintf( _n( '%d page scanned', '%d pages scanned', $pages_scanned, 'shahi-legalflowsuite' ), $pages_scanned ) ); ?>
 					</span>
 					<span class="slos-scan-summary-stat">
 						<span class="dashicons dashicons-clock"></span>
@@ -545,11 +546,11 @@ foreach ( $detected_cookies as $cookie ) {
 					</span>
 					<span class="slos-scan-summary-stat">
 						<span class="dashicons dashicons-networking"></span>
-						<?php echo esc_html( sprintf( __( 'Type: %s', 'shahi-legalflowsuite' ), $scan_type_text ) ); ?>
+						<?php /* translators: %s: scan type (e.g. Manual, Scheduled) */ echo esc_html( sprintf( __( 'Type: %s', 'shahi-legalflowsuite' ), $scan_type_text ) ); ?>
 					</span>
 					<span class="slos-scan-summary-stat">
 						<span class="dashicons dashicons-chart-area"></span>
-						<?php echo esc_html( sprintf( __( 'Coverage: %s', 'shahi-legalflowsuite' ), $coverage_text ) ); ?>
+						<?php /* translators: %s: coverage level (e.g. Basic, Full) */ echo esc_html( sprintf( __( 'Coverage: %s', 'shahi-legalflowsuite' ), $coverage_text ) ); ?>
 					</span>
 				</div>
 			</div>

@@ -39,11 +39,11 @@ class DSR_Status_Shortcode {
 	 * Render the shortcode
 	 *
 	 * @since 3.0.1
-	 * @param array $atts Shortcode attributes
+	 * @param array $atts Shortcode attributes.
 	 * @return string Shortcode output
 	 */
 	public function render( $atts = array() ): string {
-		// Parse attributes
+		// Parse attributes...
 		$atts = shortcode_atts(
 			array(
 				'title'      => __( 'Check Your Request Status', 'shahi-legalflowsuite' ),
@@ -58,12 +58,12 @@ class DSR_Status_Shortcode {
 
 		echo '<div class="slos-dsr-status-portal" id="slos-dsr-status-portal">';
 
-		// Title
+		// Title...
 		if ( 'yes' === $atts['show_title'] && ! empty( $atts['title'] ) ) {
 			echo '<h2 class="slos-dsr-status-title">' . esc_html( $atts['title'] ) . '</h2>';
 		}
 
-		// Help text
+		// Help text...
 		if ( 'yes' === $atts['show_help'] ) {
 			echo '<div class="slos-dsr-status-help">';
 			echo '<p>' . esc_html__( 'Enter your tracking token to view the status of your data subject request.', 'shahi-legalflowsuite' ) . '</p>';
@@ -71,7 +71,7 @@ class DSR_Status_Shortcode {
 			echo '</div>';
 		}
 
-		// Lookup form
+		// Lookup form...
 		echo '<div class="slos-dsr-status-form-wrapper">';
 		echo '<form class="slos-dsr-status-form" id="slos-dsr-status-form">';
 		echo '<div class="slos-form-field">';
@@ -85,16 +85,16 @@ class DSR_Status_Shortcode {
 		echo '</form>';
 		echo '</div>';
 
-		// Status result container
+		// Status result container...
 		echo '<div class="slos-dsr-status-result" id="slos-dsr-status-result" style="display: none;"></div>';
 
-		// Loading indicator
+		// Loading indicator...
 		echo '<div class="slos-dsr-status-loading" id="slos-dsr-status-loading" style="display: none;">';
 		echo '<div class="slos-spinner"></div>';
 		echo '<p>' . esc_html__( 'Loading your request status...', 'shahi-legalflowsuite' ) . '</p>';
 		echo '</div>';
 
-		// Error container
+		// Error container...
 		echo '<div class="slos-dsr-status-error" id="slos-dsr-status-error" style="display: none;"></div>';
 
 		echo '</div>'; // .slos-dsr-status-portal
@@ -103,7 +103,7 @@ class DSR_Status_Shortcode {
 	}
 
 	/**
-	 * Enqueue shortcode assets
+	 * Enqueue shortcode assets.
 	 *
 	 * @since 3.0.1
 	 * @return void
@@ -111,12 +111,12 @@ class DSR_Status_Shortcode {
 	public function enqueue_assets(): void {
 		global $post;
 
-		// Check if shortcode is present
+		// Check if shortcode is present...
 		if ( ! is_a( $post, 'WP_Post' ) || ! has_shortcode( $post->post_content, 'slos_dsr_status' ) ) {
 			return;
 		}
 
-		// Enqueue CSS
+		// Enqueue CSS...
 		wp_enqueue_style(
 			'slos-dsr-status',
 			SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/css/dsr-status.css',
@@ -124,7 +124,7 @@ class DSR_Status_Shortcode {
 			SHAHI_LEGALFLOWSUITE_VERSION
 		);
 
-		// Enqueue JS
+		// Enqueue JS...
 		wp_enqueue_script(
 			'slos-dsr-status',
 			SHAHI_LEGALFLOWSUITE_PLUGIN_URL . 'assets/js/dsr-status.js',
@@ -133,7 +133,7 @@ class DSR_Status_Shortcode {
 			true
 		);
 
-		// Localize script
+		// Localize script...
 		wp_localize_script(
 			'slos-dsr-status',
 			'slosDsrStatus',

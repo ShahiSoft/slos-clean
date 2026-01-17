@@ -16,7 +16,7 @@ namespace ShahiLegalFlowSuite\Database\Repositories;
 
 use ShahiLegalFlowSuite\Database\Migrations\Migration_Company_Profile;
 
-// Exit if accessed directly.
+// Exit if accessed directly...
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -82,12 +82,12 @@ class Company_Profile_Repository extends Base_Repository {
 			return $this->cached_profile;
 		}
 
-		// Ensure table exists before querying to avoid fatal DB errors.
+		// Ensure table exists before querying to avoid fatal DB errors...
 		if ( ! Migration_Company_Profile::is_applied() ) {
 			Migration_Company_Profile::up();
 		}
 
-		// If still missing, return safe default to prevent recursion.
+		// If still missing, return safe default to prevent recursion...
 		if ( ! Migration_Company_Profile::is_applied() ) {
 			$this->cached_profile = Migration_Company_Profile::get_default_profile_structure();
 			return $this->cached_profile;
@@ -98,7 +98,7 @@ class Company_Profile_Repository extends Base_Repository {
 		);
 
 		if ( ! $row ) {
-			// No profile exists, create default. If creation fails, return default to stop recursion.
+			// No profile exists, create default. If creation fails, return default to stop recursion...
 			$created = $this->create_default_profile();
 			if ( ! $created ) {
 				$this->cached_profile = Migration_Company_Profile::get_default_profile_structure();
@@ -109,7 +109,7 @@ class Company_Profile_Repository extends Base_Repository {
 
 		$profile_data = $this->decode_json( $row->profile_data );
 
-		// Merge with default structure to ensure all keys exist.
+		// Merge with default structure to ensure all keys exist...
 		$default              = Migration_Company_Profile::get_default_profile_structure();
 		$merged               = $this->merge_recursive( $default, $profile_data );
 		$this->cached_profile = $merged;
@@ -157,13 +157,13 @@ class Company_Profile_Repository extends Base_Repository {
 		$current = $this->get_profile();
 		$meta    = $this->get_profile_meta();
 
-		// Merge new data with existing.
+		// Merge new data with existing...
 		$merged = $this->merge_recursive( $current, $profile_data );
 
-		// Calculate completion percentage.
+		// Calculate completion percentage...
 		$completion = $this->calculate_completion( $merged );
 
-		// Update meta.
+		// Update meta...
 		$merged['_meta']['completion'] = $completion;
 		if ( $increment_version ) {
 			$merged['_meta']['version'] = ( $merged['_meta']['version'] ?? 1 ) + 1;
@@ -180,7 +180,7 @@ class Company_Profile_Repository extends Base_Repository {
 		);
 
 		if ( $meta && isset( $meta['id'] ) ) {
-			// Update existing.
+			// Update existing...
 			$result = $this->wpdb->update(
 				$this->table,
 				$update_data,
@@ -189,7 +189,7 @@ class Company_Profile_Repository extends Base_Repository {
 				array( '%d' )
 			);
 		} else {
-			// Insert new.
+			// Insert new...
 			$update_data['created_at'] = current_time( 'mysql' );
 			$result                    = $this->wpdb->insert(
 				$this->table,
@@ -198,11 +198,11 @@ class Company_Profile_Repository extends Base_Repository {
 			);
 		}
 
-		// Clear cache.
+		// Clear cache...
 		$this->cached_profile = null;
 
-		// Update profile version tracking for Generate Documents tab (Phase 0K)
-		// This allows documents to detect when profile data has changed since generation.
+		// Update profile version tracking for Generate Documents tab (Phase 0K)..
+		// This allows documents to detect when profile data has changed since generation...
 		if ( false !== $result ) {
 			update_option( 'slos_profile_last_updated', current_time( 'mysql' ) );
 			update_option( 'slos_profile_version', $new_version );
@@ -228,7 +228,7 @@ class Company_Profile_Repository extends Base_Repository {
 
 		$profile[ $section ] = $this->merge_recursive( $profile[ $section ], $data );
 
-		// Mark step as completed.
+		// Mark step as completed...
 		$step_map = $this->get_step_section_map();
 		foreach ( $step_map as $step => $sections ) {
 			if ( in_array( $section, $sections, true ) ) {
@@ -371,7 +371,7 @@ class Company_Profile_Repository extends Base_Repository {
 		$profile = $this->get_profile();
 
 		$placeholders = array(
-			// Company.
+			// Company...
 			'business_name'         => $profile['company']['legal_name'] ?? '',
 			'trading_name'          => $profile['company']['trading_name'] ?? '',
 			'company_registration'  => $profile['company']['registration_number'] ?? '',
@@ -381,7 +381,7 @@ class Company_Profile_Repository extends Base_Repository {
 			'business_type'         => $profile['company']['business_type'] ?? '',
 			'industry'              => $profile['company']['industry'] ?? '',
 
-			// Contacts.
+			// Contacts...
 			'legal_contact'         => $profile['contacts']['legal_email'] ?? '',
 			'support_email'         => $profile['contacts']['support_email'] ?? '',
 			'company_phone'         => $profile['contacts']['phone'] ?? '',
@@ -390,42 +390,42 @@ class Company_Profile_Repository extends Base_Repository {
 			'dpo_phone'             => $profile['contacts']['dpo']['phone'] ?? '',
 			'dpo_address'           => $profile['contacts']['dpo']['address'] ?? '',
 
-			// Website.
+			// Website...
 			'site_url'              => $profile['website']['url'] ?? get_bloginfo( 'url' ),
 			'site_name'             => $profile['website']['app_name'] ?? get_bloginfo( 'name' ),
 			'service_description'   => $profile['website']['service_description'] ?? '',
 
-			// Legal.
+			// Legal...
 			'jurisdiction'          => $profile['legal']['primary_jurisdiction'] ?? '',
 			'supervisory_authority' => $profile['legal']['supervisory_authority'] ?? '',
 			'eu_representative'     => $this->format_representative( $profile['legal']['representative_eu'] ?? array() ),
 			'uk_representative'     => $this->format_representative( $profile['legal']['representative_uk'] ?? array() ),
 
-			// Retention.
+			// Retention...
 			'retention_period'      => $profile['retention']['default_period'] ?? '',
 			'deletion_policy'       => $profile['retention']['deletion_policy'] ?? '',
 
-			// User Rights.
+			// User Rights...
 			'response_timeframe'    => $profile['user_rights']['response_timeframe'] ?? 30,
 
-			// Third Parties - formatted lists.
+			// Third Parties - formatted lists...
 			'analytics_providers'   => $this->format_list( $profile['third_parties']['analytics'] ?? array() ),
 			'payment_processors'    => $this->format_list( $profile['third_parties']['payment'] ?? array() ),
 			'marketing_providers'   => $this->format_list( $profile['third_parties']['marketing'] ?? array() ),
 			'hosting_providers'     => $this->format_list( $profile['third_parties']['hosting'] ?? array() ),
 
-			// Cookies - formatted lists.
+			// Cookies - formatted lists...
 			'essential_cookies'     => $this->format_cookie_list( $profile['cookies']['essential'] ?? array() ),
 			'analytics_cookies'     => $this->format_cookie_list( $profile['cookies']['analytics'] ?? array() ),
 			'marketing_cookies'     => $this->format_cookie_list( $profile['cookies']['marketing'] ?? array() ),
 			'preference_cookies'    => $this->format_cookie_list( $profile['cookies']['preferences'] ?? array() ),
 
-			// Data Collection.
+			// Data Collection...
 			'personal_data_types'   => $this->format_list( $profile['data_collection']['personal_data_types'] ?? array() ),
 			'data_purposes'         => $this->format_list( $profile['data_collection']['purposes'] ?? array() ),
 			'minimum_age'           => $profile['data_collection']['minimum_age'] ?? 16,
 
-			// Dynamic.
+			// Dynamic...
 			'effective_date'        => current_time( 'Y-m-d' ),
 			'last_updated'          => current_time( 'F j, Y' ),
 		);
@@ -442,7 +442,7 @@ class Company_Profile_Repository extends Base_Repository {
 	public function reset_profile(): bool {
 		$default = Migration_Company_Profile::get_default_profile_structure();
 
-		// Keep some auto-detected values.
+		// Keep some auto-detected values...
 		$default['website']['url']            = get_bloginfo( 'url' );
 		$default['website']['app_name']       = get_bloginfo( 'name' );
 		$default['contacts']['support_email'] = get_bloginfo( 'admin_email' );
@@ -482,7 +482,7 @@ class Company_Profile_Repository extends Base_Repository {
 	 * @return bool True on success
 	 */
 	private function create_default_profile(): bool {
-		// Ensure migration is applied before attempting insert.
+		// Ensure migration is applied before attempting insert...
 		if ( ! Migration_Company_Profile::is_applied() ) {
 			Migration_Company_Profile::up();
 			if ( ! Migration_Company_Profile::is_applied() ) {
@@ -492,7 +492,7 @@ class Company_Profile_Repository extends Base_Repository {
 
 		$default = Migration_Company_Profile::get_default_profile_structure();
 
-		// Pre-fill with detectable values.
+		// Pre-fill with detectable values...
 		$default['website']['url']            = get_bloginfo( 'url' );
 		$default['website']['app_name']       = get_bloginfo( 'name' );
 		$default['contacts']['support_email'] = get_bloginfo( 'admin_email' );
@@ -557,32 +557,32 @@ class Company_Profile_Repository extends Base_Repository {
 	 */
 	private function get_required_fields(): array {
 		return array(
-			// Company (Step 1).
+			// Company (Step 1)...
 			'company.legal_name'                  => __( 'Company Legal Name', 'shahi-legalflowsuite' ),
 			'company.address.street'              => __( 'Company Street Address', 'shahi-legalflowsuite' ),
 			'company.address.city'                => __( 'Company City', 'shahi-legalflowsuite' ),
 			'company.address.country'             => __( 'Company Country', 'shahi-legalflowsuite' ),
 			'company.business_type'               => __( 'Business Type', 'shahi-legalflowsuite' ),
 
-			// Contacts (Step 2).
+			// Contacts (Step 2)...
 			'contacts.legal_email'                => __( 'Legal Contact Email', 'shahi-legalflowsuite' ),
 			'contacts.dpo.email'                  => __( 'DPO Email', 'shahi-legalflowsuite' ),
 
-			// Website (Step 3).
+			// Website (Step 3)...
 			'website.url'                         => __( 'Website URL', 'shahi-legalflowsuite' ),
 			'website.service_description'         => __( 'Service Description', 'shahi-legalflowsuite' ),
 
-			// Data Collection (Step 4).
+			// Data Collection (Step 4)...
 			'data_collection.personal_data_types' => __( 'Personal Data Types Collected', 'shahi-legalflowsuite' ),
 			'data_collection.purposes'            => __( 'Data Processing Purposes', 'shahi-legalflowsuite' ),
 
-			// Cookies (Step 6) - at least essential cookies.
+			// Cookies (Step 6) - at least essential cookies...
 			'cookies.essential'                   => __( 'Essential Cookies', 'shahi-legalflowsuite' ),
 
-			// Legal (Step 7).
+			// Legal (Step 7)...
 			'legal.primary_jurisdiction'          => __( 'Primary Jurisdiction', 'shahi-legalflowsuite' ),
 
-			// Retention (Step 8).
+			// Retention (Step 8)...
 			'retention.default_period'            => __( 'Default Retention Period', 'shahi-legalflowsuite' ),
 		);
 	}
@@ -652,12 +652,12 @@ class Company_Profile_Repository extends Base_Repository {
 	private function merge_recursive( array $base, array $overlay ): array {
 		foreach ( $overlay as $key => $value ) {
 			if ( is_array( $value ) && isset( $base[ $key ] ) && is_array( $base[ $key ] ) ) {
-				// Check if it's a sequential array (list).
+				// Check if it's a sequential array (list)...
 				if ( array_keys( $value ) === range( 0, count( $value ) - 1 ) ) {
-					// Replace lists entirely.
+					// Replace lists entirely...
 					$base[ $key ] = $value;
 				} else {
-					// Merge associative arrays.
+					// Merge associative arrays...
 					$base[ $key ] = $this->merge_recursive( $base[ $key ], $value );
 				}
 			} else {

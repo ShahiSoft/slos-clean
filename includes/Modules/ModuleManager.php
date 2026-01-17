@@ -323,8 +323,7 @@ class ModuleManager {
 		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) === $table ) {
 			$db_record_exists = (bool) $wpdb->get_var(
 				$wpdb->prepare(
-					'SELECT COUNT(*) FROM %i WHERE module_key = %s',
-					$table,
+					'SELECT COUNT(*) FROM ' . $table . ' WHERE module_key = %s',
 					$key
 				)
 			);

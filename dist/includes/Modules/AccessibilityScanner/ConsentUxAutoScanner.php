@@ -48,13 +48,13 @@ class ConsentUxAutoScanner {
 	 * @return void
 	 */
 	private function init_hooks(): void {
-		// Hook into save_post for pages
+		// Hook into save_post for pages..
 		add_action( 'save_post_page', array( $this, 'maybe_scan_page' ), 10, 3 );
 
-		// Hook into page publish transitions
+		// Hook into page publish transitions..
 		add_action( 'transition_post_status', array( $this, 'on_page_publish' ), 10, 3 );
 
-		// Add admin notice after scan
+		// Add admin notice after scan..
 		add_action( 'admin_notices', array( $this, 'show_scan_notice' ) );
 	}
 
@@ -68,32 +68,32 @@ class ConsentUxAutoScanner {
 	 * @return void
 	 */
 	public function maybe_scan_page( int $post_id, $post, bool $update ): void {
-		// Bail if this is an autosave
+		// Bail if this is an autosave..
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 			return;
 		}
 
-		// Bail if this is a revision
+		// Bail if this is a revision..
 		if ( wp_is_post_revision( $post_id ) ) {
 			return;
 		}
 
-		// Bail if user doesn't have permission
+		// Bail if user doesn't have permission..
 		if ( ! current_user_can( 'edit_post', $post_id ) ) {
 			return;
 		}
 
-		// Check if this page is a consent/legal page
+		// Check if this page is a consent/legal page..
 		if ( ! $this->is_consent_page( $post_id ) ) {
 			return;
 		}
 
-		// Only scan if post is published
+		// Only scan if post is published..
 		if ( 'publish' !== $post->post_status ) {
 			return;
 		}
 
-		// Trigger scan
+		// Trigger scan..
 		$this->trigger_scan( $post_id, $post );
 	}
 
@@ -107,27 +107,27 @@ class ConsentUxAutoScanner {
 	 * @return void
 	 */
 	public function on_page_publish( string $new_status, string $old_status, $post ): void {
-		// Only care about pages
+		// Only care about pages..
 		if ( 'page' !== $post->post_type ) {
 			return;
 		}
 
-		// Only care about transitions to published
+		// Only care about transitions to published..
 		if ( 'publish' !== $new_status ) {
 			return;
 		}
 
-		// Skip if already published (handled by save_post)
+		// Skip if already published (handled by save_post)..
 		if ( 'publish' === $old_status ) {
 			return;
 		}
 
-		// Check if this is a consent/legal page
+		// Check if this is a consent/legal page..
 		if ( ! $this->is_consent_page( $post->ID ) ) {
 			return;
 		}
 
-		// Trigger scan
+		// Trigger scan..
 		$this->trigger_scan( $post->ID, $post );
 	}
 
@@ -139,7 +139,7 @@ class ConsentUxAutoScanner {
 	 * @return bool True if consent/legal page
 	 */
 	private function is_consent_page( int $post_id ): bool {
-		// Get consent pages from checker
+		// Get consent pages from checker..
 		$consent_pages = $this->checker->get_consent_pages();
 
 		return in_array( $post_id, $consent_pages, true );
@@ -154,10 +154,10 @@ class ConsentUxAutoScanner {
 	 * @return void
 	 */
 	private function trigger_scan( int $post_id, $post ): void {
-		// Run scan with force refresh
+		// Run scan with force refresh..
 		$results = $this->checker->scan( true );
 
-		// Store last scan info in transient for admin notice
+		// Store last scan info in transient for admin notice..
 		set_transient(
 			'slos_consent_ux_last_scan',
 			array(
@@ -172,7 +172,7 @@ class ConsentUxAutoScanner {
 			60 // Show notice for 60 seconds
 		);
 
-		// Log action
+		// Log action..
 		do_action( 'slos_consent_ux_auto_scan_completed', $post_id, $results );
 	}
 
@@ -183,13 +183,13 @@ class ConsentUxAutoScanner {
 	 * @return void
 	 */
 	public function show_scan_notice(): void {
-		// Check if on edit page
+		// Check if on edit page..
 		$screen = get_current_screen();
 		if ( ! $screen || 'page' !== $screen->post_type ) {
 			return;
 		}
 
-		// Get last scan info
+		// Get last scan info..
 		$last_scan = get_transient( 'slos_consent_ux_last_scan' );
 		if ( ! $last_scan ) {
 			return;
@@ -199,12 +199,12 @@ class ConsentUxAutoScanner {
 		$issues       = absint( $last_scan['total_issues'] );
 		$health_score = absint( $last_scan['health_score'] );
 
-		// Determine notice class based on issues
+		// Determine notice class based on issues..
 		if ( $last_scan['critical'] > 0 ) {
 			$notice_class = 'notice-error';
 			$icon         = 'warning';
-			/* translators: 1: Page title, 2: Number of issues, 3: Health score */
-			$message = sprintf(
+			$message      = sprintf(
+				// translators: 1: Page title, 2: Number of issues, 3: Number of critical issues, 4: Health score
 				__( 'Consent UX Scan completed for "%1$s": Found %2$d issues (including %3$d critical). Health Score: %4$d/100. Please review accessibility issues.', 'shahi-legalflowsuite' ),
 				$post_title,
 				$issues,
@@ -214,8 +214,8 @@ class ConsentUxAutoScanner {
 		} elseif ( $issues > 0 ) {
 			$notice_class = 'notice-warning';
 			$icon         = 'info';
-			/* translators: 1: Page title, 2: Number of issues, 3: Health score */
-			$message = sprintf(
+			$message      = sprintf(
+				// translators: 1: Page title, 2: Number of issues, 3: Health score
 				__( 'Consent UX Scan completed for "%1$s": Found %2$d accessibility issues. Health Score: %3$d/100.', 'shahi-legalflowsuite' ),
 				$post_title,
 				$issues,
@@ -224,8 +224,8 @@ class ConsentUxAutoScanner {
 		} else {
 			$notice_class = 'notice-success';
 			$icon         = 'yes-alt';
-			/* translators: 1: Page title, 2: Health score */
-			$message = sprintf(
+			$message      = sprintf(
+				// translators: 1: Page title, 2: Health score
 				__( 'Consent UX Scan completed for "%1$s": No accessibility issues found. Health Score: %2$d/100.', 'shahi-legalflowsuite' ),
 				$post_title,
 				$health_score
@@ -247,10 +247,10 @@ class ConsentUxAutoScanner {
 		</div>
 		<?php
 
-		// Delete transient so notice only shows once
+		// Delete transient so notice only shows once..
 		delete_transient( 'slos_consent_ux_last_scan' );
 	}
 }
 
-// Initialize auto-scanner
+// Initialize auto-scanner..
 new ConsentUxAutoScanner();

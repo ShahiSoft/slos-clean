@@ -8,6 +8,8 @@
  * @package ShahiLegalFlowSuite
  */
 
+// phpcs:disable WordPress.Security.EscapeOutput -- CLI migration output
+
 namespace ShahiLegalFlowSuite\Modules\AccessibilityScanner\FixEngine\Migrations;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -120,13 +122,13 @@ class DatabaseSchemaMigration {
 		$sql = '';
 		foreach ( $tables as $table ) {
 			// Export table structure..
-			$create_table = $this->wpdb->get_row( $this->wpdb->prepare( 'SHOW CREATE TABLE %i', $table ), ARRAY_N );
+			$create_table = $this->wpdb->get_row( sprintf( 'SHOW CREATE TABLE %s', $this->wpdb->_escape( $table ) ), ARRAY_N );
 			if ( $create_table ) {
 				$sql .= $create_table[1] . ";\n\n";
 			}
 
 			// Export data..
-			$rows = $this->wpdb->get_results( $this->wpdb->prepare( 'SELECT * FROM %i', $table ), ARRAY_A );
+			$rows = $this->wpdb->get_results( sprintf( 'SELECT * FROM %s', $this->wpdb->_escape( $table ) ), ARRAY_A );
 			if ( $rows ) {
 				foreach ( $rows as $row ) {
 					$columns = array_keys( $row );
@@ -186,14 +188,14 @@ class DatabaseSchemaMigration {
 
 		foreach ( $indexes as $index ) {
 			// Check if index exists..
-			$table_info       = $this->wpdb->get_results( $this->wpdb->prepare( 'SHOW INDEX FROM %i', $fix_history_table ) );
+			$table_info       = $this->wpdb->get_results( sprintf( 'SHOW INDEX FROM %s', $this->wpdb->_escape( $fix_history_table ) ) );
 			$existing_indexes = wp_list_pluck( $table_info, 'Key_name' );
 			$index_name       = $index['name'] ?? '';
 
 			if ( ! in_array( $index_name, $existing_indexes, true ) ) {
-				$sql    = $this->wpdb->prepare(
-					"CREATE INDEX {$index_name} ON %i({$index['columns']})",
-					$fix_history_table
+				$sql    = sprintf(
+					"CREATE INDEX {$index_name} ON %s({$index['columns']})",
+					$this->wpdb->_escape( $fix_history_table )
 				);
 				$result = $this->wpdb->query( $sql );
 				if ( false === $result ) {
@@ -231,15 +233,15 @@ class DatabaseSchemaMigration {
 		if ( 'InnoDB' !== $engine ) {
 			// Convert to InnoDB..
 			if ( ! $this->dry_run ) {
-				$this->wpdb->query( $this->wpdb->prepare( 'ALTER TABLE %i ENGINE=InnoDB', $fix_history_table ) );
+				$this->wpdb->query( sprintf( 'ALTER TABLE %s ENGINE=InnoDB', $this->wpdb->_escape( $fix_history_table ) ) );
 			}
 		}
 
 		// Add foreign key to posts table..
-		$fk_sql = $this->wpdb->prepare(
-			'ALTER TABLE %i ADD CONSTRAINT fk_fix_history_post FOREIGN KEY (post_id) REFERENCES %i(ID) ON DELETE CASCADE',
-			$fix_history_table,
-			$this->wpdb->posts
+		$fk_sql = sprintf(
+			'ALTER TABLE %s ADD CONSTRAINT fk_fix_history_post FOREIGN KEY (post_id) REFERENCES %s(ID) ON DELETE CASCADE',
+			$this->wpdb->_escape( $fix_history_table ),
+			$this->wpdb->_escape( $this->wpdb->posts )
 		);
 
 		if ( $this->dry_run ) {
@@ -282,11 +284,11 @@ class DatabaseSchemaMigration {
 
 		$optimizations = array(
 			// Convert status to ENUM for better performance..
-			$this->wpdb->prepare( "ALTER TABLE %i MODIFY status ENUM('success', 'failed', 'skipped', 'partial') NOT NULL DEFAULT 'success'", $fix_history_table ),
+			sprintf( "ALTER TABLE %s MODIFY status ENUM('success', 'failed', 'skipped', 'partial') NOT NULL DEFAULT 'success'", $this->wpdb->_escape( $fix_history_table ) ),
 
 			// Add compression for large text fields..
-			$this->wpdb->prepare( 'ALTER TABLE %i MODIFY fixes_applied JSON', $fix_history_table ),
-			$this->wpdb->prepare( 'ALTER TABLE %i MODIFY metadata JSON', $fix_history_table ),
+			sprintf( 'ALTER TABLE %s MODIFY fixes_applied JSON', $this->wpdb->_escape( $fix_history_table ) ),
+			sprintf( 'ALTER TABLE %s MODIFY metadata JSON', $this->wpdb->_escape( $fix_history_table ) ),
 		);
 
 		if ( $this->dry_run ) {
@@ -316,18 +318,18 @@ class DatabaseSchemaMigration {
 
 		// Check for orphaned records..
 		$orphaned = $this->wpdb->get_var(
-			$this->wpdb->prepare(
-				'SELECT COUNT(*) FROM %i h LEFT JOIN %i p ON h.post_id = p.ID WHERE p.ID IS NULL AND h.post_id > 0',
-				$fix_history_table,
-				$this->wpdb->posts
+			sprintf(
+				'SELECT COUNT(*) FROM %s h LEFT JOIN %s p ON h.post_id = p.ID WHERE p.ID IS NULL AND h.post_id > 0',
+				$this->wpdb->_escape( $fix_history_table ),
+				$this->wpdb->_escape( $this->wpdb->posts )
 			)
 		);
 
 		// Check for NULL required fields..
 		$null_fixers = $this->wpdb->get_var(
-			$this->wpdb->prepare(
-				"SELECT COUNT(*) FROM %i WHERE fixer_id IS NULL OR fixer_id = ''",
-				$fix_history_table
+			sprintf(
+				"SELECT COUNT(*) FROM %s WHERE fixer_id IS NULL OR fixer_id = ''",
+				$this->wpdb->_escape( $fix_history_table )
 			)
 		);
 
@@ -347,7 +349,7 @@ class DatabaseSchemaMigration {
 		}
 
 		// Count total records..
-		$total_records = $this->wpdb->get_var( $this->wpdb->prepare( 'SELECT COUNT(*) FROM %i', $fix_history_table ) );
+		$total_records = $this->wpdb->get_var( sprintf( 'SELECT COUNT(*) FROM %s', $this->wpdb->_escape( $fix_history_table ) ) );
 
 		return array(
 			'success'          => true,

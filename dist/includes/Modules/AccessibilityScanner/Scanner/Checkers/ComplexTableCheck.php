@@ -33,22 +33,22 @@ class ComplexTableCheck extends AbstractCheck {
 		$tables = $xpath->query( '//table' );
 
 		foreach ( $tables as $table ) {
-			// Skip layout tables
+			// Skip layout tables..
 			$role = $table->getAttribute( 'role' );
 			if ( $role === 'presentation' || $role === 'none' ) {
 				continue;
 			}
 
-			// Check for colspan or rowspan > 1
+			// Check for colspan or rowspan > 1..
 			$complexCells = $xpath->query( './/td[@colspan > 1] | .//td[@rowspan > 1] | .//th[@colspan > 1] | .//th[@rowspan > 1]', $table );
 
 			if ( $complexCells->length > 0 ) {
-				// If complex, check if headers attribute is used on data cells
+				// If complex, check if headers attribute is used on data cells..
 				$dataCellsWithHeaders = $xpath->query( './/td[@headers]', $table );
 
-				// This is a heuristic. If there are merged cells, we expect some explicit association if it's very complex.
-				// But simple merged headers might be fine with scope.
-				// Let's check if scope is missing on headers in a complex table.
+				// This is a heuristic. If there are merged cells, we expect some explicit association if it's very complex...
+				// But simple merged headers might be fine with scope...
+				// Let's check if scope is missing on headers in a complex table...
 
 				$headersWithoutScope = $xpath->query( './/th[not(@scope) and not(@id)]', $table );
 

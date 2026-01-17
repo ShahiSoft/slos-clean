@@ -34,35 +34,39 @@
 		 * Usage: <span class="shahi-counter" data-target="1234">0</span>
 		 */
 		initCounters() {
-			$('.shahi-counter').each(function () {
-				const $counter = $(this);
-				const target = parseInt(
-					$counter.data('target') || $counter.text()
-				);
-				const duration = parseInt($counter.data('duration') || 2000);
-				let current = 0;
-				const increment = target / (duration / 16);
+			$( '.shahi-counter' ).each(
+				function () {
+					const $counter = $( this );
+					const target = parseInt(
+						$counter.data( 'target' ) || $counter.text()
+					);
+					const duration = parseInt( $counter.data( 'duration' ) || 2000 );
+					let current = 0;
+					const increment = target / (duration / 16);
 
-				const updateCounter = function () {
-					current += increment;
-					if (current < target) {
-						$counter.text(Math.floor(current).toLocaleString());
-						requestAnimationFrame(updateCounter);
-					} else {
-						$counter.text(target.toLocaleString());
-					}
-				};
+					const updateCounter = function () {
+						current += increment;
+						if (current < target) {
+							$counter.text( Math.floor( current ).toLocaleString() );
+							requestAnimationFrame( updateCounter );
+						} else {
+							$counter.text( target.toLocaleString() );
+						}
+					};
 
-				// Start animation when element is visible
-				var observer = new IntersectionObserver(function (entries) {
-					if (entries[0].isIntersecting) {
-						updateCounter();
-						observer.disconnect();
-					}
-				});
+					// Start animation when element is visible
+					var observer = new IntersectionObserver(
+						function (entries) {
+							if (entries[0].isIntersecting) {
+								updateCounter();
+								observer.disconnect();
+							}
+						}
+					);
 
-				observer.observe($counter[0]);
-			});
+					observer.observe( $counter[0] );
+				}
+			);
 		},
 
 		/**
@@ -71,23 +75,25 @@
 		 * Creates futuristic tooltips with positioning
 		 */
 		initTooltips() {
-			$('[data-tooltip]').each(function () {
-				const $element = $(this);
-				const tooltipText = $element.data('tooltip');
-				const position = $element.data('tooltip-position') || 'top';
+			$( '[data-tooltip]' ).each(
+				function () {
+					const $element = $( this );
+					const tooltipText = $element.data( 'tooltip' );
+					const position = $element.data( 'tooltip-position' ) || 'top';
 
-				if (!$element.hasClass('shahi-tooltip')) {
-					$element.addClass(
-						'shahi-tooltip shahi-tooltip-' + position
-					);
+					if ( ! $element.hasClass( 'shahi-tooltip' )) {
+						$element.addClass(
+							'shahi-tooltip shahi-tooltip-' + position
+						);
 
-					const $tooltip = $(
-						'<span class="shahi-tooltip-content"></span>'
-					);
-					$tooltip.text(tooltipText);
-					$element.append($tooltip);
+						const $tooltip = $(
+							'<span class="shahi-tooltip-content"></span>'
+						);
+						$tooltip.text( tooltipText );
+						$element.append( $tooltip );
+					}
 				}
-			});
+			);
 		},
 
 		/**
@@ -96,36 +102,41 @@
 		 * Material Design-style ripple effect
 		 */
 		initRippleEffect() {
-			$(document).on(
+			$( document ).on(
 				'click',
 				'.shahi-button, .shahi-ripple-container',
 				function (e) {
-					const $button = $(this);
+					const $button = $( this );
 
 					// Create ripple element
-					const $ripple = $('<span class="shahi-ripple"></span>');
+					const $ripple = $( '<span class="shahi-ripple"></span>' );
 
 					// Calculate position
 					const rect = this.getBoundingClientRect();
-					const size = Math.max(rect.width, rect.height);
+					const size = Math.max( rect.width, rect.height );
 					const x = e.clientX - rect.left - size / 2;
 					const y = e.clientY - rect.top - size / 2;
 
 					// Set ripple styles
-					$ripple.css({
-						width: size,
-						height: size,
-						left: x,
-						top: y,
-					});
+					$ripple.css(
+						{
+							width: size,
+							height: size,
+							left: x,
+							top: y,
+						}
+					);
 
 					// Add to button
-					$button.append($ripple);
+					$button.append( $ripple );
 
 					// Remove after animation
-					setTimeout(function () {
-						$ripple.remove();
-					}, 600);
+					setTimeout(
+						function () {
+							$ripple.remove();
+						},
+						600
+					);
 				}
 			);
 		},
@@ -138,20 +149,24 @@
 		initScrollAnimations() {
 			const observer = new IntersectionObserver(
 				function (entries) {
-					entries.forEach(function (entry) {
-						if (entry.isIntersecting) {
-							entry.target.classList.add('visible');
+					entries.forEach(
+						function (entry) {
+							if (entry.isIntersecting) {
+								entry.target.classList.add( 'visible' );
+							}
 						}
-					});
+					);
 				},
 				{
 					threshold: 0.1,
 				}
 			);
 
-			$('.shahi-scroll-fade-in').each(function () {
-				observer.observe(this);
-			});
+			$( '.shahi-scroll-fade-in' ).each(
+				function () {
+					observer.observe( this );
+				}
+			);
 		},
 
 		/**
@@ -164,11 +179,11 @@
 			 * Initialize notification container
 			 */
 			init() {
-				if (!this.container) {
+				if ( ! this.container) {
 					this.container = $(
 						'<div class="shahi-notifications-container"></div>'
 					);
-					$('body').append(this.container);
+					$( 'body' ).append( this.container );
 				}
 			},
 
@@ -179,7 +194,7 @@
 			 * @param {string} type     - Type: success, error, warning, info
 			 * @param {number} duration - Duration in milliseconds
 			 */
-			show(message, type, duration) {
+			show( message, type, duration ) {
 				this.init();
 
 				type = type || 'info';
@@ -208,41 +223,53 @@
 					`
 				);
 
-				this.container.append($notification);
+				this.container.append( $notification );
 
 				// Auto-remove after duration
-				setTimeout(function () {
-					$notification.addClass('shahi-notification-exit');
-					setTimeout(function () {
-						$notification.remove();
-					}, 300);
-				}, duration);
+				setTimeout(
+					function () {
+						$notification.addClass( 'shahi-notification-exit' );
+						setTimeout(
+							function () {
+								$notification.remove();
+							},
+							300
+						);
+					},
+					duration
+				);
 
 				// Manual close
 				$notification
-					.find('.shahi-notification-close')
-					.on('click', function () {
-						$notification.addClass('shahi-notification-exit');
-						setTimeout(function () {
-							$notification.remove();
-						}, 300);
-					});
+					.find( '.shahi-notification-close' )
+					.on(
+						'click',
+						function () {
+							$notification.addClass( 'shahi-notification-exit' );
+							setTimeout(
+								function () {
+									$notification.remove();
+								},
+								300
+							);
+						}
+					);
 			},
 
-			success(message, duration) {
-				this.show(message, 'success', duration);
+			success( message, duration ) {
+				this.show( message, 'success', duration );
 			},
 
-			error(message, duration) {
-				this.show(message, 'error', duration);
+			error( message, duration ) {
+				this.show( message, 'error', duration );
 			},
 
-			warning(message, duration) {
-				this.show(message, 'warning', duration);
+			warning( message, duration ) {
+				this.show( message, 'warning', duration );
 			},
 
-			info(message, duration) {
-				this.show(message, 'info', duration);
+			info( message, duration ) {
+				this.show( message, 'info', duration );
 			},
 		},
 
@@ -260,7 +287,7 @@
 		 * @param {number} targetValue  - Target percentage (0-100)
 		 * @param {number} duration     - Animation duration in ms
 		 */
-		animateProgress($progressBar, targetValue, duration) {
+		animateProgress( $progressBar, targetValue, duration ) {
 			duration = duration || 1000;
 			let currentValue = 0;
 			const increment = targetValue / (duration / 16);
@@ -268,10 +295,10 @@
 			const updateProgress = function () {
 				currentValue += increment;
 				if (currentValue < targetValue) {
-					$progressBar.css('width', currentValue + '%');
-					requestAnimationFrame(updateProgress);
+					$progressBar.css( 'width', currentValue + '%' );
+					requestAnimationFrame( updateProgress );
 				} else {
-					$progressBar.css('width', targetValue + '%');
+					$progressBar.css( 'width', targetValue + '%' );
 				}
 			};
 
@@ -284,19 +311,23 @@
 		 * Handles toggle switch interactions
 		 */
 		initToggles() {
-			$(document).on('change', '.shahi-toggle-input', function () {
-				const $input = $(this);
-				const $toggle = $input.closest('.shahi-toggle');
+			$( document ).on(
+				'change',
+				'.shahi-toggle-input',
+				function () {
+					const $input = $( this );
+					const $toggle = $input.closest( '.shahi-toggle' );
 
-				if ($input.is(':checked')) {
-					$toggle.addClass('shahi-toggle-active');
-				} else {
-					$toggle.removeClass('shahi-toggle-active');
+					if ($input.is( ':checked' )) {
+						$toggle.addClass( 'shahi-toggle-active' );
+					} else {
+						$toggle.removeClass( 'shahi-toggle-active' );
+					}
+
+					// Trigger custom event
+					$toggle.trigger( 'shahi:toggle', [$input.is( ':checked' )] );
 				}
-
-				// Trigger custom event
-				$toggle.trigger('shahi:toggle', [$input.is(':checked')]);
-			});
+			);
 		},
 
 		/**
@@ -307,7 +338,7 @@
 		 * @param {jQuery} $container - Container element
 		 * @param {number} count      - Number of confetti pieces
 		 */
-		confetti($container, count) {
+		confetti( $container, count ) {
 			count = count || 50;
 
 			const colors = [
@@ -320,23 +351,28 @@
 			];
 
 			for (let i = 0; i < count; i++) {
-				const $piece = $('<div class="shahi-confetti-piece"></div>');
+				const $piece = $( '<div class="shahi-confetti-piece"></div>' );
 
-				$piece.css({
-					left: Math.random() * 100 + '%',
-					background:
-						colors[Math.floor(Math.random() * colors.length)],
-					animationDelay: Math.random() * 2 + 's',
-					animationDuration: Math.random() * 2 + 2 + 's',
-				});
+				$piece.css(
+					{
+						left: Math.random() * 100 + '%',
+						background:
+						colors[Math.floor( Math.random() * colors.length )],
+						animationDelay: Math.random() * 2 + 's',
+						animationDuration: Math.random() * 2 + 2 + 's',
+					}
+				);
 
-				$container.append($piece);
+				$container.append( $piece );
 			}
 
 			// Clean up after animation
-			setTimeout(function () {
-				$container.find('.shahi-confetti-piece').remove();
-			}, 5000);
+			setTimeout(
+				function () {
+					$container.find( '.shahi-confetti-piece' ).remove();
+				},
+				5000
+			);
 		},
 
 		/**
@@ -345,7 +381,7 @@
 		 * Shows/hides loading overlay
 		 */
 		loading: {
-			show(message) {
+			show( message ) {
 				message = message || 'Loading...';
 
 				const $overlay = $(
@@ -357,13 +393,16 @@
 					`
 				);
 
-				$('body').append($overlay);
+				$( 'body' ).append( $overlay );
 			},
 
 			hide() {
-				$('.shahi-loading-overlay').fadeOut(300, function () {
-					$(this).remove();
-				});
+				$( '.shahi-loading-overlay' ).fadeOut(
+					300,
+					function () {
+						$( this ).remove();
+					}
+				);
 			},
 		},
 
@@ -375,7 +414,7 @@
 		 * @param {jQuery} $container - Container to add skeletons
 		 * @param {number} count      - Number of skeleton items
 		 */
-		createSkeletons($container, count) {
+		createSkeletons( $container, count ) {
 			count = count || 3;
 
 			for (let i = 0; i < count; i++) {
@@ -392,7 +431,7 @@
 					`
 				);
 
-				$container.append($skeleton);
+				$container.append( $skeleton );
 			}
 		},
 
@@ -402,22 +441,22 @@
 		 * @param {string}   text     - Text to copy
 		 * @param {Function} callback - Success callback
 		 */
-		copyToClipboard(text, callback) {
-			const $temp = $('<textarea>');
-			$('body').append($temp);
-			$temp.val(text).select();
+		copyToClipboard( text, callback ) {
+			const $temp = $( '<textarea>' );
+			$( 'body' ).append( $temp );
+			$temp.val( text ).select();
 
 			try {
-				document.execCommand('copy');
+				document.execCommand( 'copy' );
 				if (callback) {
-					callback(true);
+					callback( true );
 				}
-				this.notifications.success('Copied to clipboard!');
+				this.notifications.success( 'Copied to clipboard!' );
 			} catch (err) {
 				if (callback) {
-					callback(false);
+					callback( false );
 				}
-				this.notifications.error('Failed to copy to clipboard');
+				this.notifications.error( 'Failed to copy to clipboard' );
 			}
 
 			$temp.remove();
@@ -430,15 +469,18 @@
 		 * @param {number}   wait - Wait time in ms
 		 * @return {Function} Debounced function
 		 */
-		debounce(func, wait) {
+		debounce( func, wait ) {
 			let timeout;
 			return function () {
 				const context = this;
 				const args = arguments;
-				clearTimeout(timeout);
-				timeout = setTimeout(function () {
-					func.apply(context, args);
-				}, wait);
+				clearTimeout( timeout );
+				timeout = setTimeout(
+					function () {
+						func.apply( context, args );
+					},
+					wait
+				);
 			};
 		},
 
@@ -449,17 +491,20 @@
 		 * @param {number}   limit - Time limit in ms
 		 * @return {Function} Throttled function
 		 */
-		throttle(func, limit) {
+		throttle( func, limit ) {
 			let inThrottle;
 			return function () {
 				const args = arguments;
 				const context = this;
-				if (!inThrottle) {
-					func.apply(context, args);
+				if ( ! inThrottle) {
+					func.apply( context, args );
 					inThrottle = true;
-					setTimeout(function () {
-						inThrottle = false;
-					}, limit);
+					setTimeout(
+						function () {
+							inThrottle = false;
+						},
+						limit
+					);
 				}
 			};
 		},
@@ -471,9 +516,9 @@
 		 * @param {number} decimals - Decimal places
 		 * @return {string} Formatted number
 		 */
-		formatNumber(num, decimals) {
+		formatNumber( num, decimals ) {
 			decimals = decimals || 0;
-			return num.toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+			return num.toFixed( decimals ).replace( /\B(?=(\d{3})+(?!\d))/g, ',' );
 		},
 
 		/**
@@ -482,10 +527,10 @@
 		 * @param {Date|string} date - Date to format
 		 * @return {string} Time ago string
 		 */
-		timeAgo(date) {
+		timeAgo( date ) {
 			const now = new Date();
-			const past = new Date(date);
-			const seconds = Math.floor((now - past) / 1000);
+			const past = new Date( date );
+			const seconds = Math.floor( (now - past) / 1000 );
 
 			const intervals = {
 				year: 31536000,
@@ -498,7 +543,7 @@
 			};
 
 			for (const key in intervals) {
-				const interval = Math.floor(seconds / intervals[key]);
+				const interval = Math.floor( seconds / intervals[key] );
 				if (interval >= 1) {
 					return (
 						interval +
@@ -517,15 +562,17 @@
 	/**
 	 * Initialize on document ready
 	 */
-	$(document).ready(function () {
-		ShahiComponents.init();
-	});
+	$( document ).ready(
+		function () {
+			ShahiComponents.init();
+		}
+	);
 
 	/**
 	 * Expose to global scope
 	 */
 	window.ShahiNotify = ShahiComponents.notifications;
-})(jQuery);
+})( jQuery );
 
 /**
  * Add custom CSS for notifications container
@@ -564,6 +611,6 @@
 	`;
 
 	if (document.head) {
-		document.head.insertAdjacentHTML('beforeend', styles);
+		document.head.insertAdjacentHTML( 'beforeend', styles );
 	}
 })();

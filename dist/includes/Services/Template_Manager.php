@@ -14,7 +14,7 @@
 
 namespace ShahiLegalFlowSuite\Services;
 
-// Exit if accessed directly
+// Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -50,12 +50,12 @@ class Template_Manager {
 	 * @return string Template content
 	 */
 	public function get_template( string $type, string $locale = 'en_US' ): string {
-		// Try locale-specific template first
+		// Try locale-specific template first..
 		if ( isset( $this->templates[ $type ][ $locale ] ) ) {
 			return $this->templates[ $type ][ $locale ];
 		}
 
-		// Fallback to en_US
+		// Fallback to en_US..
 		if ( isset( $this->templates[ $type ]['en_US'] ) ) {
 			return $this->templates[ $type ]['en_US'];
 		}
@@ -207,12 +207,12 @@ class Template_Manager {
 	 * @return bool Whether template exists
 	 */
 	public function template_exists( string $type, string $locale = 'en_US' ): bool {
-		// Try direct lookup
+		// Try direct lookup..
 		if ( ! empty( $this->get_template( $type, $locale ) ) ) {
 			return true;
 		}
 
-		// Try hub type lookup
+		// Try hub type lookup..
 		if ( ! empty( $this->get_template_by_hub_type( $type, $locale ) ) ) {
 			return true;
 		}
@@ -232,7 +232,7 @@ class Template_Manager {
 		$admin_email = get_bloginfo( 'admin_email' );
 		$site_desc   = get_bloginfo( 'description' );
 
-		// Auto-detect integrations
+		// Auto-detect integrations..
 		$detected = $this->auto_detect_integrations();
 
 		$defaults = array(
@@ -254,10 +254,10 @@ class Template_Manager {
 			'dpo_email'           => $admin_email,
 		);
 
-		// Apply extensibility filter
+		// Apply extensibility filter..
 		$defaults = apply_filters( 'slos_legal_doc_placeholders', $defaults, $detected );
 
-		// Merge with overrides (questionnaire answers or manual inputs)
+		// Merge with overrides (questionnaire answers or manual inputs)..
 		return array_merge( $defaults, $overrides );
 	}
 
@@ -767,12 +767,12 @@ HTML;
 	 * Detect Google Analytics
 	 */
 	protected function detect_google_analytics(): bool {
-		// Check for common GA plugins
+		// Check for common GA plugins..
 		if ( class_exists( 'MonsterInsights' ) || class_exists( 'Ga_Helper' ) ) {
 			return true;
 		}
 
-		// Check if GA code is present in footer/header scripts
+		// Check if GA code is present in footer/header scripts..
 		$header_scripts = get_option( 'header_scripts', '' );
 		$footer_scripts = get_option( 'footer_scripts', '' );
 
@@ -810,7 +810,7 @@ HTML;
 	 * Detect PayPal
 	 */
 	protected function detect_paypal(): bool {
-		// Check WooCommerce gateways if available
+		// Check WooCommerce gateways if available..
 		if ( class_exists( 'WC_Gateway_Paypal' ) ) {
 			return true;
 		}

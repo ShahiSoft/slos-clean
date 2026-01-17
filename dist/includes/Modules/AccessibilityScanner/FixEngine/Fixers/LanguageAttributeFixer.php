@@ -43,7 +43,7 @@ final class LanguageAttributeFixer extends AbstractFixer {
 	}
 
 	public function can_fix( string $content ): bool {
-		// Can always check for language issues
+		// Can always check for language issues..
 		return true;
 	}
 
@@ -57,11 +57,11 @@ final class LanguageAttributeFixer extends AbstractFixer {
 		$fixes_applied = 0;
 		$details       = array();
 
-		// Get site language
+		// Get site language..
 		$site_lang       = get_bloginfo( 'language' ) ?: 'en-US';
 		$site_lang_short = explode( '-', $site_lang )[0];
 
-		// Check for html element with missing lang
+		// Check for html element with missing lang..
 		$html_elements = $this->query( '//html[not(@lang)]' );
 		foreach ( $html_elements as $html ) {
 			$html->setAttribute( 'lang', $site_lang );
@@ -73,7 +73,7 @@ final class LanguageAttributeFixer extends AbstractFixer {
 			);
 		}
 
-		// Check for elements with lang attribute that is empty
+		// Check for elements with lang attribute that is empty..
 		$empty_lang = $this->query( '//*[@lang=""]' );
 		foreach ( $empty_lang as $element ) {
 			$element->setAttribute( 'lang', $site_lang );
@@ -85,11 +85,11 @@ final class LanguageAttributeFixer extends AbstractFixer {
 			);
 		}
 
-		// Look for common foreign language patterns and add lang attribute
+		// Look for common foreign language patterns and add lang attribute..
 		$foreign_patterns = $this->detect_foreign_language_content( $site_lang_short );
 
 		if ( ! empty( $foreign_patterns ) ) {
-			// Find blockquotes or q elements that might be foreign quotes
+			// Find blockquotes or q elements that might be foreign quotes..
 			$quotes = $this->query( '//blockquote[not(@lang)] | //q[not(@lang)]' );
 
 			foreach ( $quotes as $quote ) {
@@ -152,7 +152,7 @@ final class LanguageAttributeFixer extends AbstractFixer {
 			),
 		);
 
-		// Remove site language from detection
+		// Remove site language from detection..
 		unset( $patterns[ $site_lang ] );
 
 		return $patterns;
@@ -187,7 +187,7 @@ final class LanguageAttributeFixer extends AbstractFixer {
 			}
 		}
 
-		// Only return if confidence is high enough
+		// Only return if confidence is high enough..
 		return $best_score > 0.15 ? $best_match : null;
 	}
 }
