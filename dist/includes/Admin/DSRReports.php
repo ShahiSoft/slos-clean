@@ -59,6 +59,8 @@ class DSRReports {
 
 	/**
 	 * Render type distribution chart
+	 *
+	 * @param array $by_type Requests grouped by type.
 	 */
 	private function render_type_distribution( $by_type ) {
 		if ( empty( $by_type ) ) {
@@ -83,6 +85,8 @@ class DSRReports {
 
 	/**
 	 * Render status distribution
+	 *
+	 * @param array $by_status Requests grouped by status.
 	 */
 	private function render_status_distribution( $by_status ) {
 		if ( empty( $by_status ) ) {
@@ -163,8 +167,12 @@ class DSRReports {
 	 */
 	public function render_content(): void {
 		// Get date range from request (default to last 30 days).
-		$end_date   = isset( $_GET['end_date'] ) ? sanitize_text_field( $_GET['end_date'] ) : gmdate( 'Y-m-d' );
-		$start_date = isset( $_GET['start_date'] ) ? sanitize_text_field( $_GET['start_date'] ) : gmdate( 'Y-m-d', strtotime( '-30 days' ) );
+		$end_date   = isset( $_GET['end_date'] ) ? sanitize_text_field( wp_unslash( $_GET['end_date'] ) ) : gmdate( 'Y-m-d' );
+		$start_date = isset( $_GET['start_date'] ) ? sanitize_text_field( wp_unslash( $_GET['start_date'] ) ) : gmdate( 'Y-m-d', strtotime( '-30 days' ) );
+
+		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'slos_dsr_reports_filter' ) ) {
+			wp_die( esc_html__( 'Security check failed', 'shahi-legalflowsuite' ) );
+		}
 
 		// Generate report.
 		$report = $this->get_report_service()->generate_report( $start_date, $end_date );
@@ -207,6 +215,7 @@ class DSRReports {
 				<form method="get" action="" class="slos-date-range-form">
 					<input type="hidden" name="page" value="slos-requests" />
 					<input type="hidden" name="tab" value="reports" />
+					<?php wp_nonce_field( 'slos_dsr_reports_filter' ); ?>
 					
 					<div class="slos-date-range-header">
 						<h3><?php esc_html_e( 'Report Period', 'shahi-legalflowsuite' ); ?></h3>
@@ -712,7 +721,7 @@ class DSRReports {
 		}
 
 		// Verify nonce.
-		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( $_GET['_wpnonce'], 'slos_export_report' ) ) {
+		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'slos_export_report' ) ) {
 			wp_die( esc_html__( 'Security check failed', 'shahi-legalflowsuite' ) );
 		}
 
@@ -721,12 +730,12 @@ class DSRReports {
 			wp_die( esc_html__( 'You do not have permission to export reports.', 'shahi-legalflowsuite' ) );
 		}
 
-		$start_date = isset( $_GET['start_date'] ) ? sanitize_text_field( $_GET['start_date'] ) : gmdate( 'Y-m-d', strtotime( '-30 days' ) );
-		$end_date   = isset( $_GET['end_date'] ) ? sanitize_text_field( $_GET['end_date'] ) : gmdate( 'Y-m-d' );
+		$start_date = isset( $_GET['start_date'] ) ? sanitize_text_field( wp_unslash( $_GET['start_date'] ) ) : gmdate( 'Y-m-d', strtotime( '-30 days' ) );
+		$end_date   = isset( $_GET['end_date'] ) ? sanitize_text_field( wp_unslash( $_GET['end_date'] ) ) : gmdate( 'Y-m-d' );
 
 		$report = $this->get_report_service()->generate_report( $start_date, $end_date );
 
-		if ( $_GET['action'] === 'export_csv' ) {
+		if ( isset( $_GET['action'] ) && 'export_csv' === sanitize_text_field( wp_unslash( $_GET['action'] ) ) ) {
 			$content  = $this->get_report_service()->export_to_csv( $report );
 			$filename = 'dsr-report-' . $start_date . '-to-' . $end_date . '.csv';
 
@@ -741,7 +750,7 @@ class DSRReports {
 			exit;
 		}
 
-		if ( $_GET['action'] === 'export_pdf' ) {
+		if ( isset( $_GET['action'] ) && 'export_pdf' === sanitize_text_field( wp_unslash( $_GET['action'] ) ) ) {
 			$content  = $this->get_report_service()->export_to_pdf( $report );
 			$filename = 'dsr-report-' . $start_date . '-to-' . $end_date . '.txt';
 

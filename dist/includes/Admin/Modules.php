@@ -14,6 +14,21 @@ namespace ShahiLegalFlowSuite\Admin;
 
 use ShahiLegalFlowSuite\Core\Security;
 use ShahiLegalFlowSuite\Modules\ModuleManager;
+use function __;
+use function add_action;
+use function add_settings_error;
+use function current_time;
+use function current_user_can;
+use function esc_html__;
+use function get_current_user_id;
+use function sanitize_text_field;
+use function wp_die;
+use function wp_json_encode;
+use function wp_send_json_error;
+use function wp_send_json_success;
+use function wp_unslash;
+use function wp_verify_nonce;
+use const ARRAY_A;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -71,7 +86,8 @@ class Modules {
 		}
 
 		// Handle form submission.
-		if ( isset( $_POST['shahi_save_modules'] ) && isset( $_POST['shahi_modules_nonce'] ) && wp_verify_nonce( wp_unslash( $_POST['shahi_modules_nonce'] ), 'shahi_save_modules' ) ) {
+		$modules_nonce = isset( $_POST['shahi_modules_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['shahi_modules_nonce'] ) ) : '';
+		if ( isset( $_POST['shahi_save_modules'] ) && ! empty( $modules_nonce ) && wp_verify_nonce( $modules_nonce, 'shahi_save_modules' ) ) {
 			$this->save_modules();
 		}
 
@@ -192,17 +208,17 @@ class Modules {
 		$table = $wpdb->prefix . 'shahi_modules';
 
 		// Check if table exists.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query needed for table existence check.
 		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) !== $table ) {
 			return array();
 		}
 
-		$results = $wpdb->get_results(
-			$wpdb->prepare(
-				'SELECT module_key FROM %i WHERE is_enabled = 1',
-				$table
-			),
-			ARRAY_A
-		);
+		// Escape table name and use prepared placeholders for values.
+		$escaped_table = esc_sql( $table );
+		// Build SQL via concatenation and prepare value. Use phpcs ignore since table name is safely escaped.
+		$sql = 'SELECT module_key FROM ' . $escaped_table . ' WHERE is_enabled = %d';
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name is escaped and the prepared placeholder handles values.
+		$results = $wpdb->get_results( $wpdb->prepare( $sql, 1 ), ARRAY_A );
 
 		if ( empty( $results ) ) {
 			return array();
@@ -221,7 +237,8 @@ class Modules {
 	 */
 	private function save_modules() {
 		// Verify nonce.
-		if ( ! isset( $_POST['shahi_modules_nonce'] ) || ! wp_verify_nonce( wp_unslash( $_POST['shahi_modules_nonce'] ), 'shahi_save_modules' ) ) {
+		$modules_nonce = isset( $_POST['shahi_modules_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['shahi_modules_nonce'] ) ) : '';
+		if ( empty( $modules_nonce ) || ! wp_verify_nonce( $modules_nonce, 'shahi_save_modules' ) ) {
 			add_settings_error(
 				'shahi_modules',
 				'invalid_nonce',
@@ -246,6 +263,7 @@ class Modules {
 		$table = $wpdb->prefix . 'shahi_modules';
 
 		// Check if table exists.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query needed for table existence check.
 		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) !== $table ) {
 			add_settings_error(
 				'shahi_modules',
@@ -270,16 +288,16 @@ class Modules {
 			$is_enabled = in_array( $module['key'], $enabled_modules, true ) ? 1 : 0;
 
 			// Check if module exists in database.
-			$exists = $wpdb->get_var(
-				$wpdb->prepare(
-					'SELECT COUNT(*) FROM %i WHERE module_key = %s',
-					$table,
-					$module['key']
-				)
-			);
+			// Escape table name and use prepared placeholders for values.
+			$escaped_table = esc_sql( $table );
+			// Build SQL with concatenation to avoid variable interpolation inside the prepared string.
+			$sql = 'SELECT COUNT(*) FROM ' . $escaped_table . ' WHERE module_key = %s';
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql built from esc_sql'd table name; value is prepared.
+			$exists = $wpdb->get_var( $wpdb->prepare( $sql, $module['key'] ) );
 
 			if ( $exists ) {
 				// Update existing module.
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct update required for module state.
 				$result = $wpdb->update(
 					$table,
 					array(
@@ -292,6 +310,7 @@ class Modules {
 				);
 			} else {
 				// Insert new module.
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct insert required for module state.
 				$result = $wpdb->insert(
 					$table,
 					array(
@@ -304,7 +323,7 @@ class Modules {
 				);
 			}
 
-			if ( $result !== false ) {
+			if ( false !== $result ) {
 				++$updated;
 
 				// Track analytics event.
@@ -335,6 +354,7 @@ class Modules {
 		$analytics_table = $wpdb->prefix . 'shahi_analytics';
 
 		// Check if analytics table exists.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query needed for analytics table existence.
 		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $analytics_table ) ) !== $analytics_table ) {
 			return;
 		}
@@ -347,6 +367,7 @@ class Modules {
 			)
 		);
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct insert for analytics events.
 		$wpdb->insert(
 			$analytics_table,
 			array(
@@ -354,7 +375,7 @@ class Modules {
 				'event_data' => $event_data,
 				'user_id'    => get_current_user_id(),
 				'ip_address' => $this->security->get_client_ip(),
-				'user_agent' => isset( $_SERVER['HTTP_USER_AGENT'] ) ? substr( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ), 0, 255 ) : '',
+				'user_agent' => isset( $_SERVER['HTTP_USER_AGENT'] ) ? substr( sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ), 0, 255 ) : '',
 				'created_at' => current_time( 'mysql' ),
 			),
 			array( '%s', '%s', '%d', '%s', '%s', '%s' )
@@ -405,7 +426,8 @@ class Modules {
 	 */
 	public function ajax_toggle_module() {
 		// Verify nonce.
-		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( wp_unslash( $_POST['nonce'] ), 'shahi_toggle_module' ) ) {
+		$ajax_nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
+		if ( empty( $ajax_nonce ) || ! wp_verify_nonce( $ajax_nonce, 'shahi_toggle_module' ) ) {
 			wp_send_json_error(
 				array(
 					'message' => __( 'Security check failed. Please refresh the page.', 'shahi-legalflowsuite' ),
@@ -424,7 +446,7 @@ class Modules {
 
 		// Get module key and enabled state.
 		$module_key = isset( $_POST['module_key'] ) ? sanitize_text_field( wp_unslash( $_POST['module_key'] ) ) : '';
-		$enabled    = isset( $_POST['enabled'] ) ? (bool) $_POST['enabled'] : false;
+		$enabled    = isset( $_POST['enabled'] ) ? (bool) filter_var( wp_unslash( $_POST['enabled'] ), FILTER_VALIDATE_BOOLEAN ) : false;
 
 		// Validate module key.
 		if ( empty( $module_key ) ) {

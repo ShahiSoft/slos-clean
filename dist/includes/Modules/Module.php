@@ -13,6 +13,12 @@
 
 namespace ShahiLegalFlowSuite\Modules;
 
+use function current_time;
+use function get_option;
+use function update_option;
+use function wp_json_encode;
+use const ARRAY_A;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -273,12 +279,12 @@ abstract class Module {
 	 * Get module setting
 	 *
 	 * @since 1.0.0
-	 * @param string $key     Setting key.
-	 * @param mixed  $default Default value if setting not found.
+	 * @param string $key            Setting key.
+	 * @param mixed  $default_value Default value if setting not found.
 	 * @return mixed Setting value
 	 */
-	public function get_setting( $key, $default = null ) {
-		return isset( $this->settings[ $key ] ) ? $this->settings[ $key ] : $default;
+	public function get_setting( $key, $default_value = null ) {
+		return isset( $this->settings[ $key ] ) ? $this->settings[ $key ] : $default_value;
 	}
 
 	/**
@@ -326,12 +332,10 @@ abstract class Module {
 		}
 
 		// Fallback: Check database table only if option had nothing...
-		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) === $table ) {
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) === $table ) { // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Single existence check
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Single read for module state
 			$db_result = $wpdb->get_row(
-				$wpdb->prepare(
-					'SELECT is_enabled, settings FROM ' . $table . ' WHERE module_key = %s',
-					$this->key
-				),
+				$wpdb->prepare( "SELECT is_enabled, settings FROM {$table} WHERE module_key = %s", $this->key ), // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table is derived from $wpdb->prefix
 				ARRAY_A
 			);
 
@@ -354,9 +358,10 @@ abstract class Module {
 		$db_saved = true;
 
 		// Check if table exists...
-		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) !== $table ) {
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) !== $table ) { // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Single existence check
 			$db_saved = false;
 		} else {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Persist module settings
 			$result = $wpdb->update(
 				$table,
 				array(
@@ -366,9 +371,9 @@ abstract class Module {
 				array( 'module_key' => $this->key ),
 				array( '%s', '%s' ),
 				array( '%s' )
-			);
+			); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Persist module settings
 
-			$db_saved = $result !== false;
+			$db_saved = false !== $result;
 		}
 
 		// Persist to option as a secondary store to avoid losing state when the table is missing..
@@ -381,7 +386,7 @@ abstract class Module {
 		$modules_option[ $this->key ]['enabled']  = $this->enabled;
 		$modules_option[ $this->key ]['settings'] = $this->settings;
 		$option_saved                             = update_option( 'shahi_modules', $modules_option );
-		$option_ok                                = $option_saved || $modules_option === $option_before; // unchanged still fine
+		$option_ok                                = $option_saved || $modules_option === $option_before; // unchanged still fine.
 
 		return $db_saved || $option_ok;
 	}
@@ -399,17 +404,15 @@ abstract class Module {
 		$db_saved = false;
 
 		// Check if table exists...
-		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) === $table ) {
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) === $table ) { // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Single existence check
 			// Check if record exists...
 			$exists = $wpdb->get_var(
-				$wpdb->prepare(
-					'SELECT COUNT(*) FROM ' . $table . ' WHERE module_key = %s',
-					$this->key
-				)
-			);
+				$wpdb->prepare( "SELECT COUNT(*) FROM {$table} WHERE module_key = %s", $this->key ) // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table is derived from $wpdb->prefix
+			); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Single lookup for module state
 
 			if ( $exists ) {
 				// Update existing record..
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Persist module state
 				$result = $wpdb->update(
 					$table,
 					array(
@@ -419,9 +422,10 @@ abstract class Module {
 					array( 'module_key' => $this->key ),
 					array( '%d', '%s' ),
 					array( '%s' )
-				);
+				); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Persist module state
 			} else {
 				// Insert new record..
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Persist module state
 				$result = $wpdb->insert(
 					$table,
 					array(
@@ -431,10 +435,10 @@ abstract class Module {
 						'last_updated' => current_time( 'mysql' ),
 					),
 					array( '%s', '%d', '%s', '%s' )
-				);
+				); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Persist module state
 			}
 
-			$db_saved = $result !== false;
+			$db_saved = false !== $result;
 		}
 
 		// Persist to option as fallback to avoid losing state if the DB table is missing..
@@ -446,7 +450,7 @@ abstract class Module {
 		$modules_option[ $this->key ]['enabled']  = (bool) $enabled;
 		$modules_option[ $this->key ]['settings'] = $this->settings;
 		$option_saved                             = update_option( 'shahi_modules', $modules_option );
-		$option_ok                                = $option_saved || $modules_option === $option_before;
+		$option_ok                                = $option_saved || $modules_option === $option_before; // unchanged still fine.
 
 		return $db_saved || $option_ok;
 	}

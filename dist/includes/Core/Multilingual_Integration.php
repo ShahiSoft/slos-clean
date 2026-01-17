@@ -13,6 +13,10 @@
 
 namespace ShahiLegalFlowSuite\Core;
 
+use function __;
+use function get_locale;
+use function wp_parse_args;
+
 // Exit if accessed directly..
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -123,13 +127,13 @@ class Multilingual_Integration {
 	 * Register a single string with Polylang
 	 *
 	 * @since 3.0.1
-	 * @param string $name   String identifier
-	 * @param string $string String value
+	 * @param string $name          String identifier.
+	 * @param string $string_value  String value.
 	 * @return void
 	 */
-	private function register_polylang_string( string $name, string $string ) {
+	private function register_polylang_string( string $name, string $string_value ) {
 		if ( function_exists( 'pll_register_string' ) ) {
-			pll_register_string( $name, $string, self::STRING_CONTEXT, false );
+			pll_register_string( $name, $string_value, self::STRING_CONTEXT, false );
 		}
 	}
 
@@ -137,14 +141,15 @@ class Multilingual_Integration {
 	 * Register string with WPML
 	 *
 	 * @since 3.0.1
-	 * @param string $name    String identifier
-	 * @param string $value   String value
-	 * @param string $context String context
+	 * @param string $name    String identifier.
+	 * @param string $value   String value.
+	 * @param string $context String context.
 	 * @return string The registered value
 	 */
 	public function register_wpml_string( $name, $value, $context ) {
 		if ( self::is_wpml_active() && function_exists( 'icl_register_string' ) ) {
-			icl_register_string( self::STRING_CONTEXT, $name, $value );
+			$context = ! empty( $context ) ? $context : self::STRING_CONTEXT;
+			icl_register_string( $context, $name, $value );
 		}
 		return $value;
 	}
@@ -153,9 +158,9 @@ class Multilingual_Integration {
 	 * Get translated string (WPML/Polylang compatible)
 	 *
 	 * @since 3.0.1
-	 * @param string $name           String identifier
-	 * @param string $default_value  Default value if translation not found
-	 * @param string $language_code  Optional language code (WPML only)
+	 * @param string $name           String identifier.
+	 * @param string $default_value  Default value if translation not found.
+	 * @param string $language_code  Optional language code (WPML only).
 	 * @return string Translated string
 	 */
 	public static function get_translated_string( string $name, string $default_value, string $language_code = null ): string {
@@ -200,7 +205,7 @@ class Multilingual_Integration {
 	 * Get all active languages
 	 *
 	 * @since 3.0.1
-	 * @return array Array of language codes
+	 * @return array Array of language codes.
 	 */
 	public static function get_active_languages(): array {
 		// Polylang..
@@ -233,7 +238,7 @@ class Multilingual_Integration {
 	 * Get language switcher HTML
 	 *
 	 * @since 3.0.1
-	 * @param array $args Switcher arguments
+	 * @param array $args Switcher arguments.
 	 * @return string Language switcher HTML
 	 */
 	public static function get_language_switcher( array $args = array() ): string {

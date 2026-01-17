@@ -85,7 +85,7 @@ class ComplianceMainPage {
 	 * Enqueue config sync assets
 	 *
 	 * @since 3.1.1
-	 * @param string $hook Current admin page hook
+	 * @param string $hook Current admin page hook.
 	 * @return void
 	 */
 	public function enqueue_config_sync_assets( $hook ) {
@@ -101,7 +101,7 @@ class ComplianceMainPage {
 			return;
 		}
 
-		$current_tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'dashboard';
+		$current_tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'dashboard'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only tab selection.
 
 		if ( 'config' !== $current_tab ) {
 			return;
@@ -341,8 +341,8 @@ class ComplianceMainPage {
 		);
 
 		// 3. Get DSR statistics.
-		$dsr_service = new \ShahiLegalFlowSuite\Services\DSR_Service();
-		$dsr         = $dsr_service->get_ops_statistics();
+		$dsr_service      = new \ShahiLegalFlowSuite\Services\DSR_Service();
+		$dsr              = $dsr_service->get_ops_statistics();
 
 		// 4. Get Accessibility statistics.
 		$accessibility = array(
@@ -399,7 +399,7 @@ class ComplianceMainPage {
 	 * Get recent consent activity
 	 *
 	 * @since 3.0.3
-	 * @param int $limit Number of records
+	 * @param int $limit Number of records.
 	 * @return array Recent activity
 	 */
 	private function get_recent_activity( $limit = 10 ) {
@@ -419,7 +419,7 @@ class ComplianceMainPage {
 		}
 
 		// Get current tab.
-		$this->current_tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'dashboard';
+		$this->current_tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'dashboard'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only tab selection.
 
 		// Validate tab.
 		$valid_tabs = array_keys( $this->get_tabs() );
@@ -443,11 +443,11 @@ class ComplianceMainPage {
 	 * Render tab content based on current tab
 	 *
 	 * @since 3.0.3
-	 * @param array $stats Dashboard statistics
-	 * @param array $recent_activity Recent consent activity
+	 * @param array $stats Dashboard statistics.
+	 * @param array $recent_activity Recent consent activity.
 	 * @return void
 	 */
-	public function render_tab_content( $stats, $recent_activity ) {
+	public function render_tab_content( $stats, $recent_activity ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable -- Passed to included templates.
 		// Check if current tab is dormant..
 		if ( defined( 'SLOS_DORMANT_COMPLIANCE_FEATURES' ) &&
 			is_array( SLOS_DORMANT_COMPLIANCE_FEATURES ) &&

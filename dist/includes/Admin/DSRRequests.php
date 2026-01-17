@@ -13,11 +13,32 @@
 namespace ShahiLegalFlowSuite\Admin;
 
 use ShahiLegalFlowSuite\Database\Repositories\DSR_Repository;
+use function __;
+use function esc_attr;
+use function esc_attr_e;
+use function esc_html;
+use function esc_html__;
+use function esc_html_e;
+use function esc_js;
+use function esc_url;
+use function human_time_diff;
+use function admin_url;
+use function current_user_can;
+use function remove_query_arg;
+use function sanitize_key;
+use function sanitize_text_field;
+use function wp_die;
+use function wp_nonce_field;
+use function wp_unslash;
+use function wp_verify_nonce;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Admin controller for Data Subject Requests UI.
+ */
 class DSRRequests {
 
 	/**
@@ -53,19 +74,19 @@ class DSRRequests {
 	}
 
 	/**
-	 * Calculate overdue requests count
+	 * Calculate overdue requests count.
 	 *
-	 * Checks requests against SLA deadline (typically 30 days from submission)
+	 * Checks requests against SLA deadline (typically 30 days from submission).
 	 *
-	 * @param DSR_Repository $repo Repository instance
-	 * @return int Count of overdue requests
+	 * @param DSR_Repository $repo Repository instance.
+	 * @return int Count of overdue requests.
 	 */
 	private function calculate_overdue_count( $repo ) {
 		try {
 			// Get all non-completed requests.
 			$active_requests = $repo->list_requests( array(), 1000 );
 			$overdue_count   = 0;
-			$sla_days        = 30; // GDPR requires response within 30 days
+			$sla_days        = 30; // GDPR requires response within 30 days.
 
 			foreach ( $active_requests as $request ) {
 				// Skip completed or rejected requests.
@@ -75,8 +96,8 @@ class DSRRequests {
 
 				// Calculate days since submission.
 				$submitted    = strtotime( $request->submitted_at );
-				$now          = current_time( 'timestamp' );
-				$days_elapsed = floor( ( $now - $submitted ) / DAY_IN_SECONDS );
+				$now          = time();
+				$days_elapsed = floor( ( $now - $submitted ) / \DAY_IN_SECONDS );
 
 				if ( $days_elapsed > $sla_days ) {
 					++$overdue_count;
@@ -90,7 +111,13 @@ class DSRRequests {
 	}
 
 	/**
-	 * Render stat card
+	 * Render stat card.
+	 *
+	 * @param string $label Card label.
+	 * @param string $value Main value to display.
+	 * @param string $trend Trend text (e.g. +5%).
+	 * @param string $trend_type Trend type for styling.
+	 * @param string $icon Dashicon class.
 	 */
 	private function render_stat_card( $label, $value, $trend, $trend_type, $icon ) {
 		$trend_class = 'slos-trend-' . $trend_type;
@@ -111,7 +138,9 @@ class DSRRequests {
 	}
 
 	/**
-	 * Render request card
+	 * Render request card.
+	 *
+	 * @param object $req Request object.
 	 */
 	private function render_request_card( $req ) {
 		$id         = isset( $req->id ) ? (int) $req->id : 0;
@@ -126,7 +155,7 @@ class DSRRequests {
 
 		// Calculate relative time.
 		$submitted_time = strtotime( $created );
-		$time_diff      = human_time_diff( $submitted_time, current_time( 'timestamp' ) );
+		$time_diff      = human_time_diff( $submitted_time, time() );
 
 		?>
 		<div class="slos-request-card">
@@ -172,7 +201,10 @@ class DSRRequests {
 	}
 
 	/**
-	 * Get status CSS class
+	 * Get status CSS class.
+	 *
+	 * @param string $status Request status slug.
+	 * @return string CSS class name.
 	 */
 	private function get_status_class( $status ) {
 		$classes = array(
@@ -348,14 +380,21 @@ class DSRRequests {
 	public function render_content() {
 		$repo = new DSR_Repository();
 
-		// Get filter params..
-		$status = isset( $_GET['status'] ) && $_GET['status'] !== 'all' ? sanitize_text_field( wp_unslash( $_GET['status'] ) ) : '';
-		$type   = isset( $_GET['request_type'] ) && $_GET['request_type'] !== 'all' ? sanitize_text_field( wp_unslash( $_GET['request_type'] ) ) : '';
+		// Get filter params.
+		$tab    = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : 'requests';
+		$status = isset( $_GET['status'] ) && 'all' !== $_GET['status'] ? sanitize_text_field( wp_unslash( $_GET['status'] ) ) : '';
+		$type   = isset( $_GET['request_type'] ) && 'all' !== $_GET['request_type'] ? sanitize_text_field( wp_unslash( $_GET['request_type'] ) ) : '';
+		$nonce  = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
 
-		// Get stats..
+		if ( ! empty( $nonce ) && ! wp_verify_nonce( $nonce, 'slos_requests_filters' ) ) {
+			wp_die( esc_html__( 'Security check failed.', 'shahi-legalflowsuite' ) );
+		}
+		$search = isset( $_GET['search'] ) ? sanitize_text_field( wp_unslash( $_GET['search'] ) ) : '';
+
+		// Get stats.
 		$stats = $this->get_request_stats();
 
-		// Get requests..
+		// Get requests.
 		$args = array();
 		if ( ! empty( $status ) ) {
 			$args['status'] = $status;
@@ -394,15 +433,16 @@ class DSRRequests {
 					</p>
 					<form method="get" action="" class="slos-filters-form">
 						<input type="hidden" name="page" value="slos-requests" />
-						<?php if ( isset( $_GET['tab'] ) ) : ?>
-							<input type="hidden" name="tab" value="<?php echo esc_attr( $_GET['tab'] ); ?>" />
+						<?php if ( ! empty( $tab ) ) : ?>
+							<input type="hidden" name="tab" value="<?php echo esc_attr( $tab ); ?>" />
 						<?php endif; ?>
+						<?php wp_nonce_field( 'slos_requests_filters' ); ?>
 						
 						<div class="slos-filters-row">
 							<div class="slos-search-box">
 								<span class="dashicons dashicons-search"></span>
 								<input type="text" name="search" placeholder="<?php esc_attr_e( 'Search requests...', 'shahi-legalflowsuite' ); ?>" 
-									value="<?php echo isset( $_GET['search'] ) ? esc_attr( $_GET['search'] ) : ''; ?>" />
+									value="<?php echo esc_attr( $search ); ?>" />
 							</div>
 							
 							<select name="status" class="slos-filter-select">
@@ -410,7 +450,7 @@ class DSRRequests {
 								<?php
 								$statuses = array( 'pending_verification', 'verified', 'in_progress', 'on_hold', 'completed', 'rejected' );
 								foreach ( $statuses as $st ) {
-									$selected = ( $status === $st ) ? 'selected' : '';
+									$selected = ( $st === $status ) ? 'selected' : '';
 									echo '<option value="' . esc_attr( $st ) . '" ' . esc_attr( $selected ) . '>' .
 										esc_html( ucwords( str_replace( '_', ' ', $st ) ) ) . '</option>';
 								}
@@ -422,7 +462,7 @@ class DSRRequests {
 								<?php
 								$types = array( 'access', 'rectification', 'erasure', 'portability', 'restriction', 'object', 'automated_decision' );
 								foreach ( $types as $tp ) {
-									$selected = ( $type === $tp ) ? 'selected' : '';
+									$selected = ( $tp === $type ) ? 'selected' : '';
 									echo '<option value="' . esc_attr( $tp ) . '" ' . esc_attr( $selected ) . '>' .
 										esc_html( ucwords( str_replace( '_', ' ', $tp ) ) ) . '</option>';
 								}
@@ -451,7 +491,7 @@ class DSRRequests {
 									<a href="<?php echo esc_url( remove_query_arg( 'request_type' ) ); ?>" class="slos-filter-remove">×</a>
 								</span>
 							<?php endif; ?>
-							<a href="<?php echo esc_url( admin_url( 'admin.php?page=slos-requests&tab=' . ( $_GET['tab'] ?? 'requests' ) ) ); ?>" class="slos-clear-all">
+							<a href="<?php echo esc_url( admin_url( 'admin.php?page=slos-requests&tab=' . $tab ) ); ?>" class="slos-clear-all">
 								<?php esc_html_e( 'Clear All', 'shahi-legalflowsuite' ); ?>
 							</a>
 						</div>
