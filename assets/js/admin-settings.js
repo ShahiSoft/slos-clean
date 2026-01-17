@@ -14,7 +14,6 @@
 	 * Settings Manager
 	 */
 	const ShahiSettings = {
-
 		/**
 		 * Initialize
 		 */
@@ -37,14 +36,23 @@
 			$( '#shahi-reset-settings' ).on( 'click', this.resetSettings.bind( this ) );
 
 			// Restart onboarding wizard
-			$( '#shahi-restart-onboarding' ).on( 'click', this.restartOnboarding.bind( this ) );
+			$( '#shahi-restart-onboarding' ).on(
+				'click',
+				this.restartOnboarding.bind( this )
+			);
 
 			// License activation
 			$( '#shahi-activate-license' ).on( 'click', this.activateLicense.bind( this ) );
-			$( '#shahi-deactivate-license' ).on( 'click', this.deactivateLicense.bind( this ) );
+			$( '#shahi-deactivate-license' ).on(
+				'click',
+				this.deactivateLicense.bind( this )
+			);
 
 			// Form submission
-			$( 'form[name="shahi_settings_form"]' ).on( 'submit', this.validateForm.bind( this ) );
+			$( 'form[name="shahi_settings_form"]' ).on(
+				'submit',
+				this.validateForm.bind( this )
+			);
 
 			// Conditional fields
 			this.handleConditionalFields();
@@ -65,30 +73,44 @@
 					type: 'POST',
 					data: {
 						action: 'shahi_export_settings',
-						nonce: shahi_settings_vars.nonce
+						nonce: shahi_settings_vars.nonce,
 					},
 					success: function (response) {
 						if (response.success) {
 							// Create download link
-							const dataStr        = 'data:text/json;charset=utf-8,' + encodeURIComponent( response.data );
+							const dataStr =
+							'data:text/json;charset=utf-8,' +
+							encodeURIComponent( response.data );
 							const downloadAnchor = $( '<a>' );
-							const timestamp      = new Date().toISOString().slice( 0, 10 );
+							const timestamp = new Date().toISOString().slice( 0, 10 );
 
 							downloadAnchor.attr( 'href', dataStr );
-							downloadAnchor.attr( 'download', `shahi - settings - ${timestamp}.json` );
+							downloadAnchor.attr(
+								'download',
+								`shahi - settings - ${timestamp}.json`
+							);
 							downloadAnchor[0].click();
 
-							ShahiSettings.showNotice( 'success', 'Settings exported successfully!' );
+							ShahiSettings.showNotice(
+								'success',
+								'Settings exported successfully!'
+							);
 						} else {
-							ShahiSettings.showNotice( 'error', response.data || 'Failed to export settings.' );
+							ShahiSettings.showNotice(
+								'error',
+								response.data || 'Failed to export settings.'
+							);
 						}
 					},
 					error: function () {
-						ShahiSettings.showNotice( 'error', 'An error occurred while exporting settings.' );
+						ShahiSettings.showNotice(
+							'error',
+							'An error occurred while exporting settings.'
+						);
 					},
 					complete: function () {
 						button.prop( 'disabled', false ).removeClass( 'shahi-loading' );
-					}
+					},
 				}
 			);
 		},
@@ -101,18 +123,23 @@
 
 			const fileInput = $( '#shahi-import-file' )[0];
 			if ( ! fileInput.files.length) {
-				ShahiSettings.showNotice( 'error', 'Please select a JSON file to import.' );
+				ShahiSettings.showNotice(
+					'error',
+					'Please select a JSON file to import.'
+				);
 				return;
 			}
 
-			const file   = fileInput.files[0];
+			const file = fileInput.files[0];
 			const reader = new FileReader();
 
 			reader.onload = function (event) {
 				try {
 					const settings = JSON.parse( event.target.result );
 
-					if ( ! confirm( 'This will overwrite your current settings. Continue?' )) {
+					if (
+						! confirm( 'This will overwrite your current settings. Continue?' )
+					) {
 						return;
 					}
 
@@ -126,11 +153,14 @@
 							data: {
 								action: 'shahi_import_settings',
 								nonce: shahi_settings_vars.nonce,
-								settings: JSON.stringify( settings )
+								settings: JSON.stringify( settings ),
 							},
 							success: function (response) {
 								if (response.success) {
-									ShahiSettings.showNotice( 'success', 'Settings imported successfully! Reloading page...' );
+									ShahiSettings.showNotice(
+										'success',
+										'Settings imported successfully! Reloading page...'
+									);
 									setTimeout(
 										function () {
 											location.reload();
@@ -138,15 +168,21 @@
 										1500
 									);
 								} else {
-									ShahiSettings.showNotice( 'error', response.data || 'Failed to import settings.' );
+									ShahiSettings.showNotice(
+										'error',
+										response.data || 'Failed to import settings.'
+									);
 								}
 							},
 							error: function () {
-								ShahiSettings.showNotice( 'error', 'An error occurred while importing settings.' );
+								ShahiSettings.showNotice(
+									'error',
+									'An error occurred while importing settings.'
+								);
 							},
 							complete: function () {
 								button.prop( 'disabled', false ).removeClass( 'shahi-loading' );
-							}
+							},
 						}
 					);
 				} catch (error) {
@@ -163,7 +199,11 @@
 		resetSettings: function (e) {
 			e.preventDefault();
 
-			if ( ! confirm( 'Are you sure you want to reset all settings to their defaults? This action cannot be undone!' )) {
+			if (
+				! confirm(
+					'Are you sure you want to reset all settings to their defaults? This action cannot be undone!'
+				)
+			) {
 				return;
 			}
 
@@ -176,11 +216,14 @@
 					type: 'POST',
 					data: {
 						action: 'shahi_reset_settings',
-						nonce: shahi_settings_vars.nonce
+						nonce: shahi_settings_vars.nonce,
 					},
 					success: function (response) {
 						if (response.success) {
-							ShahiSettings.showNotice( 'success', 'Settings reset successfully! Reloading page...' );
+							ShahiSettings.showNotice(
+								'success',
+								'Settings reset successfully! Reloading page...'
+							);
 							setTimeout(
 								function () {
 									location.reload();
@@ -188,15 +231,21 @@
 								1500
 							);
 						} else {
-							ShahiSettings.showNotice( 'error', response.data || 'Failed to reset settings.' );
+							ShahiSettings.showNotice(
+								'error',
+								response.data || 'Failed to reset settings.'
+							);
 						}
 					},
 					error: function () {
-						ShahiSettings.showNotice( 'error', 'An error occurred while resetting settings.' );
+						ShahiSettings.showNotice(
+							'error',
+							'An error occurred while resetting settings.'
+						);
 					},
 					complete: function () {
 						button.prop( 'disabled', false ).removeClass( 'shahi-loading' );
-					}
+					},
 				}
 			);
 		},
@@ -293,7 +342,10 @@
 			// MOCK AJAX - License validation not implemented
 			setTimeout(
 				function () {
-					ShahiSettings.showNotice( 'warning', 'License system is not yet implemented. This is a placeholder feature.' );
+					ShahiSettings.showNotice(
+						'warning',
+						'License system is not yet implemented. This is a placeholder feature.'
+					);
 					button.prop( 'disabled', false ).removeClass( 'shahi-loading' );
 				},
 				1000
@@ -317,7 +369,10 @@
 			// MOCK AJAX - License validation not implemented
 			setTimeout(
 				function () {
-					ShahiSettings.showNotice( 'warning', 'License system is not yet implemented. This is a placeholder feature.' );
+					ShahiSettings.showNotice(
+						'warning',
+						'License system is not yet implemented. This is a placeholder feature.'
+					);
 					button.prop( 'disabled', false ).removeClass( 'shahi-loading' );
 				},
 				1000
@@ -327,11 +382,10 @@
 		/**
 		 * Validate form before submission
 		 */
-		*/
 		isValidEmail: function (email) {
 			const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 			return re.test( email );
-		}
+		},
 	};
 
 	/**
@@ -342,5 +396,4 @@
 			ShahiSettings.init();
 		}
 	);
-
 })( jQuery );

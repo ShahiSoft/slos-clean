@@ -31,16 +31,19 @@
 	 * Initialize alert dismissal
 	 */
 	ShahiLegalFlowSuite.initAlerts = function () {
-		$(document).on(
+		$( document ).on(
 			'click',
 			'.shahi-alert .shahi-alert-close',
 			function (e) {
 				e.preventDefault();
-				$(this)
-					.closest('.shahi-alert')
-					.fadeOut(300, function () {
-						$(this).remove();
-					});
+				$( this )
+				.closest( '.shahi-alert' )
+				.fadeOut(
+					300,
+					function () {
+						$( this ).remove();
+					}
+				);
 			}
 		);
 	};
@@ -50,112 +53,128 @@
 	 */
 	ShahiLegalFlowSuite.initTooltips = function () {
 		// Simple tooltip functionality
-		$('[data-shahi-tooltip]').each(function () {
-			var $elem = $(this);
-			var tooltipText = $elem.data('shahi-tooltip');
+		$( '[data-shahi-tooltip]' ).each(
+			function () {
+				var $elem = $( this );
+				var tooltipText = $elem.data( 'shahi-tooltip' );
 
-			$elem.hover(
-				function () {
-					var $tooltip = $(
-						'<div class="shahi-tooltip">' + tooltipText + '</div>'
-					);
-					$('body').append($tooltip);
+				$elem.hover(
+					function () {
+						var $tooltip = $(
+							'<div class="shahi-tooltip">' + tooltipText + '</div>'
+						);
+						$( 'body' ).append( $tooltip );
 
-					var elemOffset = $elem.offset();
-					var elemWidth = $elem.outerWidth();
-					let tooltipWidth = $tooltip.outerWidth();
+						var elemOffset = $elem.offset();
+						var elemWidth = $elem.outerWidth();
+						let tooltipWidth = $tooltip.outerWidth();
 
-					$tooltip.css({
-						top: elemOffset.top - $tooltip.outerHeight() - 8,
-						left:
-							elemOffset.left + elemWidth / 2 - tooltipWidth / 2,
-					});
+						$tooltip.css(
+							{
+								top: elemOffset.top - $tooltip.outerHeight() - 8,
+								left: elemOffset.left + elemWidth / 2 - tooltipWidth / 2,
+							}
+						);
 
-					$tooltip.fadeIn(200);
-				},
-				function () {
-					$('.shahi-tooltip').fadeOut(200, function () {
-						$(this).remove();
-					});
-				}
-			);
-		});
+						$tooltip.fadeIn( 200 );
+					},
+					function () {
+						$( '.shahi-tooltip' ).fadeOut(
+							200,
+							function () {
+								$( this ).remove();
+							}
+						);
+					}
+				);
+			}
+		);
 	};
 
 	/**
 	 * Initialize confirmation dialogs
 	 */
 	ShahiLegalFlowSuite.initConfirmDialogs = function () {
-		$(document).on('click', '[data-shahi-confirm]', function (e) {
-			var message =
-				$(this).data('shahi-confirm') || shahiTemplate.i18n.confirm;
+		$( document ).on(
+			'click',
+			'[data-shahi-confirm]',
+			function (e) {
+				var message = $( this ).data( 'shahi-confirm' ) || shahiTemplate.i18n.confirm;
 
-			if (!confirm(message)) {
-				e.preventDefault();
-				return false;
+				if ( ! confirm( message )) {
+					e.preventDefault();
+					return false;
+				}
 			}
-		});
+		);
 	};
 
 	/**
 	 * Initialize form validation
 	 */
 	ShahiLegalFlowSuite.initFormValidation = function () {
-		$('.shahi-form-validate').on('submit', function (e) {
-			var $form = $(this);
-			let isValid = true;
+		$( '.shahi-form-validate' ).on(
+			'submit',
+			function (e) {
+				var $form = $( this );
+				let isValid = true;
 
-			// Remove existing error messages
-			$form.find('.shahi-error-message').remove();
-			$form.find('.shahi-input-error').removeClass('shahi-input-error');
+				// Remove existing error messages
+				$form.find( '.shahi-error-message' ).remove();
+				$form.find( '.shahi-input-error' ).removeClass( 'shahi-input-error' );
 
-			// Check required fields
-			$form.find('[required]').each(function () {
-				var $field = $(this);
-				var value = $field.val().trim();
+				// Check required fields
+				$form.find( '[required]' ).each(
+					function () {
+						var $field = $( this );
+						var value = $field.val().trim();
 
-				if (!value) {
-					isValid = false;
-					$field.addClass('shahi-input-error');
-					$field.after(
-						'<span class="shahi-error-message">' +
-							shahiTemplate.i18n.required +
-							'</span>'
-					);
+						if ( ! value) {
+							isValid = false;
+							$field.addClass( 'shahi-input-error' );
+							$field.after(
+								'<span class="shahi-error-message">' +
+								shahiTemplate.i18n.required +
+								'</span>'
+							);
+						}
+					}
+				);
+
+				// Check email fields
+				$form.find( '[type="email"]' ).each(
+					function () {
+						var $field = $( this );
+						var value = $field.val().trim();
+
+						if (value && ! ShahiLegalFlowSuite.isValidEmail( value )) {
+							isValid = false;
+							$field.addClass( 'shahi-input-error' );
+							$field.after(
+								'<span class="shahi-error-message">Invalid email address</span>'
+							);
+						}
+					}
+				);
+
+				if ( ! isValid) {
+					e.preventDefault();
+
+					// Scroll to first error
+					var $firstError = $form.find( '.shahi-input-error' ).first();
+					if ($firstError.length) {
+						$( 'html, body' ).animate(
+							{
+								scrollTop: $firstError.offset().top - 100,
+							},
+							300
+						);
+					}
 				}
-			});
 
-			// Check email fields
-			$form.find('[type="email"]').each(function () {
-				var $field = $(this);
-				var value = $field.val().trim();
-
-				if (value && !ShahiLegalFlowSuite.isValidEmail(value)) {
-					isValid = false;
-					$field.addClass('shahi-input-error');
-					$field.after(
-						'<span class="shahi-error-message">Invalid email address</span>'
-					);
-				}
-			});
-
-			if (!isValid) {
-				e.preventDefault();
-
-				// Scroll to first error
-				var $firstError = $form.find('.shahi-input-error').first();
-				if ($firstError.length) {
-					$('html, body').animate(
-						{
-							scrollTop: $firstError.offset().top - 100,
-						},
-						300
-					);
-				}
+				return isValid;
 			}
-
-			return isValid;
-		});
+		);
 	};
 
 	/**
@@ -163,19 +182,18 @@
 	 */
 	ShahiLegalFlowSuite.initAjaxHandler = function () {
 		// Global AJAX error handler
-		$(document).ajaxError(function (event, jqxhr, settings, thrownError) {
-			if (jqxhr.status === 403) {
-				ShahiLegalFlowSuite.showNotice(
-					'Permission denied. Please refresh the page.',
-					'error'
-				);
-			} else if (jqxhr.status === 500) {
-				ShahiLegalFlowSuite.showNotice(
-					shahiTemplate.i18n.error,
-					'error'
-				);
+		$( document ).ajaxError(
+			function (event, jqxhr, settings, thrownError) {
+				if (jqxhr.status === 403) {
+					ShahiLegalFlowSuite.showNotice(
+						'Permission denied. Please refresh the page.',
+						'error'
+					);
+				} else if (jqxhr.status === 500) {
+					ShahiLegalFlowSuite.showNotice( shahiTemplate.i18n.error, 'error' );
+				}
 			}
-		});
+		);
 	};
 
 	/**
@@ -196,33 +214,34 @@
 		data.action = action;
 		data.nonce = shahiTemplate.nonce;
 
-		$.ajax({
-			url: shahiTemplate.ajaxurl,
-			type: 'POST',
-			data,
-			success: function (response) {
-				if (response.success) {
-					if (typeof successCallback === 'function') {
-						successCallback(response.data);
-					}
-				} else if (typeof errorCallback === 'function') {
-							errorCallback( response.data );
-						} else {
-							ShahiLegalFlowSuite.showNotice(
-								response.data.message || shahiTemplate.i18n.error,
-								'error'
-							);
+		$.ajax(
+			{
+				url: shahiTemplate.ajaxurl,
+				type: 'POST',
+				data: data,
+				success: function (response) {
+					if (response.success) {
+						if (typeof successCallback === 'function') {
+							successCallback( response.data );
 						}
-			},
-			error (jqxhr, textStatus, error) {
+					} else if (typeof errorCallback === 'function') {
+						errorCallback( response.data );
+					} else {
+						ShahiLegalFlowSuite.showNotice(
+							response.data.message || shahiTemplate.i18n.error,
+							'error'
+						);
+					}
+				},
+				error: function (jqxhr, textStatus, error) {
 					if (typeof errorCallback === 'function') {
-						errorCallback( {message: error} );
+						errorCallback( { message: error } );
 					} else {
 						ShahiLegalFlowSuite.showNotice( shahiTemplate.i18n.error, 'error' );
 					}
-				}
-			},
-		});
+				},
+			}
+		);
 	};
 
 	/**
@@ -247,15 +266,21 @@
 				'</div>'
 		);
 
-		$('.shahi-legalflowsuite-admin').prepend($notice);
-		$notice.fadeIn(300);
+		$( '.shahi-legalflowsuite-admin' ).prepend( $notice );
+		$notice.fadeIn( 300 );
 
 		if (duration > 0) {
-			setTimeout(function () {
-				$notice.fadeOut(300, function () {
-					$(this).remove();
-				});
-			}, duration);
+			setTimeout(
+				function () {
+					$notice.fadeOut(
+						300,
+						function () {
+							$( this ).remove();
+						}
+					);
+				},
+				duration
+			);
 		}
 	};
 
@@ -263,14 +288,14 @@
 	 * Show loading overlay
 	 */
 	ShahiLegalFlowSuite.showLoading = function () {
-		if ($('.shahi-loading-overlay').length === 0) {
+		if ($( '.shahi-loading-overlay' ).length === 0) {
 			let $overlay = $(
 				'<div class="shahi-loading-overlay">' +
 					'<div class="shahi-spinner"></div>' +
 					'</div>'
 			);
-			$('body').append($overlay);
-			$overlay.fadeIn(200);
+			$( 'body' ).append( $overlay );
+			$overlay.fadeIn( 200 );
 		}
 	};
 
@@ -278,9 +303,12 @@
 	 * Hide loading overlay
 	 */
 	ShahiLegalFlowSuite.hideLoading = function () {
-		$('.shahi-loading-overlay').fadeOut(200, function () {
-			$(this).remove();
-		});
+		$( '.shahi-loading-overlay' ).fadeOut(
+			200,
+			function () {
+				$( this ).remove();
+			}
+		);
 	};
 
 	/**
@@ -291,7 +319,7 @@
 	 */
 	ShahiLegalFlowSuite.isValidEmail = function (email) {
 		let re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		return re.test(email);
+		return re.test( email );
 	};
 
 	/**
@@ -302,7 +330,7 @@
 	 */
 	ShahiLegalFlowSuite.isValidUrl = function (url) {
 		try {
-			new URL(url);
+			new URL( url );
 			return true;
 		} catch (e) {
 			return false;
@@ -321,10 +349,13 @@
 		return function () {
 			let context = this;
 			let args = arguments;
-			clearTimeout(timeout);
-			timeout = setTimeout(function () {
-				func.apply(context, args);
-			}, wait);
+			clearTimeout( timeout );
+			timeout = setTimeout(
+				function () {
+					func.apply( context, args );
+				},
+				wait
+			);
 		};
 	};
 
@@ -335,7 +366,7 @@
 	 * @return {string} Formatted number
 	 */
 	ShahiLegalFlowSuite.formatNumber = function (num) {
-		return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+		return num.toString().replace( /\B(?=(\d{3})+(?!\d))/g, ',' );
 	};
 
 	/**
@@ -345,8 +376,8 @@
 	 * @return {string|null} Parameter value or null
 	 */
 	ShahiLegalFlowSuite.getUrlParam = function (name) {
-		let url = new URL(window.location.href);
-		return url.searchParams.get(name);
+		let url = new URL( window.location.href );
+		return url.searchParams.get( name );
 	};
 
 	/**
@@ -356,18 +387,14 @@
 	 * @return {boolean} True if successful
 	 */
 	ShahiLegalFlowSuite.copyToClipboard = function (text) {
-		let $temp = $('<textarea>');
-		$('body').append($temp);
-		$temp.val(text).select();
-		let success = document.execCommand('copy');
+		let $temp = $( '<textarea>' );
+		$( 'body' ).append( $temp );
+		$temp.val( text ).select();
+		let success = document.execCommand( 'copy' );
 		$temp.remove();
 
 		if (success) {
-			ShahiLegalFlowSuite.showNotice(
-				'Copied to clipboard!',
-				'success',
-				2000
-			);
+			ShahiLegalFlowSuite.showNotice( 'Copied to clipboard!', 'success', 2000 );
 		}
 
 		return success;
@@ -380,7 +407,7 @@
 	 * @return {string} Escaped HTML
 	 */
 	ShahiLegalFlowSuite.escapeHtml = function (html) {
-		let div = document.createElement('div');
+		let div = document.createElement( 'div' );
 		div.textContent = html;
 		return div.innerHTML;
 	};
@@ -388,7 +415,9 @@
 	/**
 	 * Initialize on document ready
 	 */
-	$(document).ready(function () {
-		ShahiLegalFlowSuite.init();
-	});
-})(jQuery);
+	$( document ).ready(
+		function () {
+			ShahiLegalFlowSuite.init();
+		}
+	);
+})( jQuery );

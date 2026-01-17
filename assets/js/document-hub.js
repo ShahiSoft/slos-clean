@@ -163,7 +163,6 @@
 				return;
 			}
 
-
 			this.openGenerateModal();
 		},
 		/**
@@ -214,15 +213,9 @@
 						if (response.success) {
 							try {
 								self.renderGenerationContext( response.data );
-								$confirmBtn.prop(
-									'disabled',
-									! response.data.can_generate
-								);
+								$confirmBtn.prop( 'disabled', ! response.data.can_generate );
 							} catch (e) {
-								console.error(
-									'SLOS Hub: renderGenerationContext error',
-									e
-								);
+								console.error( 'SLOS Hub: renderGenerationContext error', e );
 								$body.html(
 									'<div class="slos-hub-alert slos-hub-alert--error"><span class="dashicons dashicons-warning"></span>JavaScript error: ' +
 									e.message +
@@ -232,19 +225,22 @@
 						} else {
 							$body.html(
 								'<div class="slos-hub-alert slos-hub-alert--error"><span class="dashicons dashicons-warning"></span>' +
-								(response.data.message ||
-									slosHub.strings.generateError) +
+								(response.data.message || slosHub.strings.generateError) +
 								'</div>'
 							);
 						}
 					},
 					error( xhr, status, error ) {
 						console.error( 'SLOS Hub: AJAX error', status, error );
-						$body.html( '<div class="slos-hub-alert slos-hub-alert--error"><span class="dashicons dashicons-warning"></span>' + slosHub.strings.generateError + '</div>' );
-						}
-					}
-					);
-	},
+						$body.html(
+							'<div class="slos-hub-alert slos-hub-alert--error"><span class="dashicons dashicons-warning"></span>' +
+							slosHub.strings.generateError +
+							'</div>'
+						);
+					},
+				}
+			);
+		},
 
 		/**
 		 * Render generation context in modal
@@ -325,8 +321,7 @@
 			// Existing document warning
 			if (data.existing_doc_id && this.isRegenerate) {
 				html += '<div class="slos-hub-context__warning">';
-				html +=
-					'<span class="dashicons dashicons-info-outline"></span>';
+				html += '<span class="dashicons dashicons-info-outline"></span>';
 				html +=
 					slosHub.strings && slosHub.strings.regenerateWarning
 						? slosHub.strings.regenerateWarning
@@ -339,7 +334,7 @@
 			console.log( 'SLOS Hub: Rendering HTML to modal body' );
 			$body.html( html );
 			console.log( 'SLOS Hub: Modal body updated successfully' );
-	},
+		},
 
 		/**
 		 * Handle confirm generate button
@@ -383,17 +378,20 @@
 								);
 							}
 						} else {
-							self.showToast( response.data.message || slosHub.strings.generateError, 'error' );
+							self.showToast(
+								response.data.message || slosHub.strings.generateError,
+								'error'
+							);
 							$btn.removeClass( 'slos-btn--loading' ).prop( 'disabled', false );
 						}
 					},
-						error() {
-							self.showToast( slosHub.strings.generateError, 'error' );
-							$btn.removeClass( 'slos-btn--loading' ).prop( 'disabled', false );
-						}
-						}
-					);
-			},
+					error() {
+						self.showToast( slosHub.strings.generateError, 'error' );
+						$btn.removeClass( 'slos-btn--loading' ).prop( 'disabled', false );
+					},
+				}
+			);
+		},
 
 		/**
 		 * Handle view document click
@@ -428,14 +426,27 @@
 					success( response ) {
 						console.log( 'SLOS Hub View: Response received', response );
 						if (response.success) {
-							console.log( 'SLOS Hub View: Content length:', response.data.html ? response.data.html.length : 0 );
+							console.log(
+								'SLOS Hub View: Content length:',
+								response.data.html ? response.data.html.length : 0
+							);
 							console.log( 'SLOS Hub View: Word count:', response.data.word_count );
 							// Replace entire body content with preview content wrapper
-							$body.html( '<div class="slos-hub-preview-content">' + response.data.html + '</div>' );
-							self.$viewModal.find( '.slos-modal__title' ).text( response.data.title || slosHub.strings.documentPreview );
+							$body.html(
+								'<div class="slos-hub-preview-content">' +
+								response.data.html +
+								'</div>'
+							);
+							self.$viewModal
+								.find( '.slos-modal__title' )
+								.text( response.data.title || slosHub.strings.documentPreview );
 							$editBtn.attr( 'href', slosHub.editUrl + '&id=' + docId );
 						} else {
-							$body.html( '<div class="slos-hub-alert slos-hub-alert--error">' + (response.data.message || slosHub.strings.error) + '</div>' );
+							$body.html(
+								'<div class="slos-hub-alert slos-hub-alert--error">' +
+								(response.data.message || slosHub.strings.error) +
+								'</div>'
+							);
 						}
 					},
 					error: function () {
@@ -483,8 +494,7 @@
 						} else {
 							$body.html(
 								'<div class="slos-hub-alert slos-hub-alert--error">' +
-								(response.data.message ||
-									slosHub.strings.error) +
+								(response.data.message || slosHub.strings.error) +
 								'</div>'
 							);
 						}
@@ -572,7 +582,10 @@
 							window.location.href = response.data.download_url;
 							self.showToast( slosHub.strings.downloadStarted, 'success' );
 						} else {
-							self.showToast( response.data.message || slosHub.strings.downloadError, 'error' );
+							self.showToast(
+								response.data.message || slosHub.strings.downloadError,
+								'error'
+							);
 						}
 					},
 					error() {
@@ -580,7 +593,7 @@
 					},
 					complete() {
 						$btn.removeClass( 'slos-btn--loading' );
-					}
+					},
 				}
 			);
 		},
@@ -600,10 +613,7 @@
 					.writeText( shortcode )
 					.then(
 						function () {
-							SLOSHub.showToast(
-								slosHub.strings.shortcodeCopied,
-								'success'
-							);
+							SLOSHub.showToast( slosHub.strings.shortcodeCopied, 'success' );
 						}
 					)
 					.catch(
@@ -657,7 +667,10 @@
 					},
 					success( response ) {
 						if (response.success) {
-							self.showToast( response.data.message || slosHub.strings.regenerated, 'success' );
+							self.showToast(
+								response.data.message || slosHub.strings.regenerated,
+								'success'
+							);
 							setTimeout(
 								function () {
 									window.location.reload();
@@ -665,17 +678,17 @@
 								1500
 							);
 						} else {
-							self.showToast( response.data.message || slosHub.strings.regenerateError, 'error' );
+							self.showToast(
+								response.data.message || slosHub.strings.regenerateError,
+								'error'
+							);
 						}
 					},
 					error() {
 						self.showToast( slosHub.strings.regenerateError, 'error' );
 					},
 					complete: function () {
-						$btn.removeClass( 'slos-btn--loading' ).prop(
-							'disabled',
-							false
-						);
+						$btn.removeClass( 'slos-btn--loading' ).prop( 'disabled', false );
 					},
 				}
 			);
@@ -704,11 +717,11 @@
 				}
 			);
 
-if (docIds.length === 0) {
-	self.showToast( slosHub.strings.noDocsToExport, 'warning' );
-	$btn.removeClass( 'slos-btn--loading' ).prop( 'disabled', false );
-	return;
-}
+		if (docIds.length === 0) {
+			self.showToast( slosHub.strings.noDocsToExport, 'warning' );
+			$btn.removeClass( 'slos-btn--loading' ).prop( 'disabled', false );
+			return;
+		}
 
 			$.ajax(
 				{
@@ -725,17 +738,17 @@ if (docIds.length === 0) {
 							window.location.href = response.data.download_url;
 							self.showToast( slosHub.strings.exportSuccess, 'success' );
 						} else {
-							self.showToast( response.data.message || slosHub.strings.exportError, 'error' );
+							self.showToast(
+								response.data.message || slosHub.strings.exportError,
+								'error'
+							);
 						}
 					},
 					error() {
 						self.showToast( slosHub.strings.exportError, 'error' );
 					},
 					complete: function () {
-						$btn.removeClass( 'slos-btn--loading' ).prop(
-							'disabled',
-							false
-						);
+						$btn.removeClass( 'slos-btn--loading' ).prop( 'disabled', false );
 					},
 				}
 			);
@@ -752,25 +765,23 @@ if (docIds.length === 0) {
 			const filter = $btn.data( 'filter' );
 
 			// Update active state
-			$( '.slos-hub-filter-btn' ).removeClass(
-				'slos-hub-filter-btn--active'
-			);
+			$( '.slos-hub-filter-btn' ).removeClass( 'slos-hub-filter-btn--active' );
 			$btn.addClass( 'slos-hub-filter-btn--active' );
 
 			// Filter cards
-if (filter === 'all') {
-	$( '.slos-card' ).show();
-} else {
-	$( '.slos-card' ).each(
-		function () {
-			if ($( this ).data( 'category' ) === filter) {
-				$( this ).show();
+			if (filter === 'all') {
+				$( '.slos-card' ).show();
 			} else {
-				$( this ).hide();
+				$( '.slos-card' ).each(
+					function () {
+						if ($( this ).data( 'category' ) === filter) {
+							$( this ).show();
+						} else {
+							$( this ).hide();
+						}
+					}
+				);
 			}
-		}
-	);
-}
 		},
 
 		/**
@@ -822,11 +833,7 @@ if (filter === 'all') {
 			$( '.slos-toast' ).remove();
 
 			const $toast = $(
-				'<div class="slos-toast slos-toast--' +
-					type +
-					'">' +
-					message +
-					'</div>'
+				'<div class="slos-toast slos-toast--' + type + '">' + message + '</div>'
 			);
 			$( 'body' ).append( $toast );
 
