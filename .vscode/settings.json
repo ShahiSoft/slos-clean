@@ -24,5 +24,26 @@
 	"emmet.includeLanguages": {
 		"php": "html"
 	},
-	"intelephense.diagnostics.enable": false
+	"intelephense.diagnostics.enable": false,
+	"php.validate.enable": false
+	// AI rules pointer for agents and helper tasks
+	,"ai.rulesPath": ".vscode/ai-rules.md",
+	"ai.complianceTemplatePath": ".vscode/compliance-check-template.md",
+
+	// Best-effort Copilot Chat / GitHub Copilot system prompt settings (workspace-level)
+	// These keys may be picked up by Copilot Chat; if not, use the 'AI: Copy workspace rules to clipboard' task.
+	"github.copilot-chat.systemPrompts": {
+		"workspaceRules": {
+			"title": "Workspace AI Rules (shahi-legalflowsuite)",
+			"bodyPath": ".vscode/ai-rules.md",
+			"description": "Rules that must be prepended as a System message before any prompt."
+		}
+	},
+	"github.copilot.chat.systemPrompts": {
+		"workspaceRules": {
+			"title": "Workspace AI Rules (shahi-legalflowsuite)",
+			"bodyPath": ".vscode/ai-rules.md",
+			"description": "Rules that must be prepended as a System message before any prompt."
+		}
+	}
 }
