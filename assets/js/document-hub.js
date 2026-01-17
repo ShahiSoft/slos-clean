@@ -163,9 +163,9 @@
 				return;
 			}
 
+
 			this.openGenerateModal();
 		},
-
 		/**
 		 * Open generate modal and load context
 		 */
@@ -241,10 +241,9 @@
 					error( xhr, status, error ) {
 						console.error( 'SLOS Hub: AJAX error', status, error );
 						$body.html( '<div class="slos-hub-alert slos-hub-alert--error"><span class="dashicons dashicons-warning"></span>' + slosHub.strings.generateError + '</div>' );
+						}
 					}
-				},
-				}
-			);
+					);
 	},
 
 		/**
@@ -388,14 +387,13 @@
 							$btn.removeClass( 'slos-btn--loading' ).prop( 'disabled', false );
 						}
 					},
-					error() {
-						self.showToast( slosHub.strings.generateError, 'error' );
-						$btn.removeClass( 'slos-btn--loading' ).prop( 'disabled', false );
-					}
-				},
-				}
-			);
-},
+						error() {
+							self.showToast( slosHub.strings.generateError, 'error' );
+							$btn.removeClass( 'slos-btn--loading' ).prop( 'disabled', false );
+						}
+						}
+					);
+			},
 
 		/**
 		 * Handle view document click
