@@ -61,7 +61,7 @@ class Compliance_Score_Calculator extends Base_Service {
 	 * Calculate all dimension scores and aggregate
 	 *
 	 * @since 3.1.0
-	 * @param bool $use_cache Whether to use cached results
+	 * @param bool $use_cache Whether to use cached results.
 	 * @return array {
 	 *     @type int    $score       Aggregate readiness score (0-100)
 	 *     @type string $grade       Letter grade (A-F)
@@ -120,7 +120,7 @@ class Compliance_Score_Calculator extends Base_Service {
 	 * for a comprehensive operational health score across 8 dimensions.
 	 *
 	 * @since 3.1.1 Phase 2.1
-	 * @param bool $use_cache Whether to use cached results
+	 * @param bool $use_cache Whether to use cached results.
 	 * @return array {
 	 *     @type int    $score       Aggregate ops readiness score (0-100)
 	 *     @type string $grade       Letter grade (A-F)
@@ -196,7 +196,7 @@ class Compliance_Score_Calculator extends Base_Service {
 		$score = 0;
 
 		// If no requests exist, give baseline score of 80 (ready but unproven)..
-		if ( $stats['total_requests'] === 0 ) {
+		if ( 0 === $stats['total_requests'] ) {
 			$score = 80;
 		} else {
 			// Base score from SLA compliance (70% weight)..
@@ -210,12 +210,12 @@ class Compliance_Score_Calculator extends Base_Service {
 				$overdue_rate    = $stats['open_requests'] > 0
 					? ( $stats['overdue_requests'] / $stats['open_requests'] )
 					: 0;
-				$overdue_penalty = round( $overdue_rate * 30 ); // Max 30 point penalty
+				$overdue_penalty = round( $overdue_rate * 30 ); // Max 30 point penalty.
 			}
 
 			// Combine SLA score and overdue penalty..
 			$score = round( ( $sla_score * 0.70 ) + ( ( 100 - $overdue_penalty ) * 0.30 ) );
-			$score = max( 0, min( 100, $score ) ); // Clamp to 0-100
+			$score = max( 0, min( 100, $score ) ); // Clamp to 0-100.
 		}
 
 		return array(
@@ -254,7 +254,7 @@ class Compliance_Score_Calculator extends Base_Service {
 		$score = 0;
 
 		// If never scanned, score is 0..
-		if ( $stats['scan_freshness'] === 'never' ) {
+		if ( 'never' === $stats['scan_freshness'] ) {
 			$score = 0;
 		} else {
 			// Base score from accessibility scanner score (60% weight)..
@@ -297,7 +297,7 @@ class Compliance_Score_Calculator extends Base_Service {
 					break;
 			}
 
-			$score = max( 0, min( 100, $score ) ); // Clamp to 0-100
+			$score = max( 0, min( 100, $score ) ); // Clamp to 0-100.
 		}
 
 		return array(
@@ -322,7 +322,7 @@ class Compliance_Score_Calculator extends Base_Service {
 	 * Get score for a single dimension
 	 *
 	 * @since 3.1.0
-	 * @param string $dimension Dimension constant
+	 * @param string $dimension Dimension constant.
 	 * @return array {
 	 *     @type int    $score   Dimension score (0-100)
 	 *     @type array  $details Detailed breakdown
@@ -624,7 +624,7 @@ class Compliance_Score_Calculator extends Base_Service {
 	 */
 	private function calculate_consent_metadata_dimension(): array {
 		$recent_consents = $this->get_recent_consents( 30, 1000 );
-		$score           = 100; // Default if no consents
+		$score           = 100; // Default if no consents.
 
 		if ( ! empty( $recent_consents ) ) {
 			$complete = 0;
@@ -743,7 +743,7 @@ class Compliance_Score_Calculator extends Base_Service {
 	 * Map score to grade
 	 *
 	 * @since 3.1.0
-	 * @param int $score Score value (0-100)
+	 * @param int $score Score value (0-100).
 	 * @return array Grade info
 	 */
 	private function map_score_to_grade( int $score ): array {
@@ -763,7 +763,7 @@ class Compliance_Score_Calculator extends Base_Service {
 	 * Get legal page ID by slug
 	 *
 	 * @since 3.1.0
-	 * @param string $slug Page slug
+	 * @param string $slug Page slug.
 	 * @return int Page ID or 0
 	 */
 	private function get_legal_page_id( string $slug ): int {
@@ -775,7 +775,7 @@ class Compliance_Score_Calculator extends Base_Service {
 	 * Get distinct regions from consent records
 	 *
 	 * @since 3.1.0
-	 * @param int $days Number of days to look back
+	 * @param int $days Number of days to look back.
 	 * @return array Array of unique country codes
 	 */
 	private function get_distinct_consent_regions( int $days ): array {
@@ -784,9 +784,11 @@ class Compliance_Score_Calculator extends Base_Service {
 		$table = $wpdb->prefix . 'slos_consent';
 
 		// Check if country_code column exists (migration may not have run yet)...
-		$columns      = $wpdb->get_results( $wpdb->prepare( 'SHOW COLUMNS FROM %i', $table ) );
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Table name is safe, prefixed by $wpdb->prefix.
+		$columns      = $wpdb->get_results( 'SHOW COLUMNS FROM `' . esc_sql( $table ) . '`' );
 		$column_names = array_map(
 			function ( $col ) {
+				// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- Standard MySQL column property
 				return $col->Field;
 			},
 			$columns
@@ -801,7 +803,8 @@ class Compliance_Score_Calculator extends Base_Service {
 
 		$results = $wpdb->get_col(
 			$wpdb->prepare(
-				"SELECT DISTINCT country_code FROM {$table} WHERE country_code IS NOT NULL AND country_code != '' AND created_at >= %s",
+				'SELECT DISTINCT country_code FROM %s WHERE country_code IS NOT NULL AND country_code != \'\' AND created_at >= %s',
+				$table,
 				$since
 			)
 		);
@@ -813,8 +816,8 @@ class Compliance_Score_Calculator extends Base_Service {
 	 * Get recent consent records
 	 *
 	 * @since 3.1.0
-	 * @param int $days  Number of days to look back
-	 * @param int $limit Maximum number of records
+	 * @param int $days  Number of days to look back.
+	 * @param int $limit Maximum number of records.
 	 * @return array Array of consent objects
 	 */
 	private function get_recent_consents( int $days, int $limit = 1000 ): array {
@@ -825,7 +828,8 @@ class Compliance_Score_Calculator extends Base_Service {
 
 		$results = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM {$table} WHERE created_at >= %s ORDER BY created_at DESC LIMIT %d",
+				'SELECT * FROM %s WHERE created_at >= %s ORDER BY created_at DESC LIMIT %d',
+				$table,
 				$since,
 				$limit
 			)

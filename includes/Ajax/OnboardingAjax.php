@@ -14,7 +14,9 @@
 
 namespace ShahiLegalFlowSuite\Ajax;
 
-// Exit if accessed directly
+use ShahiLegalFlowSuite\Ajax\AjaxHandler;
+
+// Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -46,25 +48,25 @@ class OnboardingAjax {
 	 * @return void
 	 */
 	public function save_onboarding_step() {
-		// Verify request
+		// Verify request.
 		AjaxHandler::verify_request( 'shahi_onboarding', 'manage_shahi_template' );
 
-		// Get step number
+		// Get step number.
 		if ( ! isset( $_POST['step'] ) ) {
 			AjaxHandler::error( 'Step number is required' );
 		}
 
-		$step = intval( $_POST['step'] );
-		$data = isset( $_POST['data'] ) ? $_POST['data'] : array();
+		$step = isset( $_POST['step'] ) ? absint( $_POST['step'] ) : 0;
+		$data = isset( $_POST['data'] ) ? AjaxHandler::sanitize_data( wp_unslash( $_POST['data'] ) ) : array();
 
-		// Get current onboarding data
+		// Get current onboarding data.
 		$onboarding_data = get_option( 'shahi_onboarding_data', array() );
 
-		// Save step data
-		$onboarding_data[ $step ] = AjaxHandler::sanitize_data( $data );
+		// Save step data.
+		$onboarding_data[ $step ] = $data;
 		update_option( 'shahi_onboarding_data', $onboarding_data );
 
-		// Track analytics event
+		// Track analytics event.
 		$this->track_onboarding_event( 'step_completed', $step );
 
 		AjaxHandler::success(
@@ -83,23 +85,23 @@ class OnboardingAjax {
 	 * @return void
 	 */
 	public function complete_onboarding() {
-		// Verify request
+		// Verify request.
 		AjaxHandler::verify_request( 'shahi_onboarding', 'manage_shahi_template' );
 
-		// Get final data
-		$data = isset( $_POST['data'] ) ? $_POST['data'] : array();
+		// Get final data.
+		$data = isset( $_POST['data'] ) ? AjaxHandler::sanitize_data( wp_unslash( $_POST['data'] ) ) : array();
 
-		// Save completion flag
+		// Save completion flag.
 		update_option( 'shahi_onboarding_completed', true );
 
-		// Save final data
+		// Save final data.
 		if ( ! empty( $data ) ) {
 			$onboarding_data          = get_option( 'shahi_onboarding_data', array() );
-			$onboarding_data['final'] = AjaxHandler::sanitize_data( $data );
+			$onboarding_data['final'] = $data;
 			update_option( 'shahi_onboarding_data', $onboarding_data );
 		}
 
-		// Track analytics event
+		// Track analytics event.
 		$this->track_onboarding_event( 'completed', 'final' );
 
 		AjaxHandler::success(
@@ -120,26 +122,28 @@ class OnboardingAjax {
 		global $wpdb;
 		$analytics_table = $wpdb->prefix . 'shahi_analytics';
 
-		// Check if table exists
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '$analytics_table'" ) !== $analytics_table ) {
+		// Check if table exists.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		if ( $analytics_table !== $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $analytics_table ) ) ) {
 			return;
 		}
 
-		$event_data = json_encode(
+		$event_data = wp_json_encode(
 			array(
 				'action' => $action,
 				'step'   => $step,
 			)
 		);
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$wpdb->insert(
 			$analytics_table,
 			array(
 				'event_type' => 'onboarding_' . $action,
 				'event_data' => $event_data,
 				'user_id'    => get_current_user_id(),
-				'ip_address' => $_SERVER['REMOTE_ADDR'] ?? '',
-				'user_agent' => isset( $_SERVER['HTTP_USER_AGENT'] ) ? substr( $_SERVER['HTTP_USER_AGENT'], 0, 255 ) : '',
+				'ip_address' => isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '',
+				'user_agent' => isset( $_SERVER['HTTP_USER_AGENT'] ) ? substr( sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ), 0, 255 ) : '',
 				'created_at' => current_time( 'mysql' ),
 			),
 			array( '%s', '%s', '%d', '%s', '%s', '%s' )

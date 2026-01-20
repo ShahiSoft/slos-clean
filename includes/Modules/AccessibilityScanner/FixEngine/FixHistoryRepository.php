@@ -15,20 +15,30 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class FixHistoryRepository
  *
+ * Repository for fix history persistence.
+ *
  * Handles database operations for fix history.
  * Single Responsibility: Data persistence.
  * Dependency Inversion: Abstracts database operations.
  */
 final class FixHistoryRepository {
 
-	/** @var string */
+	/**
+	 * Table name for fix history.
+	 *
+	 * @var string
+	 */
 	private $table_name;
 
-	/** @var \wpdb */
+	/**
+	 * WordPress database object.
+	 *
+	 * @var \wpdb
+	 */
 	private $wpdb;
 
 	/**
-	 * Constructor
+	 * Constructs the repository.
 	 */
 	public function __construct() {
 		global $wpdb;
@@ -69,13 +79,13 @@ final class FixHistoryRepository {
 	}
 
 	/**
-	 * Save a single fix result
+	 * Save a single fix result.
 	 *
-	 * @param string    $session_id
-	 * @param int       $post_id
-	 * @param int       $user_id
-	 * @param FixResult $result
-	 * @return int|false Insert ID or false on failure
+	 * @param string    $session_id Session identifier.
+	 * @param int       $post_id    Post ID the fix was applied to.
+	 * @param int       $user_id    User ID who ran the fixer.
+	 * @param FixResult $result     FixResult instance with outcome data.
+	 * @return int|false Insert ID on success, false on failure.
 	 */
 	public function save_result( string $session_id, int $post_id, int $user_id, FixResult $result ) {
 		$status = 'success';
@@ -103,14 +113,18 @@ final class FixHistoryRepository {
 
 		$inserted = $this->wpdb->insert( $this->table_name, $data, $format );
 
-		return $inserted ? $this->wpdb->insert_id : false;
+		if ( $inserted ) {
+			return $this->wpdb->insert_id;
+		}
+
+		return false;
 	}
 
 	/**
-	 * Save a complete session
+	 * Save a complete session.
 	 *
-	 * @param FixSession $session
-	 * @return bool
+	 * @param FixSession $session FixSession instance to persist.
+	 * @return bool True on success.
 	 */
 	public function save_session( FixSession $session ): bool {
 		$session_id = $session->get_id();
@@ -121,7 +135,7 @@ final class FixHistoryRepository {
 			$this->save_result( $session_id, $post_id, $user_id, $result );
 		}
 
-		// Also save session summary to post meta..
+		// Also save session summary to post meta.
 		update_post_meta( $post_id, '_slos_last_fix_session', $session->to_array() );
 		update_post_meta( $post_id, '_slos_last_fix_date', current_time( 'mysql' ) );
 
@@ -129,76 +143,100 @@ final class FixHistoryRepository {
 	}
 
 	/**
-	 * Get fix history for a post
+	 * Get fix history for a post.
 	 *
-	 * @param int $post_id
-	 * @param int $limit
-	 * @return array
+	 * @param int $post_id Post ID to retrieve history for.
+	 * @param int $limit   Maximum number of records to return.
+	 * @return array Array of history rows.
 	 */
 	public function get_history_for_post( int $post_id, int $limit = 50 ): array {
-		return $this->wpdb->get_results(
-			$this->wpdb->prepare(
-				"SELECT * FROM {$this->table_name} WHERE post_id = %d ORDER BY created_at DESC LIMIT %d",
-				$post_id,
-				$limit
-			),
-			ARRAY_A
-		) ?: array();
+		$table = $this->table_name;
+
+		$prepared_sql = $this->wpdb->prepare(
+			'SELECT * FROM %s WHERE post_id = %d ORDER BY created_at DESC LIMIT %d',
+			$table,
+			$post_id,
+			$limit
+		);
+
+		$results = $this->wpdb->get_results( $prepared_sql, ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+
+		if ( $results ) {
+			return $results;
+		}
+
+		return array();
 	}
 
 	/**
-	 * Get fix history for a session
+	 * Get fix history for a session.
 	 *
-	 * @param string $session_id
-	 * @return array
+	 * @param string $session_id Session identifier.
+	 * @return array Array of history rows.
 	 */
 	public function get_history_for_session( string $session_id ): array {
-		return $this->wpdb->get_results(
-			$this->wpdb->prepare(
-				"SELECT * FROM {$this->table_name} WHERE session_id = %s ORDER BY id ASC",
-				$session_id
-			),
-			ARRAY_A
-		) ?: array();
+		$table = $this->table_name;
+
+		$prepared_sql = $this->wpdb->prepare(
+			'SELECT * FROM %s WHERE session_id = %s ORDER BY id ASC',
+			$table,
+			$session_id
+		);
+
+		$results = $this->wpdb->get_results( $prepared_sql, ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+
+		if ( $results ) {
+			return $results;
+		}
+
+		return array();
 	}
 
 	/**
-	 * Get statistics
+	 * Get statistics.
 	 *
-	 * @param int|null $post_id Optional post ID filter
-	 * @return array
+	 * @param int|null $post_id Optional post ID filter.
+	 * @return array Statistics array.
 	 */
 	public function get_statistics( ?int $post_id = null ): array {
+		$table = $this->table_name;
+
 		if ( $post_id ) {
-			$result = $this->wpdb->get_row(
-				$this->wpdb->prepare(
-					"SELECT 
-						COUNT(DISTINCT session_id) as total_sessions,
-						COUNT(*) as total_operations,
-						SUM(fixes_applied) as total_fixes,
-						SUM(CASE WHEN status = 'error' THEN 1 ELSE 0 END) as total_errors,
-						SUM(CASE WHEN status = 'skipped' THEN 1 ELSE 0 END) as total_skipped,
-						AVG(execution_time) as avg_execution_time
-					FROM {$this->table_name} WHERE post_id = %d",
-					$post_id
-				),
-				ARRAY_A
-			);
-		} else {
-			$result = $this->wpdb->get_row(
-				"SELECT 
+			$prepared_sql = $this->wpdb->prepare(
+				'SELECT 
 					COUNT(DISTINCT session_id) as total_sessions,
 					COUNT(*) as total_operations,
 					SUM(fixes_applied) as total_fixes,
-					SUM(CASE WHEN status = 'error' THEN 1 ELSE 0 END) as total_errors,
-					SUM(CASE WHEN status = 'skipped' THEN 1 ELSE 0 END) as total_skipped,
+					SUM(CASE WHEN status = \'error\' THEN 1 ELSE 0 END) as total_errors,
+					SUM(CASE WHEN status = \'skipped\' THEN 1 ELSE 0 END) as total_skipped,
 					AVG(execution_time) as avg_execution_time
-				FROM {$this->table_name}",
-				ARRAY_A
+				FROM %s WHERE post_id = %d',
+				$table,
+				$post_id
 			);
+
+			$result = $this->wpdb->get_row( $prepared_sql, ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		} else {
+			$prepared_sql = $this->wpdb->prepare(
+				'SELECT 
+					COUNT(DISTINCT session_id) as total_sessions,
+					COUNT(*) as total_operations,
+					SUM(fixes_applied) as total_fixes,
+					SUM(CASE WHEN status = \'error\' THEN 1 ELSE 0 END) as total_errors,
+					SUM(CASE WHEN status = \'skipped\' THEN 1 ELSE 0 END) as total_skipped,
+					AVG(execution_time) as avg_execution_time
+				FROM %s',
+				$table
+			);
+
+			$result = $this->wpdb->get_row( $prepared_sql, ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		}
 
-		return $result ?: array(
+		if ( $result ) {
+			return $result;
+		}
+
+		return array(
 			'total_sessions'     => 0,
 			'total_operations'   => 0,
 			'total_fixes'        => 0,
@@ -209,39 +247,52 @@ final class FixHistoryRepository {
 	}
 
 	/**
-	 * Get recent activity
+	 * Get recent activity.
 	 *
-	 * @param int $limit
-	 * @return array
+	 * @param int $limit Number of records to return.
+	 * @return array Array of recent activity rows.
 	 */
 	public function get_recent_activity( int $limit = 20 ): array {
-		return $this->wpdb->get_results(
-			$this->wpdb->prepare(
-				"SELECT h.*, p.post_title 
-				FROM {$this->table_name} h 
-				LEFT JOIN {$this->wpdb->posts} p ON h.post_id = p.ID 
-				WHERE h.status = 'success' AND h.fixes_applied > 0
-				ORDER BY h.created_at DESC 
-				LIMIT %d",
-				$limit
-			),
-			ARRAY_A
-		) ?: array();
+		$history_table = $this->table_name;
+		$posts_table   = $this->wpdb->posts;
+
+		$prepared_sql = $this->wpdb->prepare(
+			'SELECT h.*, p.post_title 
+			FROM %s h 
+			LEFT JOIN %s p ON h.post_id = p.ID 
+			WHERE h.status = \'success\' AND h.fixes_applied > 0
+			ORDER BY h.created_at DESC 
+			LIMIT %d',
+			$history_table,
+			$posts_table,
+			$limit
+		);
+
+		$results = $this->wpdb->get_results( $prepared_sql, ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+
+		if ( $results ) {
+			return $results;
+		}
+
+		return array();
 	}
 
 	/**
-	 * Clean old history
+	 * Clean old history.
 	 *
-	 * @param int $days Days to keep
-	 * @return int Number of rows deleted
+	 * @param int $days Days to keep.
+	 * @return int Number of rows deleted.
 	 */
 	public function clean_old_history( int $days = 90 ): int {
-		$this->wpdb->query(
-			$this->wpdb->prepare(
-				"DELETE FROM {$this->table_name} WHERE created_at < DATE_SUB(NOW(), INTERVAL %d DAY)",
-				$days
-			)
+		$table = $this->table_name;
+
+		$prepared_sql = $this->wpdb->prepare(
+			'DELETE FROM %s WHERE created_at < DATE_SUB(NOW(), INTERVAL %d DAY)',
+			$table,
+			$days
 		);
+
+		$this->wpdb->query( $prepared_sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 		return $this->wpdb->rows_affected;
 	}
@@ -252,12 +303,12 @@ final class FixHistoryRepository {
 	 * @return bool
 	 */
 	public function table_exists(): bool {
-		$result = $this->wpdb->get_var(
-			$this->wpdb->prepare(
-				'SHOW TABLES LIKE %s',
-				$this->table_name
-			)
+		$prepared_sql = $this->wpdb->prepare(
+			'SHOW TABLES LIKE %s',
+			$this->table_name
 		);
+
+		$result = $this->wpdb->get_var( $prepared_sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 		return $result === $this->table_name;
 	}

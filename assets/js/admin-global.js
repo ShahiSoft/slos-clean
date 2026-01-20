@@ -55,7 +55,7 @@
 		// Simple tooltip functionality
 		$( '[data-shahi-tooltip]' ).each(
 			function () {
-				var $elem = $( this );
+				var $elem       = $( this );
 				var tooltipText = $elem.data( 'shahi-tooltip' );
 
 				$elem.hover(
@@ -65,8 +65,8 @@
 						);
 						$( 'body' ).append( $tooltip );
 
-						var elemOffset = $elem.offset();
-						var elemWidth = $elem.outerWidth();
+						var elemOffset   = $elem.offset();
+						var elemWidth    = $elem.outerWidth();
 						let tooltipWidth = $tooltip.outerWidth();
 
 						$tooltip.css(
@@ -116,7 +116,7 @@
 		$( '.shahi-form-validate' ).on(
 			'submit',
 			function (e) {
-				var $form = $( this );
+				var $form   = $( this );
 				let isValid = true;
 
 				// Remove existing error messages
@@ -127,7 +127,7 @@
 				$form.find( '[required]' ).each(
 					function () {
 						var $field = $( this );
-						var value = $field.val().trim();
+						var value  = $field.val().trim();
 
 						if ( ! value) {
 							isValid = false;
@@ -145,7 +145,7 @@
 				$form.find( '[type="email"]' ).each(
 					function () {
 						var $field = $( this );
-						var value = $field.val().trim();
+						var value  = $field.val().trim();
 
 						if (value && ! ShahiLegalFlowSuite.isValidEmail( value )) {
 							isValid = false;
@@ -210,9 +210,9 @@
 		successCallback,
 		errorCallback
 	) {
-		data = data || {};
+		data        = data || {};
 		data.action = action;
-		data.nonce = shahiTemplate.nonce;
+		data.nonce  = shahiTemplate.nonce;
 
 		$.ajax(
 			{
@@ -252,7 +252,7 @@
 	 * @param {number} duration Duration in ms (0 = permanent)
 	 */
 	ShahiLegalFlowSuite.showNotice = function (message, type, duration) {
-		type = type || 'info';
+		type     = type || 'info';
 		duration = duration || 5000;
 
 		let $notice = $(
@@ -348,7 +348,7 @@
 		let timeout;
 		return function () {
 			let context = this;
-			let args = arguments;
+			let args    = arguments;
 			clearTimeout( timeout );
 			timeout = setTimeout(
 				function () {
@@ -407,7 +407,7 @@
 	 * @return {string} Escaped HTML
 	 */
 	ShahiLegalFlowSuite.escapeHtml = function (html) {
-		let div = document.createElement( 'div' );
+		let div         = document.createElement( 'div' );
 		div.textContent = html;
 		return div.innerHTML;
 	};

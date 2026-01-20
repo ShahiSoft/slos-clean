@@ -172,7 +172,7 @@ class Compliance_Export_Ajax {
 		$escaped_table = esc_sql( $table );
 		// Build SQL with concatenation to avoid interpolating variables inside the prepared string.
 		$sql = 'SELECT * FROM ' . $escaped_table . ' WHERE ' . $where_sql . ' ORDER BY created_at DESC LIMIT 10000';
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql includes escaped table name and prepared values are passed separately.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Table name is escaped, values are prepared, and export endpoints intentionally bypass caching.
 		$consents = $wpdb->get_results( $wpdb->prepare( $sql, ...$where_values ), ARRAY_A );
 
 		// Generate CSV.
@@ -252,25 +252,25 @@ class Compliance_Export_Ajax {
 		$escaped_table = esc_sql( $table );
 		// Build SQL with concatenation and prepare the date value.
 		$sql = 'SELECT COUNT(*) FROM ' . $escaped_table . ' WHERE created_at >= %s';
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql contains escaped table name; the date is prepared.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Table name is escaped; analytics queries are read-only and not cached.
 		$total = $wpdb->get_var( $wpdb->prepare( $sql, $start_date ) );
 
 		// By status.
 		// Build SQL with concatenation and prepare the date value.
 		$sql = 'SELECT status, COUNT(*) as count FROM ' . $escaped_table . ' WHERE created_at >= %s GROUP BY status';
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql contains escaped table name; the date is prepared.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Table name is escaped; analytics queries are read-only and not cached.
 		$by_status = $wpdb->get_results( $wpdb->prepare( $sql, $start_date ), ARRAY_A );
 
 		// By type.
 		// Build SQL with concatenation and prepare the date value.
 		$sql = 'SELECT type, COUNT(*) as count FROM ' . $escaped_table . ' WHERE created_at >= %s GROUP BY type';
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql contains escaped table name; the date is prepared.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Table name is escaped; analytics queries are read-only and not cached.
 		$by_type = $wpdb->get_results( $wpdb->prepare( $sql, $start_date ), ARRAY_A );
 
 		// Top countries.
 		// Build SQL with concatenation and prepare the date value.
 		$sql = 'SELECT country_code, COUNT(*) as count FROM ' . $escaped_table . ' WHERE created_at >= %s AND country_code IS NOT NULL GROUP BY country_code ORDER BY count DESC LIMIT 10';
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql contains escaped table name; the date is prepared.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Table name is escaped; analytics queries are read-only and not cached.
 		$by_country = $wpdb->get_results( $wpdb->prepare( $sql, $start_date ), ARRAY_A );
 
 		// Get time-series data.

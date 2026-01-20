@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Get current banner settings
+// Get current banner settings.
 $banner_settings = array(
 	'position'        => 'bottom',
 	'layout'          => 'bar',
@@ -913,7 +913,7 @@ $banner_settings = array(
 	<!-- Configuration Panel -->
 	<div class="slos-config-panel">
 		<?php
-		// Check if Banner Templates feature is dormant
+		// Check if Banner Templates feature is dormant.
 		$show_banner_templates = ! ( defined( 'SLOS_DORMANT_BANNER_FEATURES' ) &&
 			is_array( SLOS_DORMANT_BANNER_FEATURES ) &&
 			in_array( 'templates', SLOS_DORMANT_BANNER_FEATURES, true ) );
@@ -933,7 +933,7 @@ $banner_settings = array(
 			<div class="slos-form-group">
 				<div class="slos-template-grid">
 					<!-- EU/GDPR Template -->
-					<label class="slos-template-card <?php echo ( ! isset( $banner_settings['template'] ) || $banner_settings['template'] === 'eu' || $banner_settings['template'] === 'gdpr' ) ? 'active' : ''; ?>">
+					<label class="slos-template-card <?php echo ( ! isset( $banner_settings['template'] ) || 'eu' === $banner_settings['template'] || 'gdpr' === $banner_settings['template'] ) ? 'active' : ''; ?>">
 						<input type="radio" name="banner_template" value="eu" <?php checked( $banner_settings['template'] ?? 'eu', 'eu' ); ?>>
 						<div class="slos-template-header">
 							<div class="slos-template-icon">
@@ -948,7 +948,7 @@ $banner_settings = array(
 					</label>
 
 					<!-- CCPA Template -->
-					<label class="slos-template-card <?php echo ( isset( $banner_settings['template'] ) && $banner_settings['template'] === 'ccpa' ) ? 'active' : ''; ?>">
+					<label class="slos-template-card <?php echo ( isset( $banner_settings['template'] ) && 'ccpa' === $banner_settings['template'] ) ? 'active' : ''; ?>">
 						<input type="radio" name="banner_template" value="ccpa" <?php checked( $banner_settings['template'] ?? 'eu', 'ccpa' ); ?>>
 						<div class="slos-template-header">
 							<div class="slos-template-icon">
@@ -962,7 +962,7 @@ $banner_settings = array(
 					</label>
 
 					<!-- Simple Template -->
-					<label class="slos-template-card <?php echo ( isset( $banner_settings['template'] ) && $banner_settings['template'] === 'simple' ) ? 'active' : ''; ?>">
+					<label class="slos-template-card <?php echo ( isset( $banner_settings['template'] ) && 'simple' === $banner_settings['template'] ) ? 'active' : ''; ?>">
 						<input type="radio" name="banner_template" value="simple" <?php checked( $banner_settings['template'] ?? 'eu', 'simple' ); ?>>
 						<div class="slos-template-header">
 							<div class="slos-template-icon">
@@ -976,7 +976,7 @@ $banner_settings = array(
 					</label>
 
 					<!-- Advanced Template -->
-					<label class="slos-template-card <?php echo ( isset( $banner_settings['template'] ) && $banner_settings['template'] === 'advanced' ) ? 'active' : ''; ?>">
+					<label class="slos-template-card <?php echo ( isset( $banner_settings['template'] ) && 'advanced' === $banner_settings['template'] ) ? 'active' : ''; ?>">
 						<input type="radio" name="banner_template" value="advanced" <?php checked( $banner_settings['template'] ?? 'eu', 'advanced' ); ?>>
 						<div class="slos-template-header">
 							<div class="slos-template-icon">
@@ -991,7 +991,7 @@ $banner_settings = array(
 				</div>
 			</div>
 		</div>
-		<?php endif; // End Banner Templates dormant check ?>
+		<?php endif; // End Banner Templates dormant check. ?>
 
 		<!-- Position & Layout -->
 		<div class="slos-config-section">
@@ -1006,21 +1006,21 @@ $banner_settings = array(
 			<div class="slos-form-group">
 				<label class="slos-form-label"><?php esc_html_e( 'Banner Position', 'shahi-legalflowsuite' ); ?></label>
 				<div class="slos-radio-group">
-					<label class="slos-radio-card <?php echo $banner_settings['position'] === 'bottom' ? 'active' : ''; ?>">
+					<label class="slos-radio-card <?php echo 'bottom' === $banner_settings['position'] ? 'active' : ''; ?>">
 						<input type="radio" name="banner_position" value="bottom" <?php checked( $banner_settings['position'], 'bottom' ); ?>>
 						<div class="slos-radio-icon">
 							<span class="dashicons dashicons-arrow-down-alt"></span>
 						</div>
 						<div class="slos-radio-label"><?php esc_html_e( 'Bottom', 'shahi-legalflowsuite' ); ?></div>
 					</label>
-					<label class="slos-radio-card <?php echo $banner_settings['position'] === 'top' ? 'active' : ''; ?>">
+					<label class="slos-radio-card <?php echo 'top' === $banner_settings['position'] ? 'active' : ''; ?>">
 						<input type="radio" name="banner_position" value="top" <?php checked( $banner_settings['position'], 'top' ); ?>>
 						<div class="slos-radio-icon">
 							<span class="dashicons dashicons-arrow-up-alt"></span>
 						</div>
 						<div class="slos-radio-label"><?php esc_html_e( 'Top', 'shahi-legalflowsuite' ); ?></div>
 					</label>
-					<label class="slos-radio-card <?php echo $banner_settings['position'] === 'center' ? 'active' : ''; ?>">
+					<label class="slos-radio-card <?php echo 'center' === $banner_settings['position'] ? 'active' : ''; ?>">
 						<input type="radio" name="banner_position" value="center" <?php checked( $banner_settings['position'], 'center' ); ?>>
 						<div class="slos-radio-icon">
 							<span class="dashicons dashicons-align-center"></span>
@@ -1033,21 +1033,21 @@ $banner_settings = array(
 			<div class="slos-form-group">
 				<label class="slos-form-label"><?php esc_html_e( 'Layout Style', 'shahi-legalflowsuite' ); ?></label>
 				<div class="slos-radio-group">
-					<label class="slos-radio-card <?php echo $banner_settings['layout'] === 'bar' ? 'active' : ''; ?>">
+					<label class="slos-radio-card <?php echo 'bar' === $banner_settings['layout'] ? 'active' : ''; ?>">
 						<input type="radio" name="banner_layout" value="bar" <?php checked( $banner_settings['layout'], 'bar' ); ?>>
 						<div class="slos-radio-icon">
 							<span class="dashicons dashicons-minus"></span>
 						</div>
 						<div class="slos-radio-label"><?php esc_html_e( 'Bar', 'shahi-legalflowsuite' ); ?></div>
 					</label>
-					<label class="slos-radio-card <?php echo $banner_settings['layout'] === 'box' ? 'active' : ''; ?>">
+					<label class="slos-radio-card <?php echo 'box' === $banner_settings['layout'] ? 'active' : ''; ?>">
 						<input type="radio" name="banner_layout" value="box" <?php checked( $banner_settings['layout'], 'box' ); ?>>
 						<div class="slos-radio-icon">
 							<span class="dashicons dashicons-admin-comments"></span>
 						</div>
 						<div class="slos-radio-label"><?php esc_html_e( 'Box', 'shahi-legalflowsuite' ); ?></div>
 					</label>
-					<label class="slos-radio-card <?php echo $banner_settings['layout'] === 'popup' ? 'active' : ''; ?>">
+					<label class="slos-radio-card <?php echo 'popup' === $banner_settings['layout'] ? 'active' : ''; ?>">
 						<input type="radio" name="banner_layout" value="popup" <?php checked( $banner_settings['layout'], 'popup' ); ?>>
 						<div class="slos-radio-icon">
 							<span class="dashicons dashicons-editor-expand"></span>
@@ -1157,14 +1157,14 @@ $banner_settings = array(
 			<div class="slos-form-group">
 				<label class="slos-form-label"><?php esc_html_e( 'Cookie Icon Position', 'shahi-legalflowsuite' ); ?></label>
 				<div class="slos-radio-group">
-					<label class="slos-radio-card <?php echo ( ! isset( $banner_settings['icon_position'] ) || $banner_settings['icon_position'] === 'left' ) ? 'active' : ''; ?>">
+					<label class="slos-radio-card <?php echo ( ! isset( $banner_settings['icon_position'] ) || 'left' === $banner_settings['icon_position'] ) ? 'active' : ''; ?>">
 						<input type="radio" name="icon_position" value="left" <?php checked( $banner_settings['icon_position'] ?? 'left', 'left' ); ?>>
 						<div class="slos-radio-icon">
 							<span class="dashicons dashicons-arrow-left-alt"></span>
 						</div>
 						<div class="slos-radio-label"><?php esc_html_e( 'Left', 'shahi-legalflowsuite' ); ?></div>
 					</label>
-					<label class="slos-radio-card <?php echo ( isset( $banner_settings['icon_position'] ) && $banner_settings['icon_position'] === 'right' ) ? 'active' : ''; ?>">
+					<label class="slos-radio-card <?php echo ( isset( $banner_settings['icon_position'] ) && 'right' === $banner_settings['icon_position'] ) ? 'active' : ''; ?>">
 						<input type="radio" name="icon_position" value="right" <?php checked( $banner_settings['icon_position'] ?? 'left', 'right' ); ?>>
 						<div class="slos-radio-icon">
 							<span class="dashicons dashicons-arrow-right-alt"></span>

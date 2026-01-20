@@ -25,10 +25,10 @@
 				return;
 			}
 
-			this.wrapper = $( '.slos-dsr-form-wrapper' );
-			this.submitButton = $( '#slos-dsr-submit' );
+			this.wrapper        = $( '.slos-dsr-form-wrapper' );
+			this.submitButton   = $( '#slos-dsr-submit' );
 			this.successMessage = $( '.slos-dsr-success' );
-			this.errorMessage = $( '.slos-dsr-error' );
+			this.errorMessage   = $( '.slos-dsr-error' );
 
 			// Submission throttling
 			this.lastSubmitTime = 0;
@@ -301,7 +301,7 @@
 		 */
 		showFieldError( $field, message ) {
 			const errorId = $field.attr( 'id' ) + '-error';
-			const $error = $( '#' + errorId );
+			const $error  = $( '#' + errorId );
 
 			$field.addClass( 'slos-field-invalid' ).attr( 'aria-invalid', 'true' );
 			$error.text( message ).show();
@@ -319,7 +319,7 @@
 		 */
 		clearFieldError( $field ) {
 			const errorId = $field.attr( 'id' ) + '-error';
-			const $error = $( '#' + errorId );
+			const $error  = $( '#' + errorId );
 
 			$field
 				.removeClass( 'slos-field-invalid' )
@@ -344,7 +344,7 @@
 
 			// Update SLA notice in success message
 			const regulation = $( '#slos-dsr-regulation' ).val();
-			const slaNotice = this.getSlaNotice( regulation );
+			const slaNotice  = this.getSlaNotice( regulation );
 			$( '.slos-dsr-success .slos-dsr-sla-notice' ).html( slaNotice );
 
 			// Reset form (in case user wants to submit another)
@@ -421,7 +421,7 @@
 		 */
 		updateSlaNotice() {
 			const regulation = $( '#slos-dsr-regulation' ).val();
-			const slaText = this.getSlaNotice( regulation );
+			const slaText    = this.getSlaNotice( regulation );
 			$( '.slos-sla-days' ).html( slaText );
 		},
 
@@ -488,7 +488,7 @@
 		 * @param $textarea
 		 */
 		updateCharacterCount( $textarea ) {
-			const current = $textarea.val().length;
+			const current  = $textarea.val().length;
 			const $counter = $( '.slos-char-current' );
 			$counter.text( current );
 

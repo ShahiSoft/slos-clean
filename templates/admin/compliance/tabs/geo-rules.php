@@ -13,19 +13,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Load geo rules from database - only show real saved rules, no auto-initialization
+// Load geo rules from database - only show real saved rules, no auto-initialization.
 $geo_rules = get_option( 'slos_geo_rules', array() );
 
-// Convert to indexed array for template iteration
+// Convert to indexed array for template iteration.
 $geo_rules = array_values( $geo_rules );
 
-// Comprehensive list of countries with ISO codes - organized by region
+// Comprehensive list of countries with ISO codes - organized by region.
 $available_countries = array(
-	// Region Groups (for quick selection)
+	// Region Groups (for quick selection).
 	'EU-ALL'  => '🇪🇺 All EU Countries',
 	'EEA-ALL' => '🌍 All EEA Countries',
 
-	// Europe - EU Members
+	// Europe - EU Members.
 	'AT'      => 'Austria',
 	'BE'      => 'Belgium',
 	'BG'      => 'Bulgaria',
@@ -54,7 +54,7 @@ $available_countries = array(
 	'ES'      => 'Spain',
 	'SE'      => 'Sweden',
 
-	// Europe - Non-EU
+	// Europe - Non-EU.
 	'GB'      => 'United Kingdom',
 	'CH'      => 'Switzerland',
 	'NO'      => 'Norway',
@@ -75,7 +75,7 @@ $available_countries = array(
 	'RU'      => 'Russia',
 	'TR'      => 'Turkey',
 
-	// Americas - North
+	// Americas - North.
 	'US'      => 'United States (Federal)',
 	'US-CA'   => '  └ California',
 	'US-VA'   => '  └ Virginia',
@@ -96,7 +96,7 @@ $available_countries = array(
 	'CA-AB'   => '  └ Alberta',
 	'MX'      => 'Mexico',
 
-	// Americas - Central & Caribbean
+	// Americas - Central & Caribbean.
 	'CR'      => 'Costa Rica',
 	'PA'      => 'Panama',
 	'GT'      => 'Guatemala',
@@ -106,7 +106,7 @@ $available_countries = array(
 	'CU'      => 'Cuba',
 	'TT'      => 'Trinidad and Tobago',
 
-	// Americas - South
+	// Americas - South.
 	'BR'      => 'Brazil',
 	'AR'      => 'Argentina',
 	'CL'      => 'Chile',
@@ -118,7 +118,7 @@ $available_countries = array(
 	'PY'      => 'Paraguay',
 	'BO'      => 'Bolivia',
 
-	// Asia - East
+	// Asia - East.
 	'CN'      => 'China',
 	'JP'      => 'Japan',
 	'KR'      => 'South Korea',
@@ -128,7 +128,7 @@ $available_countries = array(
 	'TW'      => 'Taiwan',
 	'MN'      => 'Mongolia',
 
-	// Asia - Southeast
+	// Asia - Southeast.
 	'SG'      => 'Singapore',
 	'MY'      => 'Malaysia',
 	'TH'      => 'Thailand',
@@ -140,7 +140,7 @@ $available_countries = array(
 	'LA'      => 'Laos',
 	'BN'      => 'Brunei',
 
-	// Asia - South
+	// Asia - South.
 	'IN'      => 'India',
 	'PK'      => 'Pakistan',
 	'BD'      => 'Bangladesh',
@@ -149,7 +149,7 @@ $available_countries = array(
 	'BT'      => 'Bhutan',
 	'MV'      => 'Maldives',
 
-	// Asia - Central
+	// Asia - Central.
 	'KZ'      => 'Kazakhstan',
 	'UZ'      => 'Uzbekistan',
 	'AF'      => 'Afghanistan',
@@ -157,7 +157,7 @@ $available_countries = array(
 	'KG'      => 'Kyrgyzstan',
 	'TJ'      => 'Tajikistan',
 
-	// Middle East
+	// Middle East.
 	'AE'      => 'United Arab Emirates',
 	'SA'      => 'Saudi Arabia',
 	'IL'      => 'Israel',
@@ -173,7 +173,7 @@ $available_countries = array(
 	'OM'      => 'Oman',
 	'YE'      => 'Yemen',
 
-	// Africa - North
+	// Africa - North.
 	'EG'      => 'Egypt',
 	'MA'      => 'Morocco',
 	'DZ'      => 'Algeria',
@@ -181,7 +181,7 @@ $available_countries = array(
 	'LY'      => 'Libya',
 	'SD'      => 'Sudan',
 
-	// Africa - West
+	// Africa - West.
 	'NG'      => 'Nigeria',
 	'GH'      => 'Ghana',
 	'CI'      => 'Ivory Coast',
@@ -191,7 +191,7 @@ $available_countries = array(
 	'NE'      => 'Niger',
 	'BF'      => 'Burkina Faso',
 
-	// Africa - East
+	// Africa - East.
 	'KE'      => 'Kenya',
 	'ET'      => 'Ethiopia',
 	'TZ'      => 'Tanzania',
@@ -199,7 +199,7 @@ $available_countries = array(
 	'RW'      => 'Rwanda',
 	'MU'      => 'Mauritius',
 
-	// Africa - South
+	// Africa - South.
 	'ZA'      => 'South Africa',
 	'ZW'      => 'Zimbabwe',
 	'BW'      => 'Botswana',
@@ -208,7 +208,7 @@ $available_countries = array(
 	'AO'      => 'Angola',
 	'ZM'      => 'Zambia',
 
-	// Oceania
+	// Oceania.
 	'AU'      => 'Australia',
 	'NZ'      => 'New Zealand',
 	'FJ'      => 'Fiji',
@@ -217,7 +217,7 @@ $available_countries = array(
 	'WS'      => 'Samoa',
 );
 
-// EU country codes for region group selection
+// EU country codes for region group selection.
 $eu_countries  = array( 'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE' );
 $eea_countries = array_merge( $eu_countries, array( 'IS', 'LI', 'NO' ) );
 ?>
@@ -871,9 +871,9 @@ $eea_countries = array_merge( $eu_countries, array( 'IS', 'LI', 'NO' ) );
 			<button
 				class="slos-preset-btn<?php echo esc_attr( $active_class ); ?>"
 				data-preset="<?php echo esc_attr( $key ); ?>"
-				data-applied="<?php echo $is_applied ? '1' : '0'; ?>"
+				data-applied="<?php echo esc_attr( $is_applied ? '1' : '0' ); ?>"
 			>
-				<div class="slos-preset-icon"><?php echo $icon; ?></div>
+				<div class="slos-preset-icon"><?php echo esc_html( $icon ); ?></div>
 				<div class="slos-preset-info">
 					<div class="slos-preset-label"><?php echo esc_html( $preset['label'] ); ?></div>
 					<div class="slos-preset-framework"><?php echo esc_html( $preset['framework'] ); ?> • <?php echo esc_html( ucwords( str_replace( '-', ' ', $preset['consent_model'] ) ) ); ?></div>
@@ -928,7 +928,7 @@ $eea_countries = array_merge( $eu_countries, array( 'IS', 'LI', 'NO' ) );
 	<?php else : ?>
 
 		<?php
-		// Calculate statistics from actual rules
+		// Calculate statistics from actual rules.
 		$total_countries = 0;
 		$regulations     = array();
 		$opt_in_regions  = 0;
@@ -937,11 +937,11 @@ $eea_countries = array_merge( $eu_countries, array( 'IS', 'LI', 'NO' ) );
 		foreach ( $geo_rules as $rule ) {
 			$total_countries += count( $rule['countries'] ?? array() );
 			$reg              = $rule['regulation'] ?? $rule['framework'] ?? 'Default';
-			if ( ! in_array( $reg, $regulations, true ) && $reg !== 'Default' ) {
+			if ( ! in_array( $reg, $regulations, true ) && 'Default' !== $reg ) {
 				$regulations[] = $reg;
 			}
 			$consent_mode = $rule['default_consent'] ?? $rule['consent_mode'] ?? 'opt-out';
-			if ( $consent_mode === 'opt-in' ) {
+			if ( 'opt-in' === $consent_mode ) {
 				++$opt_in_regions;
 			} else {
 				++$opt_out_regions;
@@ -982,18 +982,18 @@ $eea_countries = array_merge( $eu_countries, array( 'IS', 'LI', 'NO' ) );
 	<div class="slos-rules-grid">
 		<?php
 		foreach ( $geo_rules as $rule ) :
-			// Support both field naming conventions
+			// Support both field naming conventions.
 			$regulation   = $rule['regulation'] ?? $rule['framework'] ?? 'Default';
 			$consent_mode = $rule['default_consent'] ?? $rule['consent_mode'] ?? 'opt-out';
 			$region_name  = $rule['region'] ?? $rule['name'] ?? '';
 			$is_active    = ( $rule['status'] ?? 'active' ) === 'active' || ( $rule['active'] ?? true );
 
 			$icon_class = 'default';
-			if ( $regulation === 'GDPR' ) {
+			if ( 'GDPR' === $regulation ) {
 				$icon_class = 'gdpr';
-			} elseif ( $regulation === 'CCPA/CPRA' || $regulation === 'ccpa' ) {
+			} elseif ( 'CCPA/CPRA' === $regulation || 'ccpa' === $regulation ) {
 				$icon_class = 'ccpa';
-			} elseif ( $regulation === 'LGPD' || $regulation === 'lgpd' ) {
+			} elseif ( 'LGPD' === $regulation || 'lgpd' === $regulation ) {
 				$icon_class = 'lgpd';
 			}
 			?>
@@ -1020,7 +1020,7 @@ $eea_countries = array_merge( $eu_countries, array( 'IS', 'LI', 'NO' ) );
 				<div class="slos-rule-setting">
 					<div class="slos-setting-label"><?php esc_html_e( 'Default Consent', 'shahi-legalflowsuite' ); ?></div>
 					<div class="slos-setting-value <?php echo esc_attr( $consent_mode ); ?>">
-						<?php echo $consent_mode === 'opt-in' ? esc_html__( 'Opt-In Required', 'shahi-legalflowsuite' ) : esc_html__( 'Opt-Out Available', 'shahi-legalflowsuite' ); ?>
+						<?php echo 'opt-in' === $consent_mode ? esc_html__( 'Opt-In Required', 'shahi-legalflowsuite' ) : esc_html__( 'Opt-Out Available', 'shahi-legalflowsuite' ); ?>
 					</div>
 				</div>
 				<div class="slos-rule-setting">
@@ -1037,7 +1037,7 @@ $eea_countries = array_merge( $eu_countries, array( 'IS', 'LI', 'NO' ) );
 				$countries     = $rule['countries'] ?? array();
 				$total         = count( $countries );
 
-				if ( $total === 0 ) :
+				if ( 0 === $total ) :
 					?>
 					<span class="slos-country-tag"><?php esc_html_e( 'All other countries', 'shahi-legalflowsuite' ); ?></span>
 					<?php
@@ -1067,7 +1067,7 @@ $eea_countries = array_merge( $eu_countries, array( 'IS', 'LI', 'NO' ) );
 					<span class="dashicons dashicons-admin-page"></span>
 					<?php esc_html_e( 'Duplicate', 'shahi-legalflowsuite' ); ?>
 				</button>
-				<?php if ( $rule['regulation'] !== 'Default' ) : ?>
+				<?php if ( 'Default' !== $rule['regulation'] ) : ?>
 				<button class="slos-rule-btn delete-rule" data-id="<?php echo esc_attr( $rule['id'] ); ?>" style="color: var(--slos-error);">
 					<span class="dashicons dashicons-trash"></span>
 				</button>

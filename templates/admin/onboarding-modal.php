@@ -107,10 +107,6 @@ $available_modules = $onboarding->get_available_modules();
 			<div class="shahi-step-content">
 				<div class="shahi-onboarding-modules-grid">
 					<?php foreach ( $available_modules as $key => $module ) : ?>
-						<?php
-						if ( $key === 'analytics' ) {
-							continue;} // Skip analytics module
-						?>
 						<div class="shahi-onboarding-module-card active" 
 							data-module="<?php echo esc_attr( $key ); ?>">
 							
@@ -263,19 +259,4 @@ $available_modules = $onboarding->get_available_modules();
 		
 	</div>
 </div>
-
-<script type="text/javascript">
-// Inline initialization script
-console.log('SHAHI ONBOARDING: Template script loaded');
-document.addEventListener('DOMContentLoaded', function() {
-	console.log('SHAHI ONBOARDING: DOM ready');
-	console.log('SHAHI ONBOARDING: Modal element exists:', document.getElementById('shahi-onboarding-overlay') !== null);
-	if (typeof ShahiOnboarding !== 'undefined') {
-		console.log('SHAHI ONBOARDING: ShahiOnboarding object found, calling init()');
-		ShahiOnboarding.init();
-	} else {
-		console.error('SHAHI ONBOARDING: ShahiOnboarding object NOT FOUND - Script not loaded!');
-	}
-});
-</script>
 

@@ -12,17 +12,17 @@
 	'use strict';
 
 	// Configuration passed from PHP.
-	const config = window.complyflowConfig || {};
-	const blockingRules = config.blockingRules || [];
+	const config         = window.complyflowConfig || {};
+	const blockingRules  = config.blockingRules || [];
 	const currentConsent = config.currentConsent || {};
-	const sessionId = config.sessionId || '';
+	const sessionId      = config.sessionId || '';
 
 	// Queue for blocked scripts.
 	const blockedScripts = [];
 
 	// Override script loading to check rules.
 	const originalFetch = window.fetch;
-	const originalXHR = window.XMLHttpRequest;
+	const originalXHR   = window.XMLHttpRequest;
 
 	/**
 	 * Check if a URL matches any blocking rule.
@@ -36,7 +36,7 @@
 
 		for (const rule of blockingRules) {
 			if (matchesPattern( url, rule.pattern )) {
-				const category = rule.category;
+				const category   = rule.category;
 				const hasConsent = currentConsent[category];
 
 				if ( ! hasConsent) {
@@ -84,7 +84,7 @@
 	 * @param {...any} args
 	 */
 	window.fetch = function (...args) {
-		const url = args[0] || '';
+		const url  = args[0] || '';
 		const rule = shouldBlockUrl( url );
 
 		if (rule) {
@@ -99,21 +99,21 @@
 	/**
 	 * Intercept XMLHttpRequest for tracking.
 	 */
-	const XHROpen = XMLHttpRequest.prototype.open;
+	const XHROpen                 = XMLHttpRequest.prototype.open;
 	XMLHttpRequest.prototype.open = function (method, url) {
 		const rule = shouldBlockUrl( url );
 
 		if (rule) {
 			console.log( `[Consent Blocker] Blocked XHR to ${url}`, rule );
 			this._consentBlocked = true;
-			this._blockingRule = rule;
+			this._blockingRule   = rule;
 		}
 
 		return XHROpen.apply( this, arguments );
 	};
 
 	// Prevent blocked XHR from sending.
-	const XHRSend = XMLHttpRequest.prototype.send;
+	const XHRSend                 = XMLHttpRequest.prototype.send;
 	XMLHttpRequest.prototype.send = function () {
 		if (this._consentBlocked) {
 			console.log(
@@ -213,9 +213,9 @@
 			const category = blocked.rule.category;
 			if (updatedConsent[category]) {
 				// Recreate and inject script.
-				const script = document.createElement( 'script' );
-				script.src = blocked.url;
-				script.async = true;
+				const script                   = document.createElement( 'script' );
+				script.src                     = blocked.url;
+				script.async                   = true;
 				script.dataset.consentReplayed = true;
 				document.head.appendChild( script );
 

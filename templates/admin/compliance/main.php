@@ -1000,7 +1000,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<div class="slos-command-search">
 			<span class="dashicons dashicons-search search-icon"></span>
 			<input type="text" placeholder="<?php esc_attr_e( 'Search consents, users, logs...', 'shahi-legalflowsuite' ); ?>" id="slos-global-search">
-			<span class="shortcut">⌘K</span>
+			<span class="shortcut">âŒ˜K</span>
 		</div>
 
 		<div class="slos-command-actions">
@@ -1034,7 +1034,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				class="slos-tab-item <?php echo $current_tab === $tab_key ? 'active' : ''; ?>">
 				<span class="dashicons <?php echo esc_attr( $tab_config['icon'] ); ?>"></span>
 				<?php echo esc_html( $tab_config['label'] ); ?>
-				<?php if ( $tab_key === 'cookies' ) : ?>
+				<?php if ( 'cookies' === $tab_key ) : ?>
 					<span class="badge">3</span>
 				<?php endif; ?>
 			</a>
@@ -1148,3 +1148,4 @@ jQuery(document).ready(function($) {
 	}
 });
 </script>
+

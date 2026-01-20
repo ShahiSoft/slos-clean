@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</p>
 			</div>
 			<div class="shahi-header-actions">
-				<a href="<?php echo admin_url( 'admin.php?page=slos-accessibility-dashboard' ); ?>" class="shahi-btn shahi-btn-outline">
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=slos-accessibility-dashboard' ) ); ?>" class="shahi-btn shahi-btn-outline">
 					<span class="dashicons dashicons-arrow-left-alt"></span>
 					<?php echo esc_html__( 'Back to Dashboard', 'shahi-legalflowsuite' ); ?>
 				</a>

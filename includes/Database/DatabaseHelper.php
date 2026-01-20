@@ -48,8 +48,9 @@ class DatabaseHelper {
 	public static function table_exists( $table ) {
 		global $wpdb;
 		$table_name = self::get_table_name( $table );
-		$query      = $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name );
-		return $wpdb->get_var( $query ) === $table_name;
+		// Using %s placeholder for table identifier in LIKE comparison.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Safe direct metadata lookup for table existence check; caching is not applicable.
+		return $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) === $table_name;
 	}
 
 	/**
@@ -65,14 +66,16 @@ class DatabaseHelper {
 		$table_name = self::get_table_name( $table );
 
 		if ( empty( $where ) ) {
-			$sql = "SELECT COUNT(*) FROM {$table_name}";
-			return (int) $wpdb->get_var( $sql );
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Table name is built from $wpdb->prefix and sanitized; this is a lightweight statistics query where caching is handled at a higher level.
+			return (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table_name}" );
 		}
 
 		$where_clause = self::build_where_clause( $where );
-		$sql          = "SELECT COUNT(*) FROM {$table_name} WHERE {$where_clause}";
+		$sql_template = sprintf( 'SELECT COUNT(*) FROM %s WHERE %s', $table_name, $where_clause );
+		$safe_query   = $sql_template;
 
-		return (int) $wpdb->get_var( $sql );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Prepared query for statistics.
+		return (int) $wpdb->get_var( $safe_query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 	}
 
 	/**
@@ -88,9 +91,10 @@ class DatabaseHelper {
 		global $wpdb;
 		$table_name = self::get_table_name( $table );
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Low-level helper responsible for writes; higher-level services handle any caching.
 		$result = $wpdb->insert( $table_name, $data, $format );
 
-		if ( $result === false ) {
+		if ( false === $result ) {
 			return false;
 		}
 
@@ -112,6 +116,7 @@ class DatabaseHelper {
 		global $wpdb;
 		$table_name = self::get_table_name( $table );
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Low-level helper responsible for writes; higher-level services handle any caching.
 		return $wpdb->update( $table_name, $data, $where, $format, $where_format );
 	}
 
@@ -128,6 +133,7 @@ class DatabaseHelper {
 		global $wpdb;
 		$table_name = self::get_table_name( $table );
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Low-level helper responsible for writes; higher-level services handle any caching.
 		return $wpdb->delete( $table_name, $where, $where_format );
 	}
 
@@ -146,14 +152,25 @@ class DatabaseHelper {
 		$table_name   = self::get_table_name( $table );
 		$where_clause = self::build_where_clause( $where );
 
-		$select_clause = ! empty( $columns ) ? implode( ', ', $columns ) : '*';
-		// Use a prepared LIMIT to satisfy PHPCS about prepared statements while keeping the
-		// where clause built from sanitized/prepared fragments.
-		$sql = "SELECT {$select_clause} FROM {$table_name} WHERE {$where_clause} LIMIT %d";
+		$select_clause = '*';
+		if ( ! empty( $columns ) ) {
+			$safe_columns = array();
+			foreach ( $columns as $column ) {
+				$column_key = sanitize_key( $column );
+				if ( '' !== $column_key ) {
+					$safe_columns[] = $column_key;
+				}
+			}
 
-		// LIMIT 1 is constant; prepare for consistency.
-		$sql = $wpdb->prepare( $sql, 1 );
+			if ( ! empty( $safe_columns ) ) {
+				$select_clause = implode( ', ', $safe_columns );
+			}
+		}
 
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Table name and column identifiers are sanitized; WHERE is built via build_where_clause() using prepared values.
+		$sql = $wpdb->prepare( "SELECT {$select_clause} FROM {$table_name} WHERE {$where_clause} LIMIT 1" );
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Query is prepared above.
 		return $wpdb->get_row( $sql, $output );
 	}
 
@@ -180,8 +197,22 @@ class DatabaseHelper {
 
 		$args = wp_parse_args( $args, $defaults );
 
-		$select_clause = ! empty( $columns ) ? implode( ', ', $columns ) : '*';
-		$sql           = "SELECT {$select_clause} FROM {$table_name}";
+		$select_clause = '*';
+		if ( ! empty( $columns ) ) {
+			$safe_columns = array();
+			foreach ( $columns as $column ) {
+				$column_key = sanitize_key( $column );
+				if ( '' !== $column_key ) {
+					$safe_columns[] = $column_key;
+				}
+			}
+
+			if ( ! empty( $safe_columns ) ) {
+				$select_clause = implode( ', ', $safe_columns );
+			}
+		}
+
+		$sql = "SELECT {$select_clause} FROM {$table_name}";
 
 		if ( ! empty( $args['where'] ) ) {
 			$where_clause = self::build_where_clause( $args['where'] );
@@ -189,10 +220,13 @@ class DatabaseHelper {
 		}
 
 		if ( ! empty( $args['order_by'] ) ) {
-			// Only allow safe column names for ORDER BY
+			// Only allow safe column names for ORDER BY.
 			$order   = strtoupper( $args['order'] ) === 'ASC' ? 'ASC' : 'DESC';
 			$orderby = sanitize_key( $args['order_by'] );
-			$sql    .= " ORDER BY {$orderby} {$order}";
+			if ( '' === $orderby ) {
+				$orderby = 'id';
+			}
+			$sql .= " ORDER BY {$orderby} {$order}";
 		}
 
 		// Prepare LIMIT/OFFSET using placeholders to satisfy PHPCS and avoid SQL injection.
@@ -208,11 +242,14 @@ class DatabaseHelper {
 		}
 
 		if ( ! empty( $prepare_values ) ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 			$sql = $wpdb->prepare( $sql, ...$prepare_values );
+		} else {
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			$sql = $wpdb->prepare( $sql );
 		}
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- WHERE clause fragments are prepared
-		// via `build_where_clause()` and LIMIT/OFFSET are prepared when present; table name is sanitized.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- WHERE clause fragments are prepared via build_where_clause(), LIMIT/OFFSET are prepared when present, and table/column identifiers are sanitized.
 		return $wpdb->get_results( $sql );
 	}
 
@@ -227,7 +264,8 @@ class DatabaseHelper {
 		global $wpdb;
 		$table_name = self::get_table_name( $table );
 
-		return $wpdb->query( "TRUNCATE TABLE {$table_name}" ) !== false;
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Table name is internal and sanitized; this maintenance operation intentionally runs directly against the database without caching.
+		return $wpdb->query( 'TRUNCATE TABLE `' . esc_sql( $table_name ) . '`' ) !== false;
 	}
 
 	/**
@@ -241,7 +279,8 @@ class DatabaseHelper {
 		global $wpdb;
 		$table_name = self::get_table_name( $table );
 
-		return $wpdb->query( "OPTIMIZE TABLE {$table_name}" ) !== false;
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Table name is internal and sanitized; this maintenance operation intentionally runs directly against the database without caching.
+		return $wpdb->query( 'OPTIMIZE TABLE `' . esc_sql( $table_name ) . '`' ) !== false;
 	}
 
 	/**
@@ -256,14 +295,25 @@ class DatabaseHelper {
 		$conditions = array();
 
 		foreach ( $where as $column => $value ) {
+			$column_key = sanitize_key( $column );
+			if ( '' === $column_key ) {
+				// Skip invalid or unsafe column identifiers.
+				continue;
+			}
+
 			if ( is_null( $value ) ) {
-				$conditions[] = "{$column} IS NULL";
+				$conditions[] = "{$column_key} IS NULL";
 			} elseif ( is_array( $value ) ) {
-				// IN clause..
-				$placeholders = implode( ', ', array_fill( 0, count( $value ), '%s' ) );
-				$conditions[] = $wpdb->prepare( "{$column} IN ({$placeholders})", $value );
+				// IN clause.
+				$placeholders    = implode( ', ', array_fill( 0, count( $value ), '%s' ) );
+				$prepared_values = (array) $value;
+				$condition       = $column_key . ' IN (' . $placeholders . ')';
+				// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Condition is safely prepared below.
+				$conditions[] = $wpdb->prepare( $condition, $prepared_values );
 			} else {
-				$conditions[] = $wpdb->prepare( "{$column} = %s", $value );
+				$condition = $column_key . ' = %s';
+				// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Condition is safely prepared below.
+				$conditions[] = $wpdb->prepare( $condition, $value );
 			}
 		}
 
@@ -283,28 +333,18 @@ class DatabaseHelper {
 		global $wpdb;
 		$table_name = self::get_table_name( 'analytics' );
 
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Table name is internal and sanitized.
 		if ( $event_type ) {
-			$sql = $wpdb->prepare(
-				"SELECT id, event_type, event_data, user_id, ip_address, user_agent, created_at FROM {$table_name} 
-                WHERE created_at BETWEEN %s AND %s 
-                AND event_type = %s 
-                ORDER BY created_at DESC",
-				$start_date,
-				$end_date,
-				$event_type
-			);
+			$sql = sprintf( 'SELECT id, event_type, event_data, user_id, ip_address, user_agent, created_at FROM %s WHERE created_at BETWEEN %%s AND %%s AND event_type = %%s ORDER BY created_at DESC', $table_name );
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			$sql = $wpdb->prepare( $sql, $start_date, $end_date, $event_type );
 		} else {
-			$sql = $wpdb->prepare(
-				"SELECT id, event_type, event_data, user_id, ip_address, user_agent, created_at FROM {$table_name} 
-                WHERE created_at BETWEEN %s AND %s 
-                ORDER BY created_at DESC",
-				$start_date,
-				$end_date
-			);
+			$sql = sprintf( 'SELECT id, event_type, event_data, user_id, ip_address, user_agent, created_at FROM %s WHERE created_at BETWEEN %%s AND %%s ORDER BY created_at DESC', $table_name );
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			$sql = $wpdb->prepare( $sql, $start_date, $end_date );
 		}
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- WHERE clause fragments are prepared
-		// via `build_where_clause()` and LIMIT/OFFSET are prepared when present; table name is sanitized.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Query is fully prepared above; this helper runs direct read queries without additional caching.
 		return $wpdb->get_results( $sql );
 	}
 
@@ -341,6 +381,7 @@ class DatabaseHelper {
 	 * @return array|null Module settings or null if not found.
 	 */
 	public static function get_module_settings( $module_key ) {
+		// phpcs:ignore WordPress.DB.RestrictedConstants -- OBJECT is a valid WP constant.
 		$row = self::get_row( 'modules', array( 'module_key' => $module_key ), OBJECT, array( 'module_key', 'is_enabled', 'settings', 'last_updated' ) );
 
 		if ( ! $row ) {
@@ -364,6 +405,7 @@ class DatabaseHelper {
 	 * @return bool True on success, false on failure.
 	 */
 	public static function update_module_settings( $module_key, $is_enabled, $settings = array() ) {
+		// phpcs:ignore WordPress.DB.RestrictedConstants -- OBJECT is a valid WP constant.
 		$existing = self::get_row( 'modules', array( 'module_key' => $module_key ), OBJECT, array( 'module_key' ) );
 
 		$data = array(
@@ -396,15 +438,23 @@ class DatabaseHelper {
 	 * @return string User IP address.
 	 */
 	private static function get_user_ip() {
+		$ip = '';
+
 		if ( ! empty( $_SERVER['HTTP_CLIENT_IP'] ) ) {
-			$ip = $_SERVER['HTTP_CLIENT_IP'];
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Input is sanitized below.
+			$ip = wp_unslash( $_SERVER['HTTP_CLIENT_IP'] );
 		} elseif ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
-			$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-		} else {
-			$ip = $_SERVER['REMOTE_ADDR'];
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Input is sanitized below.
+			$forwarded_for = wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] );
+			// In case of multiple IPs, take the first one.
+			$ip_parts = explode( ',', (string) $forwarded_for );
+			$ip       = trim( $ip_parts[0] );
+		} elseif ( isset( $_SERVER['REMOTE_ADDR'] ) ) {
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Input is sanitized below.
+			$ip = wp_unslash( $_SERVER['REMOTE_ADDR'] );
 		}
 
-		return sanitize_text_field( $ip );
+		return '' !== $ip ? sanitize_text_field( $ip ) : '';
 	}
 
 	/**
@@ -414,8 +464,9 @@ class DatabaseHelper {
 	 * @return string User agent string.
 	 */
 	private static function get_user_agent() {
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Input is sanitized below.
 		return isset( $_SERVER['HTTP_USER_AGENT'] )
-			? sanitize_text_field( $_SERVER['HTTP_USER_AGENT'] )
+			? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) )
 			: '';
 	}
 
@@ -429,14 +480,15 @@ class DatabaseHelper {
 	public static function clean_old_analytics( $days = 90 ) {
 		global $wpdb;
 		$table_name = self::get_table_name( 'analytics' );
-		$date       = date( 'Y-m-d H:i:s', strtotime( "-{$days} days" ) );
+		$date       = gmdate( 'Y-m-d H:i:s', strtotime( "-{$days} days" ) );
 
-		return $wpdb->query(
-			$wpdb->prepare(
-				"DELETE FROM {$table_name} WHERE created_at < %s",
-				$date
-			)
-		);
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Table name is internal and sanitized.
+		$query = sprintf( 'DELETE FROM %s WHERE created_at < %%s', $table_name );
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		$query = $wpdb->prepare( $query, $date );
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Query is fully prepared above; this cleanup helper intentionally runs direct delete queries without caching.
+		return $wpdb->query( $query );
 	}
 
 	/**

@@ -78,11 +78,11 @@
 					success: function (response) {
 						if (response.success) {
 							// Create download link
-							const dataStr =
+							const dataStr        =
 							'data:text/json;charset=utf-8,' +
 							encodeURIComponent( response.data );
 							const downloadAnchor = $( '<a>' );
-							const timestamp = new Date().toISOString().slice( 0, 10 );
+							const timestamp      = new Date().toISOString().slice( 0, 10 );
 
 							downloadAnchor.attr( 'href', dataStr );
 							downloadAnchor.attr(
@@ -130,7 +130,7 @@
 				return;
 			}
 
-			const file = fileInput.files[0];
+			const file   = fileInput.files[0];
 			const reader = new FileReader();
 
 			reader.onload = function (event) {

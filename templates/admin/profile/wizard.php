@@ -117,7 +117,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 								<span class="dashicons dashicons-<?php echo esc_attr( $step['icon'] ); ?>"></span>
 							</div>
 							<div class="slos-step-meta">
-								<span class="slos-step-badge"><?php /* translators: %d: current step number (1-based) */ printf( esc_html__( 'Step %d of 11', 'shahi-legalflowsuite' ), intval( $step_num ) ); ?></span>
+								<span class="slos-step-badge">
+									<?php
+									/* translators: 1: current step number, 2: total number of steps */
+									printf( esc_html__( 'Step %1$d of %2$d', 'shahi-legalflowsuite' ), intval( $step_num ), count( $steps ) );
+									?>
+								</span>
 								<h2 class="slos-step-heading"><?php echo esc_html( $step['title'] ); ?></h2>
 								<p class="slos-step-description"><?php echo esc_html( $step['description'] ); ?></p>
 							</div>
@@ -144,7 +149,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 								<?php esc_html_e( 'Save Progress', 'shahi-legalflowsuite' ); ?>
 							</button>
 
-							<?php if ( $current_step < 11 ) : ?>
+							<?php if ( $current_step < count( $steps ) ) : ?>
 							<button type="button" class="slos-btn slos-btn-primary slos-btn-next" id="slos-next-btn">
 								<?php esc_html_e( 'Continue', 'shahi-legalflowsuite' ); ?>
 								<span class="dashicons dashicons-arrow-right-alt"></span>

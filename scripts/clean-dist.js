@@ -1,8 +1,8 @@
-const fs = require( 'fs-extra' );
+const fs   = require( 'fs-extra' );
 const path = require( 'path' );
 
-const root = path.resolve( __dirname, '..' );
-const dist = path.join( root, 'dist' );
+const root    = path.resolve( __dirname, '..' );
+const dist    = path.join( root, 'dist' );
 const release = path.join( root, 'release' );
 
 async function clean() {

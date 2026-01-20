@@ -258,18 +258,25 @@ class Metaboxes {
 				break;
 
 			case 'checkbox':
-				$checked = checked( $value, '1', false );
 				echo '<label style="display:inline-block;">';
-				echo '<input type="checkbox" name="' . esc_attr( $name ) . '" value="1" ' . $checked . '> ';
+				printf(
+					'<input type="checkbox" name="%1$s" value="1" %2$s> ',
+					esc_attr( $name ),
+					checked( $value, '1', false )
+				);
 				echo esc_html( $field['label'] );
 				echo '</label>';
 				break;
 
 			case 'radio':
 				foreach ( $field['options'] as $option_value => $option_label ) {
-					$checked = checked( $value, $option_value, false );
 					echo '<label style="display:block;margin-bottom:5px;">';
-					echo '<input type="radio" name="' . esc_attr( $name ) . '" value="' . esc_attr( $option_value ) . '" ' . $checked . '> ';
+					printf(
+						'<input type="radio" name="%1$s" value="%2$s" %3$s> ',
+						esc_attr( $name ),
+						esc_attr( $option_value ),
+						checked( $value, $option_value, false )
+					);
 					echo esc_html( $option_label );
 					echo '</label>';
 				}
@@ -292,12 +299,17 @@ class Metaboxes {
 		}
 
 		// Check post type..
-		if ( $post->post_type !== 'shahi_legalflowsuite_item' ) {
+		if ( 'shahi_legalflowsuite_item' !== $post->post_type ) {
 			return;
 		}
 
 		// Save item details..
-		if ( isset( $_POST['shahi_item_details_nonce'] ) && wp_verify_nonce( $_POST['shahi_item_details_nonce'], 'shahi_item_details_nonce' ) ) {
+		$item_details_nonce = '';
+		if ( isset( $_POST['shahi_item_details_nonce'] ) ) {
+			$item_details_nonce = sanitize_text_field( wp_unslash( $_POST['shahi_item_details_nonce'] ) );
+		}
+
+		if ( $item_details_nonce && wp_verify_nonce( $item_details_nonce, 'shahi_item_details_nonce' ) ) {
 			if ( ! current_user_can( 'edit_post', $post_id ) ) {
 				return;
 			}
@@ -314,14 +326,14 @@ class Metaboxes {
 							$value = intval( wp_unslash( $_POST[ $post_key ] ) );
 							break;
 						case 'checkbox':
-							$value = sanitize_text_field( wp_unslash( $_POST[ $post_key ] ) ) === '1' ? '1' : '';
+							$value = '1' === sanitize_text_field( wp_unslash( $_POST[ $post_key ] ) ) ? '1' : '';
 							break;
 						default:
 							$value = sanitize_text_field( wp_unslash( $_POST[ $post_key ] ) );
 					}
 
 					update_post_meta( $post_id, $meta_key, $value );
-				} elseif ( $field['type'] === 'checkbox' ) {
+				} elseif ( 'checkbox' === $field['type'] ) {
 					// Unchecked checkboxes don't submit..
 					delete_post_meta( $post_id, $meta_key );
 				}
@@ -329,7 +341,12 @@ class Metaboxes {
 		}
 
 		// Save item settings..
-		if ( isset( $_POST['shahi_item_settings_nonce'] ) && wp_verify_nonce( $_POST['shahi_item_settings_nonce'], 'shahi_item_settings_nonce' ) ) {
+		$item_settings_nonce = '';
+		if ( isset( $_POST['shahi_item_settings_nonce'] ) ) {
+			$item_settings_nonce = sanitize_text_field( wp_unslash( $_POST['shahi_item_settings_nonce'] ) );
+		}
+
+		if ( $item_settings_nonce && wp_verify_nonce( $item_settings_nonce, 'shahi_item_settings_nonce' ) ) {
 			if ( ! current_user_can( 'edit_post', $post_id ) ) {
 				return;
 			}
@@ -346,14 +363,14 @@ class Metaboxes {
 							$value = intval( wp_unslash( $_POST[ $post_key ] ) );
 							break;
 						case 'checkbox':
-							$value = sanitize_text_field( wp_unslash( $_POST[ $post_key ] ) ) === '1' ? '1' : '';
+							$value = '1' === sanitize_text_field( wp_unslash( $_POST[ $post_key ] ) ) ? '1' : '';
 							break;
 						default:
 							$value = sanitize_text_field( wp_unslash( $_POST[ $post_key ] ) );
 					}
 
 					update_post_meta( $post_id, $meta_key, $value );
-				} elseif ( $field['type'] === 'checkbox' ) {
+				} elseif ( 'checkbox' === $field['type'] ) {
 					// Unchecked checkboxes don't submit..
 					delete_post_meta( $post_id, $meta_key );
 				}
@@ -370,12 +387,12 @@ class Metaboxes {
 	 */
 	public function enqueue_metabox_assets( $hook ) {
 		// Only load on post edit pages..
-		if ( ! in_array( $hook, array( 'post.php', 'post-new.php' ) ) ) {
+		if ( ! in_array( $hook, array( 'post.php', 'post-new.php' ), true ) ) {
 			return;
 		}
 
 		global $post;
-		if ( ! $post || $post->post_type !== 'shahi_legalflowsuite_item' ) {
+		if ( ! $post || 'shahi_legalflowsuite_item' !== $post->post_type ) {
 			return;
 		}
 

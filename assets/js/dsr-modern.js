@@ -56,7 +56,7 @@
 						typeof slosDSR !== 'undefined' ? slosDSR.nonce : ''
 					);
 
-					const exportUrl =
+					const exportUrl      =
 					window.location.pathname + '?' + params.toString();
 					window.location.href = exportUrl;
 					DSRModern.showToast( 'Preparing export...', 'info' );
@@ -70,7 +70,7 @@
 					e.preventDefault();
 					// Trigger report generation with current date range
 					const startDate = $( '#start_date' ).val() || '';
-					const endDate = $( '#end_date' ).val() || '';
+					const endDate   = $( '#end_date' ).val() || '';
 
 					DSRModern.showToast(
 						'Generating report for ' +
@@ -112,8 +112,8 @@
 				'click',
 				function (e) {
 					e.preventDefault();
-					const days = $( this ).data( 'days' );
-					const endDate = new Date();
+					const days      = $( this ).data( 'days' );
+					const endDate   = new Date();
 					const startDate = new Date();
 					startDate.setDate( startDate.getDate() - days );
 
@@ -310,7 +310,7 @@
 				info: '#0066FF',
 			};
 
-			const toast = $( '<div>' )
+			const toast            = $( '<div>' )
 				.addClass( 'slos-toast' )
 				.css(
 					{

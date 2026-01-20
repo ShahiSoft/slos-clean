@@ -32,8 +32,8 @@
 			let dataEl = $( '#slos-acceptance-data' );
 			if (dataEl.length) {
 				try {
-					this.config = JSON.parse( dataEl.text() );
-					this.documents = this.config.documents || [];
+					this.config      = JSON.parse( dataEl.text() );
+					this.documents   = this.config.documents || [];
 					this.displayType = this.config.displayType || 'banner';
 				} catch (e) {
 					console.error( 'Failed to parse acceptance data:', e );
@@ -207,7 +207,7 @@
 		 * Accept all documents
 		 */
 		acceptAll() {
-			let self = this;
+			let self       = this;
 			let checkboxes = $( '.slos-accept-checkbox:checked' );
 
 			if (checkboxes.length !== this.documents.length) {
@@ -333,7 +333,7 @@
 		 */
 		showSuccessMessage() {
 			let $modal = $( '#slos-acceptance-modal' );
-			let $body = $modal.find( '.slos-acceptance-modal-body' );
+			let $body  = $modal.find( '.slos-acceptance-modal-body' );
 
 			$body.html(
 				'<div class="slos-acceptance-success">' +
@@ -352,7 +352,7 @@
 		 */
 		showLoading( show ) {
 			let $loading = $( '.slos-acceptance-modal-loading' );
-			let $footer = $( '.slos-acceptance-modal-footer' );
+			let $footer  = $( '.slos-acceptance-modal-footer' );
 
 			if (show) {
 				$loading.show();
@@ -367,9 +367,9 @@
 		 * Update accept button state
 		 */
 		updateAcceptButton() {
-			let totalCheckboxes = $( '.slos-accept-checkbox' ).length;
+			let totalCheckboxes   = $( '.slos-accept-checkbox' ).length;
 			let checkedCheckboxes = $( '.slos-accept-checkbox:checked' ).length;
-			let $acceptBtn = $( '.slos-accept-all-btn' );
+			let $acceptBtn        = $( '.slos-accept-all-btn' );
 
 			if (checkedCheckboxes === totalCheckboxes) {
 				$acceptBtn.prop( 'disabled', false );
@@ -418,7 +418,7 @@
 		 */
 		getCookie( name ) {
 			let nameEQ = name + '=';
-			let ca = document.cookie.split( ';' );
+			let ca     = document.cookie.split( ';' );
 			for (let i = 0; i < ca.length; i++) {
 				let c = ca[i];
 				while (c.charAt( 0 ) === ' ') {

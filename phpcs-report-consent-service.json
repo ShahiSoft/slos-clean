@@ -1,0 +1,33 @@
+
+FILE: ...content\plugins\shahi-legalflowsuite\includes\Services\Consent_Service.php
+--------------------------------------------------------------------------------
+FOUND 5 ERRORS AND 12 WARNINGS AFFECTING 11 LINES
+--------------------------------------------------------------------------------
+  498 | ERROR   | Use placeholders and $wpdb->prepare(); found $sql
+  501 | WARNING | Use of a direct database call is discouraged.
+  501 | WARNING | Direct database call without caching detected. Consider using
+      |         | wp_cache_get() / wp_cache_set() or wp_cache_delete().
+  566 | ERROR   | Use placeholders and $wpdb->prepare(); found $sql
+  569 | WARNING | Use of a direct database call is discouraged.
+  569 | WARNING | Direct database call without caching detected. Consider using
+      |         | wp_cache_get() / wp_cache_set() or wp_cache_delete().
+  584 | WARNING | Use of a direct database call is discouraged.
+  584 | WARNING | Direct database call without caching detected. Consider using
+      |         | wp_cache_get() / wp_cache_set() or wp_cache_delete().
+  597 | WARNING | Use of a direct database call is discouraged.
+  597 | WARNING | Direct database call without caching detected. Consider using
+      |         | wp_cache_get() / wp_cache_set() or wp_cache_delete().
+  610 | WARNING | Use of a direct database call is discouraged.
+  610 | WARNING | Direct database call without caching detected. Consider using
+      |         | wp_cache_get() / wp_cache_set() or wp_cache_delete().
+  887 | ERROR   | Parameter comment must end with a full stop
+  950 | ERROR   | Use Yoda Condition checks, you must.
+ 1163 | ERROR   | Inline comments must end in full-stops, exclamation marks, or
+      |         | question marks
+ 1220 | WARNING | Use of a direct database call is discouraged.
+ 1220 | WARNING | Direct database call without caching detected. Consider using
+      |         | wp_cache_get() / wp_cache_set() or wp_cache_delete().
+--------------------------------------------------------------------------------
+
+Time: 3.95 secs; Memory: 22MB
+

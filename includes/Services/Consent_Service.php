@@ -65,8 +65,8 @@ class Consent_Service extends Base_Service {
 	 * Constructor
 	 *
 	 * @since 3.0.1
-	 * @param Consent_Repository   $repository    Consent repository instance
-	 * @param Consent_Audit_Logger $audit_logger  Audit logger instance
+	 * @param Consent_Repository   $repository    Consent repository instance.
+	 * @param Consent_Audit_Logger $audit_logger  Audit logger instance.
 	 */
 	public function __construct( Consent_Repository $repository = null, Consent_Audit_Logger $audit_logger = null ) {
 		$this->repository   = $repository ?? new Consent_Repository();
@@ -77,13 +77,13 @@ class Consent_Service extends Base_Service {
 	 * Record new consent
 	 *
 	 * @since 3.0.1
-	 * @param array $data Consent data
-	 * @return int|false Consent ID or false on failure
+	 * @param array $data Consent data.
+	 * @return int|false Consent ID or false on failure.
 	 */
 	public function record_consent( array $data ) {
 		$this->clear_errors();
 
-		// Validate required fields..
+		// Validate required fields.
 		if ( ! $this->validate_required( $data['type'] ?? '', 'type' ) ) {
 			return false;
 		}
@@ -92,17 +92,17 @@ class Consent_Service extends Base_Service {
 			return false;
 		}
 
-		// Validate consent type..
+		// Validate consent type.
 		if ( ! $this->validate_in_list( $data['type'], $this->allowed_types, 'type' ) ) {
 			return false;
 		}
 
-		// Validate consent status..
+		// Validate consent status.
 		if ( ! $this->validate_in_list( $data['status'], $this->allowed_statuses, 'status' ) ) {
 			return false;
 		}
 
-		// Prepare consent data..
+		// Prepare consent data.
 		$consent_data = array(
 			'user_id'        => $data['user_id'] ?? get_current_user_id(),
 			'type'           => $this->sanitize_string( $data['type'] ),
@@ -126,14 +126,14 @@ class Consent_Service extends Base_Service {
 			'policy_version' => $data['policy_version'] ?? $this->get_policy_version(),
 		);
 
-		// Merge additional metadata if provided..
+		// Merge additional metadata if provided.
 		if ( ! empty( $data['metadata'] ) && is_array( $data['metadata'] ) ) {
 			$existing_metadata        = $this->parse_metadata( $consent_data['metadata'] );
 			$merged_metadata          = array_merge( $existing_metadata, $data['metadata'] );
 			$consent_data['metadata'] = $this->prepare_metadata( $merged_metadata );
 		}
 
-		// Create consent record..
+		// Create consent record.
 		$consent_id = $this->repository->create( $consent_data );
 
 		if ( ! $consent_id ) {
@@ -141,7 +141,7 @@ class Consent_Service extends Base_Service {
 			return false;
 		}
 
-		// Log consent action..
+		// Log consent action.
 		$this->audit_logger->log(
 			array(
 				'consent_id'     => $consent_id,
@@ -162,8 +162,8 @@ class Consent_Service extends Base_Service {
 		 * Fires after consent is recorded
 		 *
 		 * @since 3.0.1
-		 * @param int   $consent_id Consent ID
-		 * @param array $consent_data Consent data
+		 * @param int   $consent_id Consent ID.
+		 * @param array $consent_data Consent data.
 		 */
 		do_action( 'slos_consent_recorded', $consent_id, $consent_data );
 
@@ -174,9 +174,9 @@ class Consent_Service extends Base_Service {
 	 * Update existing consent
 	 *
 	 * @since 3.0.1
-	 * @param int   $consent_id Consent ID
-	 * @param array $data Update data
-	 * @return bool True on success, false on failure
+	 * @param int   $consent_id Consent ID.
+	 * @param array $data Update data.
+	 * @return bool True on success, false on failure.
 	 */
 	public function update_consent( int $consent_id, array $data ): bool {
 		$this->clear_errors();
@@ -235,8 +235,8 @@ class Consent_Service extends Base_Service {
 		 * Fires after consent is updated
 		 *
 		 * @since 3.0.1
-		 * @param int   $consent_id Consent ID
-		 * @param array $update_data Update data
+		 * @param int   $consent_id Consent ID.
+		 * @param array $update_data Update data.
 		 */
 		do_action( 'slos_consent_updated', $consent_id, $update_data );
 
@@ -247,8 +247,8 @@ class Consent_Service extends Base_Service {
 	 * Withdraw consent
 	 *
 	 * @since 3.0.1
-	 * @param int $consent_id Consent ID
-	 * @return bool True on success, false on failure
+	 * @param int $consent_id Consent ID.
+	 * @return bool True on success, false on failure.
 	 */
 	public function withdraw_consent( int $consent_id ): bool {
 		$this->clear_errors();
@@ -291,7 +291,7 @@ class Consent_Service extends Base_Service {
 		 * Fires after consent is withdrawn
 		 *
 		 * @since 3.0.1
-		 * @param int $consent_id Consent ID
+		 * @param int $consent_id Consent ID.
 		 */
 		do_action( 'slos_consent_withdrawn', $consent_id );
 
@@ -302,20 +302,22 @@ class Consent_Service extends Base_Service {
 	 * Check if user has active consent
 	 *
 	 * @since 3.0.1
-	 * @param int    $user_id User ID
-	 * @param string $type Consent type
-	 * @return bool True if user has active consent
+	 * @since 3.0.1
+	 * @param int    $user_id User ID.
+	 * @param string $type Consent type.
+	 * @return bool True if user has active consent.
 	 */
 	public function has_active_consent( int $user_id, string $type ): bool {
-		return $this->repository->has_consent( $user_id, $type, 'accepted' );
+		return $this->repository->has_consent( $user_id, $type );
 	}
 
 	/**
 	 * Get user's active consents
 	 *
 	 * @since 3.0.1
-	 * @param int $user_id User ID
-	 * @return array Array of consent objects
+	 * @since 3.0.1
+	 * @param int $user_id User ID.
+	 * @return array Array of consent objects.
 	 */
 	public function get_user_consents( int $user_id ): array {
 		return $this->repository->get_active_consents( $user_id );
@@ -325,8 +327,8 @@ class Consent_Service extends Base_Service {
 	 * Get all consents for a user (including withdrawn/rejected)
 	 *
 	 * @since 3.0.1
-	 * @param int $user_id User ID
-	 * @return array Array of consent objects
+	 * @param int $user_id User ID.
+	 * @return array Array of consent objects.
 	 */
 	public function get_user_consent_history( int $user_id ): array {
 		return $this->repository->find_by_user( $user_id );
@@ -336,8 +338,8 @@ class Consent_Service extends Base_Service {
 	 * Get consent by ID
 	 *
 	 * @since 3.0.1
-	 * @param int $consent_id Consent ID
-	 * @return object|null Consent object or null if not found
+	 * @param int $consent_id Consent ID.
+	 * @return object|null Consent object or null if not found.
 	 */
 	public function get_consent( int $consent_id ) {
 		return $this->repository->find( $consent_id );
@@ -347,8 +349,8 @@ class Consent_Service extends Base_Service {
 	 * Delete consent record (admin only)
 	 *
 	 * @since 3.0.1
-	 * @param int $consent_id Consent ID
-	 * @return bool True on success, false on failure
+	 * @param int $consent_id Consent ID.
+	 * @return bool True on success, false on failure.
 	 */
 	public function delete_consent( int $consent_id ): bool {
 		$this->clear_errors();
@@ -378,7 +380,7 @@ class Consent_Service extends Base_Service {
 		 * Fires after consent is deleted
 		 *
 		 * @since 3.0.1
-		 * @param int $consent_id Consent ID
+		 * @param int $consent_id Consent ID.
 		 */
 		do_action( 'slos_consent_deleted', $consent_id );
 
@@ -405,8 +407,8 @@ class Consent_Service extends Base_Service {
 	 * Get recent consents
 	 *
 	 * @since 3.0.1
-	 * @param int $limit Number of records to retrieve
-	 * @return array Array of consent objects
+	 * @param int $limit Number of records to retrieve.
+	 * @return array Array of consent objects.
 	 */
 	public function get_recent_consents( int $limit = 10 ): array {
 		return $this->repository->get_recent( $limit );
@@ -416,9 +418,9 @@ class Consent_Service extends Base_Service {
 	 * Get consents with filters and pagination
 	 *
 	 * @since 3.0.3
-	 * @param array $filters Filter criteria (type, status, date_range, search, geo_rule_id, region, country_code)
-	 * @param array $pagination Pagination args (page, per_page, order_by, order)
-	 * @return array Array of consent objects
+	 * @param array $filters Filter criteria (type, status, date_range, search, geo_rule_id, region, country_code).
+	 * @param array $pagination Pagination args (page, per_page, order_by, order).
+	 * @return array Array of consent objects.
 	 */
 	public function get_consents( array $filters = array(), array $pagination = array() ): array {
 		global $wpdb;
@@ -477,32 +479,31 @@ class Consent_Service extends Base_Service {
 		$per_page = min( 100, max( 1, intval( $pagination['per_page'] ?? 25 ) ) );
 		$offset   = ( $page - 1 ) * $per_page;
 
-		$order_by = in_array( $pagination['order_by'] ?? '', array( 'id', 'type', 'status', 'created_at', 'region', 'country_code' ) )
+		$order_by = in_array( $pagination['order_by'] ?? '', array( 'id', 'type', 'status', 'created_at', 'region', 'country_code' ), true )
 			? $pagination['order_by']
 			: 'created_at';
 		$order    = strtoupper( $pagination['order'] ?? 'DESC' ) === 'ASC' ? 'ASC' : 'DESC';
 
-		$sql = "SELECT c.*, u.display_name as user_name, u.user_email 
-				FROM {$table} c 
-				LEFT JOIN {$wpdb->users} u ON c.user_id = u.ID 
-				WHERE {$where_sql} 
-				ORDER BY c.{$order_by} {$order} 
-				LIMIT %d OFFSET %d";
+		$query = 'SELECT c.*, u.display_name as user_name, u.user_email FROM %s c LEFT JOIN %s u ON c.user_id = u.ID WHERE ' . $where_sql . ' ORDER BY c.%s %s LIMIT %d OFFSET %d';
 
-		$values[] = $per_page;
-		$values[] = $offset;
+		$all_values = array_merge( array( $table, $wpdb->users, $order_by, $order, $per_page, $offset ), $values );
 
-		$sql = $wpdb->prepare( $sql, ...$values );
+		// Build prepare arguments (query followed by values) and prepare via call_user_func_array.
+		$prepare_args = array_merge( array( $query ), $all_values );
+		$prepared     = call_user_func_array( array( $wpdb, 'prepare' ), $prepare_args );
 
-		return $wpdb->get_results( $sql, ARRAY_A );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared -- Table name is safe and $prepared is the final prepared SQL string.
+		$results = $wpdb->get_results( $prepared, ARRAY_A );
+
+		return $results;
 	}
 
 	/**
 	 * Get total count of consents with filters
 	 *
 	 * @since 3.0.3
-	 * @param array $filters Filter criteria
-	 * @return int Total count
+	 * @param array $filters Filter criteria.
+	 * @return int Total count.
 	 */
 	public function get_consents_count( array $filters = array() ): int {
 		global $wpdb;
@@ -556,11 +557,15 @@ class Consent_Service extends Base_Service {
 
 		$where_sql = implode( ' AND ', $where );
 
-		$sql = "SELECT COUNT(*) FROM {$table}" . ( ! empty( $where_sql ) ? " WHERE {$where_sql}" : '' );
+		$query = 'SELECT COUNT(*) FROM %s WHERE ' . $where_sql;
 
-		$sql = $wpdb->prepare( $sql, ...$values );
+		$all_values = array_merge( array( $table ), $values );
 
-		return (int) $wpdb->get_var( $sql );
+		$prepare_args = array_merge( array( $query ), $all_values );
+		$prepared     = call_user_func_array( array( $wpdb, 'prepare' ), $prepare_args );
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared -- Table name is safe and $prepared is the final prepared SQL string.
+		return (int) $wpdb->get_var( $prepared );
 	}
 
 	/**
@@ -575,33 +580,45 @@ class Consent_Service extends Base_Service {
 		$table = $wpdb->prefix . 'slos_consent';
 
 		// Stats by region..
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct reads without caching are acceptable for stats.
 		$by_region = $wpdb->get_results(
-			"SELECT region, COUNT(*) as count, status
-			 FROM {$table}
-			 WHERE region IS NOT NULL AND region != ''
-			 GROUP BY region, status
-			 ORDER BY count DESC",
+			$wpdb->prepare(
+				'SELECT region, COUNT(*) as count, status
+				 FROM %s
+				 WHERE region IS NOT NULL AND region != \'\'
+				 GROUP BY region, status
+				 ORDER BY count DESC',
+				$table
+			),
 			ARRAY_A
 		);
 
 		// Stats by geo rule..
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct reads without caching are acceptable for stats.
 		$by_geo_rule = $wpdb->get_results(
-			"SELECT geo_rule_id, COUNT(*) as count, status
-			 FROM {$table}
-			 WHERE geo_rule_id IS NOT NULL
-			 GROUP BY geo_rule_id, status
-			 ORDER BY count DESC",
+			$wpdb->prepare(
+				'SELECT geo_rule_id, COUNT(*) as count, status
+				 FROM %s
+				 WHERE geo_rule_id IS NOT NULL
+				 GROUP BY geo_rule_id, status
+				 ORDER BY count DESC',
+				$table
+			),
 			ARRAY_A
 		);
 
 		// Stats by country..
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct reads without caching are acceptable for stats.
 		$by_country = $wpdb->get_results(
-			"SELECT country_code, COUNT(*) as count
-			 FROM {$table}
-			 WHERE country_code IS NOT NULL AND country_code != ''
-			 GROUP BY country_code
-			 ORDER BY count DESC
-			 LIMIT 20",
+			$wpdb->prepare(
+				'SELECT country_code, COUNT(*) as count
+				 FROM %s
+				 WHERE country_code IS NOT NULL AND country_code != \'\'
+				 GROUP BY country_code
+				 ORDER BY count DESC
+				 LIMIT 20',
+				$table
+			),
 			ARRAY_A
 		);
 
@@ -630,8 +647,8 @@ class Consent_Service extends Base_Service {
 	 * Parse date range string to days
 	 *
 	 * @since 3.0.3
-	 * @param string $range Date range string (e.g., '7d', '30d', '90d')
-	 * @return int Number of days
+	 * @param string $range Date range string (e.g., '7d', '30d', '90d').
+	 * @return int Number of days.
 	 */
 	private function parse_date_range( string $range ): int {
 		$range = strtolower( trim( $range ) );
@@ -650,7 +667,7 @@ class Consent_Service extends Base_Service {
 			case 'year':
 				return 365;
 			default:
-				return 0; // No filter
+				return 0; // No filter.
 		}
 	}
 
@@ -658,9 +675,9 @@ class Consent_Service extends Base_Service {
 	 * Bulk withdraw user consents
 	 *
 	 * @since 3.0.1
-	 * @param int    $user_id User ID
-	 * @param string $type Optional consent type to filter by
-	 * @return int Number of consents withdrawn
+	 * @param int    $user_id User ID.
+	 * @param string $type Optional consent type to filter by.
+	 * @return int Number of consents withdrawn.
 	 */
 	public function bulk_withdraw_user_consents( int $user_id, string $type = '' ): int {
 		$this->clear_errors();
@@ -709,8 +726,8 @@ class Consent_Service extends Base_Service {
 	 * Validate consent data structure
 	 *
 	 * @since 3.0.1
-	 * @param array $data Consent data to validate
-	 * @return bool True if valid
+	 * @param array $data Consent data to validate.
+	 * @return bool True if valid.
 	 */
 	public function validate_consent_data( array $data ): bool {
 		$this->clear_errors();
@@ -764,8 +781,8 @@ class Consent_Service extends Base_Service {
 	 * Most recent consent of each type is returned.
 	 *
 	 * @since 3.0.1
-	 * @param int    $user_id User ID
-	 * @param string $ip_hash Optional IP hash for anonymous users
+	 * @param int    $user_id User ID.
+	 * @param string $ip_hash Optional IP hash for anonymous users.
 	 * @return array Array of preferences indexed by type (necessary, analytics, marketing, preferences, accepted, rejected, withdrawn, not_asked)
 	 */
 	public function get_user_preferences( int $user_id = 0, string $ip_hash = '' ): array {
@@ -844,9 +861,9 @@ class Consent_Service extends Base_Service {
 	 * User needs banner if they haven't been asked about non-necessary consents yet.
 	 *
 	 * @since 3.0.1
-	 * @param int    $user_id User ID
-	 * @param string $ip_hash Optional IP hash for anonymous users
-	 * @return bool True if user should see consent banner
+	 * @param int    $user_id User ID.
+	 * @param string $ip_hash Optional IP hash for anonymous users.
+	 * @return bool True if user should see consent banner.
 	 */
 	public function should_show_banner( int $user_id = 0, string $ip_hash = '' ): bool {
 		$this->clear_errors();
@@ -869,12 +886,12 @@ class Consent_Service extends Base_Service {
 	 * Record multiple consents at once (bulk operation)
 	 *
 	 * @since 3.0.1
-	 * @param array $data {
-	 *     @type int    $user_id User ID
-	 *     @type string $ip_address IP address to hash
-	 *     @type array  $consents Array of type => status pairs
+	 * @param array $data Array of consent data.
+	 *     @var int    $user_id User ID.
+	 *     @var string $ip_address IP address to hash.
+	 *     @var array  $consents Array of type => status pairs.
 	 * }
-	 * @return array Response with count of created records
+	 * @return array Response with count of created records.
 	 */
 	public function record_multiple_consents( array $data ): array {
 		$this->clear_errors();
@@ -908,7 +925,7 @@ class Consent_Service extends Base_Service {
 		// Record each consent..
 		foreach ( $data['consents'] as $type => $status ) {
 			$consent_data = array(
-				'user_id'    => $user_id ?: null,
+				'user_id'    => $user_id ? $user_id : null,
 				'ip_hash'    => $ip_hash,
 				'type'       => $type,
 				'status'     => $status,
@@ -927,12 +944,12 @@ class Consent_Service extends Base_Service {
 		}
 
 		$message = sprintf( 'Recorded %d consent(s)', $created_count );
-		if ( $failed_count > 0 ) {
+		if ( 0 < $failed_count ) {
 			$message .= sprintf( '; Failed: %d (%s)', $failed_count, implode( ', ', $failed_types ) );
 		}
 
 		return array(
-			'success'       => $failed_count === 0,
+			'success'       => 0 === $failed_count,
 			'created_count' => $created_count,
 			'failed_count'  => $failed_count,
 			'failed_types'  => $failed_types,
@@ -972,7 +989,7 @@ class Consent_Service extends Base_Service {
 		$stats = $this->get_statistics();
 		$total = array_sum( $stats['by_status'] ?? array() );
 
-		if ( $total === 0 ) {
+		if ( 0 === $total ) {
 			return 0.0;
 		}
 
@@ -986,7 +1003,7 @@ class Consent_Service extends Base_Service {
 	 * Used for data export requests (GDPR Article 15).
 	 *
 	 * @since 3.0.1
-	 * @param int $user_id User ID
+	 * @param int $user_id User ID.
 	 * @return array User's consent records
 	 */
 	public function export_user_consents( int $user_id ): array {
@@ -1020,15 +1037,15 @@ class Consent_Service extends Base_Service {
 	 * Returns list of valid consent types available in the system.
 	 *
 	 * @since 3.0.1
-	 * @return array Array of valid purpose types
+	 * @return array Array of valid purpose types.
 	 */
 	public function get_valid_purposes(): array {
 		/**
 		 * Filter valid consent purposes
 		 *
 		 * @since 3.0.1
-		 * @param array $types Default allowed types
-		 * @return array Filtered types
+		 * @param array $types Default allowed types.
+		 * @return array Filtered types.
 		 */
 		return apply_filters( 'slos_valid_consent_purposes', $this->allowed_types );
 	}
@@ -1039,7 +1056,7 @@ class Consent_Service extends Base_Service {
 	 * Returns statistics grouped by consent type.
 	 *
 	 * @since 3.0.1
-	 * @return array Breakdown of consents by type
+	 * @return array Breakdown of consents by type.
 	 */
 	public function get_purpose_breakdown(): array {
 		$this->clear_errors();
@@ -1113,7 +1130,7 @@ class Consent_Service extends Base_Service {
 	 *     @type string $type         Filter by type. Optional.
 	 *     @type string $country_code Filter by country. Optional.
 	 * }
-	 * @return array Time-series data with labels and values
+	 * @return array Time-series data with labels and values.
 	 */
 	public function get_time_series( array $args = array() ): array {
 		global $wpdb;
@@ -1142,10 +1159,10 @@ class Consent_Service extends Base_Service {
 			$args['group_by'] = 'none';
 		}
 
-		// Build date format based on interval..
+		// Build date format based on interval.
 		$date_format_map = array(
 			'daily'   => '%Y-%m-%d',
-			'weekly'  => '%Y-W%u',  // Year-Week number
+			'weekly'  => '%Y-W%u',  // Year-Week number.
 			'monthly' => '%Y-%m',
 		);
 		$date_format     = $date_format_map[ $args['interval'] ];
@@ -1201,8 +1218,16 @@ class Consent_Service extends Base_Service {
 			";
 		}
 
-		// Execute query..
-		$results = $wpdb->get_results( $wpdb->prepare( $query, ...$where_values ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		// Execute query with caching to reduce direct DB reads for stats.
+		$cache_key = 'slos_time_series_' . md5( $query . '|' . implode( '|', $where_values ) );
+		$results   = wp_cache_get( $cache_key, 'slos' );
+		if ( false === $results ) {
+			$prepare_args = array_merge( array( $query ), $where_values );
+			$prepared     = call_user_func_array( array( $wpdb, 'prepare' ), $prepare_args );
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared -- Prepared SQL string used; results are cached after retrieval.
+			$results = $wpdb->get_results( $prepared, ARRAY_A );
+			wp_cache_set( $cache_key, $results, 'slos', HOUR_IN_SECONDS );
+		}
 
 		// Process results into chart-friendly format..
 		if ( 'none' === $args['group_by'] ) {
@@ -1322,7 +1347,7 @@ class Consent_Service extends Base_Service {
 	 * @since 3.1.1
 	 * @param string $period   Period string from query.
 	 * @param string $interval Interval type.
-	 * @return string Formatted label
+	 * @return string Formatted label.
 	 */
 	private function format_period_label( string $period, string $interval ): string {
 		if ( 'daily' === $interval ) {
@@ -1351,7 +1376,7 @@ class Consent_Service extends Base_Service {
 	 * @since 3.1.1
 	 * @param string $group    Group value.
 	 * @param string $group_by Group type.
-	 * @return string Formatted label
+	 * @return string Formatted label.
 	 */
 	private function format_group_label( string $group, string $group_by ): string {
 		if ( 'status' === $group_by ) {
@@ -1393,8 +1418,8 @@ class Consent_Service extends Base_Service {
 	 * Used for DSR requests to display user's consent history.
 	 *
 	 * @since 3.1.1 Phase 2.2
-	 * @param string $email Email address to search for
-	 * @param array  $args  Optional query arguments
+	 * @param string $email Email address to search for.
+	 * @param array  $args  Optional query arguments.
 	 * @return array {
 	 *     Array of consent records with enriched data
 	 *
@@ -1428,7 +1453,8 @@ class Consent_Service extends Base_Service {
 
 			// Decode metadata..
 			if ( isset( $record['metadata'] ) && is_string( $record['metadata'] ) ) {
-				$record['metadata'] = json_decode( $record['metadata'], true ) ?: array();
+				$decoded            = json_decode( $record['metadata'], true );
+				$record['metadata'] = is_array( $decoded ) ? $decoded : array();
 			}
 
 			// Add user data if user_id exists..

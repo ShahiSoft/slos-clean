@@ -11,7 +11,7 @@
 (function () {
 	'use strict';
 
-	const config = window.complyflowConfig || {};
+	const config         = window.complyflowConfig || {};
 	const currentConsent = config.currentConsent || {};
 
 	/**
@@ -131,7 +131,7 @@
 	 */
 	if (config.waitForGtag && typeof window.gtag === 'undefined') {
 		// Poll for gtag (max 5 seconds).
-		const startTime = Date.now();
+		const startTime    = Date.now();
 		const pollInterval = setInterval(
 			function () {
 				if (

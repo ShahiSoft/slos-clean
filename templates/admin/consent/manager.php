@@ -59,8 +59,8 @@ $withdrawn_total = $stats['by_status']['withdrawn'] ?? 0;
 					<label for="slos-consent-type"><?php echo esc_html__( 'Type', 'shahi-legalflowsuite' ); ?></label>
 					<select id="slos-consent-type">
 						<option value=""><?php echo esc_html__( 'All types', 'shahi-legalflowsuite' ); ?></option>
-						<?php foreach ( $filters['types'] as $type ) : ?>
-							<option value="<?php echo esc_attr( $type ); ?>"><?php echo esc_html( ucfirst( $type ) ); ?></option>
+						<?php foreach ( $filters['types'] as $consent_type ) : ?>
+							<option value="<?php echo esc_attr( $consent_type ); ?>"><?php echo esc_html( ucfirst( $consent_type ) ); ?></option>
 						<?php endforeach; ?>
 					</select>
 				</div>
@@ -68,8 +68,8 @@ $withdrawn_total = $stats['by_status']['withdrawn'] ?? 0;
 					<label for="slos-consent-status"><?php echo esc_html__( 'Status', 'shahi-legalflowsuite' ); ?></label>
 					<select id="slos-consent-status">
 						<option value=""><?php echo esc_html__( 'All statuses', 'shahi-legalflowsuite' ); ?></option>
-						<?php foreach ( $filters['statuses'] as $status ) : ?>
-							<option value="<?php echo esc_attr( $status ); ?>"><?php echo esc_html( ucfirst( $status ) ); ?></option>
+						<?php foreach ( $filters['statuses'] as $consent_status ) : ?>
+							<option value="<?php echo esc_attr( $consent_status ); ?>"><?php echo esc_html( ucfirst( $consent_status ) ); ?></option>
 						<?php endforeach; ?>
 					</select>
 				</div>

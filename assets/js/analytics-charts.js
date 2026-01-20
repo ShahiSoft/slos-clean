@@ -256,7 +256,7 @@
 
 			let ctx = canvas.getContext( '2d' );
 
-			this.charts.userActivity = new Chart(
+			this.charts.userActivity                   = new Chart(
 				ctx,
 				{
 					type: 'doughnut',

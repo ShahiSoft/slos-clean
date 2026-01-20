@@ -112,11 +112,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<!-- Settings Tabs -->
 	<div class="shahi-settings-tabs">
 		<nav class="shahi-tabs-nav">
-			<?php foreach ( $tabs as $tab_key => $tab ) : ?>
+			<?php foreach ( $tabs as $tab_key => $tab_data ) : ?>
 				<a href="?page=shahi-legalflowsuite-settings&tab=<?php echo esc_attr( $tab_key ); ?>" 
 					class="shahi-tab-link <?php echo $active_tab === $tab_key ? 'active' : ''; ?>">
-					<span class="dashicons <?php echo esc_attr( $tab['icon'] ); ?>"></span>
-					<?php echo esc_html( $tab['title'] ); ?>
+					<span class="dashicons <?php echo esc_attr( $tab_data['icon'] ); ?>"></span>
+					<?php echo esc_html( $tab_data['title'] ); ?>
 				</a>
 			<?php endforeach; ?>
 		</nav>
@@ -128,7 +128,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<input type="hidden" name="active_tab" value="<?php echo esc_attr( $active_tab ); ?>">
 
 		<div class="shahi-settings-content">
-			<?php if ( $active_tab === 'privacy' ) : ?>
+			<?php if ( 'privacy' === $active_tab ) : ?>
 				<!-- Privacy Settings -->
 				<div class="shahi-card">
 					<div class="shahi-card-header">
@@ -361,7 +361,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<?php endif; ?>
 
 			
-			<?php if ( $active_tab === 'general' ) : ?>
+			<?php if ( 'general' === $active_tab ) : ?>
 				<!-- General Settings -->
 				<div class="shahi-card">
 					<div class="shahi-card-header">
@@ -410,7 +410,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</div>
 			<?php endif; ?>
 
-			<?php if ( $active_tab === 'notifications' ) : ?>
+			<?php if ( 'notifications' === $active_tab ) : ?>
 				<!-- Notification Settings -->
 				<div class="shahi-card">
 					<div class="shahi-card-header">
@@ -481,7 +481,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</div>
 			<?php endif; ?>
 
-			<?php if ( $active_tab === 'performance' ) : ?>
+			<?php if ( 'performance' === $active_tab ) : ?>
 				<!-- Performance Settings -->
 				<div class="shahi-card">
 					<div class="shahi-card-header">
@@ -555,7 +555,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</div>
 			<?php endif; ?>
 
-			<?php if ( $active_tab === 'advanced' ) : ?>
+			<?php if ( 'advanced' === $active_tab ) : ?>
 				<!-- Advanced Settings -->
 				<div class="shahi-card">
 					<div class="shahi-card-header">
@@ -592,7 +592,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 												value="<?php echo esc_attr( $settings['api_key'] ); ?>" 
 												class="shahi-input" readonly>
 										<button type="button" class="shahi-btn shahi-btn-secondary" 
-												onclick="document.getElementById('api_key').value='<?php echo \ShahiLegalFlowSuite\Admin\Settings::generate_api_key(); ?>';">
+												onclick="document.getElementById('api_key').value='<?php echo esc_js( \ShahiLegalFlowSuite\Admin\Settings::generate_api_key() ); ?>';">
 											<?php echo esc_html__( 'Generate New', 'shahi-legalflowsuite' ); ?>
 										</button>
 									</div>
@@ -663,7 +663,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</div>
 			<?php endif; ?>
 
-			<?php if ( $active_tab === 'security' ) : ?>
+			<?php if ( 'security' === $active_tab ) : ?>
 				<!-- Security Settings -->
 				<div class="shahi-card">
 					<div class="shahi-card-header">
@@ -763,7 +763,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</div>
 			<?php endif; ?>
 
-			<?php if ( $active_tab === 'import_export' ) : ?>
+			<?php if ( 'import_export' === $active_tab ) : ?>
 				<!-- Import/Export Settings -->
 				<div class="shahi-card">
 					<div class="shahi-card-header">
@@ -827,7 +827,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</div>
 			<?php endif; ?>
 
-			<?php if ( $active_tab === 'uninstall' ) : ?>
+			<?php if ( 'uninstall' === $active_tab ) : ?>
 				<!-- Uninstall Settings -->
 				<div class="shahi-card">
 					<div class="shahi-card-header">

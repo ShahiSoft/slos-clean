@@ -22,31 +22,69 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 final class VideoAccessibilityFixer extends AbstractFixer {
 
+	/**
+	 * Get the fixer ID.
+	 *
+	 * @return string
+	 */
 	public function get_id(): string {
 		return 'missing-video-caption';
 	}
 
+	/**
+	 * Get the fixer name.
+	 *
+	 * @return string
+	 */
 	public function get_name(): string {
 		return __( 'Video Accessibility', 'shahi-legalflowsuite' );
 	}
 
+	/**
+	 * Get the fixer description.
+	 *
+	 * @return string
+	 */
 	public function get_description(): string {
 		return __( 'Ensures video elements have proper accessibility attributes, captions tracks, and autoplay handling.', 'shahi-legalflowsuite' );
 	}
 
+	/**
+	 * Get the WCAG criteria this fixer addresses.
+	 *
+	 * @return array
+	 */
 	public function get_wcag_criteria(): array {
 		return array( '1.2.1', '1.2.2', '1.2.3', '1.4.2' );
 	}
 
+	/**
+	 * Get the fixer category.
+	 *
+	 * @return string
+	 */
 	public function get_category(): string {
 		return 'media';
 	}
 
+	/**
+	 * Check if this fixer can fix the given content.
+	 *
+	 * @param string $content The content to check.
+	 * @return bool
+	 */
 	public function can_fix( string $content ): bool {
 		return strpos( $content, '<video' ) !== false ||
 				strpos( $content, '<iframe' ) !== false;
 	}
 
+	/**
+	 * Apply the accessibility fixes to the content.
+	 *
+	 * @param string $content The content to fix.
+	 * @param array  $options Optional fix options.
+	 * @return FixResult
+	 */
 	protected function apply_fix( string $content, array $options = array() ): FixResult {
 		$doc = $this->parse_html( $content );
 
@@ -77,7 +115,7 @@ final class VideoAccessibilityFixer extends AbstractFixer {
 			}
 		}
 
-		if ( $fixes_applied === 0 ) {
+		if ( 0 === $fixes_applied ) {
 			return FixResult::skipped( $this->get_id(), 'No video accessibility issues found', $content );
 		}
 
@@ -93,7 +131,7 @@ final class VideoAccessibilityFixer extends AbstractFixer {
 	/**
 	 * Fix native video element
 	 *
-	 * @param \DOMElement $video
+	 * @param \DOMElement $video The video DOM element to fix.
 	 * @return array|null
 	 */
 	private function fix_video_element( \DOMElement $video ): ?array {
@@ -128,7 +166,7 @@ final class VideoAccessibilityFixer extends AbstractFixer {
 
 		foreach ( $tracks as $track ) {
 			$kind = $track->getAttribute( 'kind' );
-			if ( in_array( $kind, array( 'captions', 'subtitles' ) ) ) {
+			if ( in_array( $kind, array( 'captions', 'subtitles' ), true ) ) {
 				$has_captions = true;
 				break;
 			}
@@ -153,7 +191,7 @@ final class VideoAccessibilityFixer extends AbstractFixer {
 	/**
 	 * Fix video iframe (YouTube, Vimeo, etc.)
 	 *
-	 * @param \DOMElement $iframe
+	 * @param \DOMElement $iframe The iframe DOM element to fix.
 	 * @return array|null
 	 */
 	private function fix_video_iframe( \DOMElement $iframe ): ?array {
@@ -170,7 +208,10 @@ final class VideoAccessibilityFixer extends AbstractFixer {
 		}
 
 		// Add allow for keyboard focus..
-		$allow = $iframe->getAttribute( 'allow' ) ?: '';
+		$allow = $iframe->getAttribute( 'allow' );
+		if ( empty( $allow ) ) {
+			$allow = '';
+		}
 		if ( strpos( $allow, 'fullscreen' ) === false ) {
 			$allow = trim( $allow . '; fullscreen' );
 			$iframe->setAttribute( 'allow', $allow );
@@ -179,7 +220,7 @@ final class VideoAccessibilityFixer extends AbstractFixer {
 
 		// For YouTube, ensure captions are enabled by default..
 		if ( strpos( $src, 'youtube' ) !== false ) {
-			$parsed = parse_url( $src );
+			$parsed = wp_parse_url( $src );
 			parse_str( $parsed['query'] ?? '', $params );
 
 			if ( ! isset( $params['cc_load_policy'] ) ) {
@@ -198,14 +239,14 @@ final class VideoAccessibilityFixer extends AbstractFixer {
 	/**
 	 * Derive label for video element
 	 *
-	 * @param \DOMElement $video
+	 * @param \DOMElement $video The video DOM element.
 	 * @return string
 	 */
 	private function derive_video_label( \DOMElement $video ): string {
 		// Check for poster image name..
 		$poster = $video->getAttribute( 'poster' );
 		if ( ! empty( $poster ) ) {
-			$filename = basename( parse_url( $poster, PHP_URL_PATH ) );
+			$filename = basename( wp_parse_url( $poster, PHP_URL_PATH ) );
 			$name     = preg_replace( '/\.[^.]+$/', '', $filename );
 			$name     = str_replace( array( '-', '_' ), ' ', $name );
 			if ( strlen( $name ) > 3 ) {
@@ -217,7 +258,7 @@ final class VideoAccessibilityFixer extends AbstractFixer {
 		$sources = $video->getElementsByTagName( 'source' );
 		if ( $sources->length > 0 ) {
 			$src      = $sources->item( 0 )->getAttribute( 'src' );
-			$filename = basename( parse_url( $src, PHP_URL_PATH ) );
+			$filename = basename( wp_parse_url( $src, PHP_URL_PATH ) );
 			$name     = preg_replace( '/\.[^.]+$/', '', $filename );
 			$name     = str_replace( array( '-', '_' ), ' ', $name );
 			if ( strlen( $name ) > 3 ) {
@@ -231,7 +272,7 @@ final class VideoAccessibilityFixer extends AbstractFixer {
 	/**
 	 * Derive title for video iframe
 	 *
-	 * @param string $src
+	 * @param string $src The iframe src URL.
 	 * @return string
 	 */
 	private function derive_iframe_title( string $src ): string {

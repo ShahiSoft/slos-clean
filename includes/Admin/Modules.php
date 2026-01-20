@@ -217,7 +217,7 @@ class Modules {
 		$escaped_table = esc_sql( $table );
 		// Build SQL via concatenation and prepare value. Use phpcs ignore since table name is safely escaped.
 		$sql = 'SELECT module_key FROM ' . $escaped_table . ' WHERE is_enabled = %d';
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name is escaped and the prepared placeholder handles values.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Table name is escaped, value is prepared, and this small lookup is not cached by design.
 		$results = $wpdb->get_results( $wpdb->prepare( $sql, 1 ), ARRAY_A );
 
 		if ( empty( $results ) ) {
@@ -292,7 +292,7 @@ class Modules {
 			$escaped_table = esc_sql( $table );
 			// Build SQL with concatenation to avoid variable interpolation inside the prepared string.
 			$sql = 'SELECT COUNT(*) FROM ' . $escaped_table . ' WHERE module_key = %s';
-			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql built from esc_sql'd table name; value is prepared.
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Table name is escaped, value is prepared, and this small lookup is intentionally uncached.
 			$exists = $wpdb->get_var( $wpdb->prepare( $sql, $module['key'] ) );
 
 			if ( $exists ) {

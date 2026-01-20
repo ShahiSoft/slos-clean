@@ -1,4 +1,14 @@
 <?php
+/**
+ * Consent Logs Admin Template
+ *
+ * Displays consent audit logs and filtering options.
+ *
+ * @package ShahiLegalFlowSuite
+ * @subpackage Templates/Admin
+ * @since 4.2.0
+ */
+
 // Prevent direct access.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -19,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<input type="date" 
 						id="date_from" 
 						name="date_from" 
-						value="<?php echo esc_attr( $_GET['date_from'] ?? '' ); ?>">
+						value="<?php echo esc_attr( sanitize_text_field( wp_unslash( $_GET['date_from'] ?? '' ) ) ); ?>">
 				</div>
 
 				<div class="slos-filter-group">
@@ -27,7 +37,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<input type="date" 
 						id="date_to" 
 						name="date_to" 
-						value="<?php echo esc_attr( $_GET['date_to'] ?? '' ); ?>">
+						value="<?php echo esc_attr( sanitize_text_field( wp_unslash( $_GET['date_to'] ?? '' ) ) ); ?>">
 				</div>
 
 				<!-- Action Filter -->
@@ -35,11 +45,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<label for="action_filter"><?php esc_html_e( 'Action:', 'shahi-legalflowsuite' ); ?></label>
 					<select id="action_filter" name="action">
 						<option value=""><?php esc_html_e( 'All Actions', 'shahi-legalflowsuite' ); ?></option>
-						<option value="grant" <?php selected( $_GET['action'] ?? '', 'grant' ); ?>><?php esc_html_e( 'Grant', 'shahi-legalflowsuite' ); ?></option>
-						<option value="withdraw" <?php selected( $_GET['action'] ?? '', 'withdraw' ); ?>><?php esc_html_e( 'Withdraw', 'shahi-legalflowsuite' ); ?></option>
-						<option value="update" <?php selected( $_GET['action'] ?? '', 'update' ); ?>><?php esc_html_e( 'Update', 'shahi-legalflowsuite' ); ?></option>
-						<option value="import" <?php selected( $_GET['action'] ?? '', 'import' ); ?>><?php esc_html_e( 'Import', 'shahi-legalflowsuite' ); ?></option>
-						<option value="export" <?php selected( $_GET['action'] ?? '', 'export' ); ?>><?php esc_html_e( 'Export', 'shahi-legalflowsuite' ); ?></option>
+						<option value="grant" <?php selected( sanitize_text_field( wp_unslash( $_GET['action'] ?? '' ) ), 'grant' ); ?>><?php esc_html_e( 'Grant', 'shahi-legalflowsuite' ); ?></option>
+						<option value="withdraw" <?php selected( sanitize_text_field( wp_unslash( $_GET['action'] ?? '' ) ), 'withdraw' ); ?>><?php esc_html_e( 'Withdraw', 'shahi-legalflowsuite' ); ?></option>
+						<option value="update" <?php selected( sanitize_text_field( wp_unslash( $_GET['action'] ?? '' ) ), 'update' ); ?>><?php esc_html_e( 'Update', 'shahi-legalflowsuite' ); ?></option>
+						<option value="import" <?php selected( sanitize_text_field( wp_unslash( $_GET['action'] ?? '' ) ), 'import' ); ?>><?php esc_html_e( 'Import', 'shahi-legalflowsuite' ); ?></option>
+						<option value="export" <?php selected( sanitize_text_field( wp_unslash( $_GET['action'] ?? '' ) ), 'export' ); ?>><?php esc_html_e( 'Export', 'shahi-legalflowsuite' ); ?></option>
 					</select>
 				</div>
 
@@ -48,10 +58,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<label for="purpose_filter"><?php esc_html_e( 'Purpose:', 'shahi-legalflowsuite' ); ?></label>
 					<select id="purpose_filter" name="purpose">
 						<option value=""><?php esc_html_e( 'All Purposes', 'shahi-legalflowsuite' ); ?></option>
-						<option value="necessary" <?php selected( $_GET['purpose'] ?? '', 'necessary' ); ?>><?php esc_html_e( 'Necessary', 'shahi-legalflowsuite' ); ?></option>
-						<option value="analytics" <?php selected( $_GET['purpose'] ?? '', 'analytics' ); ?>><?php esc_html_e( 'Analytics', 'shahi-legalflowsuite' ); ?></option>
-						<option value="marketing" <?php selected( $_GET['purpose'] ?? '', 'marketing' ); ?>><?php esc_html_e( 'Marketing', 'shahi-legalflowsuite' ); ?></option>
-						<option value="preferences" <?php selected( $_GET['purpose'] ?? '', 'preferences' ); ?>><?php esc_html_e( 'Preferences', 'shahi-legalflowsuite' ); ?></option>
+						<option value="necessary" <?php selected( sanitize_text_field( wp_unslash( $_GET['purpose'] ?? '' ) ), 'necessary' ); ?>><?php esc_html_e( 'Necessary', 'shahi-legalflowsuite' ); ?></option>
+						<option value="analytics" <?php selected( sanitize_text_field( wp_unslash( $_GET['purpose'] ?? '' ) ), 'analytics' ); ?>><?php esc_html_e( 'Analytics', 'shahi-legalflowsuite' ); ?></option>
+						<option value="marketing" <?php selected( sanitize_text_field( wp_unslash( $_GET['purpose'] ?? '' ) ), 'marketing' ); ?>><?php esc_html_e( 'Marketing', 'shahi-legalflowsuite' ); ?></option>
+						<option value="preferences" <?php selected( sanitize_text_field( wp_unslash( $_GET['purpose'] ?? '' ) ), 'preferences' ); ?>><?php esc_html_e( 'Preferences', 'shahi-legalflowsuite' ); ?></option>
 					</select>
 				</div>
 
@@ -61,7 +71,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<input type="number" 
 						id="user_id_filter" 
 						name="user_id" 
-						value="<?php echo esc_attr( $_GET['user_id'] ?? '' ); ?>" 
+						value="<?php echo esc_attr( sanitize_text_field( wp_unslash( $_GET['user_id'] ?? '' ) ) ); ?>" 
 						placeholder="<?php esc_attr_e( 'User ID', 'shahi-legalflowsuite' ); ?>">
 				</div>
 

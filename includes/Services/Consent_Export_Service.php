@@ -52,7 +52,7 @@ class Consent_Export_Service extends Base_Service {
 	 *
 	 * @since 3.0.1
 	 * @param array $args {
-	 *     Export arguments
+	 *     Export arguments.
 	 *
 	 *     @type string $format    Export format: csv|json|pdf (default: csv)
 	 *     @type int    $user_id   Filter by user ID
@@ -105,13 +105,17 @@ class Consent_Export_Service extends Base_Service {
 	 * Export to CSV format
 	 *
 	 * @since 3.0.1
-	 * @param array $items Consent records
+	 * @param array $items Consent records.
 	 * @return string CSV content
 	 */
 	private function export_csv( array $items ): string {
-		$fh = fopen( 'php://temp', 'w' );
+		// Use output buffering instead of fopen for CSV generation.
+		ob_start();
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- Using PHP output stream for CSV, WP_Filesystem is not appropriate.
+		$fh = fopen( 'php://output', 'w' );
 
 		if ( false === $fh ) {
+			ob_end_clean();
 			return '';
 		}
 
@@ -149,9 +153,9 @@ class Consent_Export_Service extends Base_Service {
 			);
 		}
 
-		rewind( $fh );
-		$content = stream_get_contents( $fh );
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Closing PHP output stream handle.
 		fclose( $fh );
+		$content = ob_get_clean();
 
 		return $content;
 	}
@@ -160,7 +164,7 @@ class Consent_Export_Service extends Base_Service {
 	 * Export to JSON format
 	 *
 	 * @since 3.0.1
-	 * @param array $items Consent records
+	 * @param array $items Consent records.
 	 * @return string JSON content
 	 */
 	private function export_json( array $items ): string {
@@ -189,7 +193,7 @@ class Consent_Export_Service extends Base_Service {
 	 * Export to PDF format (HTML for PDF rendering)
 	 *
 	 * @since 3.0.1
-	 * @param array $items Consent records
+	 * @param array $items Consent records.
 	 * @return string HTML content for PDF conversion
 	 */
 	private function export_pdf( array $items ): string {
@@ -239,7 +243,7 @@ class Consent_Export_Service extends Base_Service {
 	 * Import consents from array data
 	 *
 	 * @since 3.0.1
-	 * @param array $data Array of consent rows to import
+	 * @param array $data Array of consent rows to import.
 	 * @return array Summary with imported and skipped counts
 	 */
 	public function import( array $data ): array {
@@ -301,7 +305,7 @@ class Consent_Export_Service extends Base_Service {
 	 * Validate import row data
 	 *
 	 * @since 3.0.1
-	 * @param array $row Row data to validate
+	 * @param array $row Row data to validate.
 	 * @return true|\WP_Error True if valid, WP_Error otherwise
 	 */
 	private function validate_import_row( array $row ) {
@@ -354,7 +358,7 @@ class Consent_Export_Service extends Base_Service {
 	 * Parse CSV file to array
 	 *
 	 * @since 3.0.1
-	 * @param string $file_path Path to CSV file
+	 * @param string $file_path Path to CSV file.
 	 * @return array|WP_Error Array of rows or WP_Error on failure
 	 */
 	public function parse_csv( string $file_path ) {
@@ -365,6 +369,7 @@ class Consent_Export_Service extends Base_Service {
 			);
 		}
 
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- Direct file access needed for CSV parsing.
 		$fh = fopen( $file_path, 'r' );
 		if ( false === $fh ) {
 			return new \WP_Error(
@@ -377,6 +382,7 @@ class Consent_Export_Service extends Base_Service {
 		$header = fgetcsv( $fh );
 
 		if ( false === $header ) {
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Closing file opened above.
 			fclose( $fh );
 			return new \WP_Error(
 				'invalid_csv',
@@ -393,12 +399,14 @@ class Consent_Export_Service extends Base_Service {
 			$header
 		);
 
+		// phpcs:ignore -- Standard PHP pattern for reading CSV.
 		while ( ( $data = fgetcsv( $fh ) ) !== false ) {
 			if ( count( $data ) === count( $header ) ) {
 				$rows[] = array_combine( $header, $data );
 			}
 		}
 
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Closing file opened above.
 		fclose( $fh );
 
 		return $rows;
@@ -408,7 +416,7 @@ class Consent_Export_Service extends Base_Service {
 	 * Schedule export for cron execution
 	 *
 	 * @since 3.0.1
-	 * @param array $args Export arguments
+	 * @param array $args Export arguments.
 	 * @return bool True if scheduled successfully
 	 */
 	public function schedule_export( array $args = array() ): bool {
@@ -430,7 +438,7 @@ class Consent_Export_Service extends Base_Service {
 	 * Execute scheduled export
 	 *
 	 * @since 3.0.1
-	 * @param array $args Export arguments
+	 * @param array $args Export arguments.
 	 * @return bool True if export successful
 	 */
 	public function run_scheduled_export( array $args = array() ): bool {
@@ -458,7 +466,15 @@ class Consent_Export_Service extends Base_Service {
 		);
 
 		$file_path = $export_dir . $filename;
-		$result    = file_put_contents( $file_path, $data );
+
+		// Use WP_Filesystem for file operations.
+		global $wp_filesystem;
+		if ( ! $wp_filesystem ) {
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+			WP_Filesystem();
+		}
+
+		$result = $wp_filesystem->put_contents( $file_path, $data );
 
 		if ( false !== $result ) {
 			// Fire action for successful export..
@@ -477,7 +493,7 @@ class Consent_Export_Service extends Base_Service {
 	 * Send export notification email
 	 *
 	 * @since 3.0.1
-	 * @param string $file_path Path to export file
+	 * @param string $file_path Path to export file.
 	 * @return bool True if email sent
 	 */
 	private function send_export_notification( string $file_path ): bool {

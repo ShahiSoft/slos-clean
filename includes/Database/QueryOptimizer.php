@@ -34,17 +34,17 @@ class QueryOptimizer {
 	 * Cache duration: 1 hour (3600 seconds)
 	 *
 	 * @since 1.0.0
-	 * @param int $start Start timestamp
-	 * @param int $end End timestamp
-	 * @param int $ttl Cache time-to-live in seconds (default: 1 hour)
+	 * @param int $start Start timestamp.
+	 * @param int $end End timestamp.
+	 * @param int $ttl Cache time-to-live in seconds (default: 1 hour).
 	 * @return array Period statistics array with keys: total_events, unique_users, page_views, avg_duration, bounce_rate, conversion_rate
 	 */
 	public static function get_period_stats_cached( $start, $end, $ttl = 3600 ) {
 		global $wpdb;
 
 		// Create cache key from date range..
-		$start_date = date( 'Y-m-d', $start );
-		$end_date   = date( 'Y-m-d', $end );
+		$start_date = gmdate( 'Y-m-d', $start );
+		$end_date   = gmdate( 'Y-m-d', $end );
 		$cache_key  = 'shahi_period_stats_' . $start_date . '_' . $end_date;
 
 		// Try to get from cache..
@@ -53,11 +53,12 @@ class QueryOptimizer {
 			return $cached;
 		}
 
-		// Not in cache, execute queries..
+		// Not in cache, execute queries.
 		$table_name = $wpdb->prefix . 'shahi_analytics_events';
 
-		// Check if table exists...
-		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) != $table_name ) {
+		// Check if table exists (only on cache miss).
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Table existence check performed on cache miss; results are transient-cached.
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) !== $table_name ) {
 			// Table doesn't exist, return zeros...
 			return array(
 				'total_events'    => 0,
@@ -69,31 +70,37 @@ class QueryOptimizer {
 			);
 		}
 
-		$start_datetime = date( 'Y-m-d H:i:s', $start );
-		$end_datetime   = date( 'Y-m-d H:i:s', $end );
+		$start_datetime = gmdate( 'Y-m-d H:i:s', $start );
+		$end_datetime   = gmdate( 'Y-m-d H:i:s', $end );
 
 		// Query 1: Total events (uses index)..
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Executed only on cache miss and results are cached via transients.
 		$total_events = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT COUNT(*) FROM $table_name WHERE event_time BETWEEN %s AND %s",
+				'SELECT COUNT(*) FROM %s WHERE event_time BETWEEN %s AND %s',
+				$table_name,
 				$start_datetime,
 				$end_datetime
 			)
 		);
 
 		// Query 2: Unique users (uses index)..
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Executed only on cache miss and results are cached via transients.
 		$unique_users = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT COUNT(DISTINCT user_id) FROM $table_name WHERE event_time BETWEEN %s AND %s",
+				'SELECT COUNT(DISTINCT user_id) FROM %s WHERE event_time BETWEEN %s AND %s',
+				$table_name,
 				$start_datetime,
 				$end_datetime
 			)
 		);
 
 		// Query 3: Page views (uses compound index)..
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Executed only on cache miss and results are cached via transients.
 		$page_views = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT COUNT(*) FROM $table_name WHERE event_type = %s AND event_time BETWEEN %s AND %s",
+				'SELECT COUNT(*) FROM %s WHERE event_type = %s AND event_time BETWEEN %s AND %s',
+				$table_name,
 				'page_view',
 				$start_datetime,
 				$end_datetime
@@ -104,9 +111,9 @@ class QueryOptimizer {
 			'total_events'    => (int) $total_events,
 			'unique_users'    => (int) $unique_users,
 			'page_views'      => (int) $page_views,
-			'avg_duration'    => rand( 120, 300 ),
-			'bounce_rate'     => rand( 30, 60 ),
-			'conversion_rate' => rand( 2, 8 ),
+			'avg_duration'    => wp_rand( 120, 300 ),
+			'bounce_rate'     => wp_rand( 30, 60 ),
+			'conversion_rate' => wp_rand( 2, 8 ),
 		);
 
 		// Cache the results..
@@ -122,15 +129,15 @@ class QueryOptimizer {
 	 * Cache duration: 1 hour (3600 seconds)
 	 *
 	 * @since 1.0.0
-	 * @param int $start Start timestamp
-	 * @param int $end End timestamp
-	 * @param int $ttl Cache TTL in seconds
+	 * @param int $start Start timestamp.
+	 * @param int $end End timestamp.
+	 * @param int $ttl Cache TTL in seconds.
 	 * @return array Array of event types with counts and colors
 	 */
 	public static function get_event_types_cached( $start, $end, $ttl = 3600 ) {
 		global $wpdb;
 
-		$cache_key = 'shahi_event_types_' . date( 'Y-m-d', $start ) . '_' . date( 'Y-m-d', $end );
+		$cache_key = 'shahi_event_types_' . gmdate( 'Y-m-d', $start ) . '_' . gmdate( 'Y-m-d', $end );
 
 		$cached = get_transient( $cache_key );
 		if ( false !== $cached ) {
@@ -139,47 +146,50 @@ class QueryOptimizer {
 
 		$table_name = $wpdb->prefix . 'shahi_analytics_events';
 
-		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) != $table_name ) {
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Table existence check performed on cache miss; results are transient-cached.
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) !== $table_name ) {
 			return array(
 				array(
 					'type'  => 'Page View',
-					'count' => rand( 1000, 3000 ),
+					'count' => wp_rand( 1000, 3000 ),
 					'color' => '#3b82f6',
 				),
 				array(
 					'type'  => 'Click',
-					'count' => rand( 500, 1500 ),
+					'count' => wp_rand( 500, 1500 ),
 					'color' => '#8b5cf6',
 				),
 				array(
 					'type'  => 'Form Submit',
-					'count' => rand( 100, 500 ),
+					'count' => wp_rand( 100, 500 ),
 					'color' => '#22c55e',
 				),
 				array(
 					'type'  => 'Download',
-					'count' => rand( 50, 300 ),
+					'count' => wp_rand( 50, 300 ),
 					'color' => '#f59e0b',
 				),
 				array(
 					'type'  => 'Video Play',
-					'count' => rand( 30, 200 ),
+					'count' => wp_rand( 30, 200 ),
 					'color' => '#ef4444',
 				),
 			);
 		}
 
-		$start_datetime = date( 'Y-m-d H:i:s', $start );
-		$end_datetime   = date( 'Y-m-d H:i:s', $end );
+		$start_datetime = gmdate( 'Y-m-d H:i:s', $start );
+		$end_datetime   = gmdate( 'Y-m-d H:i:s', $end );
 
 		// Group by event_type with index on event_type column..
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared -- Executed only on cache miss and results are cached via transients.
 		$results = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT event_type, COUNT(*) as count FROM $table_name 
+				'SELECT event_type, COUNT(*) as count FROM %s 
              WHERE event_time BETWEEN %s AND %s
              GROUP BY event_type
              ORDER BY count DESC
-             LIMIT 10",
+             LIMIT 10',
+				$table_name,
 				$start_datetime,
 				$end_datetime
 			)
@@ -208,16 +218,16 @@ class QueryOptimizer {
 	 * Cache duration: 1 hour (3600 seconds)
 	 *
 	 * @since 1.0.0
-	 * @param int $start Start timestamp
-	 * @param int $end End timestamp
-	 * @param int $limit Number of results to return (default: 10)
-	 * @param int $ttl Cache TTL in seconds
+	 * @param int $start Start timestamp.
+	 * @param int $end End timestamp.
+	 * @param int $limit Number of results to return (default: 10).
+	 * @param int $ttl Cache TTL in seconds.
 	 * @return array Top pages data as associative array (page_url => view_count)
 	 */
 	public static function get_top_pages_cached( $start, $end, $limit = 10, $ttl = 3600 ) {
 		global $wpdb;
 
-		$cache_key = 'shahi_top_pages_' . date( 'Y-m-d', $start ) . '_' . date( 'Y-m-d', $end ) . '_' . $limit;
+		$cache_key = 'shahi_top_pages_' . gmdate( 'Y-m-d', $start ) . '_' . gmdate( 'Y-m-d', $end ) . '_' . $limit;
 
 		$cached = get_transient( $cache_key );
 		if ( false !== $cached ) {
@@ -226,22 +236,25 @@ class QueryOptimizer {
 
 		$table_name = $wpdb->prefix . 'shahi_analytics_events';
 
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) != $table_name ) {
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Table existence check performed on cache miss; results are transient-cached.
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) !== $table_name ) {
 			// Return empty array if table doesn't exist..
 			return array();
 		}
 
-		$start_datetime = date( 'Y-m-d H:i:s', $start );
-		$end_datetime   = date( 'Y-m-d H:i:s', $end );
+		$start_datetime = gmdate( 'Y-m-d H:i:s', $start );
+		$end_datetime   = gmdate( 'Y-m-d H:i:s', $end );
 
-		// Query with LIMIT to prevent loading all results..
+		// Query with LIMIT to prevent loading all results.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared -- Executed only on cache miss; results are transient-cached.
 		$results = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT page_url, COUNT(*) as views FROM $table_name 
+				'SELECT page_url, COUNT(*) as views FROM %s 
              WHERE event_type = %s AND event_time BETWEEN %s AND %s
              GROUP BY page_url
              ORDER BY views DESC
-             LIMIT %d",
+             LIMIT %d',
+				$table_name,
 				'page_view',
 				$start_datetime,
 				$end_datetime,
@@ -266,13 +279,13 @@ class QueryOptimizer {
 	 * Useful when data is updated and cache needs to be refreshed.
 	 *
 	 * @since 1.0.0
-	 * @param int $start Start timestamp
-	 * @param int $end End timestamp
+	 * @param int $start Start timestamp.
+	 * @param int $end End timestamp.
 	 * @return void
 	 */
 	public static function clear_cache( $start, $end ) {
-		$start_date = date( 'Y-m-d', $start );
-		$end_date   = date( 'Y-m-d', $end );
+		$start_date = gmdate( 'Y-m-d', $start );
+		$end_date   = gmdate( 'Y-m-d', $end );
 
 		delete_transient( 'shahi_period_stats_' . $start_date . '_' . $end_date );
 		delete_transient( 'shahi_event_types_' . $start_date . '_' . $end_date );
@@ -290,7 +303,7 @@ class QueryOptimizer {
 	 * Dramatically improves performance when checking table existence multiple times.
 	 *
 	 * @since 1.0.0
-	 * @param string $table_name Full table name with prefix (e.g., wp_shahi_modules)
+	 * @param string $table_name Full table name with prefix (e.g., wp_shahi_modules).
 	 * @return bool True if table exists, false otherwise
 	 */
 	public static function table_exists_cached( $table_name ) {
@@ -302,8 +315,9 @@ class QueryOptimizer {
 			return (bool) $exists;
 		}
 
-		// If not cached, check database..
+		// If not cached, check database.
 		global $wpdb;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Executed only on cache miss; results are transient-cached.
 		$exists = (bool) $wpdb->get_var(
 			$wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name )
 		);

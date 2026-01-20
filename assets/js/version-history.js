@@ -70,7 +70,7 @@
 				'click',
 				function () {
 					const versionId = $( this ).data( 'version-id' );
-					const docId = $( this ).data( 'doc-id' );
+					const docId     = $( this ).data( 'doc-id' );
 					self.rollbackVersion( docId, versionId );
 				}
 			);
@@ -143,7 +143,7 @@
 				return;
 			}
 
-			const self = this;
+			const self       = this;
 			const version1Id = this.selectedVersions[0];
 			const version2Id = this.selectedVersions[1];
 
@@ -193,14 +193,14 @@
 		 */
 		renderComparison( data ) {
 			let html = '<div class="slos-comparison-header">';
-			html += '<div class="slos-comparison-info">';
-			html += '<div class="slos-version-info slos-version-left">';
-			html += '<h3>Version ' + data.version1.version + '</h3>';
-			html +=
+			html    += '<div class="slos-comparison-info">';
+			html    += '<div class="slos-version-info slos-version-left">';
+			html    += '<h3>Version ' + data.version1.version + '</h3>';
+			html    +=
 				'<p><strong>Status:</strong> ' + data.version1.status + '</p>';
-			html +=
+			html    +=
 				'<p><strong>Author:</strong> ' + data.version1.author + '</p>';
-			html +=
+			html    +=
 				'<p><strong>Date:</strong> ' +
 				data.version1.created_at +
 				'</p>';
@@ -257,19 +257,19 @@
 		}
 
 			let html = '<div class="slos-version-details">';
-			html += '<div class="slos-version-meta">';
-			html += '<p><strong>Version:</strong> ' + version.version + '</p>';
-			html +=
+			html    += '<div class="slos-version-meta">';
+			html    += '<p><strong>Version:</strong> ' + version.version + '</p>';
+			html    +=
 				'<p><strong>Status:</strong> <span class="slos-status-badge slos-status-' +
 				(version.status || 'draft') +
 				'">' +
 				(version.status || 'draft') +
 				'</span></p>';
-			html +=
+			html    +=
 				'<p><strong>Author:</strong> ' +
 				this.escapeHtml( version.author_name ) +
 				'</p>';
-			html += '<p><strong>Date:</strong> ' + version.created_at + '</p>';
+			html    += '<p><strong>Date:</strong> ' + version.created_at + '</p>';
 		if (version.changelog) {
 			html +=
 				'<p><strong>Changelog:</strong> ' +
@@ -301,8 +301,8 @@
 				return;
 			}
 
-			const self = this;
-			const $btn = $(
+			const self         = this;
+			const $btn         = $(
 				'.rollback-btn[data-version-id="' + versionId + '"]'
 			);
 			const originalText = $btn.text();
@@ -348,13 +348,13 @@
 		 */
 		filterVersions() {
 			const showPublished = $( '#filter-published' ).is( ':checked' );
-			const showDraft = $( '#filter-draft' ).is( ':checked' );
-			const showArchived = $( '#filter-archived' ).is( ':checked' );
+			const showDraft     = $( '#filter-draft' ).is( ':checked' );
+			const showArchived  = $( '#filter-archived' ).is( ':checked' );
 
 			$( '.slos-version-row' ).each(
 				function () {
 					const status = $( this ).data( 'status' );
-					let show = false;
+					let show     = false;
 
 					if (status === 'published' && showPublished) {
 						show = true;

@@ -203,12 +203,12 @@ foreach ( $modules_status as $module ) {
 						<?php echo esc_html__( 'Jump directly to common tasks. Manage data subject requests, configure consent banners, generate legal documents, or adjust plugin settings with one click.', 'shahi-legalflowsuite' ); ?>
 					</p>
 					<div class="shahi-actions-grid">
-						<?php foreach ( $quick_actions as $action ) : ?>
-							<a href="<?php echo esc_url( $action['url'] ); ?>" class="shahi-action-tile">
+						<?php foreach ( $quick_actions as $quick_action ) : ?>
+							<a href="<?php echo esc_url( $quick_action['url'] ); ?>" class="shahi-action-tile">
 								<div class="shahi-action-icon-wrap">
-									<span class="dashicons <?php echo esc_attr( $action['icon'] ); ?>"></span>
+									<span class="dashicons <?php echo esc_attr( $quick_action['icon'] ); ?>"></span>
 								</div>
-								<span class="shahi-action-title"><?php echo esc_html( $action['title'] ); ?></span>
+								<span class="shahi-action-title"><?php echo esc_html( $quick_action['title'] ); ?></span>
 							</a>
 						<?php endforeach; ?>
 					</div>
@@ -241,7 +241,7 @@ foreach ( $modules_status as $module ) {
 							<circle cx="60" cy="60" r="54" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="8"/>
 							<circle cx="60" cy="60" r="54" fill="none" stroke="url(#gradient)" stroke-width="8" 
 									stroke-dasharray="339.292" 
-									stroke-dashoffset="<?php echo 339.292 - ( 339.292 * $setup_progress / 100 ); ?>"
+									stroke-dashoffset="<?php echo esc_attr( 339.292 - ( 339.292 * $setup_progress / 100 ) ); ?>"
 									stroke-linecap="round"
 									transform="rotate(-90 60 60)"/>
 							<defs>
@@ -334,12 +334,12 @@ foreach ( $modules_status as $module ) {
 						<?php echo esc_html__( 'Get help with setup, learn best practices for compliance, or contact our support team for assistance with complex configurations.', 'shahi-legalflowsuite' ); ?>
 					</p>
 					<div class="shahi-support-list">
-						<?php foreach ( array_slice( $support_links, 0, 4 ) as $link ) : ?>
-							<a href="<?php echo esc_url( $link['url'] ); ?>" 
+						<?php foreach ( array_slice( $support_links, 0, 4 ) as $support_link ) : ?>
+							<a href="<?php echo esc_url( $support_link['url'] ); ?>" 
 								class="shahi-support-item"
-								<?php echo $link['external'] ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>>
-								<span class="dashicons <?php echo esc_attr( $link['icon'] ); ?>"></span>
-								<span class="shahi-support-text"><?php echo esc_html( $link['title'] ); ?></span>
+								<?php echo $support_link['external'] ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>>
+								<span class="dashicons <?php echo esc_attr( $support_link['icon'] ); ?>"></span>
+								<span class="shahi-support-text"><?php echo esc_html( $support_link['title'] ); ?></span>
 								<span class="dashicons dashicons-arrow-right-alt2"></span>
 							</a>
 						<?php endforeach; ?>

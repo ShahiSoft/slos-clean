@@ -64,20 +64,6 @@ if ( file_exists( SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'vendor/autoload.php' ) ) {
 require_once SHAHI_LEGALFLOWSUITE_PLUGIN_DIR . 'includes/Core/Autoloader.php';
 ShahiLegalFlowSuite\Core\Autoloader::register();
 
-// Load translations at init hook to avoid just-in-time load notices.
-// phpcs:ignore PluginCheck.CodeAnalysis.DiscouragedFunctions.load_plugin_textdomainFound
-add_action(
-	'init',
-	function () {
-		load_plugin_textdomain(
-			'shahi-legalflowsuite',
-			false,
-			dirname( plugin_basename( __FILE__ ) ) . '/languages/'
-		);
-	},
-	1
-);
-
 /**
  * Plugin Activation Hook
  */

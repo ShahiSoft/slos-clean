@@ -358,8 +358,9 @@ class Profile_Wizard {
 				echo '>';
 				foreach ( $options as $opt_value => $opt_label ) {
 					$selected = selected( $value, $opt_value, false );
-					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- selected() already escapes
-					echo '<option value="' . esc_attr( $opt_value ) . '"' . $selected . '>';
+					echo '<option value="' . esc_attr( $opt_value ) . '"';
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- selected() already escapes.
+					echo $selected . '>';
 					echo esc_html( $opt_label );
 					echo '</option>';
 				}
@@ -375,8 +376,9 @@ class Profile_Wizard {
 					echo '<label class="slos-radio-label" for="' . esc_attr( $radio_id ) . '">';
 					echo '<input type="radio" id="' . esc_attr( $radio_id ) . '" ';
 					echo 'name="' . esc_attr( $field_name ) . '" ';
-					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- checked() already escapes
-					echo 'value="' . esc_attr( $opt_value ) . '"' . $checked . ' ';
+					echo 'value="' . esc_attr( $opt_value ) . '"';
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- checked() already escapes.
+					echo $checked . ' ';
 					echo 'class="slos-field-radio">';
 					echo '<span class="slos-radio-text">' . esc_html( $opt_label ) . '</span>';
 					echo '</label>';
@@ -405,7 +407,7 @@ class Profile_Wizard {
 			case 'tags':
 				$suggestions = $field['suggestions'] ?? array();
 				$value       = is_array( $value ) ? $value : array();
-				echo '<div class="slos-tags-input" data-suggestions=\'' . wp_json_encode( $suggestions ) . '\'>';
+				echo '<div class="slos-tags-input" data-suggestions="' . esc_attr( wp_json_encode( $suggestions ) ) . '">';
 				echo '<div class="slos-tags-container" id="' . esc_attr( $field_id ) . '-tags">';
 				foreach ( $value as $tag ) {
 					echo '<span class="slos-tag">' . esc_html( $tag );

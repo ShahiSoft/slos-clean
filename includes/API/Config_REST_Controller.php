@@ -164,20 +164,20 @@ class Config_REST_Controller extends Base_REST_Controller {
 	 * Export configuration
 	 *
 	 * @since 3.1.1
-	 * @param WP_REST_Request $request Request object
-	 * @return WP_REST_Response|WP_Error Response or error
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Response|WP_Error Response or error.
 	 */
 	public function export_config( WP_REST_Request $request ) {
-		$options  = $request->get_param( 'options' ) ?: array();
+		$options  = $request->get_param( 'options' ) ? $request->get_param( 'options' ) : array();
 		$metadata = array(
-			'name'        => $request->get_param( 'name' ) ?: 'Compliance Config ' . gmdate( 'Y-m-d' ),
-			'description' => $request->get_param( 'description' ) ?: '',
+			'name'        => $request->get_param( 'name' ) ? $request->get_param( 'name' ) : 'Compliance Config ' . gmdate( 'Y-m-d' ),
+			'description' => $request->get_param( 'description' ) ? $request->get_param( 'description' ) : '',
 		);
 
 		$to_file = $request->get_param( 'to_file' ) ?? false;
 
 		if ( $to_file ) {
-			$filename = $request->get_param( 'filename' ) ?: 'slos-config';
+			$filename = $request->get_param( 'filename' ) ? $request->get_param( 'filename' ) : 'slos-config';
 			$result   = $this->sync_service->export_to_file( $options, $metadata, $filename );
 
 			if ( is_wp_error( $result ) ) {
@@ -217,8 +217,8 @@ class Config_REST_Controller extends Base_REST_Controller {
 	 * Import configuration
 	 *
 	 * @since 3.1.1
-	 * @param WP_REST_Request $request Request object
-	 * @return WP_REST_Response|WP_Error Response or error
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Response|WP_Error Response or error.
 	 */
 	public function import_config( WP_REST_Request $request ) {
 		$profile  = $request->get_param( 'profile' );
@@ -258,7 +258,7 @@ class Config_REST_Controller extends Base_REST_Controller {
 
 		return new WP_REST_Response(
 			array(
-				'success' => $error_count === 0,
+				'success' => 0 === $error_count,
 				'results' => $result,
 				'summary' => array(
 					'imported' => $success_count,
@@ -275,7 +275,7 @@ class Config_REST_Controller extends Base_REST_Controller {
 						$error_count
 					),
 			),
-			$error_count === 0 ? 200 : 207 // 207 Multi-Status if partial success
+			0 === $error_count ? 200 : 207 // 207 Multi-Status if partial success
 		);
 	}
 
@@ -283,8 +283,8 @@ class Config_REST_Controller extends Base_REST_Controller {
 	 * List available export files
 	 *
 	 * @since 3.1.1
-	 * @param WP_REST_Request $request Request object
-	 * @return WP_REST_Response Response
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Response Response.
 	 */
 	public function list_exports( WP_REST_Request $request ) {
 		$exports = $this->sync_service->get_available_exports();
@@ -303,8 +303,8 @@ class Config_REST_Controller extends Base_REST_Controller {
 	 * Delete export file
 	 *
 	 * @since 3.1.1
-	 * @param WP_REST_Request $request Request object
-	 * @return WP_REST_Response|WP_Error Response or error
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Response|WP_Error Response or error.
 	 */
 	public function delete_export( WP_REST_Request $request ) {
 		$filename = $request->get_param( 'filename' );
@@ -328,8 +328,8 @@ class Config_REST_Controller extends Base_REST_Controller {
 	 * Validate configuration profile
 	 *
 	 * @since 3.1.1
-	 * @param WP_REST_Request $request Request object
-	 * @return WP_REST_Response|WP_Error Response or error
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Response|WP_Error Response or error.
 	 */
 	public function validate_config( WP_REST_Request $request ) {
 		$profile = $request->get_param( 'profile' );
@@ -343,7 +343,7 @@ class Config_REST_Controller extends Base_REST_Controller {
 					'errors'  => $validation->get_error_data(),
 					'message' => $validation->get_error_message(),
 				),
-				200 // Return 200 with validation results, not an error status
+				200 // Return 200 with validation results, not an error status.
 			);
 		}
 
@@ -361,8 +361,8 @@ class Config_REST_Controller extends Base_REST_Controller {
 	 * Compare configurations
 	 *
 	 * @since 3.1.1
-	 * @param WP_REST_Request $request Request object
-	 * @return WP_REST_Response|WP_Error Response or error
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Response|WP_Error Response or error.
 	 */
 	public function compare_configs( WP_REST_Request $request ) {
 		$filename = $request->get_param( 'filename' );
@@ -377,7 +377,7 @@ class Config_REST_Controller extends Base_REST_Controller {
 		// Get imported config..
 		$upload_dir    = wp_upload_dir();
 		$filepath      = trailingslashit( $upload_dir['basedir'] ) . 'slos-exports/' . basename( $filename );
-		$imported_json = file_get_contents( $filepath );
+		$imported_json = file_get_contents( $filepath ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- reading local file for import
 
 		if ( false === $imported_json ) {
 			return new WP_Error(
@@ -418,7 +418,7 @@ class Config_REST_Controller extends Base_REST_Controller {
 	 * Download export file
 	 *
 	 * @since 3.1.1
-	 * @param WP_REST_Request $request Request object
+	 * @param WP_REST_Request $request Request object.
 	 * @return void
 	 */
 	public function download_export( WP_REST_Request $request ) {
@@ -430,13 +430,26 @@ class Config_REST_Controller extends Base_REST_Controller {
 			wp_die( esc_html__( 'File not found', 'shahi-legalflowsuite' ), 404 );
 		}
 
+		// Initialize WP_Filesystem.
+		global $wp_filesystem;
+		if ( ! function_exists( 'WP_Filesystem' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+		}
+		WP_Filesystem();
+
+		// Get file contents.
+		$file_contents = $wp_filesystem->get_contents( $filepath );
+		if ( false === $file_contents ) {
+			wp_die( esc_html__( 'Failed to read file', 'shahi-legalflowsuite' ), 500 );
+		}
+
 		// Set headers for download..
 		header( 'Content-Type: application/json' );
 		header( 'Content-Disposition: attachment; filename="' . basename( $filepath ) . '"' );
-		header( 'Content-Length: ' . filesize( $filepath ) );
+		header( 'Content-Length: ' . strlen( $file_contents ) );
 
 		// Output file..
-		readfile( $filepath );
+		echo $file_contents; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		exit;
 	}
 
@@ -514,8 +527,8 @@ class Config_REST_Controller extends Base_REST_Controller {
 	 * Get download URL for export file
 	 *
 	 * @since 3.1.1
-	 * @param string $filename Filename
-	 * @return string Download URL
+	 * @param string $filename Filename.
+	 * @return string Download URL.
 	 */
 	private function get_download_url( $filename ) {
 		return rest_url( $this->namespace . '/' . $this->rest_base . '/download/' . $filename );

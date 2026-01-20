@@ -39,12 +39,12 @@
 		 * Cache DOM elements
 		 */
 		cacheDom() {
-			this.$container = $( '.slos-hub-wrap' );
-			this.$grid = $( '.slos-hub-grid' );
-			this.$modal = $( '#slos-hub-modal' );
-			this.$viewModal = $( '#slos-hub-view-modal' );
+			this.$container    = $( '.slos-hub-wrap' );
+			this.$grid         = $( '.slos-hub-grid' );
+			this.$modal        = $( '#slos-hub-modal' );
+			this.$viewModal    = $( '#slos-hub-view-modal' );
 			this.$historyModal = $( '#slos-hub-history-modal' );
-			this.$nonce = $( '#slos-hub-nonce' ).val();
+			this.$nonce        = $( '#slos-hub-nonce' ).val();
 		},
 
 		/**
@@ -139,9 +139,9 @@
 		 */
 		handleGenerateClick( e ) {
 			e.preventDefault();
-			const $btn = $( e.currentTarget );
+			const $btn          = $( e.currentTarget );
 			this.currentDocType = $btn.data( 'type' );
-			this.isRegenerate = false;
+			this.isRegenerate   = false;
 
 			this.openGenerateModal();
 		},
@@ -153,10 +153,10 @@
 		 */
 		handleRegenerateClick( e ) {
 			e.preventDefault();
-			const $btn = $( e.currentTarget );
+			const $btn          = $( e.currentTarget );
 			this.currentDocType = $btn.data( 'type' );
-			this.currentDocId = $btn.data( 'doc-id' );
-			this.isRegenerate = true;
+			this.currentDocId   = $btn.data( 'doc-id' );
+			this.isRegenerate   = true;
 
 			// Confirm regeneration
 			if ( ! confirm( slosHub.strings.confirmRegenerate )) {
@@ -169,8 +169,8 @@
 		 * Open generate modal and load context
 		 */
 		openGenerateModal() {
-			const $title = this.$modal.find( '.slos-modal__title' );
-			const $body = this.$modal.find( '.slos-modal__body' );
+			const $title      = this.$modal.find( '.slos-modal__title' );
+			const $body       = this.$modal.find( '.slos-modal__body' );
 			const $confirmBtn = this.$modal.find( '.slos-hub-confirm-generate' );
 
 			$title.text(
@@ -195,8 +195,8 @@
 		 * Load generation context from server
 		 */
 		loadGenerationContext() {
-			const self = this;
-			const $body = this.$modal.find( '.slos-modal__body' );
+			const self        = this;
+			const $body       = this.$modal.find( '.slos-modal__body' );
 			const $confirmBtn = this.$modal.find( '.slos-hub-confirm-generate' );
 
 			$.ajax(
@@ -400,11 +400,11 @@
 		 */
 		handleViewClick( e ) {
 			e.preventDefault();
-			const $btn = $( e.currentTarget );
+			const $btn  = $( e.currentTarget );
 			const docId = $btn.data( 'doc-id' );
-			const self = this;
+			const self  = this;
 
-			const $body = this.$viewModal.find( '.slos-modal__body' );
+			const $body    = this.$viewModal.find( '.slos-modal__body' );
 			const $editBtn = this.$viewModal.find( '.slos-hub-edit-doc' );
 
 			$body.html(
@@ -467,9 +467,9 @@
 		 */
 		handleHistoryClick( e ) {
 			e.preventDefault();
-			const $btn = $( e.currentTarget );
+			const $btn  = $( e.currentTarget );
 			const docId = $btn.data( 'doc-id' );
-			const self = this;
+			const self  = this;
 
 			const $body = this.$historyModal.find( '.slos-modal__body' );
 			$body.html(
@@ -517,7 +517,7 @@
 		 */
 		renderHistory( versions ) {
 			const $body = this.$historyModal.find( '.slos-modal__body' );
-			let html = '<div class="slos-hub-history-list">';
+			let html    = '<div class="slos-hub-history-list">';
 
 			if ( ! versions || versions.length === 0) {
 				html +=
@@ -560,9 +560,9 @@
 		 */
 		handleDownloadClick( e ) {
 			e.preventDefault();
-			const $btn = $( e.currentTarget );
+			const $btn  = $( e.currentTarget );
 			const docId = $btn.data( 'doc-id' );
-			const self = this;
+			const self  = this;
 
 			$btn.addClass( 'slos-btn--loading' );
 
@@ -605,7 +605,7 @@
 		 */
 		handleCopyShortcode( e ) {
 			e.preventDefault();
-			const $btn = $( e.currentTarget );
+			const $btn      = $( e.currentTarget );
 			const shortcode = $btn.data( 'shortcode' );
 
 			if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -761,7 +761,7 @@
 		 */
 		handleFilter( e ) {
 			e.preventDefault();
-			const $btn = $( e.currentTarget );
+			const $btn   = $( e.currentTarget );
 			const filter = $btn.data( 'filter' );
 
 			// Update active state
@@ -805,8 +805,8 @@
 
 			$( '.slos-modal' ).removeClass( 'slos-modal--active' );
 			this.currentDocType = null;
-			this.currentDocId = null;
-			this.isRegenerate = false;
+			this.currentDocId   = null;
+			this.isRegenerate   = false;
 		},
 
 		/**

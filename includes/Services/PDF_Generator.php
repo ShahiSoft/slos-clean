@@ -99,9 +99,9 @@ class PDF_Generator {
 	 * Generate PDF from document data
 	 *
 	 * @since 3.0.0
-	 * @param array $document Document data with content, metadata
-	 * @param array $options  Optional generation options
-	 * @return string|WP_Error PDF binary data or error
+	 * @param array $document Document data with content, metadata.
+	 * @param array $options  Optional generation options.
+	 * @return string|WP_Error PDF binary data or error.
 	 */
 	public function generate_pdf( $document, $options = array() ) {
 		// Validate input..
@@ -162,9 +162,9 @@ class PDF_Generator {
 	 * Prepare HTML content for PDF generation
 	 *
 	 * @since 3.0.0
-	 * @param array $document Document data
-	 * @param array $options  Generation options
-	 * @return string Complete HTML with styling
+	 * @param array $document Document data.
+	 * @param array $options  Generation options.
+	 * @return string Complete HTML with styling.
 	 */
 	private function prepare_html( $document, $options = array() ) {
 		$content  = $document['content'];
@@ -220,9 +220,9 @@ class PDF_Generator {
 	 * Build PDF header with branding
 	 *
 	 * @since 3.0.0
-	 * @param array $document Document data
-	 * @param array $metadata Document metadata
-	 * @return string Header HTML
+	 * @param array $document Document data.
+	 * @param array $metadata Document metadata.
+	 * @return string Header HTML.
 	 */
 	private function build_header( $document, $metadata ) {
 		$site_name = get_bloginfo( 'name' );
@@ -268,9 +268,9 @@ class PDF_Generator {
 	 * Build PDF footer
 	 *
 	 * @since 3.0.0
-	 * @param array $document Document data
-	 * @param array $metadata Document metadata
-	 * @return string Footer HTML
+	 * @param array $document Document data.
+	 * @param array $metadata Document metadata.
+	 * @return string Footer HTML.
 	 */
 	private function build_footer( $document, $metadata ) {
 		$site_name = get_bloginfo( 'name' );
@@ -297,8 +297,8 @@ class PDF_Generator {
 	 * Generate table of contents from content
 	 *
 	 * @since 3.0.0
-	 * @param string $content HTML content
-	 * @return string TOC HTML
+	 * @param string $content HTML content.
+	 * @return string TOC HTML.
 	 */
 	private function generate_toc( $content ) {
 		// Parse headings from content..
@@ -315,7 +315,7 @@ class PDF_Generator {
 
 		foreach ( $matches as $index => $match ) {
 			$level   = intval( $match[1] );
-			$heading = strip_tags( $match[2] );
+			$heading = wp_strip_all_tags( $match[2] );
 			$id      = 'toc-' . $index;
 
 			// Add ID to heading in content (this would require modifying content)..
@@ -337,8 +337,8 @@ class PDF_Generator {
 	 * Check if content should include table of contents
 	 *
 	 * @since 3.0.0
-	 * @param string $content HTML content
-	 * @return bool True if TOC should be included
+	 * @param string $content HTML content.
+	 * @return bool True if TOC should be included.
 	 */
 	private function should_include_toc( $content ) {
 		// Count words..
@@ -362,6 +362,7 @@ class PDF_Generator {
 		$css_file = plugin_dir_path( dirname( __DIR__ ) ) . 'assets/css/pdf-styles.css';
 
 		if ( file_exists( $css_file ) ) {
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Local CSS file, not remote.
 			$css = file_get_contents( $css_file );
 		} else {
 			// Fallback inline styles..
@@ -533,8 +534,8 @@ class PDF_Generator {
 	 * Get cache key for document PDF
 	 *
 	 * @since 3.0.0
-	 * @param array $document Document data
-	 * @return string Cache key
+	 * @param array $document Document data.
+	 * @return string Cache key.
 	 */
 	private function get_cache_key( $document ) {
 		$doc_id  = isset( $document['id'] ) ? $document['id'] : 0;
@@ -546,8 +547,8 @@ class PDF_Generator {
 	 * Get cached PDF
 	 *
 	 * @since 3.0.0
-	 * @param string $cache_key Cache key
-	 * @return string|false PDF data or false if not cached
+	 * @param string $cache_key Cache key.
+	 * @return string|false PDF data or false if not cached.
 	 */
 	private function get_cached_pdf( $cache_key ) {
 		// Try object cache first..
@@ -565,9 +566,9 @@ class PDF_Generator {
 	 * Cache PDF data
 	 *
 	 * @since 3.0.0
-	 * @param string $cache_key Cache key
-	 * @param string $pdf_data  PDF binary data
-	 * @return bool Success
+	 * @param string $cache_key Cache key.
+	 * @param string $pdf_data  PDF binary data.
+	 * @return bool Success.
 	 */
 	private function cache_pdf( $cache_key, $pdf_data ) {
 		// Store in object cache..
@@ -581,12 +582,12 @@ class PDF_Generator {
 	 * Clear cached PDF for document
 	 *
 	 * @since 3.0.0
-	 * @param int $document_id Document ID
-	 * @param int $version     Optional specific version, or null for all versions
-	 * @return bool Success
+	 * @param int $document_id Document ID.
+	 * @param int $version     Optional specific version, or null for all versions.
+	 * @return bool Success.
 	 */
 	public function clear_cache( $document_id, $version = null ) {
-		if ( $version !== null ) {
+		if ( null !== $version ) {
 			// Clear specific version..
 			$cache_key = sprintf( 'pdf_%d_v%d', $document_id, $version );
 			wp_cache_delete( $cache_key, self::CACHE_GROUP );
@@ -608,9 +609,9 @@ class PDF_Generator {
 	 * Stream PDF to browser
 	 *
 	 * @since 3.0.0
-	 * @param string $pdf_data  PDF binary data
-	 * @param string $filename  Filename for download
-	 * @param bool   $attachment Whether to force download (true) or inline display (false)
+	 * @param string $pdf_data  PDF binary data.
+	 * @param string $filename  Filename for download.
+	 * @param bool   $attachment Whether to force download (true) or inline display (false).
 	 * @return void
 	 */
 	public function stream_pdf( $pdf_data, $filename = 'document.pdf', $attachment = true ) {
@@ -621,18 +622,20 @@ class PDF_Generator {
 
 		// Set headers..
 		header( 'Content-Type: application/pdf' );
-		header( 'Content-Length: ' . strlen( $pdf_data ) );
+		header( 'Content-Length: ' . strlen( (string) $pdf_data ) );
 		header( 'Cache-Control: private, max-age=0, must-revalidate' );
 		header( 'Pragma: public' );
 
+		$disposition = $attachment ? 'attachment' : 'inline';
 		if ( $attachment ) {
-			header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
+			header( 'Content-Disposition: attachment; filename="' . sanitize_file_name( $filename ) . '"' );
 		} else {
-			header( 'Content-Disposition: inline; filename="' . $filename . '"' );
+			header( 'Content-Disposition: inline; filename="' . sanitize_file_name( $filename ) . '"' );
 		}
 
 		// Output PDF..
-		echo $pdf_data;
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Binary PDF data cannot be escaped.
+		echo $pdf_data; // Binary PDF data.
 		exit;
 	}
 
@@ -640,13 +643,13 @@ class PDF_Generator {
 	 * Generate filename for document PDF
 	 *
 	 * @since 3.0.0
-	 * @param array $document Document data
-	 * @return string Filename
+	 * @param array $document Document data.
+	 * @return string Filename.
 	 */
 	public function generate_filename( $document ) {
 		$title   = isset( $document['title'] ) ? $document['title'] : 'document';
 		$version = isset( $document['version'] ) ? $document['version'] : '1';
-		$date    = date( 'Y-m-d' );
+		$date    = gmdate( 'Y-m-d' );
 
 		// Sanitize title for filename..
 		$title = sanitize_file_name( $title );

@@ -28,6 +28,9 @@
     <exclude-pattern>vendor/*</exclude-pattern>
     <exclude-pattern>node_modules/*</exclude-pattern>
     <exclude-pattern>dist/*</exclude-pattern>
+    <!-- Exclude JavaScript wizard files (jQuery-based, not PHP-style) -->
+    <exclude-pattern>assets/js/profile-wizard.js</exclude-pattern>
+    <exclude-pattern>assets/js/document-generate.js</exclude-pattern>
     <!-- Disable filename sniff which requires renaming many legacy files; project follows existing structure -->
     <exclude name="WordPress.Files.FileName"/>
     <!-- Disable syntax sniff to avoid escapeshellarg length limit issues -->

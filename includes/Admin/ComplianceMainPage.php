@@ -341,8 +341,8 @@ class ComplianceMainPage {
 		);
 
 		// 3. Get DSR statistics.
-		$dsr_service      = new \ShahiLegalFlowSuite\Services\DSR_Service();
-		$dsr              = $dsr_service->get_ops_statistics();
+		$dsr_service = new \ShahiLegalFlowSuite\Services\DSR_Service();
+		$dsr         = $dsr_service->get_ops_statistics();
 
 		// 4. Get Accessibility statistics.
 		$accessibility = array(

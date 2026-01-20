@@ -54,6 +54,8 @@
 			this.loadInitialState();
 			this.initializeTags();
 			this.initializeCookieList();
+
+			console.log('[Profile Wizard] Initialized');
 		},
 
 		/**
@@ -83,7 +85,9 @@
 		 */
 		bindEvents() {
 			// Navigation events
-			this.elements.stepItems.on('click', (e) => this.handleStepNavClick(e));
+			this.elements.stepItems.on('click', (e) =>
+				this.handleStepNavClick(e)
+			);
 			this.elements.prevBtn.on('click', () => this.previousStep());
 			this.elements.nextBtn.on('click', () => this.nextStep());
 			this.elements.saveBtn.on('click', () => this.saveCurrentStep());
@@ -318,6 +322,7 @@
 					);
 				}
 			} catch (error) {
+				console.error('[Profile Wizard] Save error:', error);
 				this.showSaveStatus('error');
 				this.showNotice(this.config.i18n.error, 'error');
 			} finally {
@@ -361,13 +366,18 @@
 			// Checkboxes (multi-value)
 			$panel.find('.slos-checkbox-group').each(function () {
 				const $group = $(this);
-				const name = $group.find('input[type="checkbox"]').first().attr('name');
+				const name = $group
+					.find('input[type="checkbox"]')
+					.first()
+					.attr('name');
 				if (name) {
 					const baseName = name.replace('[]', '');
 					data[baseName] = [];
-					$group.find('input[type="checkbox"]:checked').each(function () {
-						data[baseName].push($(this).val());
-					});
+					$group
+						.find('input[type="checkbox"]:checked')
+						.each(function () {
+							data[baseName].push($(this).val());
+						});
 				}
 			});
 
@@ -516,7 +526,9 @@
 		 * @param {boolean} isValid Whether step is valid
 		 */
 		updateStepCompletion(stepNum, isValid) {
-			const $item = this.elements.stepItems.filter(`[data-step="${stepNum}"]`);
+			const $item = this.elements.stepItems.filter(
+				`[data-step="${stepNum}"]`
+			);
 
 			if (isValid) {
 				$item.addClass('slos-step-complete');
@@ -625,7 +637,8 @@
 					}, 1000);
 				} else {
 					// Profile incomplete but still save and redirect
-					const missingCount = response.data?.missing_fields?.length || 0;
+					const missingCount =
+						response.data?.missing_fields?.length || 0;
 					if (missingCount > 0) {
 						this.showNotice(
 							(
@@ -648,6 +661,7 @@
 					}, 1500);
 				}
 			} catch (error) {
+				console.error('[Profile Wizard] Validation error:', error);
 				this.showNotice(this.config.i18n.error, 'error');
 			}
 		},
@@ -688,7 +702,9 @@
 					if (!tag) return;
 
 					// Check for duplicate
-					const currentTags = $hidden.val() ? $hidden.val().split(',') : [];
+					const currentTags = $hidden.val()
+						? $hidden.val().split(',')
+						: [];
 					if (currentTags.includes(tag)) return;
 
 					// Add tag element
@@ -708,7 +724,9 @@
 				$tagsContainer.on('click', '.slos-tag-remove', function () {
 					const $tag = $(this).closest('.slos-tag');
 					const tagText = $tag.text().slice(0, -1); // Remove × character
-					const currentTags = $hidden.val() ? $hidden.val().split(',') : [];
+					const currentTags = $hidden.val()
+						? $hidden.val().split(',')
+						: [];
 					const newTags = currentTags.filter((t) => t !== tagText);
 					$hidden.val(newTags.join(',')).trigger('change');
 					$tag.remove();
@@ -789,7 +807,12 @@
 					`;
 
 					$tbody.append(newRow);
-					$tbody.find('.slos-cookie-row').last().find('input').first().focus();
+					$tbody
+						.find('.slos-cookie-row')
+						.last()
+						.find('input')
+						.first()
+						.focus();
 					wizard.state.isDirty = true;
 					wizard.scheduleAutoSave();
 				});

@@ -85,7 +85,7 @@ $banner_class  = $is_complete ? 'slos-hub-banner--success' : ( $is_sufficient ? 
 				printf(
 					/* translators: %d: completion percentage */
 					esc_html__( 'Your profile is %d%% complete. You can generate documents, but completing all fields is recommended for best results.', 'shahi-legalflowsuite' ),
-					$completeness
+					absint( $completeness )
 				);
 				?>
 			</p>
@@ -99,7 +99,7 @@ $banner_class  = $is_complete ? 'slos-hub-banner--success' : ( $is_sufficient ? 
 				printf(
 					/* translators: %d: completion percentage */
 					esc_html__( 'Your profile is only %d%% complete. Complete the required fields to enable document generation.', 'shahi-legalflowsuite' ),
-					$completeness
+					absint( $completeness )
 				);
 				?>
 			</p>

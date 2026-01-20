@@ -36,12 +36,12 @@
 		initCounters() {
 			$( '.shahi-counter' ).each(
 				function () {
-					const $counter = $( this );
-					const target = parseInt(
+					const $counter  = $( this );
+					const target    = parseInt(
 						$counter.data( 'target' ) || $counter.text()
 					);
-					const duration = parseInt( $counter.data( 'duration' ) || 2000 );
-					let current = 0;
+					const duration  = parseInt( $counter.data( 'duration' ) || 2000 );
+					let current     = 0;
 					const increment = target / (duration / 16);
 
 					const updateCounter = function () {
@@ -77,9 +77,9 @@
 		initTooltips() {
 			$( '[data-tooltip]' ).each(
 				function () {
-					const $element = $( this );
+					const $element    = $( this );
 					const tooltipText = $element.data( 'tooltip' );
-					const position = $element.data( 'tooltip-position' ) || 'top';
+					const position    = $element.data( 'tooltip-position' ) || 'top';
 
 					if ( ! $element.hasClass( 'shahi-tooltip' )) {
 						$element.addClass(
@@ -114,8 +114,8 @@
 					// Calculate position
 					const rect = this.getBoundingClientRect();
 					const size = Math.max( rect.width, rect.height );
-					const x = e.clientX - rect.left - size / 2;
-					const y = e.clientY - rect.top - size / 2;
+					const x    = e.clientX - rect.left - size / 2;
+					const y    = e.clientY - rect.top - size / 2;
 
 					// Set ripple styles
 					$ripple.css(
@@ -197,7 +197,7 @@
 			show( message, type, duration ) {
 				this.init();
 
-				type = type || 'info';
+				type     = type || 'info';
 				duration = duration || 5000;
 
 				const icons = {
@@ -207,7 +207,7 @@
 					info: 'dashicons-info',
 				};
 
-				const $notification = $(
+				const $notification      = $(
 					`
 					< div class          = "shahi-notification shahi-notification-${type} shahi-notification-enter" >
 						< div class      = "shahi-notification-icon" >
@@ -288,9 +288,9 @@
 		 * @param {number} duration     - Animation duration in ms
 		 */
 		animateProgress( $progressBar, targetValue, duration ) {
-			duration = duration || 1000;
+			duration         = duration || 1000;
 			let currentValue = 0;
-			const increment = targetValue / (duration / 16);
+			const increment  = targetValue / (duration / 16);
 
 			const updateProgress = function () {
 				currentValue += increment;
@@ -315,7 +315,7 @@
 				'change',
 				'.shahi-toggle-input',
 				function () {
-					const $input = $( this );
+					const $input  = $( this );
 					const $toggle = $input.closest( '.shahi-toggle' );
 
 					if ($input.is( ':checked' )) {
@@ -384,7 +384,7 @@
 			show( message ) {
 				message = message || 'Loading...';
 
-				const $overlay = $(
+				const $overlay      = $(
 					`
 					< div class     = "shahi-loading-overlay" >
 						< div class = "shahi-spinner" > < / div >
@@ -418,7 +418,7 @@
 			count = count || 3;
 
 			for (let i = 0; i < count; i++) {
-				const $skeleton = $(
+				const $skeleton         = $(
 					`
 					< div class         = "shahi-skeleton-item" >
 						< div class     = "shahi-skeleton shahi-skeleton-avatar" > < / div >
@@ -473,7 +473,7 @@
 			let timeout;
 			return function () {
 				const context = this;
-				const args = arguments;
+				const args    = arguments;
 				clearTimeout( timeout );
 				timeout = setTimeout(
 					function () {
@@ -494,7 +494,7 @@
 		throttle( func, limit ) {
 			let inThrottle;
 			return function () {
-				const args = arguments;
+				const args    = arguments;
 				const context = this;
 				if ( ! inThrottle) {
 					func.apply( context, args );
@@ -528,8 +528,8 @@
 		 * @return {string} Time ago string
 		 */
 		timeAgo( date ) {
-			const now = new Date();
-			const past = new Date( date );
+			const now     = new Date();
+			const past    = new Date( date );
 			const seconds = Math.floor( (now - past) / 1000 );
 
 			const intervals = {
@@ -580,7 +580,7 @@
 (function () {
 	'use strict';
 
-	const styles = `
+	const styles   = `
 		< style id = "shahi-components-dynamic-styles" >
 			.shahi - notifications - container {
 				position: fixed;

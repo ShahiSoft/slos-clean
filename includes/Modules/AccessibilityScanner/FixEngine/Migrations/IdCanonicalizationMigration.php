@@ -27,6 +27,8 @@ class IdCanonicalizationMigration {
 	 * Legacy to canonical ID map
 	 *
 	 * Maps old IDs (aliases) to canonical IDs
+	 *
+	 * @var array
 	 */
 	private static $legacy_map = array(
 		// Legacy key => Canonical ID..
@@ -76,7 +78,7 @@ class IdCanonicalizationMigration {
 	/**
 	 * Run migration
 	 *
-	 * @param bool $dry_run Don't make changes, just report
+	 * @param bool $dry_run Don't make changes, just report.
 	 * @return array Migration results
 	 */
 	public static function run( bool $dry_run = false ): array {
@@ -110,8 +112,8 @@ class IdCanonicalizationMigration {
 	/**
 	 * Migrate postmeta values
 	 *
-	 * @param bool  $dry_run
-	 * @param array &$changes
+	 * @param bool  $dry_run Whether to perform a dry run without making changes.
+	 * @param array &$changes Array to store the changes made.
 	 * @return int Number of rows updated
 	 */
 	private static function migrate_postmeta( bool $dry_run, array &$changes ): int {
@@ -150,8 +152,8 @@ class IdCanonicalizationMigration {
 	/**
 	 * Migrate options
 	 *
-	 * @param bool  $dry_run
-	 * @param array &$changes
+	 * @param bool  $dry_run Whether to perform a dry run without making changes.
+	 * @param array &$changes Array to store the changes made.
 	 * @return int Number of options updated
 	 */
 	private static function migrate_options( bool $dry_run, array &$changes ): int {
@@ -164,7 +166,7 @@ class IdCanonicalizationMigration {
 
 		foreach ( $option_keys as $option_key ) {
 			$old_value = get_option( $option_key );
-			if ( $old_value === false ) {
+			if ( false === $old_value ) {
 				continue;
 			}
 
@@ -184,8 +186,8 @@ class IdCanonicalizationMigration {
 	/**
 	 * Migrate fix_history table
 	 *
-	 * @param bool  $dry_run
-	 * @param array &$changes
+	 * @param bool  $dry_run Whether to perform a dry run without making changes.
+	 * @param array &$changes Array to store the changes made.
 	 * @return int Number of rows updated
 	 */
 	private static function migrate_fix_history( bool $dry_run, array &$changes ): int {
@@ -198,8 +200,9 @@ class IdCanonicalizationMigration {
 			return 0;
 		}
 
-		$count   = 0;
-		$results = $wpdb->get_results( sprintf( 'SELECT id, fixer_id FROM %s', $wpdb->_escape( $table ) ) );
+		$count = 0;
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name is derived from $wpdb->prefix and controlled.
+		$results = $wpdb->get_results( "SELECT id, fixer_id FROM {$table}" );
 
 		foreach ( $results as $row ) {
 			if ( isset( self::$legacy_map[ $row->fixer_id ] ) ) {
@@ -230,8 +233,8 @@ class IdCanonicalizationMigration {
 	/**
 	 * Recursively map IDs in data structures
 	 *
-	 * @param mixed $data
-	 * @param array &$changes
+	 * @param mixed $data The data to process.
+	 * @param array &$changes Array to store the changes made.
 	 * @return mixed
 	 */
 	private static function map_ids_recursive( $data, array &$changes ) {

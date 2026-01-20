@@ -9,6 +9,8 @@
  * @since      4.2.0
  */
 
+/* phpcs:ignoreFile */
+
 (function ($) {
 	'use strict';
 
@@ -33,6 +35,43 @@
 		 */
 		init() {
 			this.bindEvents();
+		},
+
+		/**
+		 * Create a badge element with a modifier class.
+		 *
+		 * @param {string} text Badge label.
+		 * @param {string} modifier Modifier suffix for the badge class.
+		 * @returns {jQuery}
+		 */
+		createBadge(text, modifier) {
+			return $('<span>')
+				.addClass('slos-gen-field__badge slos-gen-field__badge--' + modifier)
+				.text(text);
+		},
+
+		/**
+		 * Create an action button with icon HTML and optional label.
+		 *
+		 * @param {string} iconHtml Icon HTML (emoji or markup).
+		 * @param {string} label Optional label text.
+		 * @param {string} extraClasses Additional button classes.
+		 * @param {string} title Button title attribute.
+		 * @returns {jQuery}
+		 */
+		createActionButton(iconHtml, label, extraClasses, title) {
+			const $btn = $('<button>')
+				.attr('type', 'button')
+				.addClass('slos-gen-field__btn ' + extraClasses)
+				.attr('title', title);
+
+			if (label) {
+				$btn.html(iconHtml + ' <span>' + label + '</span>');
+			} else {
+				$btn.html(iconHtml);
+			}
+
+			return $btn;
 		},
 
 		/**
@@ -263,9 +302,7 @@
 							response.data.word_count
 						);
 					} else {
-						this.showError(
-							response.data?.message || 'Failed to load document'
-						);
+						this.showError(response.data?.message || 'Failed to load document');
 					}
 				},
 				error: (xhr, status, error) => {
@@ -364,9 +401,7 @@
 			// Toggle action buttons
 			$actions.find('.slos-gen-field__btn--add').hide();
 			$actions
-				.find(
-					'.slos-gen-field__btn--save, .slos-gen-field__btn--cancel'
-				)
+				.find('.slos-gen-field__btn--save, .slos-gen-field__btn--cancel')
 				.show();
 		},
 
@@ -426,9 +461,7 @@
 			// Set document info
 			const icon = $card.find('.slos-gen-card__icon').text();
 			const title = $card.find('.slos-gen-card__title').text();
-			const description = $card
-				.find('.slos-gen-card__description')
-				.text();
+			const description = $card.find('.slos-gen-card__description').text();
 
 			$('#slos-gen-doc-icon').text(icon);
 			$('#slos-gen-doc-title').text(title);
@@ -486,9 +519,7 @@
 					} else {
 						// Handle validation errors (missing mandatory fields)
 						if (response.data && response.data.missing_fields) {
-							this.showMissingFieldsError(
-								response.data.missing_fields
-							);
+							this.showMissingFieldsError(response.data.missing_fields);
 						} else {
 							this.showModalError(
 								response.data?.message || SLOSDocGen.i18n.error
@@ -500,17 +531,12 @@
 					console.error('AJAX error:', error);
 
 					if (status === 'timeout') {
-						this.showModalError(
-							'Request timed out. Please try again.'
-						);
+						this.showModalError('Request timed out. Please try again.');
 					} else if (xhr.status === 0) {
-						this.showModalError(
-							'Network error. Check your connection.'
-						);
+						this.showModalError('Network error. Check your connection.');
 					} else {
 						this.showModalError(
-							'Server error: ' +
-								(xhr.responseJSON?.data?.message || error)
+							'Server error: ' + (xhr.responseJSON?.data?.message || error)
 						);
 					}
 				},
@@ -532,8 +558,7 @@
 			html += '<ul class="slos-gen-missing-fields-list">';
 
 			missingFields.forEach((field) => {
-				const profileUrl =
-					SLOSDocGen.profileUrl + '&step=' + (field.step || 1);
+				const profileUrl = SLOSDocGen.profileUrl + '&step=' + (field.step || 1);
 				html += '<li>';
 				html += '<strong>' + field.label + '</strong>';
 				if (field.step) {
@@ -647,12 +672,9 @@
 
 				// Determine group based on field key
 				if (
-					[
-						'company_name',
-						'company_type',
-						'industry',
-						'description',
-					].includes(key)
+					['company_name', 'company_type', 'industry', 'description'].includes(
+						key
+					)
 				) {
 					stepGroups['Company Information'].push({ key, ...field });
 				} else if (
@@ -676,11 +698,9 @@
 				) {
 					stepGroups['Legal & Compliance'].push({ key, ...field });
 				} else if (
-					[
-						'data_collected',
-						'collection_methods',
-						'data_purposes',
-					].includes(key)
+					['data_collected', 'collection_methods', 'data_purposes'].includes(
+						key
+					)
 				) {
 					stepGroups['Data Collection'].push({ key, ...field });
 				} else if (['user_rights', 'data_retention'].includes(key)) {
@@ -694,11 +714,9 @@
 				) {
 					stepGroups['Security & Cookies'].push({ key, ...field });
 				} else if (
-					[
-						'payment_methods',
-						'refund_policy',
-						'dispute_resolution',
-					].includes(key)
+					['payment_methods', 'refund_policy', 'dispute_resolution'].includes(
+						key
+					)
 				) {
 					stepGroups['Business Operations'].push({ key, ...field });
 				} else {
@@ -755,34 +773,35 @@
 			const isMissing = missingFields.includes(field.key);
 			const isMandatory = field.mandatory || false;
 			const value = field.value || '';
-			const hasValue =
-				value !== '' && value !== null && value !== undefined;
+			const hasValue = value !== '' && value !== null && value !== undefined;
 
 			const classes = ['slos-gen-field'];
-			if (isMissing) classes.push('slos-gen-field--missing');
-			if (isMandatory) classes.push('slos-gen-field--mandatory');
-			if (!hasValue) classes.push('slos-gen-field--empty');
+			if (isMissing) {
+				classes.push('slos-gen-field--missing');
+			}
+			if (isMandatory) {
+				classes.push('slos-gen-field--mandatory');
+			}
+			if (!hasValue) {
+				classes.push('slos-gen-field--empty');
+			}
 
 			const $field = $('<div>')
 				.addClass(classes.join(' '))
 				.attr('data-field', field.key);
 
-			// Checkbox toggle for include/exclude (Per Tab Plan: ☑/☐ Toggle)
 			const checkboxId = 'slos-field-check-' + field.key;
-			const $checkboxWrapper = $(
-				'<div class="slos-gen-field__checkbox-wrapper">'
-			);
-			const $checkbox = $(
-				'<input type="checkbox" class="slos-gen-field__checkbox">'
-			)
-				.attr('id', checkboxId)
+			const $checkbox = $('<input>')
+				.attr({
+					type: 'checkbox',
+					id: checkboxId,
+				})
+				.addClass('slos-gen-field__checkbox')
 				.prop('checked', hasValue && !isMissing)
-				.prop('disabled', isMandatory && isMissing); // Disable if mandatory and missing
+				.prop('disabled', isMandatory && isMissing);
 
-			// Visual checkbox label for better UX
-			const $checkboxLabel = $(
-				'<label class="slos-gen-field__checkbox-label">'
-			)
+			const $checkboxLabel = $('<label>')
+				.addClass('slos-gen-field__checkbox-label')
 				.attr('for', checkboxId)
 				.attr(
 					'title',
@@ -791,77 +810,63 @@
 						: 'Click to include this field'
 				);
 
-			$checkboxWrapper.append($checkbox, $checkboxLabel);
-			$field.append($checkboxWrapper);
+			const $checkboxWrapper = $('<div>')
+				.addClass('slos-gen-field__checkbox-wrapper')
+				.append($checkbox, $checkboxLabel);
 
-			// Content wrapper
-			const $content = $('<div class="slos-gen-field__content">');
+			const $content = $('<div>').addClass('slos-gen-field__content');
 
-			// Label with badges
-			const $labelRow = $('<div class="slos-gen-field__label-row">');
-			const $label = $('<span class="slos-gen-field__label-text">').text(
-				field.label || field.key
-			);
+			const $labelRow = $('<div>').addClass('slos-gen-field__label-row');
+			const $label = $('<span>')
+				.addClass('slos-gen-field__label-text')
+				.text(field.label || field.key);
 			$labelRow.append($label);
 
-			// Badges
-			const $badges = $('<div class="slos-gen-field__badges">');
+			const $badges = $('<div>').addClass('slos-gen-field__badges');
 			if (isMandatory) {
-				$badges.append(
-					$(
-						'<span class="slos-gen-field__badge slos-gen-field__badge--mandatory">'
-					).text('Required')
-				);
+				$badges.append(this.createBadge('Required', 'mandatory'));
 			}
 			if (isMissing && isMandatory) {
-				$badges.append(
-					$(
-						'<span class="slos-gen-field__badge slos-gen-field__badge--missing">'
-					).text('Missing')
-				);
+				$badges.append(this.createBadge('Missing', 'missing'));
 			}
 			if (!hasValue && !isMandatory) {
-				$badges.append(
-					$(
-						'<span class="slos-gen-field__badge slos-gen-field__badge--optional">'
-					).text('Optional')
-				);
+				$badges.append(this.createBadge('Optional', 'optional'));
 			}
 			$labelRow.append($badges);
 			$content.append($labelRow);
 
-			// Value display/edit area
-			const $valueWrapper = $(
-				'<div class="slos-gen-field__value-wrapper">'
+			const $valueWrapper = $('<div>').addClass(
+				'slos-gen-field__value-wrapper'
 			);
 
 			if (hasValue) {
-				// Has value - show with edit capability
-				const $value = $('<div class="slos-gen-field__value">')
+				const $value = $('<div>')
+					.addClass('slos-gen-field__value')
 					.text(this.formatFieldValue(value))
 					.attr('data-original', value);
 
-				// Hidden input for inline editing
-				const $input = $(
-					'<input type="text" class="slos-gen-field__input">'
-				)
+				const $input = $('<input>')
+					.attr({
+						type: 'text',
+						class: 'slos-gen-field__input',
+						'data-field': field.key,
+					})
 					.val(value)
-					.attr('data-field', field.key)
 					.hide();
 
 				$valueWrapper.append($value, $input);
 			} else {
-				// No value - show placeholder with Add button
-				const $placeholder = $(
-					'<span class="slos-gen-field__placeholder">'
-				).text('[Not provided]');
+				const $placeholder = $('<span>')
+					.addClass('slos-gen-field__placeholder')
+					.text('[Not provided]');
 
-				// Hidden input for adding value
-				const $input = $(
-					'<input type="text" class="slos-gen-field__input slos-gen-field__input--add">'
-				)
-					.attr('placeholder', 'Enter ' + (field.label || field.key))
-					.attr('data-field', field.key)
+				const $input = $('<input>')
+					.attr({
+						type: 'text',
+						class: 'slos-gen-field__input slos-gen-field__input--add',
+						placeholder: 'Enter ' + (field.label || field.key),
+						'data-field': field.key,
+					})
 					.hide();
 
 				$valueWrapper.append($placeholder, $input);
@@ -869,40 +874,55 @@
 
 			$content.append($valueWrapper);
 
-			// Actions (Edit/Add/Save/Cancel buttons)
-			const $actions = $('<div class="slos-gen-field__actions">');
+			const $actions = $('<div>').addClass('slos-gen-field__actions');
 
 			if (hasValue) {
-				// Edit and Remove buttons for fields with values
 				$actions.append(
-					$(
-						'<button type="button" class="slos-gen-field__btn slos-gen-field__btn--edit" title="Edit value">'
-					).html('✏️ <span>Edit</span>'),
-					$(
-						'<button type="button" class="slos-gen-field__btn slos-gen-field__btn--remove" title="Exclude field">'
-					).html('🗑️')
+					this.createActionButton(
+						'✏️',
+						'Edit',
+						'slos-gen-field__btn--edit',
+						'Edit value'
+					)
+				);
+				$actions.append(
+					this.createActionButton(
+						'🗑️',
+						'',
+						'slos-gen-field__btn--remove',
+						'Exclude field'
+					)
 				);
 			} else if (!isMandatory) {
-				// Add button for optional empty fields
 				$actions.append(
-					$(
-						'<button type="button" class="slos-gen-field__btn slos-gen-field__btn--add" title="Add value">'
-					).html('➕ <span>Add</span>')
+					this.createActionButton(
+						'➕',
+						'Add',
+						'slos-gen-field__btn--add',
+						'Add value'
+					)
 				);
 			}
 
-			// Save/Cancel buttons (hidden by default, shown during editing)
 			$actions.append(
-				$(
-					'<button type="button" class="slos-gen-field__btn slos-gen-field__btn--save" title="Save changes" style="display:none;">'
-				).html('✓ <span>Save</span>'),
-				$(
-					'<button type="button" class="slos-gen-field__btn slos-gen-field__btn--cancel" title="Cancel editing" style="display:none;">'
-				).html('✕ <span>Cancel</span>')
+				this.createActionButton(
+					'✓',
+					'Save',
+					'slos-gen-field__btn--save',
+					'Save changes'
+				).hide()
+			);
+			$actions.append(
+				this.createActionButton(
+					'✕',
+					'Cancel',
+					'slos-gen-field__btn--cancel',
+					'Cancel editing'
+				).hide()
 			);
 
 			$content.append($actions);
-			$field.append($content);
+			$field.append($checkboxWrapper, $content);
 
 			return $field;
 		},
@@ -951,9 +971,7 @@
 		 */
 		updateSummary() {
 			const totalFields = $('.slos-gen-field').length;
-			const includedFields = $(
-				'.slos-gen-field__checkbox:checked'
-			).length;
+			const includedFields = $('.slos-gen-field__checkbox:checked').length;
 			const excludedFields = $(
 				'.slos-gen-field:not(.slos-gen-field--missing) .slos-gen-field__checkbox:not(:checked)'
 			).length;
@@ -984,9 +1002,9 @@
 			const originalText = $btn.text();
 
 			// Disable button and show loading
-			$btn.prop('disabled', true).text(
-				SLOSDocGen.i18n.loading || '⏳ Generating Preview...'
-			);
+			$btn
+				.prop('disabled', true)
+				.text(SLOSDocGen.i18n.loading || '⏳ Generating Preview...');
 
 			// Show progress bar if exists
 			$('#slos-gen-preview-progress').show();
@@ -994,9 +1012,7 @@
 			// Get included fields
 			const includedFields = [];
 			$('.slos-gen-field__checkbox:checked').each(function () {
-				includedFields.push(
-					$(this).closest('.slos-gen-field').data('field')
-				);
+				includedFields.push($(this).closest('.slos-gen-field').data('field'));
 			});
 
 			// Get field overrides if any
@@ -1033,14 +1049,10 @@
 
 					if (response.success) {
 						// Show preview modal or open in new window
-						this.showPreviewModal(
-							response.data.html,
-							response.data.word_count
-						);
+						this.showPreviewModal(response.data.html, response.data.word_count);
 					} else {
 						this.showError(
-							response.data?.message ||
-								'Preview generation failed'
+							response.data?.message || 'Preview generation failed'
 						);
 					}
 				},
@@ -1057,8 +1069,7 @@
 						this.showError('Network error. Check your connection.');
 					} else {
 						this.showError(
-							'Preview failed: ' +
-								(xhr.responseJSON?.data?.message || error)
+							'Preview failed: ' + (xhr.responseJSON?.data?.message || error)
 						);
 					}
 				},
@@ -1115,9 +1126,7 @@
 
 			// Set content and stats
 			$('#slos-gen-preview-content').html(html);
-			$('#slos-gen-preview-stats').text(
-				`Word count: ${wordCount || 'N/A'}`
-			);
+			$('#slos-gen-preview-stats').text(`Word count: ${wordCount || 'N/A'}`);
 
 			// Show preview modal
 			$previewModal.fadeIn(200);
@@ -1185,9 +1194,9 @@
 
 			// Disable all modal buttons
 			$('.slos-gen-modal button').prop('disabled', true);
-			$btn.addClass('submitting').text(
-				SLOSDocGen.i18n.generating || '⏳ Generating...'
-			);
+			$btn
+				.addClass('submitting')
+				.text(SLOSDocGen.i18n.generating || '⏳ Generating...');
 
 			// Show progress indicator
 			$('#slos-gen-progress').show();
@@ -1195,9 +1204,7 @@
 			// Get included fields
 			const includedFields = [];
 			$('.slos-gen-field__checkbox:checked').each(function () {
-				includedFields.push(
-					$(this).closest('.slos-gen-field').data('field')
-				);
+				includedFields.push($(this).closest('.slos-gen-field').data('field'));
 			});
 
 			// Get field overrides
@@ -1246,9 +1253,7 @@
 							}, 1000);
 						}
 					} else {
-						this.showError(
-							response.data?.message || 'Generation failed'
-						);
+						this.showError(response.data?.message || 'Generation failed');
 						$('.slos-gen-modal button').prop('disabled', false);
 						$btn.removeClass('submitting').text(originalText);
 					}
@@ -1270,8 +1275,7 @@
 						);
 					} else {
 						this.showError(
-							'Generation failed: ' +
-								(xhr.responseJSON?.data?.message || error)
+							'Generation failed: ' + (xhr.responseJSON?.data?.message || error)
 						);
 					}
 				},
@@ -1325,9 +1329,11 @@
 			}
 
 			const originalHtml = $btn.html();
-			$btn.prop('disabled', true).html(
-				'<span class="slos-gen-action-link__icon">⏳</span><span class="slos-gen-action-link__text">Regenerating...</span>'
-			);
+			$btn
+				.prop('disabled', true)
+				.html(
+					'<span class="slos-gen-action-link__icon">⏳</span><span class="slos-gen-action-link__text">Regenerating...</span>'
+				);
 
 			$.ajax({
 				url: SLOSDocGen.ajaxurl,
@@ -1341,16 +1347,13 @@
 				success: (response) => {
 					if (response.success) {
 						this.showSuccess(
-							response.data?.message ||
-								'Documents regenerated successfully'
+							response.data?.message || 'Documents regenerated successfully'
 						);
 						if (response.data?.refresh) {
 							setTimeout(() => window.location.reload(), 1500);
 						}
 					} else {
-						this.showError(
-							response.data?.message || 'Regeneration failed'
-						);
+						this.showError(response.data?.message || 'Regeneration failed');
 					}
 				},
 				error: (xhr, status, error) => {
@@ -1381,9 +1384,11 @@
 
 			const $btn = $(e.currentTarget);
 			const originalHtml = $btn.html();
-			$btn.prop('disabled', true).html(
-				'<span class="slos-gen-action-link__icon">⏳</span><span class="slos-gen-action-link__text">Exporting...</span>'
-			);
+			$btn
+				.prop('disabled', true)
+				.html(
+					'<span class="slos-gen-action-link__icon">⏳</span><span class="slos-gen-action-link__text">Exporting...</span>'
+				);
 
 			$.ajax({
 				url: SLOSDocGen.ajaxurl,
@@ -1396,29 +1401,22 @@
 				timeout: 60000,
 				success: (response) => {
 					if (response.success) {
-						this.showSuccess(
-							response.data?.message || 'Export ready'
-						);
+						this.showSuccess(response.data?.message || 'Export ready');
 
 						// Trigger download if URL provided
 						if (response.data?.download_url) {
 							window.location.href = response.data.download_url;
 						}
 					} else {
-						this.showError(
-							response.data?.message || 'Export failed'
-						);
+						this.showError(response.data?.message || 'Export failed');
 					}
 				},
 				error: (xhr, status, error) => {
 					if (status === 'timeout') {
-						this.showError(
-							'Export request timed out. Please try again.'
-						);
+						this.showError('Export request timed out. Please try again.');
 					} else {
 						this.showError(
-							'Export failed: ' +
-								(xhr.responseJSON?.data?.message || error)
+							'Export failed: ' + (xhr.responseJSON?.data?.message || error)
 						);
 					}
 				},
@@ -1439,17 +1437,17 @@
 			const $btn = $(e.currentTarget);
 
 			if (
-				!confirm(
-					'Delete all draft documents? This action cannot be undone.'
-				)
+				!confirm('Delete all draft documents? This action cannot be undone.')
 			) {
 				return;
 			}
 
 			const originalHtml = $btn.html();
-			$btn.prop('disabled', true).html(
-				'<span class="slos-gen-action-link__icon">⏳</span><span class="slos-gen-action-link__text">Clearing...</span>'
-			);
+			$btn
+				.prop('disabled', true)
+				.html(
+					'<span class="slos-gen-action-link__icon">⏳</span><span class="slos-gen-action-link__text">Clearing...</span>'
+				);
 
 			$.ajax({
 				url: SLOSDocGen.ajaxurl,
@@ -1461,14 +1459,10 @@
 				timeout: 30000,
 				success: (response) => {
 					if (response.success) {
-						this.showSuccess(
-							response.data?.message || 'Drafts cleared'
-						);
+						this.showSuccess(response.data?.message || 'Drafts cleared');
 						setTimeout(() => window.location.reload(), 1500);
 					} else {
-						this.showError(
-							response.data?.message || 'Failed to clear drafts'
-						);
+						this.showError(response.data?.message || 'Failed to clear drafts');
 					}
 				},
 				error: (xhr, status, error) => {
@@ -1515,15 +1509,12 @@
 						window.location.href = response.data.download_url;
 						this.showSuccess('Download started');
 					} else {
-						this.showError(
-							response.data?.message || 'Download failed'
-						);
+						this.showError(response.data?.message || 'Download failed');
 					}
 				},
 				error: (xhr, status, error) => {
 					this.showError(
-						'Download failed: ' +
-							(xhr.responseJSON?.data?.message || error)
+						'Download failed: ' + (xhr.responseJSON?.data?.message || error)
 					);
 				},
 				complete: () => {
@@ -1574,13 +1565,8 @@
 			$('.slos-gen-notice').remove();
 
 			// Create error notice with dashicon
-			const $notice = $(
-				'<div class="slos-gen-notice slos-gen-notice--error">'
-			)
-				.html(
-					'<span class="dashicons dashicons-warning"></span> ' +
-						message
-				)
+			const $notice = $('<div class="slos-gen-notice slos-gen-notice--error">')
+				.html('<span class="dashicons dashicons-warning"></span> ' + message)
 				.appendTo('#slos-gen-notices');
 
 			// Auto-dismiss after 8 seconds
@@ -1604,9 +1590,7 @@
 			const $notice = $(
 				'<div class="slos-gen-notice slos-gen-notice--success">'
 			)
-				.html(
-					'<span class="dashicons dashicons-yes"></span> ' + message
-				)
+				.html('<span class="dashicons dashicons-yes"></span> ' + message)
 				.appendTo('#slos-gen-notices');
 
 			// Auto-dismiss after 5 seconds
@@ -1646,9 +1630,7 @@
 				)
 				.hide();
 			$actions
-				.find(
-					'.slos-gen-field__btn--save, .slos-gen-field__btn--cancel'
-				)
+				.find('.slos-gen-field__btn--save, .slos-gen-field__btn--cancel')
 				.show();
 		},
 
@@ -1676,18 +1658,14 @@
 					// Was empty, now has value - create display element
 					$placeholder.hide();
 					if ($value.length === 0) {
-						const $newValue = $(
-							'<div class="slos-gen-field__value">'
-						).text(newValue);
-						$field
-							.find('.slos-gen-field__value-wrapper')
-							.prepend($newValue);
+						const $newValue = $('<div class="slos-gen-field__value">').text(
+							newValue
+						);
+						$field.find('.slos-gen-field__value-wrapper').prepend($newValue);
 					} else {
 						$value.text(newValue).show();
 					}
-					$field.removeClass(
-						'slos-gen-field--empty slos-gen-field--missing'
-					);
+					$field.removeClass('slos-gen-field--empty slos-gen-field--missing');
 
 					// Update checkbox
 					$field
@@ -1698,9 +1676,7 @@
 					// Update actions to show Edit/Remove instead of Add
 					$actions.find('.slos-gen-field__btn--add').hide();
 					$actions
-						.find(
-							'.slos-gen-field__btn--edit, .slos-gen-field__btn--remove'
-						)
+						.find('.slos-gen-field__btn--edit, .slos-gen-field__btn--remove')
 						.show();
 				} else {
 					$value.text(newValue).show();
@@ -1724,14 +1700,10 @@
 			$input.hide();
 			$field.removeClass('slos-gen-field--editing');
 			$actions
-				.find(
-					'.slos-gen-field__btn--save, .slos-gen-field__btn--cancel'
-				)
+				.find('.slos-gen-field__btn--save, .slos-gen-field__btn--cancel')
 				.hide();
 			$actions
-				.find(
-					'.slos-gen-field__btn--edit, .slos-gen-field__btn--remove'
-				)
+				.find('.slos-gen-field__btn--edit, .slos-gen-field__btn--remove')
 				.show();
 
 			// Update summary
@@ -1772,9 +1744,7 @@
 			$input.hide();
 			$field.removeClass('slos-gen-field--editing');
 			$actions
-				.find(
-					'.slos-gen-field__btn--save, .slos-gen-field__btn--cancel'
-				)
+				.find('.slos-gen-field__btn--save, .slos-gen-field__btn--cancel')
 				.hide();
 
 			// Show appropriate buttons based on field state
@@ -1782,9 +1752,7 @@
 				$actions.find('.slos-gen-field__btn--add').show();
 			} else {
 				$actions
-					.find(
-						'.slos-gen-field__btn--edit, .slos-gen-field__btn--remove'
-					)
+					.find('.slos-gen-field__btn--edit, .slos-gen-field__btn--remove')
 					.show();
 			}
 		},
@@ -1904,9 +1872,7 @@
 					}">
 						<div class="slos-gen-timeline-item__header">
 							<span class="slos-gen-timeline-item__version ${
-								isCurrent
-									? 'slos-gen-timeline-item__version--current'
-									: ''
+								isCurrent ? 'slos-gen-timeline-item__version--current' : ''
 							}">
 								Version ${version.version_num}
 							</span>
@@ -1986,8 +1952,7 @@
 				success: (response) => {
 					if (response.success) {
 						this.showSuccess(
-							response.data?.message ||
-								'Version restored successfully'
+							response.data?.message || 'Version restored successfully'
 						);
 
 						// Redirect to edit page if provided
@@ -2001,9 +1966,7 @@
 							}, 1000);
 						}
 					} else {
-						this.showError(
-							response.data?.message || 'Restore failed'
-						);
+						this.showError(response.data?.message || 'Restore failed');
 						$btn.prop('disabled', false).text(originalText);
 					}
 				},
@@ -2011,13 +1974,10 @@
 					$btn.prop('disabled', false).text(originalText);
 
 					if (status === 'timeout') {
-						this.showError(
-							'Restore request timed out. Please try again.'
-						);
+						this.showError('Restore request timed out. Please try again.');
 					} else {
 						this.showError(
-							'Restore failed: ' +
-								(xhr.responseJSON?.data?.message || error)
+							'Restore failed: ' + (xhr.responseJSON?.data?.message || error)
 						);
 					}
 				},
@@ -2053,20 +2013,15 @@
 					if (response.success) {
 						this.showComparisonModal(response.data);
 					} else {
-						this.showError(
-							response.data?.message || 'Comparison failed'
-						);
+						this.showError(response.data?.message || 'Comparison failed');
 					}
 				},
 				error: (xhr, status, error) => {
 					if (status === 'timeout') {
-						this.showError(
-							'Comparison request timed out. Please try again.'
-						);
+						this.showError('Comparison request timed out. Please try again.');
 					} else {
 						this.showError(
-							'Comparison failed: ' +
-								(xhr.responseJSON?.data?.message || error)
+							'Comparison failed: ' + (xhr.responseJSON?.data?.message || error)
 						);
 					}
 				},

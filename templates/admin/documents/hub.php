@@ -140,8 +140,8 @@ $nonce      = $data['nonce'] ?? '';
 		<span>
 			<?php
 			printf(
-				/* translators: %d: number of outdated documents */
 				esc_html(
+					/* translators: %d: number of outdated documents */
 					_n(
 						'%d document is outdated. Your profile has changed since it was generated.',
 						'%d documents are outdated. Your profile has changed since they were generated.',

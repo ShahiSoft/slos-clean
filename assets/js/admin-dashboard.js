@@ -47,14 +47,14 @@
 
 			$counters.each(
 				function () {
-					const $counter = $( this );
-					const targetValue = parseInt( $counter.attr( 'data-value' ) ) || 0;
-					let currentValue = 0;
-					const duration = 2000; // 2 seconds
-					const steps = 60;
-					const increment = targetValue / steps;
+					const $counter     = $( this );
+					const targetValue  = parseInt( $counter.attr( 'data-value' ) ) || 0;
+					let currentValue   = 0;
+					const duration     = 2000; // 2 seconds
+					const steps        = 60;
+					const increment    = targetValue / steps;
 					const stepDuration = duration / steps;
-					let stepCount = 0;
+					let stepCount      = 0;
 
 					// Only animate numbers, not time strings
 					if (isNaN( targetValue )) {
@@ -302,8 +302,8 @@
 		 */
 		calculateProgress() {
 			const $checklistItems = $( '.shahi-checklist-item' );
-			const totalItems = $checklistItems.length;
-			const completedItems =
+			const totalItems      = $checklistItems.length;
+			const completedItems  =
 				$checklistItems.filter( '.shahi-completed' ).length;
 
 			if (totalItems === 0) {
@@ -317,7 +317,7 @@
 		 * Update progress bar (if exists)
 		 */
 		updateProgressBar() {
-			const progress = this.calculateProgress();
+			const progress     = this.calculateProgress();
 			const $progressBar = $( '.shahi-getting-started-progress' );
 
 			if ($progressBar.length) {

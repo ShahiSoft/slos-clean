@@ -86,8 +86,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<div class="shahi-module-dependencies">
 							<span class="dashicons dashicons-info"></span>
 							<?php
-							/* translators: %s: comma-separated list of required modules */
 							printf(
+								/* translators: %s: comma-separated list of required modules */
 								esc_html__( 'Requires: %s', 'shahi-legalflowsuite' ),
 								'<strong>' . esc_html( implode( ', ', $module['dependencies'] ) ) . '</strong>'
 							);

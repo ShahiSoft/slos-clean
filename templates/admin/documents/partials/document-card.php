@@ -17,13 +17,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Determine status class and badge.
-$status      = $card['status'] ?? 'not_generated';
-$is_outdated = $card['is_outdated'] ?? false;
-$doc_id      = $card['doc_id'] ?? 0;
-$doc_type    = $card['id'] ?? '';
-$version     = $card['version'] ?? '';
-$updated_at  = $card['updated_at'] ?? '';
-$category    = $card['category'] ?? 'legal';
+$document_status = $card['status'] ?? 'not_generated';
+$is_outdated     = $card['is_outdated'] ?? false;
+$doc_id          = $card['doc_id'] ?? 0;
+$doc_type        = $card['id'] ?? '';
+$version         = $card['version'] ?? '';
+$updated_at      = $card['updated_at'] ?? '';
+$category        = $card['category'] ?? 'legal';
 
 // Status display configuration.
 $status_config = array(
@@ -48,8 +48,8 @@ $status_config = array(
 );
 
 // Override for outdated status.
-if ( $is_outdated && 'not_generated' !== $status ) {
-	$status_config[ $status ] = array(
+if ( $is_outdated && 'not_generated' !== $document_status ) {
+	$status_config[ $document_status ] = array(
 		'class' => 'slos-card--outdated',
 		'badge' => 'slos-badge--orange',
 		'label' => __( 'Outdated', 'shahi-legalflowsuite' ),
@@ -57,7 +57,7 @@ if ( $is_outdated && 'not_generated' !== $status ) {
 	);
 }
 
-$current_status = $status_config[ $status ] ?? $status_config['not_generated'];
+$current_status = $status_config[ $document_status ] ?? $status_config['not_generated'];
 ?>
 
 <div class="slos-card <?php echo esc_attr( $current_status['class'] ); ?>" 
@@ -81,13 +81,13 @@ $current_status = $status_config[ $status ] ?? $status_config['not_generated'];
 		<h3 class="slos-card__title"><?php echo esc_html( $card['title'] ?? '' ); ?></h3>
 		<p class="slos-card__desc"><?php echo esc_html( $card['description'] ?? '' ); ?></p>
 		
-		<?php if ( 'not_generated' === $status ) : ?>
+		<?php if ( 'not_generated' === $document_status ) : ?>
 			<p class="slos-widget-description" style="margin-top: 12px; font-size: 12px;">
 				<?php esc_html_e( 'Generate this document from your Company Profile. Requires at least 70% profile completion. Document will include your company details, contact info, legal jurisdiction, and privacy practices.', 'shahi-legalflowsuite' ); ?>
 			</p>
 		<?php endif; ?>
 
-		<?php if ( 'not_generated' !== $status ) : ?>
+		<?php if ( 'not_generated' !== $document_status ) : ?>
 			<div class="slos-card__meta">
 				<?php if ( $version ) : ?>
 					<span class="slos-card__meta-item">
@@ -127,7 +127,7 @@ $current_status = $status_config[ $status ] ?? $status_config['not_generated'];
 
 	<!-- Card Footer / Actions -->
 	<div class="slos-card__footer">
-		<?php if ( 'not_generated' === $status ) : ?>
+		<?php if ( 'not_generated' === $document_status ) : ?>
 			<!-- Not Generated: Show Generate Button -->
 			<button type="button" 
 					class="slos-btn slos-btn--primary slos-btn--block slos-hub-generate-btn" 

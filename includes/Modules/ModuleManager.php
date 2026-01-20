@@ -59,7 +59,7 @@ class ModuleManager {
 	 * @return ModuleManager Singleton instance
 	 */
 	public static function get_instance() {
-		if ( self::$instance === null ) {
+		if ( null === self::$instance ) {
 			self::$instance = new self();
 		}
 
@@ -90,7 +90,7 @@ class ModuleManager {
 		$key = $module->get_key();
 
 		if ( isset( $this->modules[ $key ] ) ) {
-			return false; // Module already registered
+			return false; // Module already registered.
 		}
 
 		$this->modules[ $key ] = $module;
@@ -247,7 +247,7 @@ class ModuleManager {
 		// Check if other modules depend on this one..
 		$dependents = $this->get_dependent_modules( $key );
 		if ( ! empty( $dependents ) ) {
-			return false; // Cannot disable if other modules depend on it
+			return false; // Cannot disable if other modules depend on it.
 		}
 
 		return $module->deactivate();
@@ -323,7 +323,7 @@ class ModuleManager {
 		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) === $table ) {
 			$db_record_exists = (bool) $wpdb->get_var(
 				$wpdb->prepare(
-					'SELECT COUNT(*) FROM ' . $table . ' WHERE module_key = %s',
+					'SELECT COUNT(*) FROM `' . esc_sql( $table ) . '` WHERE module_key = %s',
 					$key
 				)
 			);

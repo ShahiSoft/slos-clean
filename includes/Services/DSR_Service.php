@@ -45,13 +45,13 @@ class DSR_Service extends Base_Service {
 	 * @var array
 	 */
 	private $allowed_types = array(
-		'access',              // GDPR Article 15 - Right to access
-		'rectification',       // GDPR Article 16 - Right to rectification
-		'erasure',             // GDPR Article 17 - Right to erasure (right to be forgotten)
-		'portability',         // GDPR Article 20 - Right to data portability
-		'restriction',         // GDPR Article 18 - Right to restriction of processing
-		'object',              // GDPR Article 21 - Right to object
-		'automated_decision',  // GDPR Article 22 - Right related to automated decision-making
+		'access',              // GDPR Article 15 - Right to access.
+		'rectification',       // GDPR Article 16 - Right to rectification.
+		'erasure',             // GDPR Article 17 - Right to erasure (right to be forgotten).
+		'portability',         // GDPR Article 20 - Right to data portability.
+		'restriction',         // GDPR Article 18 - Right to restriction of processing.
+		'object',              // GDPR Article 21 - Right to object.
+		'automated_decision',  // GDPR Article 22 - Right related to automated decision-making.
 	);
 
 	/**
@@ -80,8 +80,8 @@ class DSR_Service extends Base_Service {
 		'verified'             => array( 'in_progress', 'rejected' ),
 		'in_progress'          => array( 'on_hold', 'completed', 'rejected' ),
 		'on_hold'              => array( 'in_progress', 'rejected' ),
-		'completed'            => array(), // Terminal state
-		'rejected'             => array(), // Terminal state
+		'completed'            => array(), // Terminal state.
+		'rejected'             => array(), // Terminal state.
 	);
 
 	/**
@@ -104,7 +104,7 @@ class DSR_Service extends Base_Service {
 	 * Constructor
 	 *
 	 * @since 3.0.1
-	 * @param DSR_Repository $repository DSR repository instance
+	 * @param DSR_Repository $repository DSR repository instance.
 	 */
 	public function __construct( DSR_Repository $repository = null ) {
 		parent::__construct();
@@ -117,12 +117,12 @@ class DSR_Service extends Base_Service {
 	 * Validates request type, enforces rate limits, creates request with SLA calculation.
 	 *
 	 * @since 3.0.1
-	 * @param int    $user_id WordPress user ID (0 for anonymous)
-	 * @param string $type Request type (access, rectification, etc.)
-	 * @param string $email Requester email
-	 * @param string $details Request details/description
-	 * @param array  $meta Optional metadata (regulation, user_agent, source)
-	 * @return int|false Request ID or false on failure
+	 * @param int    $user_id WordPress user ID (0 for anonymous).
+	 * @param string $type Request type (access, rectification, etc.).
+	 * @param string $email Requester email.
+	 * @param string $details Request details/description.
+	 * @param array  $meta Optional metadata (regulation, user_agent, source).
+	 * @return int|false Request ID or false on failure.
 	 */
 	public function submit_request( int $user_id, string $type, string $email, string $details = '', array $meta = array() ) {
 		$this->clear_errors();
@@ -139,7 +139,7 @@ class DSR_Service extends Base_Service {
 		}
 
 		// Validate detail length..
-		if ( strlen( $details ) > $this->max_detail_length ) {
+		if ( $this->max_detail_length < strlen( $details ) ) {
 			$this->add_validation_error( 'details', sprintf( 'Details exceed maximum length of %d characters', $this->max_detail_length ) );
 			return false;
 		}
@@ -186,8 +186,8 @@ class DSR_Service extends Base_Service {
 	 * Changes status from pending_verification to verified.
 	 *
 	 * @since 3.0.1
-	 * @param string $token Verification token from email
-	 * @return bool True on success, false on failure
+	 * @param string $token Verification token from email.
+	 * @return bool True on success, false on failure.
 	 */
 	public function verify_email( string $token ): bool {
 		$this->clear_errors();
@@ -231,9 +231,9 @@ class DSR_Service extends Base_Service {
 	 * Assign request to admin user
 	 *
 	 * @since 3.0.1
-	 * @param int $request_id Request ID
-	 * @param int $assignee User ID to assign to
-	 * @return bool True on success
+	 * @param int $request_id Request ID.
+	 * @param int $assignee User ID to assign to.
+	 * @return bool True on success.
 	 */
 	public function assign_request( int $request_id, int $assignee ): bool {
 		$this->clear_errors();
@@ -274,10 +274,10 @@ class DSR_Service extends Base_Service {
 	 * Add admin note to request
 	 *
 	 * @since 3.0.1
-	 * @param int    $request_id Request ID
-	 * @param string $note Note content
-	 * @param int    $author User ID of note author
-	 * @return bool True on success
+	 * @param int    $request_id Request ID.
+	 * @param string $note Note content.
+	 * @param int    $author User ID of note author.
+	 * @return bool True on success.
 	 */
 	public function add_note( int $request_id, string $note, int $author ): bool {
 		$this->clear_errors();
@@ -326,10 +326,10 @@ class DSR_Service extends Base_Service {
 	 * Validates status transition rules and SLA compliance.
 	 *
 	 * @since 3.0.1
-	 * @param int    $request_id Request ID
-	 * @param string $new_status Target status
-	 * @param array  $metadata Optional metadata (admin_notes, processed_by)
-	 * @return bool True on success
+	 * @param int    $request_id Request ID.
+	 * @param string $new_status Target status.
+	 * @param array  $metadata Optional metadata (admin_notes, processed_by).
+	 * @return bool True on success.
 	 */
 	public function transition( int $request_id, string $new_status, array $metadata = array() ): bool {
 		$this->clear_errors();
@@ -361,7 +361,7 @@ class DSR_Service extends Base_Service {
 		}
 
 		// Check SLA compliance (warn if overdue)..
-		if ( $new_status === 'completed' && ! empty( $request->sla_deadline ) ) {
+		if ( 'completed' === $new_status && ! empty( $request->sla_deadline ) ) {
 			$deadline = new \DateTime( $request->sla_deadline );
 			$now      = new \DateTime();
 			if ( $now > $deadline ) {
@@ -384,7 +384,7 @@ class DSR_Service extends Base_Service {
 		do_action( 'slos_dsr_status_changed', $request_id, $old_status, $new_status );
 
 		// Fire completion hook if completed..
-		if ( $new_status === 'completed' ) {
+		if ( 'completed' === $new_status ) {
 			do_action( 'slos_dsr_completed', $request_id, $request );
 		}
 
@@ -399,8 +399,8 @@ class DSR_Service extends Base_Service {
 	 * Creates secure tokenized download URL with time limit.
 	 *
 	 * @since 3.0.1
-	 * @param int $request_id Request ID
-	 * @return string|false Export token or false on failure
+	 * @param int $request_id Request ID.
+	 * @return string|false Export token or false on failure.
 	 */
 	public function generate_export_package( int $request_id ) {
 		$this->clear_errors();
@@ -433,7 +433,7 @@ class DSR_Service extends Base_Service {
 		$result = $this->repository->update(
 			$request_id,
 			array(
-				'export_file_path' => 'pending', // Will be updated by export generation task
+				'export_file_path' => 'pending', // Will be updated by export generation task.
 				'updated_at'       => current_time( 'mysql' ),
 			)
 		);
@@ -460,8 +460,8 @@ class DSR_Service extends Base_Service {
 	 * Marks request for erasure and fires anonymization callbacks.
 	 *
 	 * @since 3.0.1
-	 * @param int $request_id Request ID
-	 * @return bool True on success
+	 * @param int $request_id Request ID.
+	 * @return bool True on success.
 	 */
 	public function execute_erasure( int $request_id ): bool {
 		$this->clear_errors();
@@ -473,7 +473,7 @@ class DSR_Service extends Base_Service {
 			return false;
 		}
 
-		if ( $request->request_type !== 'erasure' ) {
+		if ( 'erasure' !== $request->request_type ) {
 			$this->add_error( 'invalid_type', 'Request must be erasure type', array( 'type' => $request->request_type ) );
 			return false;
 		}
@@ -507,9 +507,9 @@ class DSR_Service extends Base_Service {
 	 * Uses business days (excludes weekends).
 	 *
 	 * @since 3.0.1
-	 * @param string $created_at Start datetime (MySQL format)
-	 * @param int    $sla_days Number of business days
-	 * @return string Due date (MySQL format)
+	 * @param string $created_at Start datetime (MySQL format).
+	 * @param int    $sla_days Number of business days.
+	 * @return string Due date (MySQL format).
 	 */
 	public function calculate_due_date( string $created_at, int $sla_days ): string {
 		$date  = new \DateTime( $created_at );
@@ -532,8 +532,8 @@ class DSR_Service extends Base_Service {
 	 * Aggregates all status changes, notes, and actions.
 	 *
 	 * @since 3.0.1
-	 * @param int $request_id Request ID
-	 * @return array Timeline entries
+	 * @param int $request_id Request ID.
+	 * @return array Timeline entries.
 	 */
 	public function get_timeline( int $request_id ): array {
 		$request = $this->repository->find( $request_id );
@@ -579,7 +579,7 @@ class DSR_Service extends Base_Service {
 		// Completed event..
 		if ( ! empty( $request->completed_at ) ) {
 			$timeline[] = array(
-				'event'     => $request->status === 'completed' ? 'completed' : 'rejected',
+				'event'     => 'completed' === $request->status ? 'completed' : 'rejected',
 				'timestamp' => $request->completed_at,
 				'actor'     => $request->processed_by ? "User #{$request->processed_by}" : 'System',
 				'details'   => sprintf( 'Final status: %s', $request->status ),
@@ -634,8 +634,8 @@ class DSR_Service extends Base_Service {
 	 * Check rate limit for email/IP
 	 *
 	 * @since 3.0.1
-	 * @param string $email Email address
-	 * @return bool True if under limit
+	 * @param string $email Email address.
+	 * @return bool True if under limit.
 	 */
 	private function check_rate_limit( string $email ): bool {
 		$email_hash    = hash( 'sha256', $email );
@@ -643,7 +643,7 @@ class DSR_Service extends Base_Service {
 		$attempts      = get_transient( $transient_key );
 
 		if ( false === $attempts ) {
-			return true; // No attempts recorded
+			return true; // No attempts recorded.
 		}
 
 		return (int) $attempts < $this->rate_limit;
@@ -653,7 +653,7 @@ class DSR_Service extends Base_Service {
 	 * Log rate limit attempt
 	 *
 	 * @since 3.0.1
-	 * @param string $email Email address
+	 * @param string $email Email address.
 	 * @return void
 	 */
 	private function log_rate_limit_attempt( string $email ): void {
@@ -673,9 +673,9 @@ class DSR_Service extends Base_Service {
 	 * Validate status transition
 	 *
 	 * @since 3.0.1
-	 * @param string $current_status Current status
-	 * @param string $new_status Target status
-	 * @return bool True if valid transition
+	 * @param string $current_status Current status.
+	 * @param string $new_status Target status.
+	 * @return bool True if valid transition.
 	 */
 	private function is_valid_transition( string $current_status, string $new_status ): bool {
 		// Same status is always valid..
@@ -695,9 +695,9 @@ class DSR_Service extends Base_Service {
 	 * Validate email
 	 *
 	 * @since 3.0.1
-	 * @param string $email Email address
-	 * @param string $field Field name for error reporting
-	 * @return bool True if valid
+	 * @param string $email Email address.
+	 * @param string $field Field name for error reporting.
+	 * @return bool True if valid.
 	 */
 	protected function validate_email( string $email, string $field = 'email' ): bool {
 		if ( empty( $email ) ) {
@@ -717,10 +717,10 @@ class DSR_Service extends Base_Service {
 	 * Validate value in allowed list
 	 *
 	 * @since 3.0.1
-	 * @param mixed  $value Value to check
-	 * @param array  $allowed Allowed values
-	 * @param string $field_name Field name for error reporting
-	 * @return bool True if valid
+	 * @param mixed  $value Value to check.
+	 * @param array  $allowed Allowed values.
+	 * @param string $field_name Field name for error reporting.
+	 * @return bool True if valid.
 	 */
 	protected function validate_in_list( $value, array $allowed, string $field_name ): bool {
 		if ( ! in_array( $value, $allowed, true ) ) {
@@ -745,32 +745,35 @@ class DSR_Service extends Base_Service {
 
 		// Open requests (non-terminal statuses)..
 		$open_statuses = array( 'pending_verification', 'verified', 'in_progress', 'on_hold' );
-		$placeholders  = implode( ', ', array_fill( 0, count( $open_statuses ), '%s' ) );
-		$open_args     = array_merge( array( $table ), $open_statuses );
 
-		$query      = sprintf( 'SELECT COUNT(*) FROM %%s WHERE status IN (%s)', $placeholders );
-		$open_count = $wpdb->get_var(
-			$wpdb->prepare( $query, ...$open_args )
-		);
+		// Build placeholders for dynamic IN() list and prepare safely.
+		$placeholders = implode( ', ', array_fill( 0, count( $open_statuses ), '%s' ) );
+		$query        = 'SELECT COUNT(*) FROM `' . esc_sql( $table ) . '` WHERE status IN (' . $placeholders . ')';
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Placeholders and values are built dynamically and prepared below.
+		$prepare_args = array_merge( array( $query ), $open_statuses );
+		$prepared     = call_user_func_array( array( $wpdb, 'prepare' ), $prepare_args );
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared -- Table name is safe and values were prepared above.
+		$open_count = $wpdb->get_var( $prepared );
 
 		// Total requests..
-		$total_count = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %s', $table ) );
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Table name is safe, from repository; real-time statistics do not require caching.
+		$total_count = $wpdb->get_var( 'SELECT COUNT(*) FROM `' . esc_sql( $table ) . '`' );
 
 		// Completed requests..
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Table name is safe, from repository; real-time statistics do not require caching.
 		$completed_count = $wpdb->get_var(
 			$wpdb->prepare(
-				'SELECT COUNT(*) FROM %s WHERE status = %s',
-				$table,
+				'SELECT COUNT(*) FROM `' . esc_sql( $table ) . '` WHERE status = %s',
 				'completed'
 			)
 		);
-
-		// SLA compliance: % of completed requests that met deadline..
 		// Note: Table uses completed_date and due_date, not completed_at and sla_deadline..
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Table name is safe, from repository; real-time statistics do not require caching.
 		$sla_compliant = $wpdb->get_var(
 			$wpdb->prepare(
-				'SELECT COUNT(*) FROM %s WHERE status = %s AND completed_date IS NOT NULL AND completed_date <= due_date',
-				$table,
+				'SELECT COUNT(*) FROM `' . esc_sql( $table ) . '` WHERE status = %s AND completed_date IS NOT NULL AND completed_date <= due_date',
 				'completed'
 			)
 		);
@@ -780,8 +783,9 @@ class DSR_Service extends Base_Service {
 			: 100;
 
 		// Queue breakdown by status..
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Table name is safe, from repository; real-time statistics do not require caching.
 		$queue_breakdown = $wpdb->get_results(
-			$wpdb->prepare( 'SELECT status, COUNT(*) as count FROM %s GROUP BY status', $table ),
+			sprintf( 'SELECT status, COUNT(*) as count FROM `%s` GROUP BY status', esc_sql( $table ) ),
 			ARRAY_A
 		);
 
@@ -792,10 +796,10 @@ class DSR_Service extends Base_Service {
 
 		// Requests by type (last 30 days)..
 		// Note: Table uses request_date, not submitted_at..
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Table name is safe, from repository; real-time statistics do not require caching.
 		$by_type = $wpdb->get_results(
 			$wpdb->prepare(
-				'SELECT request_type, COUNT(*) as count FROM %s WHERE request_date >= %s GROUP BY request_type',
-				$table,
+				'SELECT request_type, COUNT(*) as count FROM `' . esc_sql( $table ) . '` WHERE request_date >= %s GROUP BY request_type',
 				gmdate( 'Y-m-d H:i:s', strtotime( '-30 days' ) )
 			),
 			ARRAY_A
@@ -808,10 +812,10 @@ class DSR_Service extends Base_Service {
 
 		// Overdue requests (past SLA deadline, not completed/rejected)..
 		// Note: Table uses due_date, not sla_deadline..
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Table name is safe, from repository; real-time statistics do not require caching.
 		$overdue = $wpdb->get_var(
 			$wpdb->prepare(
-				'SELECT COUNT(*) FROM %s WHERE status NOT IN (%s, %s) AND due_date < %s',
-				$table,
+				'SELECT COUNT(*) FROM `' . esc_sql( $table ) . '` WHERE status NOT IN (%s, %s) AND due_date < %s',
 				'completed',
 				'rejected',
 				current_time( 'mysql' )

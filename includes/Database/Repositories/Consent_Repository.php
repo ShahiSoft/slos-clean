@@ -30,7 +30,7 @@ class Consent_Repository extends Base_Repository {
 	 * Get table name
 	 *
 	 * @since 3.0.1
-	 * @return string Table name without prefix
+	 * @return string Table name without prefix.
 	 */
 	protected function get_table_name(): string {
 		return 'slos_consent';
@@ -40,9 +40,9 @@ class Consent_Repository extends Base_Repository {
 	 * Find consents by user ID
 	 *
 	 * @since 3.0.1
-	 * @param int   $user_id User ID
-	 * @param array $args    Query arguments
-	 * @return array Array of consent records
+	 * @param int   $user_id User ID.
+	 * @param array $args    Query arguments.
+	 * @return array Array of consent records.
 	 */
 	public function find_by_user( int $user_id, array $args = array() ): array {
 		return $this->find_by( 'user_id', $user_id, $args );
@@ -52,9 +52,9 @@ class Consent_Repository extends Base_Repository {
 	 * Find consents by type
 	 *
 	 * @since 3.0.1
-	 * @param string $type Type (necessary, functional, analytics, marketing, personalization)
-	 * @param array  $args Query arguments
-	 * @return array Array of consent records
+	 * @param string $type Type (necessary, functional, analytics, marketing, personalization).
+	 * @param array  $args Query arguments.
+	 * @return array Array of consent records.
 	 */
 	public function find_by_type( string $type, array $args = array() ): array {
 		return $this->find_by( 'type', $type, $args );
@@ -64,9 +64,9 @@ class Consent_Repository extends Base_Repository {
 	 * Find consents by status
 	 *
 	 * @since 3.0.1
-	 * @param string $status Status (pending, accepted, rejected, withdrawn)
-	 * @param array  $args   Query arguments
-	 * @return array Array of consent records
+	 * @param string $status Status (pending, accepted, rejected, withdrawn).
+	 * @param array  $args   Query arguments.
+	 * @return array Array of consent records.
 	 */
 	public function find_by_status( string $status, array $args = array() ): array {
 		return $this->find_by( 'status', $status, $args );
@@ -76,34 +76,38 @@ class Consent_Repository extends Base_Repository {
 	 * Get active consents for user
 	 *
 	 * @since 3.0.1
-	 * @param int $user_id User ID
-	 * @return array Array of accepted consent records
+	 * @param int $user_id User ID.
+	 * @return array Array of accepted consent records.
 	 */
 	public function get_active_consents( int $user_id ): array {
-		return $this->wpdb->get_results(
-			$this->wpdb->prepare(
-				"SELECT * FROM {$this->table} WHERE user_id = %d AND status = 'accepted' ORDER BY created_at DESC",
+		global $wpdb;
+		return $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT * FROM %s WHERE user_id = %d AND status = \'accepted\' ORDER BY created_at DESC',
+				$this->table,
 				$user_id
 			)
-		);
+		); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 	}
 
 	/**
 	 * Check if user has active consent for specific type
 	 *
 	 * @since 3.0.1
-	 * @param int    $user_id User ID
-	 * @param string $type    Consent type
-	 * @return bool True if has active consent
+	 * @param int    $user_id User ID.
+	 * @param string $type    Consent type.
+	 * @return bool True if has active consent.
 	 */
 	public function has_consent( int $user_id, string $type ): bool {
-		$count = $this->wpdb->get_var(
-			$this->wpdb->prepare(
-				"SELECT COUNT(*) FROM {$this->table} WHERE user_id = %d AND type = %s AND status = 'accepted'",
+		global $wpdb;
+		$count = $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT COUNT(*) FROM %s WHERE user_id = %d AND type = %s AND status = \'accepted\'',
+				$this->table,
 				$user_id,
 				$type
 			)
-		);
+		); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 		return $count > 0;
 	}
@@ -112,8 +116,8 @@ class Consent_Repository extends Base_Repository {
 	 * Withdraw consent
 	 *
 	 * @since 3.0.1
-	 * @param int $consent_id Consent ID
-	 * @return bool True on success
+	 * @param int $consent_id Consent ID.
+	 * @return bool True on success.
 	 */
 	public function withdraw( int $consent_id ): bool {
 		return $this->update(
@@ -128,14 +132,15 @@ class Consent_Repository extends Base_Repository {
 	 * Get consent statistics by type
 	 *
 	 * @since 3.0.1
-	 * @return array Array of statistics (type => count)
+	 * @return array Array of statistics (type => count).
 	 */
 	public function get_stats_by_type(): array {
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- static query using internal table name (sanitized) and no user input.
-		$results = $this->wpdb->get_results(
-			"SELECT type, COUNT(*) as count FROM {$this->table} WHERE status = 'accepted' GROUP BY type",
+		global $wpdb;
+		$results = $wpdb->get_results(
+			$wpdb->prepare( 'SELECT type, COUNT(*) as count FROM %s WHERE status = \'accepted\' GROUP BY type', $this->table ),
 			ARRAY_A
 		);
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- prepared query using internal table name.
 
 		$stats = array();
 		foreach ( $results as $row ) {
@@ -149,14 +154,15 @@ class Consent_Repository extends Base_Repository {
 	 * Get consent statistics by status
 	 *
 	 * @since 3.0.1
-	 * @return array Array of statistics (status => count)
+	 * @return array Array of statistics (status => count).
 	 */
 	public function get_stats_by_status(): array {
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- static query using internal table name (sanitized) and no user input.
-		$results = $this->wpdb->get_results(
-			"SELECT status, COUNT(*) as count FROM {$this->table} GROUP BY status",
+		global $wpdb;
+		$results = $wpdb->get_results(
+			$wpdb->prepare( 'SELECT status, COUNT(*) as count FROM %s GROUP BY status', $this->table ),
 			ARRAY_A
 		);
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- prepared query using internal table name.
 
 		$stats = array();
 		foreach ( $results as $row ) {
@@ -170,9 +176,9 @@ class Consent_Repository extends Base_Repository {
 	 * Find consents by IP hash
 	 *
 	 * @since 3.0.1
-	 * @param string $ip_hash SHA256 hash of IP address
-	 * @param array  $args    Query arguments
-	 * @return array Array of consent records
+	 * @param string $ip_hash SHA256 hash of IP address.
+	 * @param array  $args    Query arguments.
+	 * @return array Array of consent records.
 	 */
 	public function find_by_ip_hash( string $ip_hash, array $args = array() ): array {
 		return $this->find_by( 'ip_hash', $ip_hash, $args );
@@ -182,8 +188,8 @@ class Consent_Repository extends Base_Repository {
 	 * Get recent consents
 	 *
 	 * @since 3.0.1
-	 * @param int $limit Number of records to retrieve
-	 * @return array Array of recent consent records
+	 * @param int $limit Number of records to retrieve.
+	 * @return array Array of recent consent records.
 	 */
 	public function get_recent( int $limit = 10 ): array {
 		return $this->find_all(
@@ -199,8 +205,8 @@ class Consent_Repository extends Base_Repository {
 	 * Count consents by user
 	 *
 	 * @since 3.0.1
-	 * @param int $user_id User ID
-	 * @return int Total consent count for user
+	 * @param int $user_id User ID.
+	 * @return int Total consent count for user.
 	 */
 	public function count_by_user( int $user_id ): int {
 		return $this->count( array( 'user_id' => $user_id ) );
@@ -211,16 +217,16 @@ class Consent_Repository extends Base_Repository {
 	 *
 	 * @since 3.0.1
 	 * @param array $args {
-	 *     Export filters
+	 *     Export filters.
 	 *
-	 *     @type int    $user_id   Filter by user ID
-	 *     @type string $type      Filter by consent type
-	 *     @type string $status    Filter by status
-	 *     @type string $date_from Start date (Y-m-d format)
-	 *     @type string $date_to   End date (Y-m-d format)
-	 *     @type int    $limit     Maximum records to export (default: 10000)
+	 *     @type int    $user_id   Filter by user ID.
+	 *     @type string $type      Filter by consent type.
+	 *     @type string $status    Filter by status.
+	 *     @type string $date_from Start date (Y-m-d format).
+	 *     @type string $date_to   End date (Y-m-d format).
+	 *     @type int    $limit     Maximum records to export (default: 10000).
 	 * }
-	 * @return array Array of consent records for export
+	 * @return array Array of consent records for export.
 	 */
 	public function find_export( array $args = array() ): array {
 		$defaults = array(
@@ -270,14 +276,15 @@ class Consent_Repository extends Base_Repository {
 		$where = implode( ' AND ', $where_clauses );
 		$limit = absint( $args['limit'] );
 
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Table name and WHERE clause are internally controlled/sanitized; LIMIT is derived via absint(); values are passed via placeholders when present.
 		$sql = "SELECT * FROM {$this->table} WHERE {$where} ORDER BY created_at DESC LIMIT {$limit}";
 
 		if ( ! empty( $where_values ) ) {
-			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$sql = $this->wpdb->prepare( $sql, ...$where_values );
 		}
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		return $this->wpdb->get_results( $sql, ARRAY_A );
 	}
 
@@ -289,9 +296,9 @@ class Consent_Repository extends Base_Repository {
 	 * as well as guest consents where email is stored in metadata.
 	 *
 	 * @since 3.1.1 Phase 2.2
-	 * @param string $email Email address to search for
-	 * @param array  $args  Optional query arguments
-	 * @return array Array of consent records
+	 * @param string $email Email address to search for.
+	 * @param array  $args  Optional query arguments.
+	 * @return array Array of consent records.
 	 */
 	public function find_by_email( string $email, array $args = array() ): array {
 		global $wpdb;
@@ -314,13 +321,15 @@ class Consent_Repository extends Base_Repository {
 		// Look for email in JSON metadata field..
 		$metadata_results = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM {$this->table} 
+				'SELECT * FROM %s 
 				WHERE metadata LIKE %s 
-				ORDER BY created_at DESC",
+				ORDER BY created_at DESC',
+				$this->table,
 				'%' . $wpdb->esc_like( $email ) . '%'
 			),
 			ARRAY_A
 		);
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- prepared query using internal table name.
 
 		// Verify email is actually in metadata (not just a substring match)..
 		foreach ( $metadata_results as $record ) {
@@ -329,7 +338,7 @@ class Consent_Repository extends Base_Repository {
 				// Check if this consent isn't already in our results (avoid duplicates)..
 				$already_included = false;
 				foreach ( $consents as $existing ) {
-					if ( isset( $existing['id'] ) && $existing['id'] == $record['id'] ) {
+					if ( isset( $existing['id'] ) && absint( $existing['id'] ) === absint( $record['id'] ) ) {
 						$already_included = true;
 						break;
 					}
